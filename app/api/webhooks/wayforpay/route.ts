@@ -32,7 +32,8 @@ export async function POST(req: Request) {
     const transactionStatus = body.transactionStatus
     const orderReference = body.orderReference
 
-    console.log(`Processing order ${orderReference} with status: ${transactionStatus}`)
+    console.log(`[WEBHOOK] Processing order ${orderReference} with status: ${transactionStatus}`)
+    console.log(`[WEBHOOK] Full webhook data:`, JSON.stringify(body, null, 2))
 
     // Only process approved payments
     if (transactionStatus === WAYFORPAY_STATUS.APPROVED) {
@@ -196,10 +197,16 @@ export async function POST(req: Request) {
         )
       }
     } else if (transactionStatus === WAYFORPAY_STATUS.DECLINED) {
-      console.log('Payment declined:', orderReference)
+      console.log(`[WEBHOOK] Payment declined: ${orderReference}`)
+    } else if (transactionStatus === WAYFORPAY_STATUS.PENDING) {
+      console.log(`[WEBHOOK] Payment pending: ${orderReference}`)
+      console.log(`[WEBHOOK] Pending status received - payment is still being processed`)
+      console.log(`[WEBHOOK] Will wait for Approved status webhook`)
     } else if (transactionStatus === WAYFORPAY_STATUS.REFUNDED) {
-      console.log('Payment refunded:', orderReference)
+      console.log(`[WEBHOOK] Payment refunded: ${orderReference}`)
       // TODO: Update donation status to refunded
+    } else {
+      console.log(`[WEBHOOK] Unknown status: ${transactionStatus} for order: ${orderReference}`)
     }
 
     // Return success for all statuses
