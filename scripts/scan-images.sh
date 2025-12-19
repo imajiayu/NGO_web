@@ -18,8 +18,14 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# WebP 质量设置（80-85 是一个好的平衡点）
-WEBP_QUALITY=85
+# WebP 质量设置（80 是一个好的平衡点）
+WEBP_QUALITY=80
+
+# 图片尺寸限制（最大宽度，保持宽高比）
+MAX_WIDTH=1920
+
+# 文件大小警告阈值（字节）
+SIZE_WARNING_THRESHOLD=524288  # 512KB
 
 echo -e "${BLUE}==================================${NC}"
 echo -e "${BLUE}图片扫描和优化工具${NC}"
@@ -35,8 +41,8 @@ if ! command -v magick &> /dev/null; then
     exit 1
 fi
 
-# 图片文件扩展名（排除 svg 和 webp）
-IMAGE_EXTENSIONS=("jpg" "jpeg" "png" "gif" "bmp" "tiff" "tif")
+# 图片文件扩展名（排除 svg）
+IMAGE_EXTENSIONS=("jpg" "jpeg" "png" "gif" "bmp" "tiff" "tif" "webp")
 
 # 存储找到的图片文件
 declare -a image_files
@@ -48,6 +54,7 @@ echo ""
 # 总计数和总大小
 total_count=0
 total_size=0
+large_files_count=0
 
 # 遍历每个扩展名
 for ext in "${IMAGE_EXTENSIONS[@]}"; do
@@ -65,8 +72,13 @@ for ext in "${IMAGE_EXTENSIONS[@]}"; do
                 size_readable="$(echo "scale=2; $size/1048576" | bc)MB"
             fi
 
-            # 打印文件路径和大小
-            echo "$file -> $size_readable"
+            # 打印文件路径和大小，大文件用红色警告
+            if [ $size -gt $SIZE_WARNING_THRESHOLD ]; then
+                echo -e "$file -> ${RED}$size_readable ⚠️  (过大)${NC}"
+                ((large_files_count++))
+            else
+                echo "$file -> $size_readable"
+            fi
 
             # 存储文件信息
             image_files+=("$file")
@@ -83,6 +95,10 @@ echo ""
 echo -e "${GREEN}================================${NC}"
 echo -e "${GREEN}扫描完成！${NC}"
 echo "总文件数: $total_count"
+
+if [ $large_files_count -gt 0 ]; then
+    echo -e "${RED}大文件 (>512KB): $large_files_count ⚠️${NC}"
+fi
 
 # 转换总大小
 if [ $total_size -lt 1024 ]; then
@@ -106,7 +122,7 @@ echo -e "${YELLOW}是否要优化这些图片？${NC}"
 echo "优化操作："
 echo "  - 将图片转换为 WebP 格式"
 echo "  - 质量设置: ${WEBP_QUALITY}%"
-echo "  - 保持原始尺寸不变"
+echo "  - 最大宽度限制: ${MAX_WIDTH}px (保持宽高比)"
 echo "  - 原文件将被备份到: $BACKUP_DIR"
 echo ""
 read -p "继续优化？(y/N): " -n 1 -r
@@ -141,18 +157,30 @@ for i in "${!image_files[@]}"; do
     file_dir=$(dirname "$file")
     file_name=$(basename "$file")
     file_base="${file_name%.*}"
+    file_ext="${file_name##*.}"
+
+    # 转换为小写进行比较
+    file_ext_lower=$(echo "$file_ext" | tr '[:upper:]' '[:lower:]')
 
     # 新的 webp 文件路径
-    webp_file="${file_dir}/${file_base}.webp"
+    if [[ "$file_ext_lower" == "webp" ]]; then
+        # 如果已经是webp，使用临时文件名，然后替换
+        webp_file="${file_dir}/${file_base}_optimized.webp"
+        is_already_webp=true
+    else
+        webp_file="${file_dir}/${file_base}.webp"
+        is_already_webp=false
+    fi
 
-    echo -e "${YELLOW}[$((i+1))/$total_count]${NC} 处理: $file"
+    echo -e "${YELLOW}[$((i+1))/$total_count]${NC} 优化: $file"
 
     # 备份原文件
     backup_path="$BACKUP_DIR/$file_name"
     cp "$file" "$backup_path"
 
-    # 使用 imagemagick 转换为 webp
-    if magick "$file" -quality $WEBP_QUALITY "$webp_file" 2>/dev/null; then
+    # 使用 imagemagick 转换为 webp，同时调整尺寸（如果超过最大宽度）
+    # -resize "1920>" 表示：只有当宽度超过1920px时才缩小，保持宽高比
+    if magick "$file" -resize "${MAX_WIDTH}>" -quality $WEBP_QUALITY "$webp_file" 2>/dev/null; then
         # 获取新文件大小
         new_size=$(stat -f%z "$webp_file" 2>/dev/null || stat -c%s "$webp_file" 2>/dev/null)
         saved=$((original_size - new_size))
@@ -182,6 +210,11 @@ for i in "${!image_files[@]}"; do
 
         # 删除原文件
         rm "$file"
+
+        # 如果原文件就是webp，需要将优化后的文件重命名回原名
+        if [ "$is_already_webp" = true ]; then
+            mv "$webp_file" "${file_dir}/${file_base}.webp"
+        fi
 
         ((optimized_count++))
     else

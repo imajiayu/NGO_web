@@ -29,7 +29,8 @@ export default function ApproachSection() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
         </svg>
       ),
-      gradient: 'from-blue-500 to-cyan-500'
+      gradient: 'from-blue-500 to-cyan-500',
+      image: '/images/approach/transparent.webp'
     },
     {
       key: 'efficient',
@@ -38,7 +39,8 @@ export default function ApproachSection() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       ),
-      gradient: 'from-purple-500 to-pink-500'
+      gradient: 'from-purple-500 to-pink-500',
+      image: '/images/approach/efficient.webp'
     },
     {
       key: 'direct',
@@ -48,7 +50,8 @@ export default function ApproachSection() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
         </svg>
       ),
-      gradient: 'from-orange-500 to-red-500'
+      gradient: 'from-orange-500 to-red-500',
+      image: '/images/approach/direct.webp'
     }
   ]
 
@@ -93,43 +96,57 @@ export default function ApproachSection() {
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-          {features.map(({ key, icon, gradient }) => (
+          {features.map(({ key, icon, gradient, image }) => (
             <div
               key={key}
-              className="group relative p-8 bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
+              className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
             >
-              {/* Gradient Border Effect */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${gradient} rounded-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+              {/* Background Image */}
+              <Image
+                src={image}
+                alt={t(`${key}.title` as any)}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                sizes="(max-width: 768px) 100vw, 33vw"
+              />
 
-              {/* Icon */}
-              <div className={`inline-flex p-4 bg-gradient-to-br ${gradient} rounded-2xl text-white mb-6 shadow-lg`}>
-                {icon}
+              {/* Gradient Overlay - Light overlay for better readability */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-10 group-hover:opacity-15 transition-all duration-500`} />
+              <div className="absolute inset-0 bg-white/30 group-hover:bg-white/25 transition-all duration-500" />
+
+              {/* Content */}
+              <div className="relative z-10 p-8">
+                {/* Icon */}
+                <div className={`inline-flex p-4 bg-gradient-to-br ${gradient} rounded-2xl text-white mb-6 shadow-lg`}>
+                  {icon}
+                </div>
+
+                {/* Title - Bold white text with thick black stroke */}
+                <h3 className="text-3xl font-black text-white mb-6 uppercase tracking-wide [text-shadow:_-2px_-2px_0_#000,_2px_-2px_0_#000,_-2px_2px_0_#000,_2px_2px_0_#000,_-2px_0_0_#000,_2px_0_0_#000,_0_-2px_0_#000,_0_2px_0_#000,_0_0_12px_rgba(0,0,0,0.7)]">
+                  {t(`${key}.title` as any)}
+                </h3>
+
+                {/* List Items - Regular weight white text with normal stroke */}
+                <ul className="space-y-3">
+                  {(t.raw(`${key}.items` as any) as string[]).map((item: string, index: number) => (
+                    <li key={index} className="flex items-start text-white text-base leading-relaxed font-medium">
+                      <svg
+                        className="w-6 h-6 text-green-400 mr-3 mt-0.5 flex-shrink-0"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        style={{ filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 1px rgba(0, 0, 0, 1))' }}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="[text-shadow:_-1px_-1px_0_#000,_1px_-1px_0_#000,_-1px_1px_0_#000,_1px_1px_0_#000,_0_0_6px_rgba(0,0,0,0.6)]">{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-
-              {/* Title */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                {t(`${key}.title` as any)}
-              </h3>
-
-              {/* List Items */}
-              <ul className="space-y-3">
-                {(t.raw(`${key}.items` as any) as string[]).map((item: string, index: number) => (
-                  <li key={index} className="flex items-start text-gray-600 text-base leading-relaxed">
-                    <svg
-                      className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
           ))}
         </div>
