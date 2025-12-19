@@ -229,17 +229,10 @@ export default function DonationDetails({ orderReference, locale }: Props) {
               </h3>
               <p className="text-yellow-800 leading-relaxed mb-2">
                 {locale === 'en'
-                  ? 'Your payment has been received and is currently being processed by WayForPay. This usually takes a few minutes.'
+                  ? 'Payment is being confirmed by the bank, usually takes 2-5 minutes. The page will auto-refresh and you\'ll receive an email when confirmed. You can wait here or close the page and wait for the email.'
                   : locale === 'zh'
-                  ? '您的支付已收到，正在由 WayForPay 处理中。这通常需要几分钟时间。'
-                  : 'Ваш платіж отримано і зараз обробляється WayForPay. Зазвичай це займає кілька хвилин.'}
-              </p>
-              <p className="text-yellow-700 text-sm mb-3 whitespace-pre-line">
-                {locale === 'en'
-                  ? '✓ Your donation IDs have been generated and saved.\n✓ You will receive a confirmation email once the payment is completed.\n✓ You can track your donation status using the IDs below.'
-                  : locale === 'zh'
-                  ? '✓ 您的捐赠 ID 已生成并保存。\n✓ 支付完成后您将收到确认邮件。\n✓ 您可以使用下面的 ID 追踪捐赠状态。'
-                  : '✓ Ваші ID пожертв згенеровані та збережені.\n✓ Ви отримаєте підтвердження електронною поштою після завершення платежу.\n✓ Ви можете відстежувати статус пожертви, використовуючи ID нижче.'}
+                  ? '支付正在由银行确认中，通常需要 2-5 分钟。确认后页面会自动刷新并发送邮件通知。您可以在此等待或关闭页面等待邮件。'
+                  : 'Платіж підтверджується банком, зазвичай це займає 2-5 хвилин. Сторінка автоматично оновиться, і ви отримаєте електронний лист після підтвердження. Можете почекати тут або закрити сторінку і дочекатися листа.'}
               </p>
               {isAutoRefreshing && (
                 <div className="flex items-center space-x-2 text-yellow-700 text-sm">
