@@ -1,0 +1,517 @@
+{
+  "common": {
+    "appName": "WAY TO FUTURE UA",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back"
+  },
+  "navigation": {
+    "home": "Home",
+    "projects": "Projects",
+    "donate": "Donate",
+    "trackDonation": "Track Donation",
+    "about": "About",
+    "contact": "Contact",
+    "language": {
+      "label": "Language",
+      "en": "English",
+      "zh": "中文",
+      "ua": "Українська"
+    }
+  },
+  "home": {
+    "title": "Support Our Projects",
+    "subtitle": "Empowering communities through meaningful projects",
+    "noProjects": "No active projects at the moment. Please check back later.",
+    "trackDonation": {
+      "button": "Track Your Donation"
+    },
+    "hero": {
+      "mission": {
+        "label": "OUR MISSION",
+        "title": "Healing the Wounds of War",
+        "subtitle": "A local charity foundation in Dnipro, Ukraine, operating a medium-sized rehabilitation center dedicated to helping war victims rebuild their lives.",
+        "who": "Who We Help",
+        "displaced": "Displaced Families in Shelters",
+        "women": "Widows & Orphans",
+        "civilians": "Civilians Under Attack"
+      },
+      "approach": {
+        "label": "OUR APPROACH",
+        "title": "Built on Trust & Transparency",
+        "subtitle": "Every donation creates real, traceable impact",
+        "transparent": {
+          "title": "Transparent",
+          "items": [
+            "Full receipts for every expense",
+            "Unique tracking ID for each donation"
+          ]
+        },
+        "efficient": {
+          "title": "Efficient",
+          "items": [
+            "Confirmed within 1 business day",
+            "Completed within 7 business days",
+            "Photo/video proof provided"
+          ]
+        },
+        "direct": {
+          "title": "Direct",
+          "items": [
+            "Real-time donation tracking",
+            "View all donations & results",
+            "Beneficiary contact included"
+          ]
+        }
+      },
+      "impact": {
+        "label": "OUR IMPACT",
+        "title": "Three Years of Change",
+        "subtitle": "Thank you to every donor for your support",
+        "donations": {
+          "value": "$100,000+",
+          "label": "Total Donations"
+        },
+        "people": {
+          "value": "1,600+",
+          "label": "People Rehabilitated"
+        },
+        "shelters": {
+          "value": "50+",
+          "label": "Shelters & Families Supported"
+        }
+      },
+      "projects": {
+        "label": "CURRENT PROJECTS",
+        "title": "Make a Difference Today",
+        "scrollHint": "Scroll to view all projects"
+      },
+      "donationJourney": {
+        "label": "HOW IT WORKS",
+        "title": "Your Donation Journey",
+        "subtitle": "From payment to impact - track every step of your contribution with full transparency",
+        "showDetails": "Show Details",
+        "hideDetails": "Hide Details"
+      },
+      "compliance": {
+        "button": "View Legal Documents",
+        "title": "Legal Compliance Documents",
+        "subtitle": "All our registration and policy documents are publicly available",
+        "scrollHint": "Scroll to view all documents",
+        "documents": {
+          "registration": "Non-Profit Organization Registry Extract",
+          "charter": "Charter",
+          "edrpou": "ЄДРПОУ Registration Certificate (Stamped)",
+          "application": "Application for Registry Extract",
+          "procurement": "Procurement Management Policy",
+          "conflict": "Conflict of Interest Policy",
+          "accounting": "Accounting Policy",
+          "info": "Registration Information Extract"
+        }
+      }
+    }
+  },
+  "projects": {
+    "donateNow": "View Details",
+    "progress": "Funding Progress",
+    "details": "Project Details",
+    "unitPrice": "Unit Price",
+    "projectType": "Project Type",
+    "longTerm": "Long-term",
+    "fixedTerm": "Fixed-term Project",
+    "startDate": "Start",
+    "endDate": "End",
+    "about": "About This Project",
+    "defaultDescription": "This project aims to make a positive impact in the community. Your donation will directly support the project goals and help those in need.",
+    "fundingProgress": "Funding Progress",
+    "target": "Target",
+    "donations": "donations",
+    "perUnit": "per {unitName}",
+    "status": {
+      "active": "Active",
+      "completed": "Completed",
+      "planned": "Planned",
+      "paused": "Paused"
+    }
+  },
+  "donate": {
+    "title": "Make a Donation",
+    "subtitle": "Support a project and make a difference",
+    "selectProject": "Select a Project",
+    "selectProjectDescription": "Choose the project you'd like to support",
+    "noProjectSelected": "Please select a project above to continue",
+    "scrollToViewAll": "Scroll to view all projects",
+    "project": {
+      "label": "Select Project",
+      "placeholder": "Choose a project to support",
+      "notFound": "No active projects available",
+      "switchLabel": "Switch to Another Project"
+    },
+    "quantity": {
+      "label": "Number of Units",
+      "custom": "Custom amount",
+      "perUnit": "per {unitName}",
+      "total": "Total"
+    },
+    "donor": {
+      "title": "Your Information",
+      "name": "Your Name",
+      "namePlaceholder": "Enter your name or pseudonym",
+      "nameHint": "You can use a real name or pseudonym",
+      "email": "Email Address",
+      "emailPlaceholder": "your@email.com",
+      "emailHint": "For confirmation and receipt"
+    },
+    "contact": {
+      "title": "Contact Methods (Optional)",
+      "description": "How can the project team reach you?",
+      "telegram": "Telegram",
+      "telegramPlaceholder": "@username or profile link",
+      "whatsapp": "WhatsApp",
+      "whatsappPlaceholder": "+1234567890"
+    },
+    "message": {
+      "label": "Message to Recipients (Optional)",
+      "placeholder": "Leave an encouraging message for the Ukrainians who will receive your donation, or a special note for the team...",
+      "hint": "{remaining} characters remaining"
+    },
+    "operationalSupport": {
+      "title": "Support Our Operations (Optional)",
+      "description": "Help us cover operational costs",
+      "items": [
+        "Website & server maintenance",
+        "Procurement & shipping costs",
+        "Administrative expenses"
+      ],
+      "label": "Additional Support Amount",
+      "placeholder": "Enter custom amount",
+      "presets": {
+        "low": "$5",
+        "medium": "$10",
+        "high": "$20"
+      }
+    },
+    "payment": {
+      "title": "Payment Information",
+      "total": "Total Amount",
+      "currency": "USD",
+      "processing": "Processing payment...",
+      "back": "Back to Edit",
+      "confirm": "Confirm Payment",
+      "backToEdit": "Go back to edit donation details"
+    },
+    "submit": "Submit Donation",
+    "submitting": "Processing...",
+    "validation": {
+      "projectRequired": "Please select a project",
+      "quantityRequired": "Please enter a quantity",
+      "quantityMin": "Quantity must be at least 1",
+      "quantityMax": "Quantity cannot exceed {max}",
+      "nameRequired": "Please enter your name",
+      "nameMin": "Name must be at least 2 characters",
+      "emailRequired": "Please enter your email",
+      "emailInvalid": "Please enter a valid email address",
+      "messageMax": "Message must be less than {max} characters"
+    },
+    "errors": {
+      "paymentFailed": "Payment failed. Please try again.",
+      "serverError": "Server error. Please contact support.",
+      "networkError": "Network error. Please check your connection.",
+      "invalidEmail": "Please enter a valid email address.",
+      "validationError": "Please check your input and try again."
+    }
+  },
+  "donateSuccess": {
+    "title": "Payment Successful!",
+    "thankYou": "Thank you for your donation!",
+    "saveIdsTitle": "IMPORTANT: Save Your Donation IDs",
+    "saveIdsDescription": "Please save these IDs to track your donations. You'll need them to check the status and view results.",
+    "emailReminderTitle": "Check Your Email",
+    "emailReminderDescription": "We've sent a confirmation email to {email}. Please check your inbox.",
+    "details": {
+      "title": "Donation Details",
+      "project": "Project",
+      "quantity": "Quantity",
+      "units": "{count} units",
+      "total": "Total Amount",
+      "donationIds": "Your Donation IDs"
+    },
+    "copy": {
+      "copyId": "Copy",
+      "copyAll": "Copy All IDs",
+      "copied": "Copied!"
+    },
+    "actions": {
+      "trackDonation": "Track Your Donations",
+      "backHome": "Back to Home"
+    }
+  },
+  "trackDonation": {
+    "pageTitle": "Track Your Donation",
+    "title": "Track Your Donation Progress",
+    "description": "Enter your email and any donation ID to view all your donations.",
+    "form": {
+      "email": "Email Address",
+      "emailPlaceholder": "Enter your email",
+      "donationId": "Donation ID",
+      "donationIdPlaceholder": "e.g., 1-A1B2C3",
+      "submit": "Search Donations",
+      "searching": "Searching..."
+    },
+    "results": {
+      "title": "Your Donations ({count})",
+      "donationId": "Donation ID",
+      "amount": "Amount",
+      "date": "Date",
+      "project": "Project",
+      "status": "Status"
+    },
+    "status": {
+      "paid": "Paid",
+      "confirmed": "Confirmed",
+      "delivering": "Delivering",
+      "completed": "Completed",
+      "refunding": "Refunding",
+      "refunded": "Refunded"
+    },
+    "actions": {
+      "viewResult": "View Result",
+      "requestRefund": "Request Refund"
+    },
+    "refundDialog": {
+      "title": "Request Refund",
+      "description": "Are you sure you want to request a refund for this donation? Our team will review your request and process it within 3-5 business days.",
+      "confirm": "Confirm Refund",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "donationNotFound": "Donation ID not found. Please check and try again.",
+      "emailMismatch": "The email does not match this donation ID.",
+      "validationError": "Please check your input.",
+      "serverError": "Server error. Please try again later.",
+      "unauthorized": "You are not authorized to request a refund for this donation.",
+      "cannotRefundCompleted": "Cannot refund completed donations. Please contact support for assistance.",
+      "alreadyRefunding": "This donation is already being refunded or has been refunded."
+    }
+  },
+  "donationStatusFlow": {
+    "title": "Donation Process",
+    "trackButton": "Track Your Donation",
+    "stages": {
+      "paid": {
+        "title": "Payment Successful",
+        "description": "Your payment has been processed successfully. You will receive a confirmation email with your unique donation ID.",
+        "timeframe": "Immediate"
+      },
+      "confirmed": {
+        "title": "Order Confirmed",
+        "description": "Our team has manually verified your donation and confirmed the order details.",
+        "timeframe": "Within 1 business day"
+      },
+      "delivering": {
+        "title": "In Progress",
+        "description": "Your donation is being executed. We're actively working on delivering the support to those in need.",
+        "timeframe": "In progress"
+      },
+      "completed": {
+        "title": "Completed",
+        "description": "Your donation has been successfully delivered! You will receive an email with photos/videos showing the impact of your contribution.",
+        "timeframe": "Within 7 business days"
+      },
+      "refunding": {
+        "title": "Refund Request Received",
+        "description": "Refunds can be requested at any time before donation completion.",
+        "timeframe": "Any stage before completion"
+      },
+      "refunded": {
+        "title": "Refunded",
+        "description": "Your refund has been completed. The funds have been returned to your original payment method.",
+        "timeframe": "Within 7 business days"
+      }
+    }
+  },
+  "projectDonationList": {
+    "title": "Recent Donations",
+    "noDonations": "No donations for this project yet. Be the first to donate!",
+    "columns": {
+      "email": "Donor Email",
+      "donationId": "Donation ID",
+      "amount": "Amount",
+      "time": "Date",
+      "status": "Status",
+      "action": "Action"
+    },
+    "status": {
+      "paid": "Paid",
+      "confirmed": "Confirmed",
+      "delivering": "Delivering",
+      "completed": "Completed",
+      "refunding": "Refunding",
+      "refunded": "Refunded"
+    },
+    "actions": {
+      "viewResult": "View Result"
+    },
+    "totalDonations": "Total: {count} donations"
+  },
+  "donationResult": {
+    "title": "Donation Result",
+    "donationId": "Donation ID",
+    "loading": "Loading result...",
+    "download": "Download Image",
+    "imageAlt": "Result image for donation {donationId}",
+    "contactSupport": "If you believe this is an error, please contact our support team.",
+    "errors": {
+      "invalidDonationId": "Invalid donation ID.",
+      "donationNotFound": "Donation not found.",
+      "notCompleted": "This donation has not been completed yet. Results will be available once the donation is marked as completed.",
+      "noImage": "No result image found for this donation.",
+      "storageFailed": "Failed to access storage. Please try again later.",
+      "urlFailed": "Failed to generate image URL.",
+      "loadFailed": "Failed to load the result image.",
+      "serverError": "Server error. Please try again later."
+    }
+  },
+  "footer": {
+    "followUs": "Follow Us",
+    "contactUs": "Contact Us",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "copyrightLine1": "© {year} WAY TO FUTURE UA.",
+    "copyrightLine2": "All rights reserved.",
+    "policies": "Policies",
+    "privacyPolicy": "Privacy Policy",
+    "publicAgreement": "Public Agreement"
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "description": "How we collect, use, and protect your personal information",
+    "effectiveDate": "Effective Date",
+    "intro": "Charitable foundation \"Way to future UA\" (hereinafter referred to as \"we\" or \"the Foundation\") respects your privacy and is committed to protecting the personal data you provide. This privacy policy explains what information we collect, how we use it, and how we store it.",
+    "section1": {
+      "title": "1. What Information do we collect?",
+      "intro": "We may collect and process the following personal data:",
+      "item1": "When you fill out a feedback form, we may collect your first name, last name, and contact information (phone number, email).",
+      "item2": "When you make a voluntary donation or charitable contribution, we may collect payment information.",
+      "item3": "Data automatically collected when you visit our website (IP address, cookies, browsing behavior)."
+    },
+    "section2": {
+      "title": "2. How dow we use your information?",
+      "intro": "The information collected is used for the following purposes:",
+      "item1": "To provide you with information about our services and activities;",
+      "item2": "To process your inquiries and feedback;",
+      "item3": "To manage donations and financial support to the Foundation;",
+      "item4": "To improve website functionality and personalize the user experience."
+    },
+    "section3": {
+      "title": "3. Sharing of personal data",
+      "content": "We will not transfer, sell, or disclose your personal data to third parties without your consent, unless otherwise required by Ukrainian law."
+    },
+    "section4": {
+      "title": "4. Data security",
+      "content": "We take all necessary technical and organizational measures to prevent unauthorized access, loss, or alteration of your personal data."
+    },
+    "section5": {
+      "title": "5. Your rights",
+      "intro": "You have the right to:",
+      "item1": "Request access to the data we hold about you;",
+      "item2": "Request correction or deletion of your personal data;",
+      "item3": "Withdraw your consent to data processing."
+    },
+    "section6": {
+      "title": "6. Cookies policy",
+      "content": "Our website uses cookies to collect statistical information and optimize the user experience. You can manage your cookie settings in your browser."
+    },
+    "section7": {
+      "title": "7. Changes to the privacy policy",
+      "content": "We reserve the right to update this privacy policy, and all changes will be published on this page."
+    },
+    "section8": {
+      "title": "8. Contact information",
+      "intro": "If you have any questions about this privacy policy, please contact us:",
+      "email": "Email",
+      "address": "Address",
+      "phone": "Phone"
+    }
+  },
+  "publicAgreement": {
+    "title": "Public Agreement",
+    "description": "Terms and conditions for charitable donations",
+    "mainTitle": "PUBLIC AGREEMENT (OFFER) REGARDING CHARITABLE DONATIONS",
+    "intro": "This agreement is an official public offer applicable to individuals visiting https://alexzaiwukelan.org.ua/ who wish to make charitable donations. The offer is presented by the charitable organization \"Way to future UA,\" signed by head Mykyta Zhalnin.",
+    "section1": {
+      "title": "1. DEFINITIONS",
+      "publicOffer": {
+        "term": "Public Offer",
+        "definition": "official proposal from the Foundation published on the Website requesting unlimited individuals to make charitable donations."
+      },
+      "acceptance": {
+        "term": "Acceptance",
+        "definition": "occurs when a Donor makes payment via Website tools or transfers funds to the Foundation's account; acceptance happens upon receipt of funds."
+      },
+      "donation": {
+        "term": "Charitable Donation",
+        "definition": "voluntary, gratuitous transfer of funds/property by Donor to Foundation supporting its objectives under Ukraine's Law \"On Charitable Activities and Charitable Organizations.\""
+      },
+      "seller": {
+        "term": "Seller",
+        "definition": "Charitable foundation \"Way to future UA\" (registration code 44947699), located at: Ukraine, 52005, Dnipropetrovsk region, Dnipro city, Slobozhanske village, St. Heroes of Ukraine, 27c."
+      }
+    },
+    "section2": {
+      "title": "2. SUBJECT OF THE AGREEMENT",
+      "content": "The agreement stipulates voluntary, gratuitous monetary donations supporting the Foundation's legitimate goals and charitable aid programs per Ukrainian law and the Foundation's statute. Donors independently determine donation amounts with no expectation of economic benefit or commercial transactions."
+    },
+    "section3": {
+      "title": "3. ACCEPTANCE OF THE OFFER",
+      "content": "Donors accepting confirm familiarity with the Foundation's statute (available on Website) and agree the Foundation may use donated funds portions for administrative expenses within legally established limits. Per Civil Code Articles 207, 639(2), 641, and 642, charitable donations are concluded upon offer acceptance. Written agreements aren't mandatory for validity."
+    },
+    "section4": {
+      "title": "4. FOUNDATION RIGHTS AND OBLIGATIONS",
+      "rightsTitle": "Rights:",
+      "right1": "Accept and use charitable donations per offer and agreement",
+      "right2": "Change donation direction within legal activities",
+      "right3": "Use donation portions for administrative expenses without additional consent, respecting legal limits",
+      "obligationsTitle": "Obligations:",
+      "obligation1": "Provide conditions enabling charitable donations",
+      "obligation2": "Use donations per statute requirements",
+      "obligation3": "Protect Donor personal information; non-disclosure to third parties without consent except legally required"
+    },
+    "section5": {
+      "title": "5. DONOR RIGHTS AND OBLIGATIONS",
+      "rightsTitle": "Rights:",
+      "right1": "Make charitable donations to Foundation account per agreement",
+      "right2": "Request Foundation reports regarding donation use",
+      "obligationsTitle": "Obligations:",
+      "obligation1": "Carefully read offer terms and applicable rules before donating"
+    },
+    "section6": {
+      "title": "6. PLACE AND TERMS OF COLLECTING CHARITABLE DONATIONS",
+      "content": "Per Ukraine's Law \"On Charitable Activities and Charitable Organizations\" (Article 7), donations can be collected worldwide. Collection occurs on Foundation territory, continuing until Foundation liquidation or new terms establishment."
+    },
+    "section7": {
+      "title": "7. METHODS OF MAKING CHARITABLE DONATIONS",
+      "content": "Foundation provides electronic payment options on Website or bank transfer (IBAN UA103052990000026009050580853). Donors choose one-time or regular donations (cancelable anytime). Payments complete upon bank/payment system confirmation. Donors bear related expenses."
+    },
+    "section8": {
+      "title": "8. USE OF CHARITABLE DONATIONS",
+      "content": "Foundation uses funds per statutory objectives with independent distribution rights. Donors/representatives may monitor donation use. Donated funds are non-refundable."
+    },
+    "section9": {
+      "title": "9. CONTACT DETAILS OF THE FOUNDATION",
+      "name": "Name",
+      "address": "Address",
+      "website": "Website",
+      "email": "Email",
+      "phone": "Phone"
+    }
+  }
+}

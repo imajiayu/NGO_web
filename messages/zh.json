@@ -1,0 +1,517 @@
+{
+  "common": {
+    "appName": "乌克兰未来之路",
+    "loading": "加载中...",
+    "error": "发生错误",
+    "submit": "提交",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "close": "关闭",
+    "confirm": "确认",
+    "back": "返回"
+  },
+  "navigation": {
+    "home": "首页",
+    "projects": "项目",
+    "donate": "捐赠",
+    "trackDonation": "查询捐赠",
+    "about": "关于",
+    "contact": "联系",
+    "language": {
+      "label": "语言",
+      "en": "English",
+      "zh": "中文",
+      "ua": "Українська"
+    }
+  },
+  "home": {
+    "title": "支持我们的项目",
+    "subtitle": "通过有意义的项目赋能社区",
+    "noProjects": "当前暂无活跃项目，请稍后再来查看。",
+    "trackDonation": {
+      "button": "查询捐赠"
+    },
+    "hero": {
+      "mission": {
+        "label": "我们的使命",
+        "title": "抚平战争的创伤",
+        "subtitle": "我们是乌克兰第聂伯罗当地的慈善基金会，拥有一家中等规模康复中心，致力于帮助战争受害者重建生活。",
+        "who": "我们帮助的人群",
+        "displaced": "庇护所流离失所者",
+        "women": "寡妇与孤儿",
+        "civilians": "受到袭击的平民"
+      },
+      "approach": {
+        "label": "我们的方式",
+        "title": "建立在信任与透明之上",
+        "subtitle": "每一笔捐赠都创造真实、可追溯的影响",
+        "transparent": {
+          "title": "透明",
+          "items": [
+            "提供每笔支出收据",
+            "独一无二的追踪ID"
+          ]
+        },
+        "efficient": {
+          "title": "高效",
+          "items": [
+            "付款后1个工作日内确认",
+            "7个工作日内执行完毕",
+            "提供图片/视频回执"
+          ]
+        },
+        "direct": {
+          "title": "直接",
+          "items": [
+            "实时追踪捐赠进度",
+            "查看所有捐赠和结果",
+            "包含受益者联系方式"
+          ]
+        }
+      },
+      "impact": {
+        "label": "我们的影响",
+        "title": "三年的改变",
+        "subtitle": "感谢每一位捐赠者的支持",
+        "donations": {
+          "value": "$100,000+",
+          "label": "捐赠总额"
+        },
+        "people": {
+          "value": "1,600+",
+          "label": "康复人数"
+        },
+        "shelters": {
+          "value": "50+",
+          "label": "帮助的庇护所与家庭"
+        }
+      },
+      "projects": {
+        "label": "当前项目",
+        "title": "今天就做出改变",
+        "scrollHint": "滚动查看所有项目"
+      },
+      "donationJourney": {
+        "label": "工作流程",
+        "title": "您的捐赠之旅",
+        "subtitle": "从支付到影响 - 全程透明追踪您的每一步贡献",
+        "showDetails": "显示详情",
+        "hideDetails": "隐藏详情"
+      },
+      "compliance": {
+        "button": "查看法律文件",
+        "title": "法律合规文件",
+        "subtitle": "我们的所有注册和政策文件均公开透明",
+        "scrollHint": "滚动查看所有文件",
+        "documents": {
+          "registration": "非营利组织登记册摘录",
+          "charter": "章程",
+          "edrpou": "ЄДРПОУ 登记信息证明（带公章）",
+          "application": "申请获取〈非营利组织登记册摘录〉的申请文件",
+          "procurement": "采购管理政策",
+          "conflict": "利益冲突政策",
+          "accounting": "会计政策",
+          "info": "登记信息摘录"
+        }
+      }
+    }
+  },
+  "projects": {
+    "donateNow": "查看详情",
+    "progress": "资金进度",
+    "details": "项目详情",
+    "unitPrice": "单价",
+    "projectType": "项目类型",
+    "longTerm": "长期项目",
+    "fixedTerm": "固定期限项目",
+    "startDate": "开始",
+    "endDate": "结束",
+    "about": "关于本项目",
+    "defaultDescription": "本项目旨在为社区带来积极影响。您的捐赠将直接支持项目目标，帮助有需要的人。",
+    "fundingProgress": "资金进度",
+    "target": "目标",
+    "donations": "次捐赠",
+    "perUnit": "每{unitName}",
+    "status": {
+      "active": "进行中",
+      "completed": "已完成",
+      "planned": "计划中",
+      "paused": "已暂停"
+    }
+  },
+  "donate": {
+    "title": "进行捐赠",
+    "subtitle": "支持项目，创造改变",
+    "selectProject": "选择项目",
+    "selectProjectDescription": "选择您想要支持的项目",
+    "noProjectSelected": "请在上方选择一个项目以继续",
+    "scrollToViewAll": "滚动查看所有项目",
+    "project": {
+      "label": "选择项目",
+      "placeholder": "选择要支持的项目",
+      "notFound": "暂无活跃项目",
+      "switchLabel": "切换到其他项目"
+    },
+    "quantity": {
+      "label": "数量",
+      "custom": "自定义数量",
+      "perUnit": "每{unitName}",
+      "total": "总计"
+    },
+    "donor": {
+      "title": "您的信息",
+      "name": "您的姓名",
+      "namePlaceholder": "输入真实姓名或化名",
+      "nameHint": "可以使用真实姓名或化名",
+      "email": "电子邮箱",
+      "emailPlaceholder": "your@email.com",
+      "emailHint": "用于确认和收据"
+    },
+    "contact": {
+      "title": "联系方式（可选）",
+      "description": "项目团队如何联系您？",
+      "telegram": "Telegram",
+      "telegramPlaceholder": "@用户名或个人主页链接",
+      "whatsapp": "WhatsApp",
+      "whatsappPlaceholder": "+86 1234567890"
+    },
+    "message": {
+      "label": "给受助者的留言（可选）",
+      "placeholder": "给将收到您捐赠的乌克兰人留下鼓励的话,或给团队的特别备注...",
+      "hint": "还可输入 {remaining} 个字符"
+    },
+    "operationalSupport": {
+      "title": "支持团队运营（可选）",
+      "description": "帮助我们支付运营成本",
+      "items": [
+        "网站与服务器运营",
+        "采购与运输成本",
+        "运营管理费用"
+      ],
+      "label": "额外支持金额",
+      "placeholder": "输入自定义金额",
+      "presets": {
+        "low": "$5",
+        "medium": "$10",
+        "high": "$20"
+      }
+    },
+    "payment": {
+      "title": "支付信息",
+      "total": "总金额",
+      "currency": "美元",
+      "processing": "正在处理支付...",
+      "back": "返回编辑",
+      "confirm": "确认支付",
+      "backToEdit": "返回编辑捐赠信息"
+    },
+    "submit": "提交捐赠",
+    "submitting": "处理中...",
+    "validation": {
+      "projectRequired": "请选择项目",
+      "quantityRequired": "请输入数量",
+      "quantityMin": "数量至少为 1",
+      "quantityMax": "数量不能超过 {max}",
+      "nameRequired": "请输入姓名",
+      "nameMin": "姓名至少 2 个字符",
+      "emailRequired": "请输入邮箱",
+      "emailInvalid": "请输入有效的邮箱地址",
+      "messageMax": "留言不能超过 {max} 个字符"
+    },
+    "errors": {
+      "paymentFailed": "支付失败，请重试。",
+      "serverError": "服务器错误，请联系客服。",
+      "networkError": "网络错误，请检查网络连接。",
+      "invalidEmail": "请输入有效的邮箱地址。",
+      "validationError": "请检查您的输入后重试。"
+    }
+  },
+  "donateSuccess": {
+    "title": "支付成功！",
+    "thankYou": "感谢您的捐赠！",
+    "saveIdsTitle": "重要：请保存您的捐赠编号",
+    "saveIdsDescription": "请妥善保存这些编号以追踪您的捐赠。您需要使用这些编号来查询状态和查看结果。",
+    "emailReminderTitle": "查收您的邮箱",
+    "emailReminderDescription": "我们已向 {email} 发送确认邮件，请查收您的邮箱。",
+    "details": {
+      "title": "捐赠详情",
+      "project": "项目",
+      "quantity": "数量",
+      "units": "{count} 个单位",
+      "total": "总金额",
+      "donationIds": "您的捐赠编号"
+    },
+    "copy": {
+      "copyId": "复制",
+      "copyAll": "复制所有编号",
+      "copied": "已复制！"
+    },
+    "actions": {
+      "trackDonation": "查询我的捐赠",
+      "backHome": "返回首页"
+    }
+  },
+  "trackDonation": {
+    "pageTitle": "查询捐赠",
+    "title": "查询您的捐赠进度",
+    "description": "输入您的邮箱和任意一个捐赠ID，即可查看您的所有捐赠记录。",
+    "form": {
+      "email": "邮箱地址",
+      "emailPlaceholder": "请输入邮箱",
+      "donationId": "捐赠ID",
+      "donationIdPlaceholder": "例如：1-A1B2C3",
+      "submit": "查询捐赠",
+      "searching": "查询中..."
+    },
+    "results": {
+      "title": "您的捐赠记录（{count}条）",
+      "donationId": "捐赠ID",
+      "amount": "金额",
+      "date": "日期",
+      "project": "项目",
+      "status": "状态"
+    },
+    "status": {
+      "paid": "支付成功",
+      "confirmed": "已确认",
+      "delivering": "配送中",
+      "completed": "已完成",
+      "refunding": "退款中",
+      "refunded": "已退款"
+    },
+    "actions": {
+      "viewResult": "查看结果",
+      "requestRefund": "申请退款"
+    },
+    "refundDialog": {
+      "title": "申请退款",
+      "description": "您确定要对此笔捐赠申请退款吗？我们的团队将审核您的请求，并在3-5个工作日内处理。",
+      "confirm": "确认退款",
+      "cancel": "取消"
+    },
+    "errors": {
+      "donationNotFound": "未找到该捐赠ID，请检查后重试。",
+      "emailMismatch": "邮箱与该捐赠ID不匹配。",
+      "validationError": "请检查您的输入。",
+      "serverError": "服务器错误，请稍后重试。",
+      "unauthorized": "您无权对此笔捐赠申请退款。",
+      "cannotRefundCompleted": "已完成的捐赠无法退款。如需帮助请联系客服。",
+      "alreadyRefunding": "此笔捐赠已在退款处理中或已退款。"
+    }
+  },
+  "donationStatusFlow": {
+    "title": "捐赠流程",
+    "trackButton": "查询捐赠",
+    "stages": {
+      "paid": {
+        "title": "支付成功",
+        "description": "您的支付已成功处理。您将收到一封包含唯一捐赠编号的确认邮件。",
+        "timeframe": "立即"
+      },
+      "confirmed": {
+        "title": "订单已确认",
+        "description": "我们的团队已人工核实您的捐赠并确认订单详情。",
+        "timeframe": "1个工作日内"
+      },
+      "delivering": {
+        "title": "执行中",
+        "description": "您的捐赠正在执行中。我们正在积极地将支持送达有需要的人。",
+        "timeframe": "进行中"
+      },
+      "completed": {
+        "title": "已完成",
+        "description": "您的捐赠已成功送达！您将收到一封包含照片/视频的邮件，展示您的贡献所产生的影响。",
+        "timeframe": "7个工作日内"
+      },
+      "refunding": {
+        "title": "收到退款申请",
+        "description": "捐赠完成前的任意时刻均可申请退款。",
+        "timeframe": "完成前的任意阶段"
+      },
+      "refunded": {
+        "title": "已退款",
+        "description": "您的退款已完成。款项已退回您的原支付方式。",
+        "timeframe": "7个工作日内"
+      }
+    }
+  },
+  "projectDonationList": {
+    "title": "近期捐赠记录",
+    "noDonations": "该项目暂无捐赠记录。成为第一个捐赠者吧！",
+    "columns": {
+      "email": "捐赠者邮箱",
+      "donationId": "捐赠ID",
+      "amount": "金额",
+      "time": "日期",
+      "status": "状态",
+      "action": "操作"
+    },
+    "status": {
+      "paid": "支付成功",
+      "confirmed": "已确认",
+      "delivering": "配送中",
+      "completed": "已完成",
+      "refunding": "退款中",
+      "refunded": "已退款"
+    },
+    "actions": {
+      "viewResult": "查看结果"
+    },
+    "totalDonations": "共 {count} 条捐赠记录"
+  },
+  "donationResult": {
+    "title": "捐赠结果",
+    "donationId": "捐赠ID",
+    "loading": "加载结果中...",
+    "download": "下载图片",
+    "imageAlt": "捐赠 {donationId} 的结果图片",
+    "contactSupport": "如果您认为这是错误，请联系我们的支持团队。",
+    "errors": {
+      "invalidDonationId": "无效的捐赠ID。",
+      "donationNotFound": "未找到该捐赠记录。",
+      "notCompleted": "此捐赠尚未完成。结果将在捐赠标记为已完成后提供。",
+      "noImage": "未找到该捐赠的结果图片。",
+      "storageFailed": "无法访问存储。请稍后重试。",
+      "urlFailed": "无法生成图片URL。",
+      "loadFailed": "加载结果图片失败。",
+      "serverError": "服务器错误。请稍后重试。"
+    }
+  },
+  "footer": {
+    "followUs": "关注我们",
+    "contactUs": "联系我们",
+    "email": "邮箱",
+    "phone": "电话",
+    "address": "地址",
+    "copyrightLine1": "© {year} WAY TO FUTURE UA.",
+    "copyrightLine2": "保留所有权利。",
+    "policies": "政策条款",
+    "privacyPolicy": "隐私政策",
+    "publicAgreement": "用户协议"
+  },
+  "privacyPolicy": {
+    "title": "隐私政策",
+    "description": "我们如何收集、使用和保护您的个人信息",
+    "effectiveDate": "生效日期",
+    "intro": "慈善基金会'通往未来乌克兰'（以下简称'我们'或'基金会'）尊重您的隐私，并致力于保护您提供的个人数据。本隐私政策说明我们收集哪些信息、如何使用以及如何存储这些信息。",
+    "section1": {
+      "title": "1. 我们收集哪些信息？",
+      "intro": "我们可能会收集和处理以下个人数据：",
+      "item1": "当您填写反馈表单时，我们可能会收集您的名字、姓氏和联系信息（电话号码、电子邮件）。",
+      "item2": "当您进行自愿捐赠或慈善捐助时，我们可能会收集支付信息。",
+      "item3": "当您访问我们的网站时自动收集的数据（IP地址、cookies、浏览行为）。"
+    },
+    "section2": {
+      "title": "2. 我们如何使用您的信息？",
+      "intro": "收集的信息用于以下目的：",
+      "item1": "向您提供有关我们服务和活动的信息；",
+      "item2": "处理您的咨询和反馈；",
+      "item3": "管理对基金会的捐赠和财务支持；",
+      "item4": "改进网站功能并个性化用户体验。"
+    },
+    "section3": {
+      "title": "3. 个人数据共享",
+      "content": "未经您的同意，我们不会向第三方转让、出售或披露您的个人数据，除非乌克兰法律另有要求。"
+    },
+    "section4": {
+      "title": "4. 数据安全",
+      "content": "我们采取所有必要的技术和组织措施，以防止未经授权的访问、丢失或更改您的个人数据。"
+    },
+    "section5": {
+      "title": "5. 您的权利",
+      "intro": "您有权：",
+      "item1": "请求访问我们持有的关于您的数据；",
+      "item2": "请求更正或删除您的个人数据；",
+      "item3": "撤回您对数据处理的同意。"
+    },
+    "section6": {
+      "title": "6. Cookies政策",
+      "content": "我们的网站使用cookies来收集统计信息并优化用户体验。您可以在浏览器中管理您的cookie设置。"
+    },
+    "section7": {
+      "title": "7. 隐私政策的变更",
+      "content": "我们保留更新本隐私政策的权利，所有更改将在本页面上发布。"
+    },
+    "section8": {
+      "title": "8. 联系信息",
+      "intro": "如果您对本隐私政策有任何疑问，请联系我们：",
+      "email": "邮箱",
+      "address": "地址",
+      "phone": "电话"
+    }
+  },
+  "publicAgreement": {
+    "title": "公开协议",
+    "description": "慈善捐赠条款和条件",
+    "mainTitle": "关于慈善捐赠的公开协议（要约）",
+    "intro": "本协议是适用于访问 https://alexzaiwukelan.org.ua/ 并希望进行慈善捐赠的个人的正式公开要约。该要约由慈善组织'通往未来乌克兰'提出，由负责人Mykyta Zhalnin签署。",
+    "section1": {
+      "title": "1. 定义",
+      "publicOffer": {
+        "term": "公开要约",
+        "definition": "基金会在网站上发布的正式提议，要求不限数量的个人进行慈善捐赠。"
+      },
+      "acceptance": {
+        "term": "接受",
+        "definition": "当捐赠者通过网站工具付款或将资金转入基金会账户时发生；接受在收到资金时发生。"
+      },
+      "donation": {
+        "term": "慈善捐赠",
+        "definition": "捐赠者向基金会自愿、无偿转移资金/财产，以支持其根据乌克兰《慈善活动和慈善组织法》规定的目标。"
+      },
+      "seller": {
+        "term": "卖方",
+        "definition": "慈善基金会'通往未来乌克兰'（注册代码44947699），位于：乌克兰，52005，第聂伯罗彼得罗夫斯克地区，第聂伯罗市，斯洛博赞斯克村，乌克兰英雄街27c。"
+      }
+    },
+    "section2": {
+      "title": "2. 协议主题",
+      "content": "协议规定自愿、无偿的货币捐赠，以支持基金会根据乌克兰法律和基金会章程的合法目标和慈善援助计划。捐赠者独立决定捐赠金额，无经济利益或商业交易的期望。"
+    },
+    "section3": {
+      "title": "3. 要约的接受",
+      "content": "接受的捐赠者确认熟悉基金会章程（可在网站上查看），并同意基金会可在法律规定的限制内将捐赠资金的一部分用于行政费用。根据民法典第207、639(2)、641和642条，慈善捐赠在接受要约时订立。书面协议不是有效性的必要条件。"
+    },
+    "section4": {
+      "title": "4. 基金会的权利和义务",
+      "rightsTitle": "权利：",
+      "right1": "根据要约和协议接受和使用慈善捐赠",
+      "right2": "在合法活动范围内改变捐赠方向",
+      "right3": "在遵守法律限制的情况下，无需额外同意即可将捐赠部分用于行政费用",
+      "obligationsTitle": "义务：",
+      "obligation1": "提供促进慈善捐赠的条件",
+      "obligation2": "根据章程要求使用捐赠",
+      "obligation3": "保护捐赠者个人信息；除法律要求外，未经同意不向第三方披露"
+    },
+    "section5": {
+      "title": "5. 捐赠者的权利和义务",
+      "rightsTitle": "权利：",
+      "right1": "根据协议向基金会账户进行慈善捐赠",
+      "right2": "要求基金会提供关于捐赠使用的报告",
+      "obligationsTitle": "义务：",
+      "obligation1": "在捐赠前仔细阅读要约条款和适用规则"
+    },
+    "section6": {
+      "title": "6. 收集慈善捐赠的地点和期限",
+      "content": "根据乌克兰《慈善活动和慈善组织法》（第7条），可以在全球范围内收集捐赠。收集在基金会领土上进行，持续到基金会清算或建立新条款。"
+    },
+    "section7": {
+      "title": "7. 进行慈善捐赠的方法",
+      "content": "基金会在网站上提供电子支付选项或银行转账（IBAN UA103052990000026009050580853）。捐赠者可选择一次性或定期捐赠（可随时取消）。付款在银行/支付系统确认后完成。捐赠者承担相关费用。"
+    },
+    "section8": {
+      "title": "8. 慈善捐赠的使用",
+      "content": "基金会根据章程目标使用资金，拥有独立分配权。捐赠者/代表可以监督捐赠使用。捐赠的资金不可退还。"
+    },
+    "section9": {
+      "title": "9. 基金会联系方式",
+      "name": "名称",
+      "address": "地址",
+      "website": "网站",
+      "email": "邮箱",
+      "phone": "电话"
+    }
+  }
+}

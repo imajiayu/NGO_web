@@ -1,0 +1,86 @@
+/**
+ * i18n Utilities for Project Data
+ *
+ * Helper functions to extract translated text from i18n JSON fields
+ */
+
+import type { I18nText } from '@/types/database'
+
+export type SupportedLocale = 'en' | 'zh' | 'ua'
+
+/**
+ * Get translated text from i18n object
+ * Falls back to English, then to fallback text
+ *
+ * @param i18nText - The i18n object with translations
+ * @param fallbackText - Fallback text if no translation found
+ * @param locale - Requested locale (en, zh, ua)
+ * @returns Translated text
+ */
+export function getTranslatedText(
+  i18nText: I18nText | undefined | null,
+  fallbackText: string | null,
+  locale: SupportedLocale = 'en'
+): string {
+  // If no i18n object, return fallback
+  if (!i18nText || typeof i18nText !== 'object') {
+    return fallbackText || ''
+  }
+
+  // Try requested locale
+  if (i18nText[locale]) {
+    return i18nText[locale]!
+  }
+
+  // Fallback to English
+  if (i18nText.en) {
+    return i18nText.en
+  }
+
+  // Final fallback
+  return fallbackText || ''
+}
+
+/**
+ * Helper to get project name in current locale
+ */
+export function getProjectName(
+  projectNameI18n: I18nText | undefined | null,
+  fallbackName: string | null,
+  locale: SupportedLocale = 'en'
+): string {
+  return getTranslatedText(projectNameI18n, fallbackName, locale)
+}
+
+/**
+ * Helper to get location in current locale
+ */
+export function getLocation(
+  locationI18n: I18nText | undefined | null,
+  fallbackLocation: string | null,
+  locale: SupportedLocale = 'en'
+): string {
+  return getTranslatedText(locationI18n, fallbackLocation, locale)
+}
+
+/**
+ * Helper to get unit name in current locale
+ */
+export function getUnitName(
+  unitNameI18n: I18nText | undefined | null,
+  fallbackUnitName: string | null,
+  locale: SupportedLocale = 'en'
+): string {
+  return getTranslatedText(unitNameI18n, fallbackUnitName, locale)
+}
+
+/**
+ * Helper to get description in current locale
+ */
+export function getDescription(
+  descriptionI18n: I18nText | undefined | null,
+  fallbackDescription: string | null = '',
+  locale: SupportedLocale = 'en'
+): string {
+  return getTranslatedText(descriptionI18n, fallbackDescription, locale)
+}
