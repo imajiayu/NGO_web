@@ -164,6 +164,8 @@ export async function POST(req: Request) {
         })
 
         // Update all pending donations to 'paid' status
+        console.log(`[WEBHOOK] Updating ${pendingDonations.length} donations to 'paid' status`)
+
         const { data: updatedDonations, error: updateError } = await supabase
           .from('donations')
           .update({
@@ -174,11 +176,11 @@ export async function POST(req: Request) {
           .select()
 
         if (updateError) {
-          console.error(`Error updating donations to paid:`, updateError)
+          console.error(`[WEBHOOK ERROR] Failed to update donations:`, updateError)
           throw updateError
         }
 
-        console.log(`Successfully updated ${updatedDonations?.length} donations to 'paid':`, updatedDonations?.map(d => d.donation_public_id).join(', '))
+        console.log(`[WEBHOOK SUCCESS] Updated ${updatedDonations?.length} donations to 'paid':`, updatedDonations?.map(d => d.donation_public_id).join(', '))
 
         // Send confirmation email to donor
         try {

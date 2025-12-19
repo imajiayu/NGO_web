@@ -16,7 +16,10 @@ export async function GET(
 
   try {
     // Use Service Client to bypass RLS and avoid auth.users permission errors
+    // Create a fresh client for each request to avoid caching issues
     const supabase = createServiceClient()
+
+    console.log(`[API] Fetching donations for order: ${orderReference}`)
 
     // Fetch donations by order_reference with project details
     const { data: donations, error } = await supabase
@@ -39,6 +42,8 @@ export async function GET(
       `)
       .eq('order_reference', orderReference)
       .order('created_at', { ascending: true })
+
+    console.log(`[API] Found ${donations?.length || 0} donations, statuses:`, donations?.map(d => d.donation_status).join(', '))
 
     if (error) {
       console.error('Error fetching donations:', error)

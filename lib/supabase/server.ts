@@ -49,6 +49,14 @@ export const createServiceClient = () => {
       db: {
         schema: 'public',
       },
+      global: {
+        headers: {
+          // Disable caching by adding cache-control header
+          'cache-control': 'no-cache, no-store, must-revalidate',
+          'pragma': 'no-cache',
+          'expires': '0',
+        },
+      },
     }
   )
 }
