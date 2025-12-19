@@ -221,6 +221,7 @@
       "messageMax": "Message must be less than {max} characters"
     },
     "errors": {
+      "paymentLoadFailed": "Failed to load payment window. Please check your connection and try again.",
       "paymentFailed": "Payment failed. Please try again.",
       "serverError": "Server error. Please contact support.",
       "networkError": "Network error. Please check your connection.",

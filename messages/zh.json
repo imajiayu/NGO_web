@@ -221,6 +221,7 @@
       "messageMax": "留言不能超过 {max} 个字符"
     },
     "errors": {
+      "paymentLoadFailed": "支付窗口加载失败，请检查网络连接后重试。",
       "paymentFailed": "支付失败，请重试。",
       "serverError": "服务器错误，请联系客服。",
       "networkError": "网络错误，请检查网络连接。",
