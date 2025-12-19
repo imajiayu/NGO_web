@@ -120,12 +120,31 @@ export async function POST(req: Request) {
             .eq('order_reference', orderReference)
 
           if (anyDonations && anyDonations.length > 0) {
-            console.error('[WEBHOOK ERROR] Found donations but with different status:', anyDonations)
+            console.warn('[WEBHOOK] Found donations but already processed with status:', anyDonations)
+            console.log('[WEBHOOK] Returning success to prevent retry (idempotent)')
+
+            // Return success to prevent WayForPay from retrying
+            // This is idempotent behavior - payment already processed
+            return NextResponse.json({
+              orderReference,
+              status: 'accept',
+              time: Math.floor(Date.now() / 1000),
+              message: 'Order already processed'
+            })
           } else {
             console.error('[WEBHOOK ERROR] No donations found at all with this order_reference')
-          }
+            console.warn('[WEBHOOK] This might be a deleted order or webhook sent before donation creation')
+            console.log('[WEBHOOK] Returning success to prevent infinite retries')
 
-          throw new Error(`Pending donations not found: ${orderReference}`)
+            // Return success even if not found to prevent infinite retries
+            // This prevents WayForPay from retrying deleted/missing orders forever
+            return NextResponse.json({
+              orderReference,
+              status: 'accept',
+              time: Math.floor(Date.now() / 1000),
+              message: 'Order not found - might be deleted or not yet created'
+            })
+          }
         }
 
         console.log('Payment approved:', {
