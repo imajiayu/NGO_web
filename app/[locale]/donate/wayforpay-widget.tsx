@@ -24,42 +24,20 @@ const isIOS = () => {
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
 }
 
-// Helper function to get device info
-const getDeviceInfo = () => {
-  if (typeof navigator === 'undefined') return 'Unknown'
-  return {
-    userAgent: navigator.userAgent,
-    platform: navigator.platform,
-    isIOS: isIOS(),
-    online: navigator.onLine,
-  }
-}
-
 export default function WayForPayWidget({ paymentParams, amount, locale, onBack }: Props) {
   const t = useTranslations('donate')
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isRedirecting, setIsRedirecting] = useState(false)
-  const [debugInfo, setDebugInfo] = useState<string[]>([])
   const scriptLoadedRef = useRef(false)
   const scriptLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const hasRedirectedRef = useRef(false)
 
   useEffect(() => {
-    // Log device info on mount
-    const deviceInfo = getDeviceInfo()
-    const debugLog = (message: string) => {
-      console.log(`[WayForPay Debug] ${message}`)
-      setDebugInfo(prev => [...prev, `${new Date().toISOString()}: ${message}`])
-    }
-
-    debugLog(`Device: ${JSON.stringify(deviceInfo)}`)
-    debugLog('Starting payment widget initialization')
 
     // Load WayForPay widget script
     const loadWayForPayScript = () => {
       if (scriptLoadedRef.current) {
-        debugLog('Script already loaded, initializing widget')
         initializeWidget()
         return
       }
@@ -71,13 +49,11 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
           : locale === 'zh'
           ? '无网络连接。请检查网络后重试。'
           : 'Немає підключення до Інтернету. Будь ласка, перевірте ваше з\'єднання і спробуйте ще раз.'
-        debugLog('Device is offline')
         setError(offlineError)
         setIsLoading(false)
         return
       }
 
-      debugLog('Creating script element for WayForPay widget')
       const script = document.createElement('script')
       script.src = 'https://secure.wayforpay.com/server/pay-widget.js'
       script.id = 'widget-wfp-script'
@@ -86,15 +62,12 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
       // Set timeout for script loading (15 seconds)
       scriptLoadTimeoutRef.current = setTimeout(() => {
         if (!scriptLoadedRef.current) {
-          debugLog('Script loading timeout (15s)')
-          setError(t('errors.paymentLoadFailed') +
-            (isIOS() ? ` (iOS: ${locale === 'zh' ? '请尝试刷新页面' : 'Please try refreshing the page'})` : ''))
+          setError(t('errors.paymentLoadFailed'))
           setIsLoading(false)
         }
       }, 15000)
 
       script.onload = () => {
-        debugLog('WayForPay script loaded successfully')
         if (scriptLoadTimeoutRef.current) {
           clearTimeout(scriptLoadTimeoutRef.current)
         }
@@ -102,85 +75,49 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
         initializeWidget()
       }
 
-      script.onerror = (e) => {
-        debugLog(`Script loading error: ${e}`)
+      script.onerror = () => {
         if (scriptLoadTimeoutRef.current) {
           clearTimeout(scriptLoadTimeoutRef.current)
         }
-        let errorMsg = t('errors.paymentLoadFailed')
-        if (isIOS()) {
-          errorMsg += locale === 'en'
-            ? ' (iOS detected: Please ensure you have a stable internet connection and try again)'
-            : locale === 'zh'
-            ? ' (检测到iOS设备：请确保网络连接稳定后重试)'
-            : ' (Виявлено iOS: Переконайтеся, що у вас стабільне з\'єднання з Інтернетом і спробуйте ще раз)'
-        }
-        setError(errorMsg)
+        setError(t('errors.paymentLoadFailed'))
         setIsLoading(false)
       }
 
-      debugLog('Appending script to document body')
       document.body.appendChild(script)
     }
 
     const initializeWidget = () => {
-      debugLog('Initializing WayForPay widget')
-
       if (!window.Wayforpay) {
-        debugLog('ERROR: window.Wayforpay is not defined')
         setError(t('errors.paymentLoadFailed'))
         setIsLoading(false)
         return
       }
 
-      debugLog('window.Wayforpay found, creating instance')
-
       try {
         const wayforpay = new window.Wayforpay()
-        debugLog('WayForPay instance created successfully')
-        debugLog(`Payment params: orderReference=${paymentParams.orderReference}, amount=${paymentParams.amount}`)
-        debugLog(`Device is mobile: ${isIOS()}`)
 
-        // Use default popup mode (no straightWidget parameter)
         wayforpay.run(
           paymentParams,
           // Success callback
           function (response: any) {
-            debugLog('WayForPay success callback triggered')
-            console.log('WayForPay success:', response)
             // Redirect is handled by returnUrl in paymentParams
           },
           // Failed callback
           function (response: any) {
-            debugLog(`WayForPay failed callback: ${response?.reason || 'Unknown reason'}`)
-            console.log('WayForPay failed:', response)
-            hasRedirectedRef.current = true // Prevent redirect detection from triggering
-            setError(
-              response.reason ||
-              t('errors.paymentFailed')
-            )
+            hasRedirectedRef.current = true
+            setError(response.reason || t('errors.paymentFailed'))
             setIsLoading(false)
             setIsRedirecting(false)
           },
-          // Pending callback (also triggered when user closes popup or payment is being processed)
+          // Pending callback
           function (response: any) {
-            debugLog(`WayForPay pending callback: orderReference=${response?.orderReference}`)
-            console.log('WayForPay pending/closed:', response)
-
-            // If we have an orderReference, the payment might be processing
-            // Redirect to success page to show pending status
             if (response && response.orderReference) {
-              debugLog('Payment is pending, redirecting to success page...')
-              console.log('Payment is pending, redirecting to success page...')
               hasRedirectedRef.current = true
-              // Use the returnUrl from paymentParams
               if (paymentParams.returnUrl) {
                 window.location.href = paymentParams.returnUrl
               }
             } else {
-              debugLog('User closed payment window without completing')
               hasRedirectedRef.current = true
-              // User likely closed the popup without completing payment
               setError(
                 locale === 'en'
                   ? 'Payment window was closed. You can try again or contact support if you believe this is an error.'
@@ -194,44 +131,28 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
           }
         )
 
-        debugLog('wayforpay.run() called successfully')
-
-        // On mobile devices, WayForPay typically redirects to their payment page
-        // Set a flag to show "redirecting" message
+        // On mobile devices, show redirecting message
         if (isIOS()) {
-          debugLog('Mobile device detected - expecting redirect to WayForPay page')
           setIsRedirecting(true)
           setIsLoading(false)
 
-          // Safety check: if we haven't redirected after 3 seconds, something might be wrong
-          setTimeout(() => {
-            if (!hasRedirectedRef.current) {
-              debugLog('WARNING: No redirect detected after 3 seconds on mobile device')
-              // Don't show error yet, just log it
-            }
-          }, 3000)
-
-          // After 10 seconds, if still no redirect, show helpful message
+          // After 10 seconds, if still no redirect, show error
           setTimeout(() => {
             if (!hasRedirectedRef.current && !error) {
-              debugLog('ERROR: No redirect after 10 seconds - possible popup blocker')
               setIsRedirecting(false)
               setError(
                 locale === 'en'
-                  ? 'Payment page did not open. Please check if popup blockers are enabled in Safari settings and try again.'
+                  ? 'Payment page did not open. Please check your popup blocker settings and try again.'
                   : locale === 'zh'
-                  ? '支付页面未打开。请检查 Safari 设置中是否启用了弹窗拦截器，然后重试。'
-                  : 'Сторінка оплати не відкрилася. Будь ласка, перевірте налаштування Safari щодо блокування спливаючих вікон і спробуйте ще раз.'
+                  ? '支付页面未打开。请检查弹窗拦截设置后重试。'
+                  : 'Сторінка оплати не відкрилася. Будь ласка, перевірте налаштування блокування вікон і спробуйте ще раз.'
               )
             }
           }, 10000)
         } else {
-          // Desktop - popup should appear
           setIsLoading(false)
         }
       } catch (err) {
-        debugLog(`EXCEPTION in initializeWidget: ${err}`)
-        console.error('Error initializing WayForPay:', err)
         setError(t('errors.serverError'))
         setIsLoading(false)
         setIsRedirecting(false)
@@ -242,7 +163,6 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
 
     // Cleanup
     return () => {
-      debugLog('Component unmounting, cleaning up')
       if (scriptLoadTimeoutRef.current) {
         clearTimeout(scriptLoadTimeoutRef.current)
       }
@@ -396,33 +316,6 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
           </div>
         </div>
       </div>
-
-      {/* Debug Info - Only show when there's an error or in development */}
-      {(error || process.env.NODE_ENV === 'development') && debugInfo.length > 0 && (
-        <details className="p-4 bg-gray-100 border border-gray-300 rounded-lg text-xs">
-          <summary className="cursor-pointer font-mono font-semibold text-gray-700 mb-2">
-            {locale === 'en' ? 'Debug Information' : locale === 'zh' ? '调试信息' : 'Інформація для відлагодження'}
-            {' '}({debugInfo.length} logs)
-          </summary>
-          <div className="mt-2 space-y-1 max-h-60 overflow-y-auto">
-            {debugInfo.map((log, index) => (
-              <div key={index} className="font-mono text-gray-600 break-all">
-                {log}
-              </div>
-            ))}
-          </div>
-          <button
-            onClick={() => {
-              const debugText = debugInfo.join('\n')
-              navigator.clipboard.writeText(debugText)
-              alert(locale === 'en' ? 'Debug info copied!' : locale === 'zh' ? '调试信息已复制！' : 'Інформацію для відлагодження скопійовано!')
-            }}
-            className="mt-3 px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded text-gray-700 font-medium text-xs"
-          >
-            {locale === 'en' ? 'Copy Debug Info' : locale === 'zh' ? '复制调试信息' : 'Копіювати інформацію'}
-          </button>
-        </details>
-      )}
     </div>
   )
 }

@@ -102,13 +102,8 @@ export default function DonationFormCard({
         return
       }
 
-      // Success - set payment params and scroll to payment form
+      // Success - set payment params
       setPaymentParams(result.paymentParams!)
-
-      // Scroll to top when payment form appears
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }, 100)
     } catch (err) {
       console.error('Error creating payment intent:', err)
       if (err instanceof Error && err.message.includes('email')) {

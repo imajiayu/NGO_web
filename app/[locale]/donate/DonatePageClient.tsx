@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import type { ProjectStats } from '@/types'
 import ProjectsGallery from '@/components/projects/ProjectsGallery'
