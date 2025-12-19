@@ -202,6 +202,7 @@
       "title": "支付信息",
       "total": "总金额",
       "currency": "美元",
+      "loading": "正在加载支付窗口...",
       "processing": "正在处理支付...",
       "back": "返回编辑",
       "confirm": "确认支付",

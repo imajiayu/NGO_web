@@ -202,6 +202,7 @@
       "title": "Payment Information",
       "total": "Total Amount",
       "currency": "USD",
+      "loading": "Loading payment window...",
       "processing": "Processing payment...",
       "back": "Back to Edit",
       "confirm": "Confirm Payment",
