@@ -32,134 +32,59 @@ export default function DonationDetails({ orderReference, locale }: Props) {
   const t = useTranslations('donateSuccess')
   const [donations, setDonations] = useState<Donation[]>([])
   const [loading, setLoading] = useState(true)
-  const [isAutoRefreshing, setIsAutoRefreshing] = useState(false)
-  const retryCountRef = useRef(0)
-  const statusCheckCountRef = useRef(0)
-  const maxRetries = 20  // 20 retries * 1.5s = 30 seconds total
-  const maxStatusChecks = 12  // 12 checks * 5s = 60 seconds for status updates
+  const pollingCountRef = useRef(0)
+  const maxPollingAttempts = 40  // 40 attempts * 3s = 2 minutes total
 
+  // Single unified polling: fetch data until we get paid status or timeout
   useEffect(() => {
-    let intervalId: NodeJS.Timeout | null = null
     let isMounted = true
+    let pollInterval: NodeJS.Timeout | null = null
 
     const fetchDonations = async () => {
-      if (!isMounted) return false
+      if (!isMounted) return
 
       try {
-        const response = await fetch(
-          `/api/donations/order/${orderReference}`
-        )
+        const response = await fetch(`/api/donations/order/${orderReference}`)
 
         if (response.ok) {
           const data = await response.json()
-          // Got data - webhook has completed batch insert, stop polling immediately
-          if (data.donations && data.donations.length > 0) {
-            if (isMounted) {
-              setDonations(data.donations)
-              setLoading(false)
+
+          if (data.donations && data.donations.length > 0 && isMounted) {
+            setDonations(data.donations)
+            setLoading(false)
+
+            // Check if all donations are paid
+            const allPaid = data.donations.every((d: Donation) => d.donation_status === 'paid')
+
+            // Stop polling if all paid or reached max attempts
+            if (allPaid || pollingCountRef.current >= maxPollingAttempts) {
+              if (pollInterval) clearInterval(pollInterval)
             }
-            if (intervalId) clearInterval(intervalId)
-            return true
           }
         }
-        return false
+
+        pollingCountRef.current += 1
+
+        // Stop if reached max attempts
+        if (pollingCountRef.current >= maxPollingAttempts && pollInterval) {
+          clearInterval(pollInterval)
+          if (isMounted) setLoading(false)
+        }
       } catch (error) {
         console.error('Error fetching donations:', error)
-        return false
       }
     }
 
-    // Wait 3 seconds before first fetch to give webhook more time to process
-    const initialDelay = setTimeout(() => {
-      if (!isMounted) return
-
-      fetchDonations().then((success) => {
-        if (!success && isMounted) {
-          // Start polling every 1.5 seconds (slower to give webhook time)
-          intervalId = setInterval(async () => {
-            retryCountRef.current += 1
-
-            if (retryCountRef.current >= maxRetries) {
-              if (intervalId) clearInterval(intervalId)
-              if (isMounted) setLoading(false)
-              return
-            }
-
-            const success = await fetchDonations()
-            if (success && intervalId) {
-              clearInterval(intervalId)
-            }
-          }, 1500)  // 1.5 seconds interval
-        }
-      })
-    }, 3000)  // Wait 3 seconds before starting
+    // Start polling immediately, then every 3 seconds
+    fetchDonations()
+    pollInterval = setInterval(fetchDonations, 3000)
 
     // Cleanup
     return () => {
       isMounted = false
-      if (intervalId) clearInterval(intervalId)
-      clearTimeout(initialDelay)
+      if (pollInterval) clearInterval(pollInterval)
     }
   }, [orderReference])
-
-  // Auto-refresh for pending donations: Check status every 5 seconds
-  useEffect(() => {
-    let statusCheckInterval: NodeJS.Timeout | null = null
-    let isMounted = true
-
-    // Only start status checking if we have donations and at least one is pending
-    const hasPendingDonations = donations.length > 0 && donations.some(d => d.donation_status === 'pending')
-
-    if (hasPendingDonations) {
-      console.log('Starting auto-refresh for pending donations...')
-      setIsAutoRefreshing(true)
-
-      statusCheckInterval = setInterval(async () => {
-        statusCheckCountRef.current += 1
-
-        // Stop after max checks
-        if (statusCheckCountRef.current >= maxStatusChecks) {
-          console.log('Max status checks reached, stopping auto-refresh')
-          setIsAutoRefreshing(false)
-          if (statusCheckInterval) clearInterval(statusCheckInterval)
-          return
-        }
-
-        try {
-          const response = await fetch(`/api/donations/order/${orderReference}`)
-
-          if (response.ok && isMounted) {
-            const data = await response.json()
-
-            if (data.donations && data.donations.length > 0) {
-              const updatedDonations = data.donations
-              const stillPending = updatedDonations.some((d: Donation) => d.donation_status === 'pending')
-
-              // Update state with new data
-              setDonations(updatedDonations)
-
-              // If no longer pending, stop polling
-              if (!stillPending) {
-                console.log('Payment status updated to paid! Stopping auto-refresh.')
-                setIsAutoRefreshing(false)
-                if (statusCheckInterval) clearInterval(statusCheckInterval)
-              } else {
-                console.log(`Status check ${statusCheckCountRef.current}/${maxStatusChecks}: Still pending...`)
-              }
-            }
-          }
-        } catch (error) {
-          console.error('Error checking donation status:', error)
-        }
-      }, 5000) // Check every 5 seconds
-    }
-
-    // Cleanup
-    return () => {
-      isMounted = false
-      if (statusCheckInterval) clearInterval(statusCheckInterval)
-    }
-  }, [donations, orderReference, maxStatusChecks])
 
   if (loading) {
     return (
@@ -234,18 +159,16 @@ export default function DonationDetails({ orderReference, locale }: Props) {
                   ? '支付正在由银行确认中，通常需要 2-5 分钟。确认后页面会自动刷新并发送邮件通知。您可以在此等待或关闭页面等待邮件。'
                   : 'Платіж підтверджується банком, зазвичай це займає 2-5 хвилин. Сторінка автоматично оновиться, і ви отримаєте електронний лист після підтвердження. Можете почекати тут або закрити сторінку і дочекатися листа.'}
               </p>
-              {isAutoRefreshing && (
-                <div className="flex items-center space-x-2 text-yellow-700 text-sm">
-                  <div className="w-4 h-4 border-2 border-yellow-600 border-t-transparent rounded-full animate-spin"></div>
-                  <span>
-                    {locale === 'en'
-                      ? 'Auto-checking status every 5 seconds...'
-                      : locale === 'zh'
-                      ? '每 5 秒自动检查状态...'
-                      : 'Автоматична перевірка статусу кожні 5 секунд...'}
-                  </span>
-                </div>
-              )}
+              <div className="flex items-center space-x-2 text-yellow-700 text-sm mt-3">
+                <div className="w-4 h-4 border-2 border-yellow-600 border-t-transparent rounded-full animate-spin"></div>
+                <span>
+                  {locale === 'en'
+                    ? 'Auto-checking status every 3 seconds...'
+                    : locale === 'zh'
+                    ? '每 3 秒自动检查状态...'
+                    : 'Автоматична перевірка статусу кожні 3 секунди...'}
+                </span>
+              </div>
             </div>
           </div>
         </div>
