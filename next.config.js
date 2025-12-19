@@ -25,7 +25,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Apply CSP headers to all routes
+        // Apply security headers to all routes
         source: '/:path*',
         headers: [
           {
@@ -40,6 +40,10 @@ const nextConfig = {
               "frame-src 'self' https://secure.wayforpay.com",
               "form-action 'self' https://secure.wayforpay.com",
             ].join('; '),
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'payment=(self "https://secure.wayforpay.com")',
           },
         ],
       },
