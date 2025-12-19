@@ -67,15 +67,63 @@ export async function POST(req: Request) {
         const amount = parseFloat(body.amount)
         const currency = body.currency
 
-        // Get pending donation records from database
-        const { data: pendingDonations, error: fetchError } = await supabase
-          .from('donations')
-          .select('*')
-          .eq('order_reference', orderReference)
-          .eq('donation_status', 'pending')
+        // Get pending donation records from database with retry logic
+        // WayForPay might send webhook before our Server Action completes
+        console.log(`[WEBHOOK] Searching for pending donations with order_reference: ${orderReference}`)
 
-        if (fetchError || !pendingDonations || pendingDonations.length === 0) {
-          console.error('Pending donations not found:', orderReference, fetchError)
+        let pendingDonations = null
+        let fetchError = null
+        const maxRetries = 3
+        const retryDelay = 2000 // 2 seconds
+
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+          console.log(`[WEBHOOK] Attempt ${attempt}/${maxRetries} to find pending donations`)
+
+          const result = await supabase
+            .from('donations')
+            .select('*')
+            .eq('order_reference', orderReference)
+            .eq('donation_status', 'pending')
+
+          if (result.error) {
+            fetchError = result.error
+            console.error(`[WEBHOOK ERROR] Database query error on attempt ${attempt}:`, result.error)
+            break
+          }
+
+          if (result.data && result.data.length > 0) {
+            pendingDonations = result.data
+            console.log(`[WEBHOOK] Found ${pendingDonations.length} pending donations on attempt ${attempt}`)
+            break
+          }
+
+          if (attempt < maxRetries) {
+            console.log(`[WEBHOOK] No pending donations found, waiting ${retryDelay}ms before retry...`)
+            await new Promise(resolve => setTimeout(resolve, retryDelay))
+          }
+        }
+
+        if (fetchError) {
+          console.error('[WEBHOOK ERROR] Database query error:', fetchError)
+          console.error('[WEBHOOK ERROR] Order reference:', orderReference)
+          throw new Error(`Database error when fetching donations: ${fetchError.message}`)
+        }
+
+        if (!pendingDonations || pendingDonations.length === 0) {
+          console.error('[WEBHOOK ERROR] No pending donations found for order after retries:', orderReference)
+
+          // Try to find ANY donations with this order_reference (regardless of status)
+          const { data: anyDonations } = await supabase
+            .from('donations')
+            .select('donation_status, donation_public_id')
+            .eq('order_reference', orderReference)
+
+          if (anyDonations && anyDonations.length > 0) {
+            console.error('[WEBHOOK ERROR] Found donations but with different status:', anyDonations)
+          } else {
+            console.error('[WEBHOOK ERROR] No donations found at all with this order_reference')
+          }
+
           throw new Error(`Pending donations not found: ${orderReference}`)
         }
 

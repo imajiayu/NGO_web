@@ -152,16 +152,29 @@ export async function createWayForPayDonation(data: {
     }
 
     // Batch insert all pending donation records
-    const { error: dbError } = await supabase
+    console.log(`[DONATION] Attempting to create ${validated.quantity} pending donation records...`)
+    console.log(`[DONATION] Order reference: ${orderReference}`)
+    console.log(`[DONATION] Donation records to insert:`, JSON.stringify(donationRecords, null, 2))
+
+    const { data: insertedData, error: dbError } = await supabase
       .from('donations')
       .insert(donationRecords)
+      .select()
 
     if (dbError) {
-      console.error('Error creating pending donations:', dbError)
-      throw new Error('Failed to create pending donations')
+      console.error('[DONATION ERROR] Failed to create pending donations:', dbError)
+      console.error('[DONATION ERROR] Order reference:', orderReference)
+      console.error('[DONATION ERROR] Database error details:', JSON.stringify(dbError, null, 2))
+      throw new Error(`Failed to create pending donations: ${dbError.message}`)
     }
 
-    console.log(`Created ${validated.quantity} pending donation records for order: ${orderReference}`)
+    if (!insertedData || insertedData.length === 0) {
+      console.error('[DONATION ERROR] No data returned after insert')
+      throw new Error('Failed to create pending donations: No data returned')
+    }
+
+    console.log(`[DONATION SUCCESS] Created ${insertedData.length} pending donation records for order: ${orderReference}`)
+    console.log(`[DONATION SUCCESS] Inserted donation IDs:`, insertedData.map(d => d.donation_public_id).join(', '))
 
     // TEST MODE: Skip payment and simulate success
     if (process.env.NEXT_PUBLIC_TEST_MODE_SKIP_PAYMENT === 'true') {
