@@ -13,6 +13,13 @@ const nextConfig = {
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb',
+      allowedOrigins: [
+        'waytofutureua.org.ua',
+        'www.waytofutureua.org.ua',
+        '*.waytofutureua.org.ua',
+        'secure.wayforpay.com', // Allow WayForPay redirect
+        'localhost:3000', // Development
+      ],
     },
   },
 }
