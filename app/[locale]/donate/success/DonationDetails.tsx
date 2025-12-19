@@ -142,6 +142,41 @@ export default function DonationDetails({ orderReference, locale }: Props) {
         </div>
       )}
 
+      {/* Email Reminder Card */}
+      <div className="relative overflow-hidden bg-white rounded-3xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+        <div className="p-8">
+          <div className="flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                {t('emailReminderTitle')}
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                {locale === 'en'
+                  ? `We will send a confirmation email to ${donorEmail} shortly.`
+                  : locale === 'zh'
+                  ? `我们稍后会向 ${donorEmail} 发送确认邮件。`
+                  : `Ми незабаром надішлемо підтвердження на ${donorEmail}.`}
+              </p>
+              <div className="mt-4 inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-xl text-sm font-medium">
+                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                </svg>
+                {donorEmail}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Donation IDs Card - Prominent */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-3xl shadow-xl border border-blue-200/50">
         {/* Decorative Elements */}
@@ -210,37 +245,6 @@ export default function DonationDetails({ orderReference, locale }: Props) {
               />
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Email Reminder Card */}
-      <div className="relative overflow-hidden bg-white rounded-3xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-        <div className="p-8">
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {t('emailReminderTitle')}
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                {t('emailReminderDescription', { email: donorEmail })}
-              </p>
-              <div className="mt-4 inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-xl text-sm font-medium">
-                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                </svg>
-                {donorEmail}
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 

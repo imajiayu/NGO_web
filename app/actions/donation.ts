@@ -90,7 +90,8 @@ export async function createWayForPayDonation(data: {
 
     // Prepare return and callback URLs
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-    const returnUrl = `${baseUrl}/${validated.locale}/donate/success?order=${orderReference}`
+    // Use API route to handle POST redirect from WayForPay, then redirect to success page
+    const returnUrl = `${baseUrl}/api/donate/success-redirect?order=${orderReference}&locale=${validated.locale}`
     const serviceUrl = `${baseUrl}/api/webhooks/wayforpay`
 
     // Get localized project name for payment
