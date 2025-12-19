@@ -38,14 +38,15 @@ export async function POST(req: Request) {
     if (transactionStatus === WAYFORPAY_STATUS.APPROVED) {
       try {
         // Extract metadata from orderReference
-        // Format: DONATE-{project_id}-{timestamp}
+        // Format: DONATE-{project_id}-{timestamp}-{random}
         const parts = orderReference.split('-')
-        if (parts.length !== 3 || parts[0] !== 'DONATE') {
+        if (parts.length !== 4 || parts[0] !== 'DONATE') {
           throw new Error(`Invalid orderReference format: ${orderReference}`)
         }
 
         const projectId = parseInt(parts[1])
         const timestamp = parseInt(parts[2])
+        const randomSuffix = parts[3]
 
         // We need to get the donation metadata
         // Since WayForPay doesn't support metadata, we need to store it somewhere

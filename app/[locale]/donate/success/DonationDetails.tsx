@@ -11,6 +11,7 @@ type Donation = {
   donation_public_id: string
   amount: number
   donor_email: string
+  donation_status: 'pending' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
   projects: {
     id: number
     project_name: string
@@ -139,6 +140,7 @@ export default function DonationDetails({ orderReference, locale }: Props) {
   const totalAmount = donations.reduce((sum, d) => sum + Number(d.amount), 0)
   const allDonationIds = donations.map((d) => d.donation_public_id).join('\n')
   const donorEmail = donations[0].donor_email
+  const isPending = donations.some((d) => d.donation_status === 'pending')
 
   // Get translated project data
   const projectName = getProjectName(project.project_name_i18n, project.project_name, locale as SupportedLocale)
@@ -147,6 +149,41 @@ export default function DonationDetails({ orderReference, locale }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* Payment Pending Warning (if applicable) */}
+      {isPending && (
+        <div className="relative overflow-hidden bg-gradient-to-br from-yellow-50 to-orange-50 rounded-3xl p-8 shadow-lg border border-yellow-200/50">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="relative flex items-start space-x-4">
+            <div className="flex-shrink-0">
+              <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg animate-pulse">
+                <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                </svg>
+              </div>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-yellow-900 mb-2">
+                {locale === 'en' ? '⏳ Payment Processing' : locale === 'zh' ? '⏳ 支付处理中' : '⏳ Обробка платежу'}
+              </h3>
+              <p className="text-yellow-800 leading-relaxed mb-2">
+                {locale === 'en'
+                  ? 'Your payment has been received and is currently being processed by WayForPay. This usually takes a few minutes.'
+                  : locale === 'zh'
+                  ? '您的支付已收到，正在由 WayForPay 处理中。这通常需要几分钟时间。'
+                  : 'Ваш платіж отримано і зараз обробляється WayForPay. Зазвичай це займає кілька хвилин.'}
+              </p>
+              <p className="text-yellow-700 text-sm">
+                {locale === 'en'
+                  ? '✓ Your donation IDs have been generated and saved.\n✓ You will receive a confirmation email once the payment is completed.\n✓ You can track your donation status using the IDs below.'
+                  : locale === 'zh'
+                  ? '✓ 您的捐赠 ID 已生成并保存。\n✓ 支付完成后您将收到确认邮件。\n✓ 您可以使用下面的 ID 追踪捐赠状态。'
+                  : '✓ Ваші ID пожертв згенеровані та збережені.\n✓ Ви отримаєте підтвердження електронною поштою після завершення платежу.\n✓ Ви можете відстежувати статус пожертви, використовуючи ID нижче.'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Donation IDs Card - Prominent */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-3xl shadow-xl border border-blue-200/50">
         {/* Decorative Elements */}

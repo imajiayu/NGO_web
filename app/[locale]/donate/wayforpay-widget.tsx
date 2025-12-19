@@ -76,18 +76,29 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
             )
             setIsLoading(false)
           },
-          // Pending callback (also triggered when user closes popup)
+          // Pending callback (also triggered when user closes popup or payment is being processed)
           function (response: any) {
             console.log('WayForPay pending/closed:', response)
-            // Show message that payment was not completed
-            setError(
-              locale === 'en'
-                ? 'Payment was not completed. You can go back and try again.'
-                : locale === 'zh'
-                ? '支付未完成。您可以返回重试。'
-                : 'Оплату не завершено. Ви можете повернутися і спробувати ще раз.'
-            )
-            setIsLoading(false)
+
+            // If we have an orderReference, the payment might be processing
+            // Redirect to success page to show pending status
+            if (response && response.orderReference) {
+              console.log('Payment is pending, redirecting to success page...')
+              // Use the returnUrl from paymentParams
+              if (paymentParams.returnUrl) {
+                window.location.href = paymentParams.returnUrl
+              }
+            } else {
+              // User likely closed the popup without completing payment
+              setError(
+                locale === 'en'
+                  ? 'Payment window was closed. You can try again or contact support if you believe this is an error.'
+                  : locale === 'zh'
+                  ? '支付窗口已关闭。您可以重试，或如果您认为这是错误请联系支持。'
+                  : 'Вікно оплати було закрито. Ви можете спробувати ще раз або зв\'язатися з підтримкою, якщо вважаєте, що це помилка.'
+              )
+              setIsLoading(false)
+            }
           }
         )
 
