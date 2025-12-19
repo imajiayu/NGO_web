@@ -15,7 +15,7 @@ type Donation = {
   donor_email: string
   amount: number
   currency: string
-  donation_status: 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
+  donation_status: 'pending' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
   donated_at: string
   projects: {
     id: number
@@ -91,6 +91,8 @@ export default function TrackDonationForm({ locale }: Props) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
+      case 'pending':
+        return 'bg-gray-100 text-gray-600 border-gray-300'
       case 'completed':
         return 'bg-green-100 text-green-800 border-green-200'
       case 'delivering':

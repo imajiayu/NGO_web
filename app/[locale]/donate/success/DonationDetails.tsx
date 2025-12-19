@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import CopyButton from '@/components/CopyButton'
 import { getProjectName, getLocation, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
@@ -32,57 +32,35 @@ export default function DonationDetails({ orderReference, locale }: Props) {
   const t = useTranslations('donateSuccess')
   const [donations, setDonations] = useState<Donation[]>([])
   const [loading, setLoading] = useState(true)
-  const pollingCountRef = useRef(0)
-  const maxPollingAttempts = 36  // 36 attempts * 5s = 3 minutes total
 
-  // Single unified polling: fetch data until we get paid status or timeout
+  // Fetch donations once on mount
   useEffect(() => {
     let isMounted = true
-    let pollInterval: NodeJS.Timeout | null = null
 
     const fetchDonations = async () => {
-      if (!isMounted) return
-
       try {
         const response = await fetch(`/api/donations/order/${orderReference}`)
 
-        if (response.ok) {
+        if (response.ok && isMounted) {
           const data = await response.json()
 
-          if (data.donations && data.donations.length > 0 && isMounted) {
+          if (data.donations && data.donations.length > 0) {
             setDonations(data.donations)
-            setLoading(false)
-
-            // Check if all donations are paid
-            const allPaid = data.donations.every((d: Donation) => d.donation_status === 'paid')
-
-            // Stop polling if all paid or reached max attempts
-            if (allPaid || pollingCountRef.current >= maxPollingAttempts) {
-              if (pollInterval) clearInterval(pollInterval)
-            }
           }
-        }
-
-        pollingCountRef.current += 1
-
-        // Stop if reached max attempts
-        if (pollingCountRef.current >= maxPollingAttempts && pollInterval) {
-          clearInterval(pollInterval)
-          if (isMounted) setLoading(false)
         }
       } catch (error) {
         console.error('Error fetching donations:', error)
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
       }
     }
 
-    // Start polling immediately, then every 5 seconds
     fetchDonations()
-    pollInterval = setInterval(fetchDonations, 5000)
 
-    // Cleanup
     return () => {
       isMounted = false
-      if (pollInterval) clearInterval(pollInterval)
     }
   }, [orderReference])
 
@@ -142,7 +120,7 @@ export default function DonationDetails({ orderReference, locale }: Props) {
           <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/10 rounded-full blur-3xl pointer-events-none"></div>
           <div className="relative flex items-start space-x-4">
             <div className="flex-shrink-0">
-              <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg animate-pulse">
+              <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
                 <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                 </svg>
@@ -152,23 +130,13 @@ export default function DonationDetails({ orderReference, locale }: Props) {
               <h3 className="text-lg font-bold text-yellow-900 mb-2">
                 {locale === 'en' ? '⏳ Payment Processing' : locale === 'zh' ? '⏳ 支付处理中' : '⏳ Обробка платежу'}
               </h3>
-              <p className="text-yellow-800 leading-relaxed mb-2">
+              <p className="text-yellow-800 leading-relaxed">
                 {locale === 'en'
-                  ? 'Payment is being confirmed by the bank, usually takes 2-5 minutes. The page will auto-refresh and you\'ll receive an email when confirmed. You can wait here or close the page and wait for the email.'
+                  ? 'Payment is being confirmed by the bank, usually takes 2-5 minutes. You can check the status anytime on the track donation page. Once confirmed, you will receive an email notification.'
                   : locale === 'zh'
-                  ? '支付正在由银行确认中，通常需要 2-5 分钟。确认后页面会自动刷新并发送邮件通知。您可以在此等待或关闭页面等待邮件。'
-                  : 'Платіж підтверджується банком, зазвичай це займає 2-5 хвилин. Сторінка автоматично оновиться, і ви отримаєте електронний лист після підтвердження. Можете почекати тут або закрити сторінку і дочекатися листа.'}
+                  ? '支付正在由银行确认中，通常需要 2-5 分钟。您可以随时在捐赠查询页面查看状态。收到邮件后表示支付已确认。'
+                  : 'Платіж підтверджується банком, зазвичай це займає 2-5 хвилин. Ви можете перевірити статус у будь-який час на сторінці відстеження донатів. Після підтвердження ви отримаєте електронний лист.'}
               </p>
-              <div className="flex items-center space-x-2 text-yellow-700 text-sm mt-3">
-                <div className="w-4 h-4 border-2 border-yellow-600 border-t-transparent rounded-full animate-spin"></div>
-                <span>
-                  {locale === 'en'
-                    ? 'Auto-checking status every 5 seconds...'
-                    : locale === 'zh'
-                    ? '每 5 秒自动检查状态...'
-                    : 'Автоматична перевірка статусу кожні 5 секунд...'}
-                </span>
-              </div>
             </div>
           </div>
         </div>

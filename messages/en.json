@@ -279,6 +279,7 @@
       "status": "Status"
     },
     "status": {
+      "pending": "Pending",
       "paid": "Paid",
       "confirmed": "Confirmed",
       "delivering": "Delivering",
@@ -354,6 +355,7 @@
       "action": "Action"
     },
     "status": {
+      "pending": "Pending",
       "paid": "Paid",
       "confirmed": "Confirmed",
       "delivering": "Delivering",
