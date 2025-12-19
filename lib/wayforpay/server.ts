@@ -155,3 +155,17 @@ export const WAYFORPAY_STATUS = {
 } as const
 
 export type WayForPayStatus = typeof WAYFORPAY_STATUS[keyof typeof WAYFORPAY_STATUS]
+
+/**
+ * Generate WayForPay webhook response signature
+ * Required to confirm webhook receipt and stop WayForPay retries
+ * Signature format: orderReference;status;time
+ */
+export function generateWebhookResponseSignature(
+  orderReference: string,
+  status: 'accept' | 'decline',
+  time: number
+): string {
+  const signatureValues = [orderReference, status, time]
+  return generateSignature(signatureValues)
+}

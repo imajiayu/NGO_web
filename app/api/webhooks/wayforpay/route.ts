@@ -1,6 +1,6 @@
 import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
-import { verifyWayForPaySignature, WAYFORPAY_STATUS } from '@/lib/wayforpay/server'
+import { verifyWayForPaySignature, generateWebhookResponseSignature, WAYFORPAY_STATUS } from '@/lib/wayforpay/server'
 import { createServiceClient } from '@/lib/supabase/server'
 import { sendDonationConfirmation } from '@/lib/email/server'
 
@@ -125,10 +125,14 @@ export async function POST(req: Request) {
 
             // Return success to prevent WayForPay from retrying
             // This is idempotent behavior - payment already processed
+            const time = Math.floor(Date.now() / 1000)
+            const signature = generateWebhookResponseSignature(orderReference, 'accept', time)
+
             return NextResponse.json({
               orderReference,
               status: 'accept',
-              time: Math.floor(Date.now() / 1000),
+              time,
+              signature,
               message: 'Order already processed'
             })
           } else {
@@ -138,10 +142,14 @@ export async function POST(req: Request) {
 
             // Return success even if not found to prevent infinite retries
             // This prevents WayForPay from retrying deleted/missing orders forever
+            const time = Math.floor(Date.now() / 1000)
+            const signature = generateWebhookResponseSignature(orderReference, 'accept', time)
+
             return NextResponse.json({
               orderReference,
               status: 'accept',
-              time: Math.floor(Date.now() / 1000),
+              time,
+              signature,
               message: 'Order not found - might be deleted or not yet created'
             })
           }
@@ -228,11 +236,15 @@ export async function POST(req: Request) {
       console.log(`[WEBHOOK] Unknown status: ${transactionStatus} for order: ${orderReference}`)
     }
 
-    // Return success for all statuses
+    // Return success for all statuses with signature
+    const time = Math.floor(Date.now() / 1000)
+    const signature = generateWebhookResponseSignature(orderReference, 'accept', time)
+
     return NextResponse.json({
       orderReference,
       status: 'accept',
-      time: Math.floor(Date.now() / 1000),
+      time,
+      signature,
     })
   } catch (error) {
     console.error('Webhook error:', error)
