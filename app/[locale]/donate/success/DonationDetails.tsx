@@ -33,7 +33,7 @@ export default function DonationDetails({ orderReference, locale }: Props) {
   const [donations, setDonations] = useState<Donation[]>([])
   const [loading, setLoading] = useState(true)
   const pollingCountRef = useRef(0)
-  const maxPollingAttempts = 40  // 40 attempts * 3s = 2 minutes total
+  const maxPollingAttempts = 36  // 36 attempts * 5s = 3 minutes total
 
   // Single unified polling: fetch data until we get paid status or timeout
   useEffect(() => {
@@ -75,9 +75,9 @@ export default function DonationDetails({ orderReference, locale }: Props) {
       }
     }
 
-    // Start polling immediately, then every 3 seconds
+    // Start polling immediately, then every 5 seconds
     fetchDonations()
-    pollInterval = setInterval(fetchDonations, 3000)
+    pollInterval = setInterval(fetchDonations, 5000)
 
     // Cleanup
     return () => {
@@ -163,10 +163,10 @@ export default function DonationDetails({ orderReference, locale }: Props) {
                 <div className="w-4 h-4 border-2 border-yellow-600 border-t-transparent rounded-full animate-spin"></div>
                 <span>
                   {locale === 'en'
-                    ? 'Auto-checking status every 3 seconds...'
+                    ? 'Auto-checking status every 5 seconds...'
                     : locale === 'zh'
-                    ? '每 3 秒自动检查状态...'
-                    : 'Автоматична перевірка статусу кожні 3 секунди...'}
+                    ? '每 5 秒自动检查状态...'
+                    : 'Автоматична перевірка статусу кожні 5 секунд...'}
                 </span>
               </div>
             </div>
