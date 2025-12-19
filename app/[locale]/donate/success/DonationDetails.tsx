@@ -107,7 +107,7 @@ export default function DonationDetails({ orderReference, locale }: Props) {
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full opacity-20 animate-pulse"></div>
           </div>
         </div>
-        <p className="mt-6 text-lg text-gray-600 font-medium">Loading your donation details...</p>
+        <p className="mt-6 text-lg text-gray-600 font-medium">{t('loading')}</p>
       </div>
     )
   }
@@ -125,9 +125,9 @@ export default function DonationDetails({ orderReference, locale }: Props) {
             </div>
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-bold text-yellow-900 mb-2">Processing Your Donation</h3>
+            <h3 className="text-lg font-bold text-yellow-900 mb-2">{t('processing')}</h3>
             <p className="text-yellow-800 leading-relaxed">
-              We're finalizing your donation. Please check your email for confirmation, or contact support if you don't receive it within a few minutes.
+              {t('processingDescription')}
             </p>
           </div>
         </div>
@@ -143,6 +143,7 @@ export default function DonationDetails({ orderReference, locale }: Props) {
   // Get translated project data
   const projectName = getProjectName(project.project_name_i18n, project.project_name, locale as SupportedLocale)
   const location = getLocation(project.location_i18n, project.location, locale as SupportedLocale)
+  const unitName = getUnitName(project.unit_name_i18n, project.unit_name, locale as SupportedLocale)
 
   return (
     <div className="space-y-6">
@@ -164,7 +165,7 @@ export default function DonationDetails({ orderReference, locale }: Props) {
             </div>
             <div className="flex-1">
               <div className="inline-block px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold tracking-wider uppercase rounded-full mb-3 shadow-md">
-                Important
+                {t('important')}
               </div>
               <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
                 {t('saveIdsTitle')}
@@ -276,7 +277,7 @@ export default function DonationDetails({ orderReference, locale }: Props) {
             <div className="flex items-center justify-between py-4 border-b border-gray-100">
               <span className="text-gray-500 font-medium">{t('details.quantity')}</span>
               <span className="font-bold text-gray-900">
-                {t('details.units', { count: donations.length })}
+                {t('details.units', { count: donations.length, unitName })}
               </span>
             </div>
 

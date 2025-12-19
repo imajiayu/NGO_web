@@ -44,6 +44,9 @@ export default function DonationFormCard({
     e.preventDefault()
     if (!project || !project.id) return
 
+    // Prevent duplicate submissions
+    if (loading) return
+
     setError(null)
 
     // Validate quantity before submitting
@@ -58,11 +61,11 @@ export default function DonationFormCard({
       const result = await createWayForPayDonation({
         project_id: project.id,
         quantity,
-        donor_name: donorName,
-        donor_email: donorEmail,
+        donor_name: donorName.trim(),
+        donor_email: donorEmail.trim(),
         donor_message: donorMessage || undefined,
-        contact_telegram: contactTelegram || undefined,
-        contact_whatsapp: contactWhatsapp || undefined,
+        contact_telegram: contactTelegram ? contactTelegram.trim() : undefined,
+        contact_whatsapp: contactWhatsapp ? contactWhatsapp.trim() : undefined,
         locale: locale as 'en' | 'zh' | 'ua',
       })
 
@@ -89,6 +92,13 @@ export default function DonationFormCard({
           setError(t('errors.serverError'))
         }
         setLoading(false)
+        return
+      }
+
+      // TEST MODE: Skip payment and redirect directly to success page
+      if (result.skipPayment) {
+        console.log('🧪 TEST MODE: Redirecting to success page')
+        window.location.href = `/${locale}/donate/success?order=${result.orderReference}`
         return
       }
 
@@ -158,10 +168,29 @@ export default function DonationFormCard({
     )
   }
 
+  // Check if in test mode
+  const isTestMode = process.env.NEXT_PUBLIC_TEST_MODE_SKIP_PAYMENT === 'true'
+
   // Show donation form
   return (
     <div className="lg:sticky lg:top-24">
       <div className="bg-white rounded-xl border-2 border-gray-200 shadow-lg overflow-hidden">
+        {/* Test Mode Banner */}
+        {isTestMode && (
+          <div className="bg-yellow-100 border-b-2 border-yellow-300 px-4 py-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🧪</span>
+              <p className="text-sm font-bold text-yellow-800">
+                {locale === 'en'
+                  ? 'TEST MODE: Payment will be skipped'
+                  : locale === 'zh'
+                  ? '测试模式：将跳过支付'
+                  : 'ТЕСТОВИЙ РЕЖИМ: Оплата буде пропущена'}
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Project Summary */}
         <div className="bg-gradient-to-br from-blue-50 to-white p-6 border-b border-gray-200">
           <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2">
@@ -388,6 +417,8 @@ export default function DonationFormCard({
                 required
                 value={donorEmail}
                 onChange={(e) => setDonorEmail(e.target.value)}
+                onBlur={(e) => setDonorEmail(e.target.value.trim())}
+                pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
                 className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder={t('donor.emailPlaceholder')}
               />

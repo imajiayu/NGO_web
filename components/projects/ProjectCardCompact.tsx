@@ -177,11 +177,9 @@ export default function ProjectCardCompact({
               </div>
               <div className="flex justify-between text-xs text-gray-500 mb-1">
                 <span>{project.donation_count || 0} {t('donations')}</span>
-                {project.is_long_term !== true && (
-                  <span className="font-medium text-gray-600">
-                    {project.progress_percentage?.toFixed(1) || 0}%
-                  </span>
-                )}
+                <span className="font-medium text-gray-600">
+                  ${(project.total_raised || 0).toFixed(2)}
+                </span>
               </div>
             </div>
 

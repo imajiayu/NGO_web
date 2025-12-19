@@ -94,16 +94,6 @@ export default async function DonateSuccessPage({
             {t('actions.backHome')}
           </Link>
         </div>
-
-        {/* Thank You Message */}
-        <div className="mt-16 text-center">
-          <div className="inline-block p-8 bg-white/60 backdrop-blur-sm rounded-3xl shadow-lg border border-gray-100">
-            <p className="text-lg text-gray-600 leading-relaxed max-w-2xl">
-              Your generosity makes a real difference. Every donation helps us continue our mission
-              to support those in need. Thank you for being part of our community! 💙
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   )

@@ -53,7 +53,7 @@ export const donationFormSchema = z.object({
   donor_message: z.string().max(1000).optional(),
   contact_telegram: z.string().max(255).optional(),
   contact_whatsapp: z.string().max(255).optional(),
-  locale: z.enum(['en', 'zh']),
+  locale: z.enum(['en', 'zh', 'ua']),
 })
 
 export const updateDonationStatusSchema = z.object({

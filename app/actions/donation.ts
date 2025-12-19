@@ -6,9 +6,11 @@ import { donationFormSchema } from '@/lib/validations'
 import { createServiceClient } from '@/lib/supabase/server'
 import type { DonationStatus } from '@/types/database'
 import { getProjectName, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
+import { sendDonationConfirmation } from '@/lib/email/server'
 
 type WayForPayPaymentResult =
-  | { success: true; paymentParams: any; amount: number; orderReference: string }
+  | { success: true; paymentParams: any; amount: number; orderReference: string; skipPayment?: false }
+  | { success: true; skipPayment: true; amount: number; orderReference: string }
   | { success: false; error: 'quantity_exceeded'; remainingUnits: number; unitName: string }
   | { success: false; error: 'project_not_found' | 'project_not_active' | 'server_error' }
 
@@ -70,9 +72,10 @@ export async function createWayForPayDonation(data: {
     const unitPrice = project.unit_price
     const totalAmount = unitPrice * validated.quantity
 
-    // Generate unique order reference
+    // Generate unique order reference with random suffix to prevent duplicates
     const timestamp = Date.now()
-    const orderReference = `DONATE-${project.id}-${timestamp}`
+    const randomSuffix = Math.random().toString(36).substring(2, 8).toUpperCase()
+    const orderReference = `DONATE-${project.id}-${timestamp}-${randomSuffix}`
 
     // Split donor name into first and last name
     const nameParts = validated.donor_name.trim().split(/\s+/)
@@ -101,7 +104,7 @@ export async function createWayForPayDonation(data: {
     const paymentParams = createWayForPayPayment({
       orderReference,
       amount: totalAmount,
-      currency: 'UAH', // WayForPay primarily uses UAH
+      currency: 'USD', // Using USD for international donations
       productName: [projectName],
       productPrice: [unitPrice],
       productCount: [validated.quantity],
@@ -141,7 +144,7 @@ export async function createWayForPayDonation(data: {
         contact_telegram: validated.contact_telegram || null,
         contact_whatsapp: validated.contact_whatsapp || null,
         amount: unitPrice,
-        currency: 'UAH',
+        currency: 'USD',
         payment_method: 'WayForPay',
         donation_status: 'pending' as DonationStatus, // Will be updated to 'paid' by webhook
         locale: validated.locale,
@@ -159,6 +162,52 @@ export async function createWayForPayDonation(data: {
     }
 
     console.log(`Created ${validated.quantity} pending donation records for order: ${orderReference}`)
+
+    // TEST MODE: Skip payment and simulate success
+    if (process.env.NEXT_PUBLIC_TEST_MODE_SKIP_PAYMENT === 'true') {
+      console.log('🧪 TEST MODE: Skipping payment, simulating success')
+
+      // Update donations to 'paid' status (simulating webhook)
+      const { data: updatedDonations, error: updateError } = await supabase
+        .from('donations')
+        .update({ donation_status: 'paid' })
+        .eq('order_reference', orderReference)
+        .select()
+
+      if (updateError) {
+        console.error('Error updating test donations:', updateError)
+      } else {
+        console.log('✅ Test donations updated to paid status')
+      }
+
+      // Send confirmation email (simulating webhook behavior)
+      try {
+        const donationIds = updatedDonations?.map(d => d.donation_public_id) || []
+
+        await sendDonationConfirmation({
+          to: validated.donor_email,
+          donorName: validated.donor_name,
+          projectName: projectName,
+          donationIds,
+          totalAmount,
+          currency: 'USD',
+          locale: validated.locale as 'en' | 'zh' | 'ua',
+        })
+
+        console.log(`✅ TEST MODE: Confirmation email sent to ${validated.donor_email}`)
+      } catch (emailError) {
+        console.error('❌ TEST MODE: Failed to send confirmation email:', emailError)
+        // Don't fail the test, just log the error
+      }
+
+      // Return success with skipPayment flag
+      return {
+        success: true,
+        skipPayment: true,
+        amount: totalAmount,
+        orderReference,
+      }
+    }
 
     // Return payment parameters to client
     return {

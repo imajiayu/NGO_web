@@ -284,7 +284,7 @@ export default function TrackDonationForm({ locale }: Props) {
                         {refundingDonationId === donation.donation_public_id ? (
                           <>
                             <div className="w-4 h-4 border-2 border-orange-700 border-t-transparent rounded-full animate-spin"></div>
-                            Processing...
+                            {t('form.processing')}
                           </>
                         ) : (
                           <>

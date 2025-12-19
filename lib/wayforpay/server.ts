@@ -13,13 +13,14 @@ export const WAYFORPAY_SECRET_KEY = process.env.WAYFORPAY_SECRET_KEY
 export const WAYFORPAY_MERCHANT_DOMAIN = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
 /**
- * Generate WayForPay signature
+ * Generate WayForPay signature using HMAC-MD5
  * @param values Array of values to sign (order matters!)
- * @returns MD5 hash signature
+ * @returns HMAC-MD5 signature
  */
 export function generateSignature(values: (string | number)[]): string {
   const signString = values.join(';')
-  return crypto.createHash('md5').update(signString).digest('hex')
+  // WayForPay requires HMAC-MD5 with SecretKey, not plain MD5
+  return crypto.createHmac('md5', WAYFORPAY_SECRET_KEY).update(signString).digest('hex')
 }
 
 /**

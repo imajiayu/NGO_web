@@ -231,6 +231,10 @@
   "donateSuccess": {
     "title": "Payment Successful!",
     "thankYou": "Thank you for your donation!",
+    "loading": "Loading your donation details...",
+    "important": "Important",
+    "processing": "Processing Your Donation",
+    "processingDescription": "We're finalizing your donation. Please check your email for confirmation, or contact support if you don't receive it within a few minutes.",
     "saveIdsTitle": "IMPORTANT: Save Your Donation IDs",
     "saveIdsDescription": "Please save these IDs to track your donations. You'll need them to check the status and view results.",
     "emailReminderTitle": "Check Your Email",
@@ -239,7 +243,7 @@
       "title": "Donation Details",
       "project": "Project",
       "quantity": "Quantity",
-      "units": "{count} units",
+      "units": "{count} {unitName}",
       "total": "Total Amount",
       "donationIds": "Your Donation IDs"
     },
@@ -263,7 +267,8 @@
       "donationId": "Donation ID",
       "donationIdPlaceholder": "e.g., 1-A1B2C3",
       "submit": "Search Donations",
-      "searching": "Searching..."
+      "searching": "Searching...",
+      "processing": "Processing..."
     },
     "results": {
       "title": "Your Donations ({count})",
