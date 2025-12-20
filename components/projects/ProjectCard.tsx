@@ -203,7 +203,7 @@ export default function ProjectCard({
               href={`/donate?project=${project.id}`}
               className="block w-full text-center py-3 px-4 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl font-semibold hover:from-gray-600 hover:to-gray-700 transition-all duration-300 shadow-md hover:shadow-xl"
             >
-              {locale === 'en' ? 'View Details' : '查看详情'}
+              {t('donateNow')}
             </Link>
           )}
         </div>

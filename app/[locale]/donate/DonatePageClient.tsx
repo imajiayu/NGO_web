@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import type { ProjectStats } from '@/types'
 import ProjectsGallery from '@/components/projects/ProjectsGallery'
@@ -23,6 +24,7 @@ export default function DonatePageClient({
   locale,
   initialProjectId
 }: DonatePageClientProps) {
+  const t = useTranslations('donate')
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(
     initialProjectId
   )
@@ -75,9 +77,7 @@ export default function DonatePageClient({
                 }}
                 className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3 group"
               >
-                <span>
-                  {locale === 'en' ? 'Donate Now' : locale === 'zh' ? '立即捐赠' : 'Зробити внесок'}
-                </span>
+                <span>{t('donateNowButton')}</span>
                 <svg className="w-6 h-6 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
@@ -128,14 +128,10 @@ export default function DonatePageClient({
         <div className="mt-16 pt-16 border-t-2 border-gray-200">
           <div className="text-center mb-8">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              {locale === 'en' ? 'Track Your Donation' : locale === 'zh' ? '追踪您的捐款' : 'Відстежити ваш внесок'}
+              {t('trackDonationTitle')}
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
-              {locale === 'en'
-                ? 'Follow your contribution from payment to completion with full transparency and real-time updates'
-                : locale === 'zh'
-                ? '以完全透明和实时更新的方式跟踪您的捐款从支付到完成的整个过程'
-                : 'Відстежуйте свій внесок від оплати до завершення з повною прозорістю та оновленнями в реальному часі'}
+              {t('trackDonationDescription')}
             </p>
 
             {/* Toggle Button */}
@@ -145,12 +141,12 @@ export default function DonatePageClient({
             >
               {isFlowExpanded ? (
                 <>
-                  {locale === 'en' ? 'Hide Details' : locale === 'zh' ? '隐藏详情' : 'Сховати деталі'}
+                  {t('hideDetails')}
                   <ChevronUp className="w-5 h-5" />
                 </>
               ) : (
                 <>
-                  {locale === 'en' ? 'Show Details' : locale === 'zh' ? '显示详情' : 'Показати деталі'}
+                  {t('showDetails')}
                   <ChevronDown className="w-5 h-5" />
                 </>
               )}
@@ -185,6 +181,8 @@ export default function DonatePageClient({
 
 // Empty state when no project is selected
 function EmptyState({ locale }: { locale: string }) {
+  const t = useTranslations('donate.emptyState')
+
   return (
     <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-12 text-center min-h-[400px] flex flex-col items-center justify-center">
       <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
@@ -193,21 +191,17 @@ function EmptyState({ locale }: { locale: string }) {
         </svg>
       </div>
       <h3 className="text-2xl font-bold text-gray-900 mb-3">
-        {locale === 'en' ? 'Select a Project' : '选择一个项目'}
+        {t('title')}
       </h3>
       <p className="text-gray-600 max-w-md">
-        {locale === 'en'
-          ? 'Choose a project from the gallery above to view details and make a donation'
-          : '从上方画廊中选择一个项目以查看详情并进行捐赠'}
+        {t('description')}
       </p>
       <div className="mt-6 flex items-center gap-2 text-sm text-gray-500">
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
         </svg>
         <span>
-          {locale === 'en'
-            ? 'Scroll up to see all available projects'
-            : '向上滚动查看所有可用项目'}
+          {t('scrollHint')}
         </span>
       </div>
     </div>

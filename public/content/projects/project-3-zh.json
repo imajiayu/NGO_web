@@ -7,20 +7,20 @@
   ],
   "introduction": [
     "在圣诞节来临之际，我们走访了乌克兰第聂伯罗市的两家儿童庇护所和一家母亲儿童之家。这些机构收容的都是因战争失去双亲或父亲的儿童。",
-    "我们收集了总共 76 名儿童的圣诞礼物愿望清单。通过这次圣诞礼物计划，我们共筹集并花费了 68,400 乌克兰格里夫纳（约合 1,520 美元），为每位儿童准备了平均价值 20 美元的礼物。"
+    "我们收集了总共 70 名儿童的圣诞礼物愿望清单。通过这次圣诞礼物计划，我们共筹集并花费了 48,375 乌克兰格里夫纳（约合 1,075 美元），为每位儿童准备了平均价值 15.4 美元的礼物。"
   ],
   "shelters": [
     {
-      "name": "「儿童之家」庇护所",
-      "nameOriginal": "Притулок «дитячий будинок серії»",
+      "name": "「Shelter」庇护所",
+      "nameOriginal": "Притулок «Шелтер»",
       "address": "第聂伯罗市，斯洛博赞斯克村，家庭街 12 号",
-      "childrenCount": 26
+      "childrenCount": 18
     },
     {
       "name": "「阳光」庇护所",
       "nameOriginal": "Притулок «Сонечко»",
       "address": "第聂伯罗市，春天街 45 号",
-      "childrenCount": 32
+      "childrenCount": 34
     },
     {
       "name": "「彩虹」母亲儿童之家",
@@ -30,17 +30,17 @@
     }
   ],
   "statistics": {
-    "totalChildren": 76,
+    "totalChildren": 70,
     "totalCost": {
-      "uah": 68400,
-      "usd": 1520
+      "uah": 48375,
+      "usd": 1075
     },
-    "averagePerChild": 20,
+    "averagePerChild": 15.4,
     "currency": "USD"
   },
   "giftsList": [
     {
-      "shelter": "「儿童之家」庇护所",
+      "shelter": "「Shelter」庇护所",
       "children": [
         {"name": "Ваня", "gift": "LEGO"},
         {"name": "Богдана", "gift": "大娃娃"},

@@ -30,6 +30,8 @@ function PaymentWidgetContainer({
   error,
   onBack
 }: PaymentWidgetContainerProps) {
+  const t = useTranslations('donate')
+
   // Creating donation state
   if (processingState === 'creating') {
     return (
@@ -37,14 +39,10 @@ function PaymentWidgetContainer({
         {/* Header */}
         <div className="text-center">
           <h2 className="text-xl font-bold text-gray-900 mb-2">
-            {locale === 'en' ? 'Processing Your Donation' : locale === 'zh' ? '正在处理您的捐赠' : 'Обробка вашого внеску'}
+            {t('processing.title')}
           </h2>
           <p className="text-sm text-gray-600">
-            {locale === 'en'
-              ? 'Please wait while we prepare your payment...'
-              : locale === 'zh'
-              ? '请稍候，我们正在准备您的支付...'
-              : 'Зачекайте, ми готуємо ваш платіж...'}
+            {t('processing.wait')}
           </p>
         </div>
 
@@ -52,7 +50,7 @@ function PaymentWidgetContainer({
         <div className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-200">
           <div className="text-center">
             <p className="text-sm text-gray-600 mb-1">
-              {locale === 'en' ? 'Donation Amount' : locale === 'zh' ? '捐赠金额' : 'Сума внеску'}
+              {t('processing.donationAmount')}
             </p>
             <p className="text-3xl font-bold text-blue-600">
               ${amount.toFixed(2)} USD
@@ -67,7 +65,7 @@ function PaymentWidgetContainer({
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
           <p className="text-gray-600 font-medium">
-            {locale === 'en' ? 'Creating donation record...' : locale === 'zh' ? '正在创建捐赠记录...' : 'Створення запису про внесок...'}
+            {t('processing.creatingRecord')}
           </p>
         </div>
 
@@ -79,14 +77,10 @@ function PaymentWidgetContainer({
             </svg>
             <div className="text-sm text-gray-700">
               <p className="font-medium mb-1">
-                {locale === 'en' ? 'Secure Payment' : locale === 'zh' ? '安全支付' : 'Безпечна оплата'}
+                {t('securePayment.title')}
               </p>
               <p className="text-gray-600">
-                {locale === 'en'
-                  ? 'Your payment will be processed securely through WayForPay'
-                  : locale === 'zh'
-                  ? '您的支付将通过 WayForPay 安全处理'
-                  : 'Ваш платіж буде оброблено безпечно через WayForPay'}
+                {t('securePayment.description')}
               </p>
             </div>
           </div>
@@ -102,7 +96,7 @@ function PaymentWidgetContainer({
         {/* Header */}
         <div className="text-center">
           <h2 className="text-xl font-bold text-gray-900 mb-2">
-            {locale === 'en' ? 'Payment Error' : locale === 'zh' ? '支付错误' : 'Помилка оплати'}
+            {t('paymentError.title')}
           </h2>
         </div>
 
@@ -110,7 +104,7 @@ function PaymentWidgetContainer({
         <div className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-200">
           <div className="text-center">
             <p className="text-sm text-gray-600 mb-1">
-              {locale === 'en' ? 'Donation Amount' : locale === 'zh' ? '捐赠金额' : 'Сума внеску'}
+              {t('processing.donationAmount')}
             </p>
             <p className="text-3xl font-bold text-blue-600">
               ${amount.toFixed(2)} USD
@@ -126,15 +120,11 @@ function PaymentWidgetContainer({
             </svg>
             <div className="flex-1">
               <p className="text-base font-bold text-red-800 mb-2">
-                {locale === 'en' ? 'Unable to Process Donation' : locale === 'zh' ? '无法处理捐赠' : 'Не вдалося обробити внесок'}
+                {t('paymentError.unableToProcess')}
               </p>
               <p className="text-sm text-red-700 mb-3">{error}</p>
               <p className="text-xs text-red-600">
-                {locale === 'en'
-                  ? 'You can go back and try again with different information.'
-                  : locale === 'zh'
-                  ? '您可以返回并使用不同的信息重试。'
-                  : 'Ви можете повернутися і спробувати ще раз з іншою інформацією.'}
+                {t('paymentError.tryAgainMessage')}
               </p>
             </div>
           </div>
@@ -150,11 +140,7 @@ function PaymentWidgetContainer({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           <span>
-            {locale === 'en'
-              ? 'Back to Edit Donation'
-              : locale === 'zh'
-              ? '返回修改捐赠信息'
-              : 'Повернутися до редагування'}
+            {t('paymentError.backToEdit')}
           </span>
         </button>
       </div>
@@ -259,7 +245,7 @@ export default function DonationFormCard({
 
     // Validate quantity before submitting
     if (!quantity || quantity < 1) {
-      setError(locale === 'en' ? 'Please enter a valid quantity (minimum 1)' : '请输入有效数量（最少1）')
+      setError(t('errors.invalidQuantity'))
       return
     }
 
@@ -291,14 +277,11 @@ export default function DonationFormCard({
           setQuantity(remainingUnits)
 
           // Show localized error message
-          const errorMsg = locale === 'en'
-            ? `The requested quantity exceeds available units. Maximum available: ${remainingUnits} ${unitName}`
-            : `请求的数量超过可用数量。最大可用：${remainingUnits} ${unitName}`
-          setError(errorMsg)
+          setError(t('errors.quantityExceeded', { remaining: remainingUnits, unitName }))
         } else if (result.error === 'project_not_found') {
-          setError(locale === 'en' ? 'Project not found' : '项目未找到')
+          setError(t('errors.projectNotFound'))
         } else if (result.error === 'project_not_active') {
-          setError(locale === 'en' ? 'Project is not active' : '项目未激活')
+          setError(t('errors.projectNotActive'))
         } else {
           setError(t('errors.serverError'))
         }
@@ -369,9 +352,7 @@ export default function DonationFormCard({
             {t('noProjectSelected')}
           </h3>
           <p className="text-sm text-gray-500">
-            {locale === 'en'
-              ? 'Choose a project from the gallery above to view details and make a donation'
-              : '从上方画廊中选择一个项目以查看详情并进行捐赠'}
+            {t('formCard.noProjectDescription')}
           </p>
         </div>
       </div>
@@ -391,11 +372,7 @@ export default function DonationFormCard({
             <div className="flex items-center gap-2">
               <span className="text-xl">🧪</span>
               <p className="text-sm font-bold text-yellow-800">
-                {locale === 'en'
-                  ? 'TEST MODE: Payment will be skipped'
-                  : locale === 'zh'
-                  ? '测试模式：将跳过支付'
-                  : 'ТЕСТОВИЙ РЕЖИМ: Оплата буде пропущена'}
+                {t('formCard.testModeBanner')}
               </p>
             </div>
           </div>
@@ -484,7 +461,7 @@ export default function DonationFormCard({
             <div className="mt-2 p-2.5 bg-blue-50 rounded-lg">
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium text-gray-700">
-                  {locale === 'en' ? 'Project Total' : '项目总计'}:
+                  {t('payment.projectTotal')}:
                 </span>
                 <span className="text-xl font-bold text-blue-600">
                   ${projectAmount.toFixed(2)} {t('payment.currency')}
@@ -703,7 +680,7 @@ export default function DonationFormCard({
             }`}
           >
             {project.status !== 'active'
-              ? (locale === 'en' ? 'Project Ended' : locale === 'zh' ? '项目已结束' : 'Проект завершено')
+              ? t('formCard.projectEnded')
               : t('submit')
             }
           </button>

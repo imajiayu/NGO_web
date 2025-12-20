@@ -148,6 +148,16 @@
     "selectProjectDescription": "Choose the project you'd like to support",
     "noProjectSelected": "Please select a project above to continue",
     "scrollToViewAll": "Scroll to view all projects",
+    "donateNowButton": "Donate Now",
+    "trackDonationTitle": "Track Your Donation",
+    "trackDonationDescription": "Follow your contribution from payment to completion with full transparency and real-time updates",
+    "showDetails": "Show Details",
+    "hideDetails": "Hide Details",
+    "emptyState": {
+      "title": "Select a Project",
+      "description": "Choose a project from the gallery above to view details and make a donation",
+      "scrollHint": "Scroll up to see all available projects"
+    },
     "project": {
       "label": "Select Project",
       "placeholder": "Choose a project to support",
@@ -201,12 +211,18 @@
     "payment": {
       "title": "Payment Information",
       "total": "Total Amount",
+      "projectTotal": "Project Total",
       "currency": "USD",
       "loading": "Loading payment window...",
       "processing": "Processing payment...",
       "back": "Back to Edit",
       "confirm": "Confirm Payment",
       "backToEdit": "Go back to edit donation details"
+    },
+    "formCard": {
+      "noProjectDescription": "Choose a project from the gallery above to view details and make a donation",
+      "testModeBanner": "TEST MODE: Payment will be skipped",
+      "projectEnded": "Project Ended"
     },
     "submit": "Submit Donation",
     "submitting": "Processing...",
@@ -221,13 +237,59 @@
       "emailInvalid": "Please enter a valid email address",
       "messageMax": "Message must be less than {max} characters"
     },
+    "processing": {
+      "title": "Processing Your Donation",
+      "wait": "Please wait while we prepare your payment...",
+      "creatingRecord": "Creating donation record...",
+      "donationAmount": "Donation Amount"
+    },
+    "securePayment": {
+      "title": "Secure Payment",
+      "description": "Your payment will be processed securely through WayForPay",
+      "poweredBy": "Powered by WayForPay"
+    },
+    "paymentError": {
+      "title": "Payment Error",
+      "unableToProcess": "Unable to Process Donation",
+      "tryAgainMessage": "You can go back and try again with different information.",
+      "backToEdit": "Back to Edit Donation"
+    },
+    "operationalDonation": {
+      "thankYou": "Thank you for supporting our operations!",
+      "projectDonation": "Project Donation"
+    },
     "errors": {
       "paymentLoadFailed": "Failed to load payment window. Please check your connection and try again.",
       "paymentFailed": "Payment failed. Please try again.",
       "serverError": "Server error. Please contact support.",
       "networkError": "Network error. Please check your connection.",
       "invalidEmail": "Please enter a valid email address.",
-      "validationError": "Please check your input and try again."
+      "validationError": "Please check your input and try again.",
+      "invalidQuantity": "Please enter a valid quantity (minimum 1)",
+      "quantityExceeded": "The requested quantity exceeds available units. Maximum available: {remaining} {unitName}",
+      "projectNotFound": "Project not found",
+      "projectNotActive": "Project is not active"
+    }
+  },
+  "wayforpayWidget": {
+    "networkError": "No internet connection. Please check your network and try again.",
+    "windowClosed": "Payment window was closed. You can try again or contact support if you believe this is an error.",
+    "popupBlocked": "Payment page did not open. Please check your popup blocker settings and try again.",
+    "windowOpening": "A payment window will open shortly",
+    "redirecting": {
+      "title": "Redirecting to Payment Page...",
+      "description": "You will be redirected to WayForPay secure payment page in a moment. Please do not close this window.",
+      "popupHint": "If nothing happens, check your popup blocker settings"
+    },
+    "paymentFailed": {
+      "title": "Payment Failed",
+      "message": "You can go back and try again with a different payment method."
+    },
+    "preparing": "Preparing payment window...",
+    "backToEdit": "Back to Edit Donation",
+    "securePayment": {
+      "title": "Secure Payment",
+      "description": "Your payment is processed securely through WayForPay"
     }
   },
   "donateSuccess": {
@@ -394,16 +456,26 @@
     "email": "Email",
     "phone": "Phone",
     "address": "Address",
+    "contactInfo": {
+      "emailValue": "contact@waytofutureua.org.ua",
+      "phoneValue": "+38 096 383 7878",
+      "addressValue": "St. Heroes of Ukraine, 27c\nSlobozhanske village, Dnipro city\nDnipropetrovsk region, 52005\nUkraine"
+    },
     "copyrightLine1": "© {year} WAY TO FUTURE UA.",
     "copyrightLine2": "All rights reserved.",
     "policies": "Policies",
     "privacyPolicy": "Privacy Policy",
     "publicAgreement": "Public Agreement"
   },
+  "metadata": {
+    "homeDescription": "Empowering communities through meaningful projects",
+    "logoAlt": "WAY Logo"
+  },
   "privacyPolicy": {
     "title": "Privacy Policy",
     "description": "How we collect, use, and protect your personal information",
     "effectiveDate": "Effective Date",
+    "effectiveDateValue": "September 24, 2022",
     "intro": "Charitable foundation \"Way to future UA\" (hereinafter referred to as \"we\" or \"the Foundation\") respects your privacy and is committed to protecting the personal data you provide. This privacy policy explains what information we collect, how we use it, and how we store it.",
     "section1": {
       "title": "1. What Information do we collect?",
@@ -517,10 +589,15 @@
     "section9": {
       "title": "9. CONTACT DETAILS OF THE FOUNDATION",
       "name": "Name",
+      "nameValue": "Charitable Foundation \"Way to future UA\"",
       "address": "Address",
+      "addressValue": "Ukraine, 52005, Dnipropetrovsk region, Dnipro city, Slobozhanske village, St. Heroes of Ukraine, 27c",
       "website": "Website",
+      "websiteValue": "https://alexzaiwukelan.org.ua/",
       "email": "Email",
-      "phone": "Phone"
+      "emailValue": "contact@waytofutureua.org.ua",
+      "phone": "Phone",
+      "phoneValue": "+38 096 383 7878"
     }
   }
 }

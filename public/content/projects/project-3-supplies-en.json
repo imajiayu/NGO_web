@@ -1,126 +1,134 @@
 {
   "supplies": [
     {
-      "item": "Nerf Toy Gun",
+      "item": "Large Kinder Egg",
       "quantity": 14,
       "unitPrice": {
-        "uah": 900,
-        "usd": 20
+        "uah": 630,
+        "usd": 14
+      },
+      "subtotal": {
+        "uah": 8820,
+        "usd": 196
       }
     },
     {
-      "item": "Large Kinder Egg",
-      "quantity": 11,
+      "item": "LEGO Car",
+      "quantity": 9,
       "unitPrice": {
-        "uah": 600,
-        "usd": 13
+        "uah": 720,
+        "usd": 16
+      },
+      "subtotal": {
+        "uah": 6480,
+        "usd": 144
       }
     },
     {
-      "item": "LEGO Constructor Set",
-      "quantity": 4,
+      "item": "Nerf Toy Gun",
+      "quantity": 13,
       "unitPrice": {
-        "uah": 1100,
-        "usd": 24
+        "uah": 675,
+        "usd": 15
+      },
+      "subtotal": {
+        "uah": 8775,
+        "usd": 195
       }
     },
     {
       "item": "Large Doll",
-      "quantity": 4,
+      "quantity": 6,
       "unitPrice": {
-        "uah": 1000,
-        "usd": 22
+        "uah": 810,
+        "usd": 18
+      },
+      "subtotal": {
+        "uah": 4860,
+        "usd": 108
       }
     },
     {
       "item": "FNAF Toy",
-      "quantity": 4,
+      "quantity": 8,
       "unitPrice": {
-        "uah": 850,
-        "usd": 19
-      }
-    },
-    {
-      "item": "FNAF Toy Game Set",
-      "quantity": 4,
-      "unitPrice": {
-        "uah": 900,
-        "usd": 20
+        "uah": 585,
+        "usd": 13
+      },
+      "subtotal": {
+        "uah": 4680,
+        "usd": 104
       }
     },
     {
       "item": "Remote Control Car",
       "quantity": 4,
       "unitPrice": {
-        "uah": 1200,
-        "usd": 27
+        "uah": 765,
+        "usd": 17
+      },
+      "subtotal": {
+        "uah": 3060,
+        "usd": 68
       }
     },
     {
       "item": "Slime & Makeup Bag Set",
       "quantity": 4,
       "unitPrice": {
-        "uah": 700,
-        "usd": 16
-      }
-    },
-    {
-      "item": "Doll",
-      "quantity": 4,
-      "unitPrice": {
-        "uah": 800,
-        "usd": 18
-      }
-    },
-    {
-      "item": "LEGO Car",
-      "quantity": 4,
-      "unitPrice": {
-        "uah": 950,
-        "usd": 21
+        "uah": 630,
+        "usd": 14
+      },
+      "subtotal": {
+        "uah": 2520,
+        "usd": 56
       }
     },
     {
       "item": "LEGO City Set",
       "quantity": 4,
       "unitPrice": {
-        "uah": 1300,
-        "usd": 29
+        "uah": 900,
+        "usd": 20
+      },
+      "subtotal": {
+        "uah": 3600,
+        "usd": 80
       }
     },
     {
       "item": "Pillow Toy",
       "quantity": 4,
       "unitPrice": {
-        "uah": 850,
-        "usd": 19
+        "uah": 675,
+        "usd": 15
+      },
+      "subtotal": {
+        "uah": 2700,
+        "usd": 60
       }
     },
     {
       "item": "Plush Teddy Bear",
       "quantity": 4,
       "unitPrice": {
-        "uah": 800,
-        "usd": 18
-      }
-    },
-    {
-      "item": "Other Gifts",
-      "quantity": 7,
-      "unitPrice": {
-        "uah": 900,
-        "usd": 20
+        "uah": 720,
+        "usd": 16
+      },
+      "subtotal": {
+        "uah": 2880,
+        "usd": 64
       }
     }
   ],
   "total": {
-    "items": 76,
+    "items": 70,
     "totalCost": {
-      "uah": 68400,
-      "usd": 1520
+      "uah": 48375,
+      "usd": 1075
     }
   },
-  "exchangeRateNote": "Based on exchange rate at time of purchase",
+  "exchangeRateNote": "Based on exchange rate: 1 USD = 45 UAH at time of purchase",
   "receipts": {
     "description": "Expense receipts will be uploaded after procurement",
     "images": []

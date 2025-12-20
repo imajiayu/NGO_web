@@ -7,20 +7,20 @@
   ],
   "introduction": [
     "As Christmas approached, we visited two children's shelters and one mother-child home in Dnipro, Ukraine. These facilities house children who have lost both parents or their fathers due to the war.",
-    "We collected Christmas gift wish lists from a total of 76 children. Through this Christmas gift program, we raised and spent 68,400 Ukrainian hryvnias (approximately $1,520 USD), providing gifts worth an average of $20 for each child."
+    "We collected Christmas gift wish lists from a total of 70 children. Through this Christmas gift program, we raised and spent 48,375 Ukrainian hryvnias (approximately $1,075 USD), providing gifts worth an average of $15.4 for each child."
   ],
   "shelters": [
     {
-      "name": "Children's Home Shelter",
-      "nameOriginal": "Притулок «дитячий будинок серії»",
+      "name": "Shelter",
+      "nameOriginal": "Притулок «Шелтер»",
       "address": "12 Simeyna St, Slobozhanske village, Dnipro",
-      "childrenCount": 26
+      "childrenCount": 18
     },
     {
       "name": "Sunflower Shelter",
       "nameOriginal": "Притулок «Сонечко»",
       "address": "45 Vesniana St, Dnipro",
-      "childrenCount": 32
+      "childrenCount": 34
     },
     {
       "name": "Rainbow Mother and Child Home",
@@ -30,17 +30,17 @@
     }
   ],
   "statistics": {
-    "totalChildren": 76,
+    "totalChildren": 70,
     "totalCost": {
-      "uah": 68400,
-      "usd": 1520
+      "uah": 48375,
+      "usd": 1075
     },
-    "averagePerChild": 20,
+    "averagePerChild": 15.4,
     "currency": "USD"
   },
   "giftsList": [
     {
-      "shelter": "Children's Home Shelter",
+      "shelter": "Shelter",
       "children": [
         {"name": "Vanya", "gift": "LEGO"},
         {"name": "Bohdana", "gift": "Large doll"},

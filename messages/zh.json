@@ -148,6 +148,16 @@
     "selectProjectDescription": "选择您想要支持的项目",
     "noProjectSelected": "请在上方选择一个项目以继续",
     "scrollToViewAll": "滚动查看所有项目",
+    "donateNowButton": "立即捐赠",
+    "trackDonationTitle": "追踪您的捐款",
+    "trackDonationDescription": "以完全透明和实时更新的方式跟踪您的捐款从支付到完成的整个过程",
+    "showDetails": "显示详情",
+    "hideDetails": "隐藏详情",
+    "emptyState": {
+      "title": "选择一个项目",
+      "description": "从上方画廊中选择一个项目以查看详情并进行捐赠",
+      "scrollHint": "向上滚动查看所有可用项目"
+    },
     "project": {
       "label": "选择项目",
       "placeholder": "选择要支持的项目",
@@ -201,12 +211,18 @@
     "payment": {
       "title": "支付信息",
       "total": "总金额",
+      "projectTotal": "项目总计",
       "currency": "美元",
       "loading": "正在加载支付窗口...",
       "processing": "正在处理支付...",
       "back": "返回编辑",
       "confirm": "确认支付",
       "backToEdit": "返回编辑捐赠信息"
+    },
+    "formCard": {
+      "noProjectDescription": "从上方画廊中选择一个项目以查看详情并进行捐赠",
+      "testModeBanner": "测试模式：将跳过支付",
+      "projectEnded": "项目已结束"
     },
     "submit": "提交捐赠",
     "submitting": "处理中...",
@@ -221,13 +237,59 @@
       "emailInvalid": "请输入有效的邮箱地址",
       "messageMax": "留言不能超过 {max} 个字符"
     },
+    "processing": {
+      "title": "正在处理您的捐赠",
+      "wait": "请稍候，我们正在为您准备支付...",
+      "creatingRecord": "正在创建捐赠记录...",
+      "donationAmount": "捐赠金额"
+    },
+    "securePayment": {
+      "title": "安全支付",
+      "description": "您的支付将通过 WayForPay 安全处理",
+      "poweredBy": "由 WayForPay 提供支持"
+    },
+    "paymentError": {
+      "title": "支付错误",
+      "unableToProcess": "无法处理捐赠",
+      "tryAgainMessage": "您可以返回并使用不同的信息重试。",
+      "backToEdit": "返回编辑捐赠"
+    },
+    "operationalDonation": {
+      "thankYou": "感谢您支持我们的运营！",
+      "projectDonation": "项目捐赠"
+    },
     "errors": {
       "paymentLoadFailed": "支付窗口加载失败，请检查网络连接后重试。",
       "paymentFailed": "支付失败，请重试。",
       "serverError": "服务器错误，请联系客服。",
       "networkError": "网络错误，请检查网络连接。",
       "invalidEmail": "请输入有效的邮箱地址。",
-      "validationError": "请检查您的输入后重试。"
+      "validationError": "请检查您的输入后重试。",
+      "invalidQuantity": "请输入有效数量（最少 1）",
+      "quantityExceeded": "所需数量超过可用单位。最大可用：{remaining} {unitName}",
+      "projectNotFound": "项目未找到",
+      "projectNotActive": "项目未激活"
+    }
+  },
+  "wayforpayWidget": {
+    "networkError": "无网络连接。请检查您的网络后重试。",
+    "windowClosed": "支付窗口已关闭。您可以重试，如果您认为这是错误，请联系客服。",
+    "popupBlocked": "支付页面未打开。请检查您的弹窗拦截设置后重试。",
+    "windowOpening": "支付窗口即将打开",
+    "redirecting": {
+      "title": "正在跳转到支付页面...",
+      "description": "您将在片刻后被重定向到 WayForPay 安全支付页面。请不要关闭此窗口。",
+      "popupHint": "如果没有任何反应，请检查您的弹窗拦截设置"
+    },
+    "paymentFailed": {
+      "title": "支付失败",
+      "message": "您可以返回并使用其他支付方式重试。"
+    },
+    "preparing": "正在准备支付窗口...",
+    "backToEdit": "返回编辑捐赠",
+    "securePayment": {
+      "title": "安全支付",
+      "description": "您的支付将通过 WayForPay 安全处理"
     }
   },
   "donateSuccess": {
@@ -394,16 +456,26 @@
     "email": "邮箱",
     "phone": "电话",
     "address": "地址",
+    "contactInfo": {
+      "emailValue": "contact@waytofutureua.org.ua",
+      "phoneValue": "+38 096 383 7878",
+      "addressValue": "乌克兰英雄街 27c\n斯洛博赞斯克村，第聂伯罗市\n第聂伯罗彼得罗夫斯克州，52005\n乌克兰"
+    },
     "copyrightLine1": "© {year} WAY TO FUTURE UA.",
     "copyrightLine2": "保留所有权利。",
     "policies": "政策条款",
     "privacyPolicy": "隐私政策",
     "publicAgreement": "用户协议"
   },
+  "metadata": {
+    "homeDescription": "通过有意义的项目赋能社区",
+    "logoAlt": "WAY 标志"
+  },
   "privacyPolicy": {
     "title": "隐私政策",
     "description": "我们如何收集、使用和保护您的个人信息",
     "effectiveDate": "生效日期",
+    "effectiveDateValue": "2022年9月24日",
     "intro": "慈善基金会'通往未来乌克兰'（以下简称'我们'或'基金会'）尊重您的隐私，并致力于保护您提供的个人数据。本隐私政策说明我们收集哪些信息、如何使用以及如何存储这些信息。",
     "section1": {
       "title": "1. 我们收集哪些信息？",
@@ -517,10 +589,15 @@
     "section9": {
       "title": "9. 基金会联系方式",
       "name": "名称",
+      "nameValue": "慈善基金会'通往未来乌克兰'",
       "address": "地址",
+      "addressValue": "乌克兰，52005，第聂伯罗彼得罗夫斯克州，第聂伯罗市，斯洛博赞斯克村，乌克兰英雄街27c",
       "website": "网站",
+      "websiteValue": "https://alexzaiwukelan.org.ua/",
       "email": "邮箱",
-      "phone": "电话"
+      "emailValue": "contact@waytofutureua.org.ua",
+      "phone": "电话",
+      "phoneValue": "+38 096 383 7878"
     }
   }
 }

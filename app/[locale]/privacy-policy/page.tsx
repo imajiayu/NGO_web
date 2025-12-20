@@ -11,6 +11,7 @@ export async function generateMetadata() {
 
 export default function PrivacyPolicyPage() {
   const t = useTranslations('privacyPolicy')
+  const tFooter = useTranslations('footer')
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -19,7 +20,7 @@ export default function PrivacyPolicyPage() {
           {t('title')}
         </h1>
         <p className="text-sm text-gray-500 mb-8">
-          <strong>{t('effectiveDate')}:</strong> September 24, 2022
+          <strong>{t('effectiveDate')}:</strong> {t('effectiveDateValue')}
         </p>
 
         <div className="prose prose-gray max-w-none space-y-6">
@@ -124,15 +125,13 @@ export default function PrivacyPolicyPage() {
             </p>
             <div className="space-y-2 text-gray-700">
               <p>
-                <strong>{t('section8.email')}:</strong> contact@waytofutureua.org.ua
+                <strong>{t('section8.email')}:</strong> {tFooter('contactInfo.emailValue')}
               </p>
               <p>
-                <strong>{t('section8.address')}:</strong> Ukraine, 52005,
-                Dnipropetrovsk region, Dnipro city, Slobozhanske village, St.
-                Heroes of Ukraine, 27c (former Teplichna)
+                <strong>{t('section8.address')}:</strong> {tFooter('contactInfo.addressValue').replace(/\n/g, ', ')}
               </p>
               <p>
-                <strong>{t('section8.phone')}:</strong> +38 096 383 7878
+                <strong>{t('section8.phone')}:</strong> {tFooter('contactInfo.phoneValue')}
               </p>
             </div>
           </section>

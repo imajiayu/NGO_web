@@ -69,7 +69,7 @@ export default function Footer() {
   const contactInfo = [
     {
       label: t('email'),
-      value: 'contact@waytofutureua.org.ua',
+      value: t('contactInfo.emailValue'),
       icon: (
         <svg
           className="w-5 h-5 text-gray-400 flex-shrink-0"
@@ -89,7 +89,7 @@ export default function Footer() {
     },
     {
       label: t('phone'),
-      value: '+38 096 383 7878',
+      value: t('contactInfo.phoneValue'),
       icon: (
         <svg
           className="w-5 h-5 text-gray-400 flex-shrink-0"
@@ -109,17 +109,12 @@ export default function Footer() {
     },
     {
       label: t('address'),
-      value: (
-        <>
-          St. Heroes of Ukraine, 27c
-          <br />
-          Slobozhanske village, Dnipro city
-          <br />
-          Dnipropetrovsk region, 52005
-          <br />
-          Ukraine
-        </>
-      ),
+      value: t('contactInfo.addressValue').split('\n').map((line, i, arr) => (
+        <span key={i}>
+          {line}
+          {i < arr.length - 1 && <br />}
+        </span>
+      )),
       icon: (
         <svg
           className="w-5 h-5 text-gray-400 flex-shrink-0"

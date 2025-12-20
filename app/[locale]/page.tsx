@@ -16,10 +16,11 @@ export function generateStaticParams() {
 
 export async function generateMetadata() {
   const t = await getTranslations('common')
+  const tMeta = await getTranslations('metadata')
 
   return {
     title: t('appName'),
-    description: 'Empowering communities through meaningful projects',
+    description: tMeta('homeDescription'),
   }
 }
 

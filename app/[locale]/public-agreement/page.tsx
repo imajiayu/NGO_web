@@ -165,30 +165,27 @@ export default function PublicAgreementPage() {
             </h2>
             <div className="space-y-2 text-gray-700">
               <p>
-                <strong>{t('section9.name')}:</strong> Charitable Foundation "Way
-                to future UA"
+                <strong>{t('section9.name')}:</strong> {t('section9.nameValue')}
               </p>
               <p>
-                <strong>{t('section9.address')}:</strong> Ukraine, 52005,
-                Dnipropetrovsk region, Dnipro city, Slobozhanske village, St.
-                Heroes of Ukraine, 27c
+                <strong>{t('section9.address')}:</strong> {t('section9.addressValue')}
               </p>
               <p>
                 <strong>{t('section9.website')}:</strong>{' '}
                 <a
-                  href="https://alexzaiwukelan.org.ua/"
+                  href={t('section9.websiteValue')}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:text-blue-800 underline"
                 >
-                  https://alexzaiwukelan.org.ua/
+                  {t('section9.websiteValue')}
                 </a>
               </p>
               <p>
-                <strong>{t('section9.email')}:</strong> contact@waytofutureua.org.ua
+                <strong>{t('section9.email')}:</strong> {t('section9.emailValue')}
               </p>
               <p>
-                <strong>{t('section9.phone')}:</strong> +38 096 383 7878
+                <strong>{t('section9.phone')}:</strong> {t('section9.phoneValue')}
               </p>
             </div>
           </section>

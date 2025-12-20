@@ -8,6 +8,7 @@ import { useState, useTransition } from 'react'
 
 export default function Navigation() {
   const t = useTranslations('navigation')
+  const tMeta = useTranslations('metadata')
   const locale = useLocale()
   const router = useRouter()
   const pathname = usePathname()
@@ -79,7 +80,7 @@ export default function Navigation() {
             >
               <Image
                 src="/images/logo.svg"
-                alt="WAY Logo"
+                alt={tMeta('logoAlt')}
                 width={200}
                 height={100}
                 className="h-12 w-auto"
