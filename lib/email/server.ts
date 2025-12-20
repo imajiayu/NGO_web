@@ -87,7 +87,7 @@ function getEmailContent(
       nextSteps: 'What happens next?',
       nextStepsContent: 'We will confirm your donation and begin processing it. You will receive updates as your donation progresses through delivery.',
       contact: 'If you have any questions, please don\'t hesitate to contact us.',
-      signature: 'With gratitude,<br>The NGO Team',
+      signature: 'With gratitude,<br>Way to Future UA Team',
       footer: 'This is an automated confirmation email. Please do not reply to this email.'
     },
     zh: {
@@ -102,7 +102,7 @@ function getEmailContent(
       nextSteps: '后续流程',
       nextStepsContent: '我们将确认您的捐赠并开始处理。随着捐赠进展，您将收到更新通知。',
       contact: '如有任何疑问，请随时联系我们。',
-      signature: '致以诚挚的感谢，<br>NGO 团队',
+      signature: '致以诚挚的感谢，<br>乌克兰未来之路 团队',
       footer: '这是一封自动确认邮件，请勿回复。'
     },
     ua: {
@@ -117,7 +117,7 @@ function getEmailContent(
       nextSteps: 'Що далі?',
       nextStepsContent: 'Ми підтвердимо ваше пожертвування та почнемо його обробку. Ви отримуватимете оновлення про статус доставки.',
       contact: 'Якщо у вас виникнуть запитання, будь ласка, не соромтеся звертатися до нас.',
-      signature: 'З вдячністю,<br>Команда NGO',
+      signature: 'З вдячністю,<br>Way to Future UA Team',
       footer: 'Це автоматичне підтвердження. Будь ласка, не відповідайте на цей лист.'
     }
   }

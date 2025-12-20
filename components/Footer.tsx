@@ -69,7 +69,7 @@ export default function Footer() {
   const contactInfo = [
     {
       label: t('email'),
-      value: 'waytofutureua@gmail.com',
+      value: 'contact@waytofutureua.org.ua',
       icon: (
         <svg
           className="w-5 h-5 text-gray-400 flex-shrink-0"
@@ -85,7 +85,7 @@ export default function Footer() {
           />
         </svg>
       ),
-      href: 'mailto:waytofutureua@gmail.com',
+      href: 'mailto:contact@waytofutureua.org.ua',
     },
     {
       label: t('phone'),

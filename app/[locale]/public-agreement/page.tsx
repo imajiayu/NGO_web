@@ -185,7 +185,7 @@ export default function PublicAgreementPage() {
                 </a>
               </p>
               <p>
-                <strong>{t('section9.email')}:</strong> waytofutureua@gmail.com
+                <strong>{t('section9.email')}:</strong> contact@waytofutureua.org.ua
               </p>
               <p>
                 <strong>{t('section9.phone')}:</strong> +38 096 383 7878

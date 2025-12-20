@@ -124,7 +124,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <div className="space-y-2 text-gray-700">
               <p>
-                <strong>{t('section8.email')}:</strong> waytofutureua@gmail.com
+                <strong>{t('section8.email')}:</strong> contact@waytofutureua.org.ua
               </p>
               <p>
                 <strong>{t('section8.address')}:</strong> Ukraine, 52005,
