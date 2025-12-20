@@ -9,28 +9,42 @@ const resend = new Resend(process.env.RESEND_API_KEY)
  */
 export async function POST(req: NextRequest) {
   try {
-    // Parse incoming email data from Resend webhook
     const payload = await req.json()
 
-    console.log('📧 Received inbound email:', {
-      from: payload.from,
-      to: payload.to,
-      subject: payload.subject,
-      receivedAt: new Date().toISOString(),
+    // Extract email data from webhook payload
+    const { email_id, from, to, subject, cc, bcc } = payload.data
+
+    console.log('📧 Received inbound email webhook:', {
+      email_id,
+      from,
+      to: to[0],
+      subject,
     })
 
-    // Extract email details
-    const {
-      from,
-      to,
-      subject,
-      html,
-      text,
-      reply_to,
-      cc,
-      bcc,
-      attachments,
-    } = payload
+    // Fetch full email content from Resend Inbound API
+    // Using REST API directly since SDK might not have this method yet
+    const emailContentResponse = await fetch(
+      `https://api.resend.com/emails/${email_id}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        },
+      }
+    )
+
+    if (!emailContentResponse.ok) {
+      throw new Error(`Failed to fetch email content: ${emailContentResponse.statusText}`)
+    }
+
+    const emailContent = await emailContentResponse.json()
+    const htmlBody = emailContent.html || emailContent.html_body || ''
+    const textBody = emailContent.text || emailContent.text_body || ''
+
+    // Format recipient addresses
+    const toAddresses = Array.isArray(to) ? to.join(', ') : to
+    const ccAddresses = cc && cc.length > 0 ? cc.join(', ') : null
+    const bccAddresses = bcc && bcc.length > 0 ? bcc.join(', ') : null
 
     // Forward the email to majiayu110@gmail.com
     const forwardResult = await resend.emails.send({
@@ -43,15 +57,14 @@ export async function POST(req: NextRequest) {
             <h3 style="margin: 0 0 12px 0; color: #374151;">📨 Forwarded Email</h3>
             <div style="font-size: 14px; color: #6b7280;">
               <p style="margin: 4px 0;"><strong>From:</strong> ${from}</p>
-              <p style="margin: 4px 0;"><strong>To:</strong> ${to}</p>
+              <p style="margin: 4px 0;"><strong>To:</strong> ${toAddresses}</p>
               <p style="margin: 4px 0;"><strong>Subject:</strong> ${subject || '(No Subject)'}</p>
-              ${reply_to ? `<p style="margin: 4px 0;"><strong>Reply-To:</strong> ${reply_to}</p>` : ''}
-              ${cc ? `<p style="margin: 4px 0;"><strong>CC:</strong> ${cc}</p>` : ''}
+              ${ccAddresses ? `<p style="margin: 4px 0;"><strong>CC:</strong> ${ccAddresses}</p>` : ''}
             </div>
           </div>
 
           <div style="border-top: 2px solid #e5e7eb; padding-top: 20px;">
-            ${html || `<pre style="white-space: pre-wrap; font-family: inherit;">${text || '(No content)'}</pre>`}
+            ${htmlBody || `<pre style="white-space: pre-wrap; font-family: inherit;">${textBody || '(No content)'}</pre>`}
           </div>
         </div>
       `,
@@ -61,24 +74,21 @@ export async function POST(req: NextRequest) {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 From: ${from}
-To: ${to}
+To: ${toAddresses}
 Subject: ${subject || '(No Subject)'}
-${reply_to ? `Reply-To: ${reply_to}` : ''}
-${cc ? `CC: ${cc}` : ''}
+${ccAddresses ? `CC: ${ccAddresses}` : ''}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-${text || '(No content)'}
+${textBody || '(No content)'}
       `.trim(),
-      // Forward attachments if any
-      ...(attachments && attachments.length > 0
-        ? { attachments }
-        : {}),
     })
 
-    console.log('✅ Email forwarded successfully:', forwardResult)
+    console.log('✅ Email forwarded successfully:', {
+      messageId: forwardResult.data?.id,
+      forwardedTo: 'majiayu110@gmail.com',
+    })
 
-    // Return success response to Resend
     return NextResponse.json(
       {
         success: true,
@@ -90,7 +100,6 @@ ${text || '(No content)'}
   } catch (error) {
     console.error('❌ Error forwarding email:', error)
 
-    // Log error but return 200 to prevent Resend from retrying
     return NextResponse.json(
       {
         success: false,
