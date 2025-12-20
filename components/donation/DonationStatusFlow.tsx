@@ -101,7 +101,7 @@ export default function DonationStatusFlow({
       {/* Two-row layout */}
       <div className="relative pb-1">
         {/* Row 1: Main Flow */}
-        <div className="relative flex items-start justify-between mb-20">
+        <div className="relative flex items-start justify-between mb-28 sm:mb-32 md:mb-24">
           {mainFlow.map((status, index) => (
             <div key={status} className="flex flex-col items-center flex-1 relative">
               {/* Connection Line to next status */}
@@ -118,25 +118,25 @@ export default function DonationStatusFlow({
               </div>
 
               {/* Status Title */}
-              <div className={`mt-2 text-center ${getStatusColor(status)}`}>
-                <div className="text-sm font-medium">{t(`stages.${status}.title`)}</div>
-                <div className="text-xs text-gray-500 mt-1">{t(`stages.${status}.timeframe`)}</div>
+              <div className={`mt-2 text-center px-1 ${getStatusColor(status)}`}>
+                <div className="text-xs sm:text-sm font-medium break-words">{t(`stages.${status}.title`)}</div>
+                <div className="text-xs text-gray-500 mt-1 break-words">{t(`stages.${status}.timeframe`)}</div>
               </div>
             </div>
           ))}
         </div>
 
         {/* Row 2: Refund Flow (aligned with paid and delivering) */}
-        <div className="absolute top-20 left-0 right-0">
+        <div className="absolute top-28 sm:top-32 md:top-24 left-0 right-0">
           <div className="relative flex items-start">
             {/* Position refunding under paid (index 0) */}
             <div className="flex flex-col items-center flex-1 relative">
               <div className="relative z-10 bg-white rounded-full p-1">
                 {getStatusIcon('refunding', 'refund')}
               </div>
-              <div className={`mt-2 text-center ${getStatusColor('refunding')}`}>
-                <div className="text-sm font-medium">{t('stages.refunding.title')}</div>
-                <div className="text-xs text-gray-500 mt-1">{t('stages.refunding.timeframe')}</div>
+              <div className={`mt-2 text-center px-1 ${getStatusColor('refunding')}`}>
+                <div className="text-xs sm:text-sm font-medium break-words">{t('stages.refunding.title')}</div>
+                <div className="text-xs text-gray-500 mt-1 break-words">{t('stages.refunding.timeframe')}</div>
               </div>
             </div>
 
@@ -154,9 +154,9 @@ export default function DonationStatusFlow({
               <div className="relative z-10 bg-white rounded-full p-1">
                 {getStatusIcon('refunded', 'refund')}
               </div>
-              <div className={`mt-2 text-center ${getStatusColor('refunded')}`}>
-                <div className="text-sm font-medium">{t('stages.refunded.title')}</div>
-                <div className="text-xs text-gray-500 mt-1">{t('stages.refunded.timeframe')}</div>
+              <div className={`mt-2 text-center px-1 ${getStatusColor('refunded')}`}>
+                <div className="text-xs sm:text-sm font-medium break-words">{t('stages.refunded.title')}</div>
+                <div className="text-xs text-gray-500 mt-1 break-words">{t('stages.refunded.timeframe')}</div>
               </div>
             </div>
 
@@ -167,7 +167,7 @@ export default function DonationStatusFlow({
       </div>
 
       {/* Descriptions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-24 sm:mt-28 md:mt-20">
         {/* Main flow descriptions */}
         {mainFlow.map((status) => (
           <div

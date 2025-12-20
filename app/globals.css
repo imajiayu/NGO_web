@@ -17,6 +17,11 @@
   }
 } */
 
+html, body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 body {
   color: rgb(0, 0, 0);
   background: #f9fafb;

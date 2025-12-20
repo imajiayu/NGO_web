@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import type { ProjectStats } from '@/types'
 import { createWayForPayDonation } from '@/app/actions/donation'
@@ -10,6 +10,171 @@ import { getProjectName, getLocation, getUnitName, type SupportedLocale } from '
 interface DonationFormCardProps {
   project: ProjectStats | null
   locale: string
+}
+
+interface PaymentWidgetContainerProps {
+  processingState: 'idle' | 'creating' | 'ready' | 'error'
+  paymentParams: any | null
+  amount: number
+  locale: string
+  error: string | null
+  onBack: () => void
+}
+
+// Component that handles all payment widget states
+function PaymentWidgetContainer({
+  processingState,
+  paymentParams,
+  amount,
+  locale,
+  error,
+  onBack
+}: PaymentWidgetContainerProps) {
+  // Creating donation state
+  if (processingState === 'creating') {
+    return (
+      <div className="p-6 space-y-6">
+        {/* Header */}
+        <div className="text-center">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">
+            {locale === 'en' ? 'Processing Your Donation' : locale === 'zh' ? '正在处理您的捐赠' : 'Обробка вашого внеску'}
+          </h2>
+          <p className="text-sm text-gray-600">
+            {locale === 'en'
+              ? 'Please wait while we prepare your payment...'
+              : locale === 'zh'
+              ? '请稍候，我们正在准备您的支付...'
+              : 'Зачекайте, ми готуємо ваш платіж...'}
+          </p>
+        </div>
+
+        {/* Amount Display */}
+        <div className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+          <div className="text-center">
+            <p className="text-sm text-gray-600 mb-1">
+              {locale === 'en' ? 'Donation Amount' : locale === 'zh' ? '捐赠金额' : 'Сума внеску'}
+            </p>
+            <p className="text-3xl font-bold text-blue-600">
+              ${amount.toFixed(2)} USD
+            </p>
+          </div>
+        </div>
+
+        {/* Processing Animation */}
+        <div className="py-8 flex flex-col items-center justify-center space-y-4">
+          <svg className="animate-spin h-16 w-16 text-blue-600" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p className="text-gray-600 font-medium">
+            {locale === 'en' ? 'Creating donation record...' : locale === 'zh' ? '正在创建捐赠记录...' : 'Створення запису про внесок...'}
+          </p>
+        </div>
+
+        {/* Security Notice */}
+        <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+          <div className="flex gap-3">
+            <svg className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <div className="text-sm text-gray-700">
+              <p className="font-medium mb-1">
+                {locale === 'en' ? 'Secure Payment' : locale === 'zh' ? '安全支付' : 'Безпечна оплата'}
+              </p>
+              <p className="text-gray-600">
+                {locale === 'en'
+                  ? 'Your payment will be processed securely through WayForPay'
+                  : locale === 'zh'
+                  ? '您的支付将通过 WayForPay 安全处理'
+                  : 'Ваш платіж буде оброблено безпечно через WayForPay'}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Error state
+  if (processingState === 'error' || error) {
+    return (
+      <div className="p-6 space-y-6">
+        {/* Header */}
+        <div className="text-center">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">
+            {locale === 'en' ? 'Payment Error' : locale === 'zh' ? '支付错误' : 'Помилка оплати'}
+          </h2>
+        </div>
+
+        {/* Amount Display */}
+        <div className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+          <div className="text-center">
+            <p className="text-sm text-gray-600 mb-1">
+              {locale === 'en' ? 'Donation Amount' : locale === 'zh' ? '捐赠金额' : 'Сума внеску'}
+            </p>
+            <p className="text-3xl font-bold text-blue-600">
+              ${amount.toFixed(2)} USD
+            </p>
+          </div>
+        </div>
+
+        {/* Error Message */}
+        <div className="p-5 bg-red-50 border-2 border-red-200 rounded-lg">
+          <div className="flex gap-3 mb-4">
+            <svg className="w-6 h-6 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div className="flex-1">
+              <p className="text-base font-bold text-red-800 mb-2">
+                {locale === 'en' ? 'Unable to Process Donation' : locale === 'zh' ? '无法处理捐赠' : 'Не вдалося обробити внесок'}
+              </p>
+              <p className="text-sm text-red-700 mb-3">{error}</p>
+              <p className="text-xs text-red-600">
+                {locale === 'en'
+                  ? 'You can go back and try again with different information.'
+                  : locale === 'zh'
+                  ? '您可以返回并使用不同的信息重试。'
+                  : 'Ви можете повернутися і спробувати ще раз з іншою інформацією.'}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Back Button */}
+        <button
+          type="button"
+          onClick={onBack}
+          className="w-full py-3 px-6 bg-white border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all flex items-center justify-center gap-2 shadow-sm"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>
+            {locale === 'en'
+              ? 'Back to Edit Donation'
+              : locale === 'zh'
+              ? '返回修改捐赠信息'
+              : 'Повернутися до редагування'}
+          </span>
+        </button>
+      </div>
+    )
+  }
+
+  // Ready state - show WayForPay widget
+  if (processingState === 'ready' && paymentParams) {
+    return (
+      <WayForPayWidget
+        paymentParams={paymentParams}
+        amount={amount}
+        locale={locale}
+        onBack={onBack}
+      />
+    )
+  }
+
+  // Fallback
+  return null
 }
 
 export default function DonationFormCard({
@@ -31,8 +196,11 @@ export default function DonationFormCard({
   const [contactWhatsapp, setContactWhatsapp] = useState('')
   // const [operationalSupport, setOperationalSupport] = useState(0)
   const [paymentParams, setPaymentParams] = useState<any | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [showWidget, setShowWidget] = useState(false)
+  const [processingState, setProcessingState] = useState<'idle' | 'creating' | 'ready' | 'error'>('idle')
   const [error, setError] = useState<string | null>(null)
+  const widgetContainerRef = useRef<HTMLDivElement>(null)
+  const formContainerRef = useRef<HTMLDivElement>(null)
 
   const projectAmount = project ? (project.unit_price || 0) * quantity : 0
   // const totalAmount = projectAmount + operationalSupport
@@ -40,12 +208,52 @@ export default function DonationFormCard({
   const quantityOptions = [1, 2, 5, 10]
   // const supportOptions = [5, 10, 20]
 
+  // Helper function to scroll to the form/widget area
+  const scrollToFormArea = useCallback(() => {
+    // Use requestAnimationFrame to ensure scroll happens after any DOM updates
+    requestAnimationFrame(() => {
+      const targetElement = widgetContainerRef.current || formContainerRef.current
+      if (!targetElement) return
+
+      // Check if mobile (screen width < 1024px, which is Tailwind's lg breakpoint)
+      const isMobile = window.innerWidth < 1024
+
+      if (isMobile) {
+        // Mobile: Scroll to top of viewport with generous padding
+        const elementTop = targetElement.getBoundingClientRect().top
+        const offsetPosition = elementTop + window.pageYOffset - 100 // 100px padding from top
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        })
+      } else {
+        // Desktop: Scroll to show the container in view
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest'
+        })
+      }
+    })
+  }, [])
+
+  // Effect to scroll when payment params are set (widget appears)
+  useEffect(() => {
+    if (paymentParams && widgetContainerRef.current) {
+      // Scroll again when widget actually renders
+      setTimeout(() => {
+        scrollToFormArea()
+      }, 150) // Small delay to ensure widget is fully rendered
+    }
+  }, [paymentParams, scrollToFormArea])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!project || !project.id) return
 
     // Prevent duplicate submissions
-    if (loading) return
+    if (processingState === 'creating') return
 
     setError(null)
 
@@ -55,7 +263,10 @@ export default function DonationFormCard({
       return
     }
 
-    setLoading(true)
+    // IMMEDIATELY show widget and scroll to it
+    setShowWidget(true)
+    setProcessingState('creating')
+    scrollToFormArea()
 
     try {
       const result = await createWayForPayDonation({
@@ -91,7 +302,7 @@ export default function DonationFormCard({
         } else {
           setError(t('errors.serverError'))
         }
-        setLoading(false)
+        setProcessingState('error')
         return
       }
 
@@ -102,8 +313,9 @@ export default function DonationFormCard({
         return
       }
 
-      // Success - set payment params
+      // Success - set payment params and mark as ready
       setPaymentParams(result.paymentParams!)
+      setProcessingState('ready')
     } catch (err) {
       console.error('Error creating payment intent:', err)
       if (err instanceof Error && err.message.includes('email')) {
@@ -113,26 +325,29 @@ export default function DonationFormCard({
       } else {
         setError(t('errors.serverError'))
       }
-    } finally {
-      setLoading(false)
+      setProcessingState('error')
     }
   }
 
   // Handler to go back to edit form
   const handleBack = () => {
+    setShowWidget(false)
     setPaymentParams(null)
+    setProcessingState('idle')
     setError(null)
   }
 
-  // Show payment form if payment params are available
-  if (paymentParams && project) {
+  // Show widget if user clicked submit
+  if (showWidget && project) {
     return (
-      <div className="lg:sticky lg:top-24">
+      <div ref={widgetContainerRef} className="lg:sticky lg:top-24">
         <div className="bg-white rounded-xl border-2 border-gray-200 shadow-lg overflow-hidden">
-          <WayForPayWidget
+          <PaymentWidgetContainer
+            processingState={processingState}
             paymentParams={paymentParams}
             amount={totalAmount}
             locale={locale}
+            error={error}
             onBack={handleBack}
           />
         </div>
@@ -168,7 +383,7 @@ export default function DonationFormCard({
 
   // Show donation form
   return (
-    <div className="lg:sticky lg:top-24">
+    <div ref={formContainerRef} className="lg:sticky lg:top-24">
       <div className="bg-white rounded-xl border-2 border-gray-200 shadow-lg overflow-hidden">
         {/* Test Mode Banner */}
         {isTestMode && (
@@ -480,7 +695,7 @@ export default function DonationFormCard({
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={loading || project.status !== 'active'}
+            disabled={processingState === 'creating' || project.status !== 'active'}
             className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 shadow-md ${
               project.status !== 'active'
                 ? 'bg-gradient-to-r from-gray-400 to-gray-500 text-white cursor-not-allowed'
@@ -488,8 +703,8 @@ export default function DonationFormCard({
             }`}
           >
             {project.status !== 'active'
-              ? (locale === 'en' ? 'Project Ended' : '项目已结束')
-              : (loading ? t('submitting') : t('submit'))
+              ? (locale === 'en' ? 'Project Ended' : locale === 'zh' ? '项目已结束' : 'Проект завершено')
+              : t('submit')
             }
           </button>
         </form>
