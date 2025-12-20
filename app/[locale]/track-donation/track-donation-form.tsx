@@ -15,7 +15,7 @@ type Donation = {
   donor_email: string
   amount: number
   currency: string
-  donation_status: 'pending' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
+  donation_status: 'pending' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded' | 'failed'
   donated_at: string
   projects: {
     id: number
@@ -105,6 +105,8 @@ export default function TrackDonationForm({ locale }: Props) {
         return 'bg-orange-100 text-orange-800 border-orange-200'
       case 'refunded':
         return 'bg-gray-100 text-gray-800 border-gray-200'
+      case 'failed':
+        return 'bg-red-100 text-red-800 border-red-200'
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200'
     }
@@ -113,6 +115,9 @@ export default function TrackDonationForm({ locale }: Props) {
   const getStatusIcon = (status: string) => {
     if (status === 'completed') {
       return <CheckCircle2 className="w-4 h-4" />
+    }
+    if (status === 'failed') {
+      return <AlertTriangle className="w-4 h-4" />
     }
     return <Clock className="w-4 h-4" />
   }
@@ -277,7 +282,7 @@ export default function TrackDonationForm({ locale }: Props) {
                         {t('actions.viewResult')}
                         <ArrowRight className="w-4 h-4" />
                       </button>
-                    ) : donation.donation_status !== 'refunding' && donation.donation_status !== 'refunded' ? (
+                    ) : (donation.donation_status === 'paid' || donation.donation_status === 'confirmed' || donation.donation_status === 'delivering') ? (
                       <button
                         className="flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 border border-orange-200 rounded-lg hover:bg-orange-200 transition-colors font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={() => setConfirmRefundId(donation.donation_public_id)}
