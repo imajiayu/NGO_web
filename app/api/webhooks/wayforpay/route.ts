@@ -91,7 +91,44 @@ export async function POST(req: Request) {
     } else if (transactionStatus === WAYFORPAY_STATUS.PENDING) {
       console.log('[WEBHOOK] Pending - waiting for approval')
     } else if (transactionStatus === WAYFORPAY_STATUS.DECLINED) {
-      console.log('[WEBHOOK] Declined')
+      console.log('[WEBHOOK] Declined - marking donations as failed')
+
+      const supabase = createServiceClient()
+
+      // Update pending donations to failed
+      const { data: failedDonations, error: failError } = await supabase
+        .from('donations')
+        .update({ donation_status: 'failed' })
+        .eq('order_reference', orderReference)
+        .eq('donation_status', 'pending')
+        .select()
+
+      if (failError) {
+        console.error('[WEBHOOK] Failed to update declined donations:', failError.message)
+        throw failError
+      }
+
+      console.log(`[WEBHOOK] Updated ${failedDonations?.length} donations to failed`)
+    } else {
+      // Handle any other non-approved status
+      console.log(`[WEBHOOK] Non-approved status: ${transactionStatus} - marking as failed`)
+
+      const supabase = createServiceClient()
+
+      // Update pending donations to failed
+      const { data: failedDonations, error: failError } = await supabase
+        .from('donations')
+        .update({ donation_status: 'failed' })
+        .eq('order_reference', orderReference)
+        .eq('donation_status', 'pending')
+        .select()
+
+      if (failError) {
+        console.error('[WEBHOOK] Failed to update non-approved donations:', failError.message)
+        throw failError
+      }
+
+      console.log(`[WEBHOOK] Updated ${failedDonations?.length} donations to failed`)
     }
 
     // Always return success with signature

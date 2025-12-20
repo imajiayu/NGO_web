@@ -293,8 +293,8 @@
     }
   },
   "donateSuccess": {
-    "title": "Payment Successful!",
-    "thankYou": "Thank you for your donation!",
+    "title": "Processing Your Donation",
+    "thankYou": "Your payment has been received!",
     "loading": "Loading your donation details...",
     "important": "Important",
     "processing": "Processing Your Donation",
@@ -349,7 +349,8 @@
       "delivering": "Delivering",
       "completed": "Completed",
       "refunding": "Refunding",
-      "refunded": "Refunded"
+      "refunded": "Refunded",
+      "failed": "Failed"
     },
     "actions": {
       "viewResult": "View Result",
@@ -425,7 +426,8 @@
       "delivering": "Delivering",
       "completed": "Completed",
       "refunding": "Refunding",
-      "refunded": "Refunded"
+      "refunded": "Refunded",
+      "failed": "Failed"
     },
     "actions": {
       "viewResult": "View Result"

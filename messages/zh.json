@@ -293,8 +293,8 @@
     }
   },
   "donateSuccess": {
-    "title": "支付成功！",
-    "thankYou": "感谢您的捐赠！",
+    "title": "正在处理您的捐赠",
+    "thankYou": "我们已收到您的支付！",
     "loading": "正在加载您的捐赠详情...",
     "important": "重要",
     "processing": "正在处理您的捐赠",
@@ -349,7 +349,8 @@
       "delivering": "配送中",
       "completed": "已完成",
       "refunding": "退款中",
-      "refunded": "已退款"
+      "refunded": "已退款",
+      "failed": "支付失败"
     },
     "actions": {
       "viewResult": "查看结果",
@@ -425,7 +426,8 @@
       "delivering": "配送中",
       "completed": "已完成",
       "refunding": "退款中",
-      "refunded": "已退款"
+      "refunded": "已退款",
+      "failed": "支付失败"
     },
     "actions": {
       "viewResult": "查看结果"
