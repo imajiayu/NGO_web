@@ -21,25 +21,20 @@ export async function POST(req: NextRequest) {
       subject,
     })
 
-    // Fetch full email content from Resend Inbound API
-    // Using REST API directly since SDK might not have this method yet
-    const emailContentResponse = await fetch(
-      `https://api.resend.com/emails/${email_id}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        },
-      }
-    )
+    // Fetch full email content using Resend Inbound API
+    // Note: TypeScript might not recognize 'receiving' yet, using type assertion
+    const { data: emailContent, error: fetchError } = await (
+      resend.emails as any
+    ).receiving.get(email_id)
 
-    if (!emailContentResponse.ok) {
-      throw new Error(`Failed to fetch email content: ${emailContentResponse.statusText}`)
+    if (fetchError || !emailContent) {
+      throw new Error(
+        `Failed to fetch email content: ${fetchError?.message || 'Unknown error'}`
+      )
     }
 
-    const emailContent = await emailContentResponse.json()
-    const htmlBody = emailContent.html || emailContent.html_body || ''
-    const textBody = emailContent.text || emailContent.text_body || ''
+    const htmlBody = emailContent.html || ''
+    const textBody = emailContent.text || ''
 
     // Format recipient addresses
     const toAddresses = Array.isArray(to) ? to.join(', ') : to
