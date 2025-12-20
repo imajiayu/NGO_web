@@ -1,104 +1,253 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+import { Package, DollarSign, Receipt, FileText } from 'lucide-react'
+import Image from 'next/image'
+
 interface ProjectSuppliesInfoProps {
   projectId: number
   locale: string
+}
+
+interface SupplyItem {
+  item: string
+  quantity: number
+  unitPrice: {
+    uah: number
+    usd: number
+  }
+}
+
+interface SuppliesData {
+  supplies: SupplyItem[]
+  total: {
+    items: number
+    totalCost: {
+      uah: number
+      usd: number
+    }
+  }
+  exchangeRateNote: string
+  receipts: {
+    description: string
+    images: string[]
+  }
 }
 
 export default function ProjectSuppliesInfo({
   projectId,
   locale
 }: ProjectSuppliesInfoProps) {
+  const [suppliesData, setSuppliesData] = useState<SuppliesData | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  // Load supplies data from JSON file
+  useEffect(() => {
+    const loadSupplies = async () => {
+      try {
+        const response = await fetch(`/content/projects/project-${projectId}-supplies-${locale}.json`)
+        if (response.ok) {
+          const data = await response.json()
+          setSuppliesData(data)
+        } else {
+          console.warn(`No supplies data found for project ${projectId} in ${locale}`)
+        }
+      } catch (error) {
+        console.error('Error loading supplies data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadSupplies()
+  }, [projectId, locale])
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-gradient-to-r from-green-600 to-teal-600 p-6 text-white">
+          <div className="h-8 bg-white/20 rounded w-1/2 animate-pulse"></div>
+        </div>
+        <div className="p-6">
+          <div className="space-y-3">
+            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show placeholder if no supplies data found
+  if (!suppliesData) {
+    return (
+      <div className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-gradient-to-r from-green-600 to-teal-600 p-6 text-white">
+          <h2 className="text-2xl font-bold">
+            {locale === 'en' ? 'Supplies & Expenses' : locale === 'zh' ? '物资清单与支出' : 'Матеріали та витрати'}
+          </h2>
+        </div>
+
+        <div className="p-6">
+          <div className="p-6 bg-yellow-50 border-2 border-yellow-200 border-dashed rounded-lg">
+            <div className="flex items-start gap-3">
+              <svg className="w-6 h-6 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <h4 className="font-bold text-yellow-900 mb-1">
+                  {locale === 'en' ? 'Data Not Available' : locale === 'zh' ? '数据暂未提供' : 'Дані недоступні'}
+                </h4>
+                <p className="text-sm text-yellow-800">
+                  {locale === 'en'
+                    ? 'Supplies data has not been added yet. Create: '
+                    : locale === 'zh'
+                    ? '物资数据尚未添加。请创建：'
+                    : 'Дані про матеріали ще не додано. Створіть: '}
+                  <code className="bg-yellow-100 px-2 py-0.5 rounded text-xs ml-1">
+                    content/projects/project-{projectId}-supplies-{locale}.json
+                  </code>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Calculate subtotal
+  const subtotal = suppliesData.supplies.reduce((sum, item) => {
+    return sum + (item.quantity * item.unitPrice.uah)
+  }, 0)
+
   return (
     <div className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-green-600 to-teal-600 p-6 text-white">
-        <h2 className="text-2xl font-bold">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <Package className="w-6 h-6" />
           {locale === 'en' ? 'Supplies & Expenses' : locale === 'zh' ? '物资清单与支出' : 'Матеріали та витрати'}
         </h2>
       </div>
 
-      {/* Content */}
       <div className="p-6 space-y-6">
         {/* Supplies List Section */}
         <section>
-          <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-            <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            {locale === 'en' ? 'Supply List' : locale === 'zh' ? '物资清单' : 'Список матеріалів'}
+          <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <FileText className="w-5 h-5 text-green-600" />
+            {locale === 'en' ? 'Supply List & Unit Prices' : locale === 'zh' ? '物资清单与单价明细' : 'Список матеріалів та ціни'}
           </h3>
 
-          {/* Placeholder for supplies list */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <p className="text-sm text-gray-600 italic">
-              {locale === 'en'
-                ? 'Supply list will be added via MDX content'
-                : locale === 'zh'
-                ? '物资清单将通过 MDX 内容添加'
-                : 'Список матеріалів буде додано через MDX контент'}
-            </p>
+          <div className="bg-gray-50 rounded-lg overflow-hidden border border-gray-200">
+            {/* Table Header */}
+            <div className="bg-gradient-to-r from-green-100 to-teal-100 px-4 py-3 grid grid-cols-12 gap-4 font-semibold text-sm text-gray-900 border-b border-gray-300">
+              <div className="col-span-6">
+                {locale === 'en' ? 'Item' : locale === 'zh' ? '物品名称' : 'Назва'}
+              </div>
+              <div className="col-span-2 text-center">
+                {locale === 'en' ? 'Quantity' : locale === 'zh' ? '数量' : 'Кількість'}
+              </div>
+              <div className="col-span-4 text-right">
+                {locale === 'en' ? 'Unit Price' : locale === 'zh' ? '单价' : 'Ціна за одиницю'}
+              </div>
+            </div>
+
+            {/* Table Body */}
+            <div className="divide-y divide-gray-200">
+              {suppliesData.supplies.map((supply, idx) => (
+                <div
+                  key={idx}
+                  className="px-4 py-3 grid grid-cols-12 gap-4 items-center hover:bg-white transition-colors"
+                >
+                  <div className="col-span-6 font-medium text-gray-900">
+                    {supply.item}
+                  </div>
+                  <div className="col-span-2 text-center">
+                    <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full font-semibold text-sm">
+                      ×{supply.quantity}
+                    </span>
+                  </div>
+                  <div className="col-span-4 text-right">
+                    <div className="font-bold text-gray-900">
+                      ₴{supply.unitPrice.uah.toLocaleString()}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      (${supply.unitPrice.usd})
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Table Footer - Total */}
+            <div className="bg-gradient-to-r from-green-50 to-teal-50 px-4 py-4 border-t-2 border-green-300">
+              <div className="grid grid-cols-12 gap-4 items-center">
+                <div className="col-span-6 font-bold text-gray-900 text-lg">
+                  {locale === 'en' ? 'Total' : locale === 'zh' ? '总计' : 'Всього'}
+                </div>
+                <div className="col-span-2 text-center">
+                  <span className="inline-block px-3 py-1 bg-green-600 text-white rounded-full font-bold text-sm">
+                    {suppliesData.total.items} {locale === 'en' ? 'items' : locale === 'zh' ? '件' : 'шт'}
+                  </span>
+                </div>
+                <div className="col-span-4 text-right">
+                  <div className="font-bold text-green-600 text-xl">
+                    ₴{suppliesData.total.totalCost.uah.toLocaleString()}
+                  </div>
+                  <div className="text-sm text-gray-700 font-semibold">
+                    (${suppliesData.total.totalCost.usd.toLocaleString()} USD)
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </section>
 
-        {/* Unit Price Section */}
-        <section>
-          <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-            <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            {locale === 'en' ? 'Unit Price Breakdown' : locale === 'zh' ? '单价明细' : 'Детальна ціна за одиницю'}
-          </h3>
-
-          {/* Placeholder for unit price breakdown */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <p className="text-sm text-gray-600 italic">
-              {locale === 'en'
-                ? 'Price breakdown will be added via MDX content'
-                : locale === 'zh'
-                ? '单价明细将通过 MDX 内容添加'
-                : 'Розбивка цін буде додана через MDX контент'}
-            </p>
+          {/* Exchange Rate Note */}
+          <div className="mt-3 flex items-center gap-2 text-sm text-gray-600">
+            <DollarSign className="w-4 h-4" />
+            <span className="italic">{suppliesData.exchangeRateNote}</span>
           </div>
         </section>
 
         {/* Expense Receipts Section */}
-        <section>
-          <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-            <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
+        <section className="border-t-2 border-gray-200 pt-6">
+          <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <Receipt className="w-5 h-5 text-green-600" />
             {locale === 'en' ? 'Expense Receipts' : locale === 'zh' ? '支出凭证' : 'Квитанції про витрати'}
           </h3>
 
-          {/* Placeholder for expense receipts */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <p className="text-sm text-gray-600 italic">
-              {locale === 'en'
-                ? 'Expense receipts will be added via MDX content'
-                : locale === 'zh'
-                ? '支出凭证将通过 MDX 内容添加'
-                : 'Квитанції про витрати будуть додані через MDX контент'}
-            </p>
-          </div>
+          {suppliesData.receipts.images && suppliesData.receipts.images.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {suppliesData.receipts.images.map((imageSrc, idx) => (
+                <div key={idx} className="relative aspect-[3/4] rounded-lg overflow-hidden shadow-md border-2 border-gray-200">
+                  <Image
+                    src={imageSrc}
+                    alt={`Receipt ${idx + 1}`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-gray-50 rounded-lg p-8 border-2 border-dashed border-gray-300 text-center">
+              <Receipt className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+              <p className="text-gray-600 font-medium mb-2">
+                {suppliesData.receipts.description}
+              </p>
+              <p className="text-sm text-gray-500">
+                {locale === 'en'
+                  ? 'Receipt images will be displayed here once uploaded'
+                  : locale === 'zh'
+                  ? '凭证图片上传后将在此处显示'
+                  : 'Зображення квитанцій будуть відображені тут після завантаження'}
+              </p>
+            </div>
+          )}
         </section>
-
-        {/* Admin notice */}
-        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-xs text-blue-800">
-            <span className="font-semibold">
-              {locale === 'en' ? 'Note:' : locale === 'zh' ? '注意：' : 'Примітка:'}
-            </span>{' '}
-            {locale === 'en'
-              ? 'Add custom supply lists, prices, and receipts by creating: '
-              : locale === 'zh'
-              ? '通过创建以下文件来添加自定义物资清单、价格和凭证：'
-              : 'Додайте власні списки матеріалів, цін та квитанцій, створивши: '}
-            <code className="bg-blue-100 px-1.5 py-0.5 rounded text-xs">
-              components/projects/content/project-{projectId}-{locale}.mdx
-            </code>
-          </p>
-        </div>
       </div>
     </div>
   )

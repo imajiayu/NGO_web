@@ -62,7 +62,7 @@ export default function ProjectCardCompact({
         transition-all duration-300 transform relative bg-cover bg-center bg-no-repeat
         ${isSelected
           ? 'border-blue-600 bg-blue-50 scale-105'
-          : 'border-gray-200 hover:border-blue-400 hover:-translate-y-1'
+          : 'border-gray-200 hover:border-blue-400'
         }
       `}
       style={{
@@ -116,10 +116,10 @@ export default function ProjectCardCompact({
 
         {/* Details - Show on hover only */}
         <div className={`
-          overflow-hidden transition-all duration-300
-          max-h-0 group-hover:max-h-96
+          overflow-hidden transition-all duration-300 ease-in-out
+          max-h-0 group-hover:max-h-[32rem]
         `}>
-          <div className="p-4 space-y-2.5">
+          <div className="p-4 pt-3 space-y-2.5">
             {/* Location */}
             <div className="flex items-start gap-2">
               <svg className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

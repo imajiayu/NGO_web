@@ -1,0 +1,128 @@
+{
+  "supplies": [
+    {
+      "item": "Nerf 玩具枪",
+      "quantity": 14,
+      "unitPrice": {
+        "uah": 900,
+        "usd": 20
+      }
+    },
+    {
+      "item": "大号奇趣蛋",
+      "quantity": 11,
+      "unitPrice": {
+        "uah": 600,
+        "usd": 13
+      }
+    },
+    {
+      "item": "LEGO 积木套装",
+      "quantity": 4,
+      "unitPrice": {
+        "uah": 1100,
+        "usd": 24
+      }
+    },
+    {
+      "item": "大娃娃",
+      "quantity": 4,
+      "unitPrice": {
+        "uah": 1000,
+        "usd": 22
+      }
+    },
+    {
+      "item": "FNAF 玩具",
+      "quantity": 4,
+      "unitPrice": {
+        "uah": 850,
+        "usd": 19
+      }
+    },
+    {
+      "item": "FNAF 玩具游戏套装",
+      "quantity": 4,
+      "unitPrice": {
+        "uah": 900,
+        "usd": 20
+      }
+    },
+    {
+      "item": "遥控汽车",
+      "quantity": 4,
+      "unitPrice": {
+        "uah": 1200,
+        "usd": 27
+      }
+    },
+    {
+      "item": "史莱姆化妆包套装",
+      "quantity": 4,
+      "unitPrice": {
+        "uah": 700,
+        "usd": 16
+      }
+    },
+    {
+      "item": "娃娃",
+      "quantity": 4,
+      "unitPrice": {
+        "uah": 800,
+        "usd": 18
+      }
+    },
+    {
+      "item": "LEGO 汽车",
+      "quantity": 4,
+      "unitPrice": {
+        "uah": 950,
+        "usd": 21
+      }
+    },
+    {
+      "item": "LEGO City 套装",
+      "quantity": 4,
+      "unitPrice": {
+        "uah": 1300,
+        "usd": 29
+      }
+    },
+    {
+      "item": "玩具枕头",
+      "quantity": 4,
+      "unitPrice": {
+        "uah": 850,
+        "usd": 19
+      }
+    },
+    {
+      "item": "毛绒小熊",
+      "quantity": 4,
+      "unitPrice": {
+        "uah": 800,
+        "usd": 18
+      }
+    },
+    {
+      "item": "其他礼物",
+      "quantity": 7,
+      "unitPrice": {
+        "uah": 900,
+        "usd": 20
+      }
+    }
+  ],
+  "total": {
+    "items": 76,
+    "totalCost": {
+      "uah": 68400,
+      "usd": 1520
+    }
+  },
+  "exchangeRateNote": "以购买时汇率为准",
+  "receipts": {
+    "description": "支出凭证将在采购完成后上传",
+    "images": []
+  }
+}

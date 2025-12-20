@@ -22,6 +22,11 @@ export default function Navigation() {
   }
 
   const handleDonateClick = () => {
+    // If already on donate page, do nothing
+    if (pathname.startsWith('/donate')) {
+      return
+    }
+
     // If already on home page, scroll to projects section
     if (pathname === '/') {
       const projectsSection = document.getElementById('projects-section')

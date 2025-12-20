@@ -75,9 +75,9 @@ export default function ProjectsGallery({
         <div className="relative">
           <div
             ref={scrollContainerRef}
-            className="overflow-x-auto pb-4 pt-2 scrollbar-hide"
+            className="overflow-x-auto pb-4 pt-6 scrollbar-hide"
           >
-            <div className="flex gap-6 min-w-min px-2">
+            <div className="flex gap-6 min-w-min px-2 py-2">
               {projects.map((project) => (
                 <div
                   key={project.id}

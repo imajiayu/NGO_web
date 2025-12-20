@@ -60,7 +60,31 @@ export default function DonatePageClient({
       {/* Main Content Area */}
       <div id="donation-content" className="max-w-7xl mx-auto px-6 py-12">
         {selectedProject && selectedProjectId ? (
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <>
+            {/* Mobile Only: Scroll to Donation Form Button - At the top */}
+            <div className="lg:hidden mb-6">
+              <button
+                onClick={() => {
+                  const formElement = document.getElementById('donation-form')
+                  if (formElement) {
+                    formElement.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
+                    })
+                  }
+                }}
+                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3 group"
+              >
+                <span>
+                  {locale === 'en' ? 'Donate Now' : locale === 'zh' ? '立即捐赠' : 'Зробити внесок'}
+                </span>
+                <svg className="w-6 h-6 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
             {/* Left Side: Three sections stacked vertically (60%) */}
             <div className="lg:col-span-3 space-y-6">
               {/* Section 1: Project Details */}
@@ -88,13 +112,14 @@ export default function DonatePageClient({
             </div>
 
             {/* Right Side: Donation Form (40%) */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2" id="donation-form">
               <DonationFormCard
                 project={selectedProject}
                 locale={locale}
               />
             </div>
           </div>
+          </>
         ) : (
           <EmptyState locale={locale} />
         )}
