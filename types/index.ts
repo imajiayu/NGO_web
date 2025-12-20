@@ -113,7 +113,7 @@ export interface ProjectFilters {
 
 export interface DonationFilters {
   project_id?: number
-  status?: 'pending' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
+  status?: 'pending' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded' | 'failed'
   donor_email?: string
   date_from?: string
   date_to?: string
@@ -143,7 +143,7 @@ export interface DonationConfirmationEmail {
 
 // Constants
 export const PROJECT_STATUSES = ['planned', 'active', 'completed', 'paused'] as const
-export const DONATION_STATUSES = ['pending', 'paid', 'confirmed', 'delivering', 'completed', 'refunding', 'refunded'] as const
+export const DONATION_STATUSES = ['pending', 'paid', 'confirmed', 'delivering', 'completed', 'refunding', 'refunded', 'failed'] as const
 export const DONATION_LOCALES = ['en', 'zh', 'ua'] as const
 export const CURRENCIES = ['USD', 'UAH', 'EUR'] as const
 export const PAYMENT_METHODS = ['WayForPay', 'Bank Transfer'] as const

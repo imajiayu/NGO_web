@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type ProjectStatus = 'planned' | 'active' | 'completed' | 'paused'
-export type DonationStatus = 'pending' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
+export type DonationStatus = 'pending' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded' | 'failed'
 
 export type I18nText = {
   en?: string
