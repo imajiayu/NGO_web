@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 import type { ProjectStats } from '@/types'
-import { getProjectName, getLocation, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
+import { getProjectName, getLocation, getUnitName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
 import ProjectProgressBar from './ProjectProgressBar'
 
 interface ProjectCardCompactProps {
@@ -28,22 +28,6 @@ export default function ProjectCardCompact({
   // Calculate totals using unit count
   const currentUnits = project.current_units || 0
   const targetUnits = project.target_units || 1
-
-  // Format date with null check
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'N/A'
-    try {
-      const date = new Date(dateString)
-      if (isNaN(date.getTime())) return 'N/A'
-      return date.toLocaleDateString(locale, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      })
-    } catch {
-      return 'N/A'
-    }
-  }
 
   // Status badge color mapping
   const statusColors = {
@@ -146,7 +130,7 @@ export default function ProjectCardCompact({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
               <span className="text-sm text-gray-700 text-left">
-                {t('startDate')}: <span className="font-medium">{formatDate(project.start_date!)}</span>
+                {t('startDate')}: <span className="font-medium">{formatDate(project.start_date, locale as SupportedLocale)}</span>
               </span>
             </div>
 
@@ -157,7 +141,7 @@ export default function ProjectCardCompact({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                 </svg>
                 <span className="text-sm text-gray-700 text-left">
-                  {t('endDate')}: <span className="font-medium">{formatDate(project.end_date)}</span>
+                  {t('endDate')}: <span className="font-medium">{formatDate(project.end_date, locale as SupportedLocale)}</span>
                 </span>
               </div>
             )}

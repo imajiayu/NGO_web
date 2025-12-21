@@ -6,7 +6,7 @@ import { trackDonations, requestRefund } from '@/app/actions/track-donation'
 import { Link } from '@/i18n/navigation'
 import { Search, Mail, Hash, ArrowRight, ExternalLink, CheckCircle2, Clock, AlertTriangle } from 'lucide-react'
 import DonationResultViewer from '@/components/donation/DonationResultViewer'
-import { getProjectName, type SupportedLocale } from '@/lib/i18n-utils'
+import { getProjectName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
 import type { I18nText } from '@/types/database'
 
 type Donation = {
@@ -262,7 +262,7 @@ export default function TrackDonationForm({ locale }: Props) {
                     <div>
                       <div className="text-xs text-gray-500 font-medium mb-1">{t('results.date')}</div>
                       <div className="text-sm text-gray-700 font-medium">
-                        {new Date(donation.donated_at).toLocaleDateString(undefined, {
+                        {formatDate(donation.donated_at, locale as SupportedLocale, {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric'

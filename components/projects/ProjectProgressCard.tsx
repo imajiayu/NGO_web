@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 import type { ProjectStats } from '@/types'
-import { getLocation, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
+import { getLocation, getUnitName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
 import ProjectProgressBar from './ProjectProgressBar'
 
 interface ProjectProgressCardProps {
@@ -23,22 +23,6 @@ export default function ProjectProgressCard({
   // Calculate totals
   const currentUnits = project.current_units || 0
   const targetUnits = project.target_units || 1
-
-  // Format date
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'N/A'
-    try {
-      const date = new Date(dateString)
-      if (isNaN(date.getTime())) return 'N/A'
-      return date.toLocaleDateString(locale, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-      })
-    } catch {
-      return 'N/A'
-    }
-  }
 
   // Status badge color mapping
   const statusColors = {
@@ -88,9 +72,9 @@ export default function ProjectProgressCard({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             <span className="text-xs text-gray-700 leading-tight">
-              <span className="font-medium">{formatDate(project.start_date!)}</span>
+              <span className="font-medium">{formatDate(project.start_date, locale as SupportedLocale)}</span>
               {project.is_long_term !== true && (
-                <> → <span className="font-medium">{formatDate(project.end_date)}</span></>
+                <> → <span className="font-medium">{formatDate(project.end_date, locale as SupportedLocale)}</span></>
               )}
             </span>
           </div>

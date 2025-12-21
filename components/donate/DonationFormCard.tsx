@@ -187,6 +187,8 @@ export default function DonationFormCard({
   const [error, setError] = useState<string | null>(null)
   const widgetContainerRef = useRef<HTMLDivElement>(null)
   const formContainerRef = useRef<HTMLDivElement>(null)
+  const nameInputRef = useRef<HTMLInputElement>(null)
+  const emailInputRef = useRef<HTMLInputElement>(null)
 
   const projectAmount = project ? (project.unit_price || 0) * quantity : 0
   // const totalAmount = projectAmount + operationalSupport
@@ -233,6 +235,41 @@ export default function DonationFormCard({
       }, 150) // Small delay to ensure widget is fully rendered
     }
   }, [paymentParams, scrollToFormArea])
+
+  // Set custom validation messages based on locale
+  useEffect(() => {
+    // Name input validation messages
+    if (nameInputRef.current) {
+      nameInputRef.current.addEventListener('invalid', () => {
+        if (nameInputRef.current!.validity.valueMissing) {
+          nameInputRef.current!.setCustomValidity(t('validation.nameRequired'))
+        } else if (nameInputRef.current!.validity.tooShort) {
+          nameInputRef.current!.setCustomValidity(t('validation.nameMin'))
+        } else {
+          nameInputRef.current!.setCustomValidity('')
+        }
+      })
+      nameInputRef.current.addEventListener('input', () => {
+        nameInputRef.current!.setCustomValidity('')
+      })
+    }
+
+    // Email input validation messages
+    if (emailInputRef.current) {
+      emailInputRef.current.addEventListener('invalid', () => {
+        if (emailInputRef.current!.validity.valueMissing) {
+          emailInputRef.current!.setCustomValidity(t('validation.emailRequired'))
+        } else if (emailInputRef.current!.validity.typeMismatch || emailInputRef.current!.validity.patternMismatch) {
+          emailInputRef.current!.setCustomValidity(t('validation.emailInvalid'))
+        } else {
+          emailInputRef.current!.setCustomValidity('')
+        }
+      })
+      emailInputRef.current.addEventListener('input', () => {
+        emailInputRef.current!.setCustomValidity('')
+      })
+    }
+  }, [t])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -583,6 +620,7 @@ export default function DonationFormCard({
                 {t('donor.name')} *
               </label>
               <input
+                ref={nameInputRef}
                 type="text"
                 required
                 minLength={2}
@@ -600,6 +638,7 @@ export default function DonationFormCard({
                 {t('donor.email')} *
               </label>
               <input
+                ref={emailInputRef}
                 type="email"
                 required
                 value={donorEmail}

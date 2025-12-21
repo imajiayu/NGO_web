@@ -171,6 +171,7 @@ export default function DonatePageClient({
                 selectedProject.project_name,
                 locale as SupportedLocale
               )}
+              locale={locale}
             />
           </div>
         )}

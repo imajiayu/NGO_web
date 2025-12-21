@@ -84,3 +84,45 @@ export function getDescription(
 ): string {
   return getTranslatedText(descriptionI18n, fallbackDescription, locale)
 }
+
+/**
+ * Map application locale to JavaScript Intl API locale
+ *
+ * @param locale - Application locale (en, zh, ua)
+ * @returns JavaScript locale code for Intl API
+ */
+export function getJsLocale(locale: SupportedLocale): string {
+  const localeMap: Record<SupportedLocale, string> = {
+    en: 'en-US',
+    zh: 'zh-CN',
+    ua: 'uk-UA' // Ukrainian locale code for JavaScript
+  }
+  return localeMap[locale] || 'en-US'
+}
+
+/**
+ * Format date with proper locale support
+ *
+ * @param dateString - ISO date string or null
+ * @param locale - Application locale (en, zh, ua)
+ * @param options - Intl.DateTimeFormatOptions
+ * @returns Formatted date string or 'N/A'
+ */
+export function formatDate(
+  dateString: string | null | undefined,
+  locale: SupportedLocale = 'en',
+  options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  }
+): string {
+  if (!dateString) return 'N/A'
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return 'N/A'
+    return date.toLocaleDateString(getJsLocale(locale), options)
+  } catch {
+    return 'N/A'
+  }
+}

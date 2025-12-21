@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import DonationResultViewer from './DonationResultViewer'
+import { formatDate, type SupportedLocale } from '@/lib/i18n-utils'
 
 type Donation = {
   id: number
@@ -17,11 +18,13 @@ type Donation = {
 interface ProjectDonationListProps {
   projectId: number | null
   projectName: string
+  locale?: string
 }
 
 export default function ProjectDonationList({
   projectId,
-  projectName
+  projectName,
+  locale = 'en'
 }: ProjectDonationListProps) {
   const t = useTranslations('projectDonationList')
   const [donations, setDonations] = useState<Donation[]>([])
@@ -136,7 +139,7 @@ export default function ProjectDonationList({
                   {donation.currency} {donation.amount.toFixed(2)}
                 </td>
                 <td className="py-4 px-4 text-sm text-gray-600">
-                  {new Date(donation.donated_at).toLocaleDateString()}
+                  {formatDate(donation.donated_at, locale as SupportedLocale)}
                 </td>
                 <td className="py-4 px-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(donation.donation_status)}`}>
@@ -201,7 +204,7 @@ export default function ProjectDonationList({
             <div className="mb-3">
               <div className="text-xs font-medium text-gray-700 mb-1">{t('columns.time')}</div>
               <div className="text-sm text-gray-900">
-                {new Date(donation.donated_at).toLocaleDateString()}
+                {formatDate(donation.donated_at, locale as SupportedLocale)}
               </div>
             </div>
 
