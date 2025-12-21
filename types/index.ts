@@ -1,12 +1,15 @@
-import type { Tables, Views } from './database'
+import type { Tables, Json } from './database'
 
 // Re-export database types
 export * from './database'
 
+// I18n text type (used for multilingual fields)
+export type I18nText = Json
+
 // Application-level types
 export type Project = Tables<'projects'>
 export type Donation = Tables<'donations'>
-export type ProjectStats = Views<'project_stats'>
+export type ProjectStats = Tables<'project_stats'>
 
 // Public donation view with obfuscated email (security-enhanced)
 export interface PublicProjectDonation {

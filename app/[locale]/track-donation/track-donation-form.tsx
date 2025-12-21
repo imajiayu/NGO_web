@@ -7,7 +7,7 @@ import { Link } from '@/i18n/navigation'
 import { Search, Mail, Hash, ArrowRight, ExternalLink, CheckCircle2, Clock, AlertTriangle } from 'lucide-react'
 import DonationResultViewer from '@/components/donation/DonationResultViewer'
 import { getProjectName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
-import type { I18nText } from '@/types/database'
+import type { I18nText } from '@/types'
 
 type Donation = {
   id: number

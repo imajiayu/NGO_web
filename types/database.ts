@@ -6,245 +6,464 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type ProjectStatus = 'planned' | 'active' | 'completed' | 'paused'
-export type DonationStatus = 'pending' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded' | 'failed'
-
-export type I18nText = {
-  en?: string
-  zh?: string
-  ua?: string
-}
-
-export interface Database {
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.1"
+  }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
-      projects: {
-        Row: {
-          id: number
-          project_name: string
-          project_name_i18n: I18nText
-          location: string
-          location_i18n: I18nText
-          start_date: string
-          end_date: string | null
-          is_long_term: boolean
-          target_units: number
-          current_units: number
-          unit_name: string
-          unit_name_i18n: I18nText
-          unit_price: number
-          status: ProjectStatus
-          description_i18n: I18nText
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: number
-          project_name: string
-          project_name_i18n?: I18nText
-          location: string
-          location_i18n?: I18nText
-          start_date: string
-          end_date?: string | null
-          is_long_term?: boolean
-          target_units?: number
-          current_units?: number
-          unit_name?: string
-          unit_name_i18n?: I18nText
-          unit_price?: number
-          status?: ProjectStatus
-          description_i18n?: I18nText
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: number
-          project_name?: string
-          project_name_i18n?: I18nText
-          location?: string
-          location_i18n?: I18nText
-          start_date?: string
-          end_date?: string | null
-          is_long_term?: boolean
-          target_units?: number
-          current_units?: number
-          unit_name?: string
-          unit_name_i18n?: I18nText
-          unit_price?: number
-          status?: ProjectStatus
-          description_i18n?: I18nText
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       donations: {
         Row: {
-          id: number
-          donation_public_id: string
-          project_id: number
-          donor_name: string
-          donor_email: string
-          donor_phone: string | null
-          donor_message: string | null
+          amount: number
           contact_telegram: string | null
           contact_whatsapp: string | null
-          amount: number
-          currency: string
-          payment_method: string | null
-          donation_status: DonationStatus
-          order_reference: string | null
-          locale: string
+          created_at: string | null
+          currency: string | null
           donated_at: string
-          created_at: string
+          donation_public_id: string
+          donation_status: string | null
+          donor_email: string
+          donor_message: string | null
+          donor_name: string
+          id: number
+          locale: string | null
+          order_reference: string | null
+          payment_method: string | null
+          project_id: number
         }
         Insert: {
-          id?: number
-          donation_public_id: string
-          project_id: number
-          donor_name: string
-          donor_email: string
-          donor_phone?: string | null
-          donor_message?: string | null
+          amount: number
           contact_telegram?: string | null
           contact_whatsapp?: string | null
-          amount: number
-          currency?: string
-          payment_method?: string | null
-          donation_status?: DonationStatus
-          order_reference?: string | null
-          locale?: string
+          created_at?: string | null
+          currency?: string | null
           donated_at?: string
-          created_at?: string
+          donation_public_id: string
+          donation_status?: string | null
+          donor_email: string
+          donor_message?: string | null
+          donor_name: string
+          id?: number
+          locale?: string | null
+          order_reference?: string | null
+          payment_method?: string | null
+          project_id: number
         }
         Update: {
-          id?: number
-          donation_public_id?: string
-          project_id?: number
-          donor_name?: string
-          donor_email?: string
-          donor_phone?: string | null
-          donor_message?: string | null
+          amount?: number
           contact_telegram?: string | null
           contact_whatsapp?: string | null
-          amount?: number
-          currency?: string
-          payment_method?: string | null
-          donation_status?: DonationStatus
-          order_reference?: string | null
-          locale?: string
+          created_at?: string | null
+          currency?: string | null
           donated_at?: string
-          created_at?: string
+          donation_public_id?: string
+          donation_status?: string | null
+          donor_email?: string
+          donor_message?: string | null
+          donor_name?: string
+          id?: number
+          locale?: string | null
+          order_reference?: string | null
+          payment_method?: string | null
+          project_id?: number
         }
         Relationships: [
           {
             foreignKeyName: "fk_project"
             columns: ["project_id"]
             isOneToOne: false
+            referencedRelation: "order_donations_secure"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "fk_project"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_stats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_project"
+            columns: ["project_id"]
+            isOneToOne: false
             referencedRelation: "projects"
             referencedColumns: ["id"]
-          }
+          },
         ]
+      }
+      projects: {
+        Row: {
+          created_at: string | null
+          current_units: number
+          description_i18n: Json | null
+          end_date: string | null
+          id: number
+          is_long_term: boolean | null
+          location: string
+          location_i18n: Json | null
+          project_name: string
+          project_name_i18n: Json | null
+          start_date: string
+          status: string | null
+          target_units: number | null
+          unit_name: string | null
+          unit_name_i18n: Json | null
+          unit_price: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_units?: number
+          description_i18n?: Json | null
+          end_date?: string | null
+          id?: number
+          is_long_term?: boolean | null
+          location: string
+          location_i18n?: Json | null
+          project_name: string
+          project_name_i18n?: Json | null
+          start_date: string
+          status?: string | null
+          target_units?: number | null
+          unit_name?: string | null
+          unit_name_i18n?: Json | null
+          unit_price: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_units?: number
+          description_i18n?: Json | null
+          end_date?: string | null
+          id?: number
+          is_long_term?: boolean | null
+          location?: string
+          location_i18n?: Json | null
+          project_name?: string
+          project_name_i18n?: Json | null
+          start_date?: string
+          status?: string | null
+          target_units?: number | null
+          unit_name?: string | null
+          unit_name_i18n?: Json | null
+          unit_price?: number
+          updated_at?: string | null
+        }
+        Relationships: []
       }
     }
     Views: {
-      project_stats: {
+      order_donations_secure: {
         Row: {
+          amount: number | null
+          donation_public_id: string | null
+          donation_status: string | null
+          donor_email_obfuscated: string | null
           id: number | null
-          project_name: string | null
-          project_name_i18n: I18nText | null
           location: string | null
-          location_i18n: I18nText | null
-          start_date: string | null
-          end_date: string | null
-          is_long_term: boolean | null
-          status: ProjectStatus | null
-          target_units: number | null
-          current_units: number | null
+          location_i18n: Json | null
+          order_reference: string | null
+          project_id: number | null
+          project_name: string | null
+          project_name_i18n: Json | null
           unit_name: string | null
-          unit_name_i18n: I18nText | null
-          unit_price: number | null
-          description_i18n: I18nText | null
-          total_raised: number | null
-          donation_count: number | null
-          progress_percentage: number | null
-          target_amount: number | null
+          unit_name_i18n: Json | null
         }
         Relationships: []
       }
-      public_donation_feed: {
+      project_stats: {
         Row: {
-          donation_public_id: string | null
+          current_units: number | null
+          description_i18n: Json | null
+          donation_count: number | null
+          end_date: string | null
+          id: number | null
+          is_long_term: boolean | null
+          location: string | null
+          location_i18n: Json | null
+          progress_percentage: number | null
           project_name: string | null
-          project_id: number | null
-          donor_display_name: string | null
+          project_name_i18n: Json | null
+          start_date: string | null
+          status: string | null
+          target_units: number | null
+          total_raised: number | null
+          unit_name: string | null
+          unit_name_i18n: Json | null
+          unit_price: number | null
+        }
+        Relationships: []
+      }
+      public_project_donations: {
+        Row: {
           amount: number | null
           currency: string | null
           donated_at: string | null
+          donation_public_id: string | null
+          donation_status: string | null
+          donor_email_obfuscated: string | null
+          id: number | null
+          project_id: number | null
         }
-        Relationships: []
+        Insert: {
+          amount?: number | null
+          currency?: string | null
+          donated_at?: string | null
+          donation_public_id?: string | null
+          donation_status?: string | null
+          donor_email_obfuscated?: never
+          id?: number | null
+          project_id?: number | null
+        }
+        Update: {
+          amount?: number | null
+          currency?: string | null
+          donated_at?: string | null
+          donation_public_id?: string | null
+          donation_status?: string | null
+          donor_email_obfuscated?: never
+          id?: number | null
+          project_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_project"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "order_donations_secure"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "fk_project"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_stats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_project"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {
+      cleanup_expired_pending_payments: { Args: never; Returns: number }
       generate_donation_public_id: {
-        Args: {
-          project_id_input: number
-        }
+        Args: { project_id_input: number }
         Returns: string
       }
-      get_project_progress: {
-        Args: {
-          project_id_input: number
-        }
+      get_donations_by_email_verified: {
+        Args: { p_donation_id: string; p_email: string }
         Returns: {
-          project_id: number
-          project_name: string
-          target_units: number
-          current_units: number
-          progress_percentage: number
-          total_donations: number
-          total_amount: number
-        }[]
-      }
-      get_recent_donations: {
-        Args: {
-          project_id_input: number
-          limit_count?: number
-        }
-        Returns: {
-          donation_public_id: string
-          donor_name: string
           amount: number
           currency: string
           donated_at: string
+          donation_public_id: string
+          donation_status: string
+          donor_email: string
+          id: number
+          location: string
+          location_i18n: Json
+          project_id: number
+          project_name: string
+          project_name_i18n: Json
+          unit_name: string
+          unit_name_i18n: Json
+        }[]
+      }
+      get_project_progress: {
+        Args: { project_id_input: number }
+        Returns: {
+          current_units: number
+          progress_percentage: number
+          project_id: number
+          project_name: string
+          target_units: number
+          total_amount: number
+          total_donations: number
+        }[]
+      }
+      get_recent_donations: {
+        Args: { limit_count?: number; project_id_input: number }
+        Returns: {
+          amount: number
+          currency: string
+          donated_at: string
+          donation_public_id: string
+          donor_name: string
         }[]
       }
       is_project_goal_reached: {
-        Args: {
-          project_id_input: number
-        }
+        Args: { project_id_input: number }
         Returns: boolean
+      }
+      request_donation_refund: {
+        Args: { p_donation_public_id: string; p_email: string }
+        Returns: Json
       }
     }
     Enums: {
-      project_status: ProjectStatus
-      donation_status: DonationStatus
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
     }
   }
 }
 
-// Helper types for easier usage
-export type Tables<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Row']
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-export type TablesInsert<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Insert']
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
-export type TablesUpdate<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Update']
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
 
-export type Views<T extends keyof Database['public']['Views']> =
-  Database['public']['Views'][T]['Row']
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
 
-export type Functions<T extends keyof Database['public']['Functions']> =
-  Database['public']['Functions'][T]['Returns']
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
+  public: {
+    Enums: {},
+  },
+} as const

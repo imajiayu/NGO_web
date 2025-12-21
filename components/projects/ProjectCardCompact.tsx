@@ -30,7 +30,7 @@ export default function ProjectCardCompact({
   const targetUnits = project.target_units || 1
 
   // Status badge color mapping
-  const statusColors = {
+  const statusColors: Record<string, string> = {
     active: 'bg-green-100 text-green-800 border-green-200',
     completed: 'bg-blue-100 text-blue-800 border-blue-200',
     planned: 'bg-yellow-100 text-yellow-800 border-yellow-200',

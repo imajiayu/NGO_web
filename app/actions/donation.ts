@@ -4,7 +4,7 @@ import { createWayForPayPayment } from '@/lib/wayforpay/server'
 import { getProjectById } from '@/lib/supabase/queries'
 import { donationFormSchema } from '@/lib/validations'
 import { createAnonClient } from '@/lib/supabase/server'
-import type { DonationStatus } from '@/types/database'
+import type { DonationStatus } from '@/types'
 import { getProjectName, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
 
 type WayForPayPaymentResult =
@@ -55,7 +55,7 @@ export async function createWayForPayDonation(data: {
 
     // Check quantity limits for non-long-term projects
     if (!project.is_long_term) {
-      const remainingUnits = project.target_units - project.current_units
+      const remainingUnits = (project.target_units || 0) - (project.current_units || 0)
       if (validated.quantity > remainingUnits) {
         return {
           success: false,

@@ -4,7 +4,7 @@
  * Helper functions to extract translated text from i18n JSON fields
  */
 
-import type { I18nText } from '@/types/database'
+import type { I18nText } from '@/types'
 
 export type SupportedLocale = 'en' | 'zh' | 'ua'
 
@@ -23,18 +23,21 @@ export function getTranslatedText(
   locale: SupportedLocale = 'en'
 ): string {
   // If no i18n object, return fallback
-  if (!i18nText || typeof i18nText !== 'object') {
+  if (!i18nText || typeof i18nText !== 'object' || Array.isArray(i18nText)) {
     return fallbackText || ''
   }
 
+  // Cast to record type for safe indexing
+  const i18n = i18nText as Record<string, any>
+
   // Try requested locale
-  if (i18nText[locale]) {
-    return i18nText[locale]!
+  if (i18n[locale] && typeof i18n[locale] === 'string') {
+    return i18n[locale]
   }
 
   // Fallback to English
-  if (i18nText.en) {
-    return i18nText.en
+  if (i18n.en && typeof i18n.en === 'string') {
+    return i18n.en
   }
 
   // Final fallback

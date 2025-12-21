@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import CopyButton from '@/components/CopyButton'
 import { getProjectName, getLocation, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
-import type { I18nText } from '@/types/database'
+import type { I18nText } from '@/types'
 
 type Donation = {
   id: number
