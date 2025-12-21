@@ -23,45 +23,7 @@ export default function Navigation() {
   }
 
   const handleDonateClick = () => {
-    // If already on donate page, do nothing
-    if (pathname.startsWith('/donate')) {
-      return
-    }
-
-    // If already on home page, scroll to projects section
-    if (pathname === '/') {
-      const projectsSection = document.getElementById('projects-section')
-      if (projectsSection) {
-        // Get actual navbar height dynamically
-        const nav = document.querySelector('nav')
-        const navHeight = nav ? nav.offsetHeight + 0 : 80 // Add 20px extra padding
-        const elementPosition = projectsSection.getBoundingClientRect().top
-        const offsetPosition = elementPosition + window.pageYOffset - navHeight
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        })
-      }
-    } else {
-      // Navigate to home and scroll after page loads
-      router.push('/')
-      setTimeout(() => {
-        const projectsSection = document.getElementById('projects-section')
-        if (projectsSection) {
-          // Get actual navbar height dynamically
-          const nav = document.querySelector('nav')
-          const navHeight = nav ? nav.offsetHeight + 0 : 80 // Add 20px extra padding
-          const elementPosition = projectsSection.getBoundingClientRect().top
-          const offsetPosition = elementPosition + window.pageYOffset - navHeight
-
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-          })
-        }
-      }, 300)
-    }
+    router.push('/donate')
   }
 
   const handleTrackDonation = () => {
@@ -69,7 +31,7 @@ export default function Navigation() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left: Logo */}

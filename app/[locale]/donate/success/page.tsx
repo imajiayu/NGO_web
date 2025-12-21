@@ -12,6 +12,14 @@ export function generateStaticParams() {
   return [{ locale: 'en' }, { locale: 'zh' }]
 }
 
+export async function generateMetadata() {
+  const t = await getTranslations('donateSuccess')
+
+  return {
+    title: t('title'),
+  }
+}
+
 export default async function DonateSuccessPage({
   searchParams,
 }: {

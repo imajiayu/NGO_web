@@ -89,6 +89,7 @@ export default function DonatePageClient({
             <div className="lg:col-span-3 space-y-6">
               {/* Section 1: Project Details */}
               <ProjectDetailContent
+                key={`detail-${selectedProjectId}`}
                 projectId={selectedProjectId}
                 projectName={getProjectName(
                   selectedProject.project_name_i18n,
@@ -100,12 +101,14 @@ export default function DonatePageClient({
 
               {/* Section 2: Supplies & Expenses */}
               <ProjectSuppliesInfo
+                key={`supplies-${selectedProjectId}`}
                 projectId={selectedProjectId}
                 locale={locale}
               />
 
               {/* Section 3: Project Progress */}
               <ProjectProgressCard
+                key={`progress-${selectedProjectId}`}
                 project={selectedProject}
                 locale={locale}
               />
@@ -114,6 +117,7 @@ export default function DonatePageClient({
             {/* Right Side: Donation Form (40%) */}
             <div className="lg:col-span-2" id="donation-form">
               <DonationFormCard
+                key={`form-${selectedProjectId}`}
                 project={selectedProject}
                 locale={locale}
               />
@@ -165,6 +169,7 @@ export default function DonatePageClient({
         {selectedProjectId && selectedProject && (
           <div className="mt-16">
             <ProjectDonationList
+              key={`donations-${selectedProjectId}`}
               projectId={selectedProjectId}
               projectName={getProjectName(
                 selectedProject.project_name_i18n,
