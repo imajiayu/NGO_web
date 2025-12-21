@@ -51,7 +51,8 @@
           "title": "Transparent",
           "items": [
             "Full receipts for every expense",
-            "Unique tracking ID for each donation"
+            "Unique tracking ID for each donation",
+            "Real-time donation tracking"
           ]
         },
         "efficient": {
@@ -65,9 +66,9 @@
         "direct": {
           "title": "Direct",
           "items": [
-            "Real-time donation tracking",
             "View all donations & results",
-            "Beneficiary contact included"
+            "Beneficiary or executor contact included",
+            "Donations go directly to designated recipients or projects"
           ]
         }
       },

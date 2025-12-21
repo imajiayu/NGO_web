@@ -95,11 +95,11 @@ export default function ApproachSection() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {features.map(({ key, icon, gradient, image }) => (
             <div
               key={key}
-              className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
+              className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 h-[400px]"
             >
               {/* Background Image */}
               <Image
@@ -115,44 +115,62 @@ export default function ApproachSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/40 to-black/30 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/40 transition-all duration-500" />
 
               {/* Content */}
-              <div className="relative z-10 p-6 sm:p-8">
-                {/* Icon and Title - ensure consistent display */}
-                <div className="mb-6">
-                  <div className={`inline-flex p-4 bg-gradient-to-br ${gradient} rounded-2xl text-white shadow-lg`}>
-                    {icon}
-                  </div>
+              <div className="relative z-10 h-full flex flex-col justify-between p-6 sm:p-8">
+                {/* Icon */}
+                <div className={`inline-flex p-4 bg-gradient-to-br ${gradient} rounded-2xl text-white shadow-xl self-start`}>
+                  {icon}
                 </div>
 
-                {/* Title with backdrop - no wrapping */}
-                <h3 className="text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide mb-6 inline-block px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg whitespace-nowrap">
-                  {t(`${key}.title` as any)}
-                </h3>
+                {/* Content Container - Bottom */}
+                <div className="flex flex-col gap-4 mt-auto">
+                  {/* Title with backdrop - auto width */}
+                  <h3 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wide inline-block px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg self-start">
+                    {t(`${key}.title` as any)}
+                  </h3>
 
-                {/* List Items with subtle backdrop */}
-                <ul className="space-y-3">
-                  {(t.raw(`${key}.items` as any) as string[]).map((item: string, index: number) => (
-                    <li key={index} className="flex items-start">
-                      <svg
-                        className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 mr-2 sm:mr-3 mt-0.5 flex-shrink-0 drop-shadow-lg"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <span className="text-white text-sm sm:text-base leading-relaxed font-medium px-2 py-1 bg-black/15 backdrop-blur-sm rounded shadow-md">
-                        {item}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                  {/* List Items with subtle backdrop - auto width */}
+                  <ul className="space-y-2">
+                    {(t.raw(`${key}.items` as any) as string[]).map((item: string, index: number) => (
+                      <li key={index} className="flex items-start">
+                        <svg
+                          className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 mr-2 mt-0.5 flex-shrink-0 drop-shadow-lg"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span className="text-white text-sm sm:text-base leading-relaxed font-medium px-2 py-1 bg-black/15 backdrop-blur-sm rounded shadow-md inline-block">
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Scroll Indicator - Hidden on mobile */}
+      <div className="hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+        <svg
+          className="w-6 h-6 text-gray-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+          />
+        </svg>
       </div>
     </section>
   )

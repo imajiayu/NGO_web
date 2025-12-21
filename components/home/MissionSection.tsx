@@ -7,7 +7,7 @@ export default function MissionSection() {
   const t = useTranslations('home.hero.mission')
 
   return (
-    <section className="relative min-h-screen md:flex md:items-center md:justify-center overflow-hidden py-4 md:py-0">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -22,7 +22,7 @@ export default function MissionSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 text-center text-white pt-4 md:pt-0 pb-4 md:pb-0">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center text-white py-20">
         {/* Label */}
         <div className="mb-4 md:mb-6">
           <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-white/10 backdrop-blur-sm border border-white/20 rounded-full">
@@ -45,7 +45,7 @@ export default function MissionSection() {
           <h3 className="text-xl sm:text-2xl font-semibold mb-6 md:mb-8 text-white/90">
             {t('who')}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {[
               { key: 'displaced', image: '/images/mission/displaced.webp' },
               { key: 'women', image: '/images/mission/women.webp' },
@@ -53,7 +53,7 @@ export default function MissionSection() {
             ].map(({ key, image }) => (
               <div
                 key={key}
-                className="group relative overflow-hidden rounded-2xl border-2 border-white/30 hover:border-white/50 transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 shadow-2xl h-64"
+                className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 h-[400px]"
               >
                 {/* Background Image */}
                 <Image
@@ -68,7 +68,7 @@ export default function MissionSection() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-black/40 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30 transition-all duration-500" />
 
                 {/* Content */}
-                <div className="absolute inset-0 flex items-end justify-center p-6">
+                <div className="absolute inset-0 flex items-end justify-center p-6 sm:p-8">
                   <p className="text-lg sm:text-xl font-bold text-white leading-tight text-center">
                     {t(key as 'displaced' | 'women' | 'civilians')}
                   </p>

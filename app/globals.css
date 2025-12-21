@@ -19,12 +19,17 @@
 
 html, body {
   max-width: 100%;
-  overflow-x: clip;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   color: rgb(0, 0, 0);
   background: #f9fafb;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
 @layer base {

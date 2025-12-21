@@ -22,9 +22,9 @@ export default async function DonateSuccessPage({
   const orderReference = searchParams.order
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 overflow-x-hidden">
+    <div className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-[0.03] overflow-hidden">
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
         <div className="absolute inset-0" style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, rgb(59, 130, 246) 1px, transparent 0)`,
           backgroundSize: '40px 40px'

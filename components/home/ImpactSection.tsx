@@ -60,7 +60,7 @@ export default function ImpactSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
         {/* Header */}
         <div className="text-center mb-20">
           <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-full mb-6">
@@ -75,11 +75,11 @@ export default function ImpactSection() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {stats.map(({ key, icon, color, image }) => (
             <div
               key={key}
-              className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105"
+              className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 h-[400px]"
             >
               {/* Background Image */}
               <Image
@@ -95,26 +95,29 @@ export default function ImpactSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/40 group-hover:from-black/80 group-hover:via-black/60 group-hover:to-black/50 transition-all duration-500" />
 
               {/* Card Content */}
-              <div className="relative z-10 h-full min-h-[280px] flex flex-col p-10">
+              <div className="relative z-10 h-full flex flex-col justify-between p-6 sm:p-8">
                 {/* Icon */}
-                <div className={`inline-flex p-4 bg-gradient-to-br ${color} rounded-2xl text-white mb-6 shadow-xl self-start`}>
+                <div className={`inline-flex p-4 bg-gradient-to-br ${color} rounded-2xl text-white shadow-xl self-start`}>
                   {icon}
                 </div>
 
-                {/* Value with backdrop - Large stat number, no wrapping */}
-                <div
-                  className="font-bold text-white tracking-tight mb-3 px-4 py-2 bg-black/25 backdrop-blur-md rounded-xl shadow-2xl whitespace-nowrap self-start"
-                  style={{ fontSize: 'clamp(1rem, 3vw + 0.5rem, 3.75rem)' }}
-                >
-                  {t(`${key}.value` as any)}
-                </div>
+                {/* Stats Container */}
+                <div className="flex flex-col gap-3 mt-auto">
+                  {/* Value with backdrop - Large stat number */}
+                  <div
+                    className="font-bold text-white tracking-tight px-4 py-2 bg-black/25 backdrop-blur-md rounded-xl shadow-2xl self-start"
+                    style={{ fontSize: 'clamp(2rem, 4vw + 0.5rem, 3.75rem)' }}
+                  >
+                    {t(`${key}.value` as any)}
+                  </div>
 
-                {/* Label with backdrop */}
-                <div
-                  className="text-white font-semibold leading-snug px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg self-start"
-                  style={{ fontSize: 'clamp(0.875rem, 2vw + 0.25rem, 1.25rem)' }}
-                >
-                  {t(`${key}.label` as any)}
+                  {/* Label with backdrop */}
+                  <div
+                    className="text-white font-semibold leading-snug px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg self-start"
+                    style={{ fontSize: 'clamp(1rem, 2vw + 0.25rem, 1.25rem)' }}
+                  >
+                    {t(`${key}.label` as any)}
+                  </div>
                 </div>
 
                 {/* Glow Effect */}
@@ -123,6 +126,23 @@ export default function ImpactSection() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Scroll Indicator - Hidden on mobile */}
+      <div className="hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+        <svg
+          className="w-6 h-6 text-white/70"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+          />
+        </svg>
       </div>
     </section>
   )
