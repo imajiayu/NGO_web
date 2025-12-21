@@ -343,7 +343,7 @@
       "status": "状态"
     },
     "status": {
-      "pending": "待处理",
+      "pending": "确认中",
       "paid": "支付成功",
       "confirmed": "已确认",
       "delivering": "配送中",
@@ -420,7 +420,7 @@
       "action": "操作"
     },
     "status": {
-      "pending": "待处理",
+      "pending": "确认中",
       "paid": "支付成功",
       "confirmed": "已确认",
       "delivering": "配送中",
