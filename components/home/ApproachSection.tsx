@@ -110,31 +110,32 @@ export default function ApproachSection() {
                 sizes="(max-width: 768px) 100vw, 33vw"
               />
 
-              {/* Gradient Overlay - Light overlay for better readability */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-10 group-hover:opacity-15 transition-all duration-500`} />
-              <div className="absolute inset-0 bg-white/30 group-hover:bg-white/25 transition-all duration-500" />
+              {/* Gradient Overlay - Stronger overlay for better contrast */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-20 group-hover:opacity-25 transition-all duration-500`} />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/40 to-black/30 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/40 transition-all duration-500" />
 
               {/* Content */}
               <div className="relative z-10 p-6 sm:p-8">
-                {/* Icon */}
-                <div className={`inline-flex p-4 bg-gradient-to-br ${gradient} rounded-2xl text-white mb-6 shadow-lg`}>
-                  {icon}
+                {/* Icon and Title - ensure consistent display */}
+                <div className="mb-6">
+                  <div className={`inline-flex p-4 bg-gradient-to-br ${gradient} rounded-2xl text-white shadow-lg`}>
+                    {icon}
+                  </div>
                 </div>
 
-                {/* Title - Bold white text with thick black stroke */}
-                <h3 className="text-2xl sm:text-3xl font-black text-white mb-6 uppercase tracking-wide break-words [text-shadow:_-2px_-2px_0_#000,_2px_-2px_0_#000,_-2px_2px_0_#000,_2px_2px_0_#000,_-2px_0_0_#000,_2px_0_0_#000,_0_-2px_0_#000,_0_2px_0_#000,_0_0_12px_rgba(0,0,0,0.7)]">
+                {/* Title with backdrop - no wrapping */}
+                <h3 className="text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide mb-6 inline-block px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg whitespace-nowrap">
                   {t(`${key}.title` as any)}
                 </h3>
 
-                {/* List Items - Regular weight white text with normal stroke */}
+                {/* List Items with subtle backdrop */}
                 <ul className="space-y-3">
                   {(t.raw(`${key}.items` as any) as string[]).map((item: string, index: number) => (
-                    <li key={index} className="flex items-start text-white text-sm sm:text-base leading-relaxed font-medium">
+                    <li key={index} className="flex items-start">
                       <svg
-                        className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 mr-2 sm:mr-3 mt-0.5 flex-shrink-0"
+                        className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 mr-2 sm:mr-3 mt-0.5 flex-shrink-0 drop-shadow-lg"
                         fill="currentColor"
                         viewBox="0 0 20 20"
-                        style={{ filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 1px rgba(0, 0, 0, 1))' }}
                       >
                         <path
                           fillRule="evenodd"
@@ -142,7 +143,9 @@ export default function ApproachSection() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="break-words [text-shadow:_-1px_-1px_0_#000,_1px_-1px_0_#000,_-1px_1px_0_#000,_1px_1px_0_#000,_0_0_6px_rgba(0,0,0,0.6)]">{item}</span>
+                      <span className="text-white text-sm sm:text-base leading-relaxed font-medium px-2 py-1 bg-black/15 backdrop-blur-sm rounded shadow-md">
+                        {item}
+                      </span>
                     </li>
                   ))}
                 </ul>

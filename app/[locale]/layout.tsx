@@ -8,7 +8,11 @@ import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import '../globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap', // Optimize font loading
+  preload: true,
+})
 
 export const metadata: Metadata = {
   title: 'WAY - Making a Difference',
