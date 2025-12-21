@@ -1,10 +1,19 @@
 import { NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase/server'
+import { createAnonClient } from '@/lib/supabase/server'
 
 // Disable Next.js caching for this API route
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
+/**
+ * Secure Public API for Order Donations Query
+ *
+ * Security Improvements:
+ * - Uses anonymous client (RLS enforced)
+ * - Queries secure view (order_donations_secure)
+ * - Email is obfuscated (j***e@e***.com)
+ * - Donor name excluded for privacy
+ */
 export async function GET(
   request: Request,
   { params }: { params: { orderReference: string } }
@@ -19,36 +28,42 @@ export async function GET(
   }
 
   try {
-    const supabase = createServiceClient()
+    // SECURITY: Use anonymous client - RLS enforced via secure view
+    const supabase = createAnonClient()
 
+    // Query secure view instead of raw donations table
+    // This view obfuscates email and excludes donor_name
     const { data: donations, error } = await supabase
-      .from('donations')
-      .select(`
-        id,
-        donation_public_id,
-        amount,
-        donor_email,
-        donation_status,
-        projects (
-          id,
-          project_name,
-          project_name_i18n,
-          location,
-          location_i18n,
-          unit_name,
-          unit_name_i18n
-        )
-      `)
+      .from('order_donations_secure')
+      .select('*')
       .eq('order_reference', orderReference)
-      .order('created_at', { ascending: true })
+      .order('id', { ascending: true })
 
     if (error) {
       console.error('Error fetching donations:', error)
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
+    // Transform the view data to match expected frontend format
+    const transformedDonations = (donations || []).map((d: any) => ({
+      id: d.id,
+      donation_public_id: d.donation_public_id,
+      amount: d.amount,
+      donor_email: d.donor_email_obfuscated, // Use obfuscated email
+      donation_status: d.donation_status,
+      projects: {
+        id: d.project_id,
+        project_name: d.project_name,
+        project_name_i18n: d.project_name_i18n,
+        location: d.location,
+        location_i18n: d.location_i18n,
+        unit_name: d.unit_name,
+        unit_name_i18n: d.unit_name_i18n,
+      },
+    }))
+
     return NextResponse.json(
-      { donations: donations || [] },
+      { donations: transformedDonations },
       {
         headers: {
           'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',

@@ -326,13 +326,6 @@ export default function DonationFormCard({
         return
       }
 
-      // TEST MODE: Skip payment and redirect directly to success page
-      if (result.skipPayment) {
-        console.log('🧪 TEST MODE: Redirecting to success page')
-        window.location.href = `/${locale}/donate/success?order=${result.orderReference}`
-        return
-      }
-
       // Success - set payment params and mark as ready
       setPaymentParams(result.paymentParams!)
       setProcessingState('ready')
@@ -396,25 +389,10 @@ export default function DonationFormCard({
     )
   }
 
-  // Check if in test mode
-  const isTestMode = process.env.NEXT_PUBLIC_TEST_MODE_SKIP_PAYMENT === 'true'
-
   // Show donation form
   return (
     <div ref={formContainerRef} className="lg:sticky lg:top-24">
       <div className="bg-white rounded-xl border-2 border-gray-200 shadow-lg overflow-hidden">
-        {/* Test Mode Banner */}
-        {isTestMode && (
-          <div className="bg-yellow-100 border-b-2 border-yellow-300 px-4 py-2">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">🧪</span>
-              <p className="text-sm font-bold text-yellow-800">
-                {t('formCard.testModeBanner')}
-              </p>
-            </div>
-          </div>
-        )}
-
         {/* Project Summary */}
         <div className="bg-gradient-to-br from-blue-50 to-white p-6 border-b border-gray-200">
           <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2">

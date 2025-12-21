@@ -222,7 +222,6 @@
     },
     "formCard": {
       "noProjectDescription": "Choose a project from the gallery above to view details and make a donation",
-      "testModeBanner": "TEST MODE: Payment will be skipped",
       "projectEnded": "Project Ended"
     },
     "submit": "Submit Donation",

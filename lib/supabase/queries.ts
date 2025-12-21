@@ -3,7 +3,6 @@ import type {
   Project,
   Donation,
   ProjectStats,
-  PublicDonationFeed,
   ProjectFilters,
   DonationFilters,
 } from '@/types'
@@ -198,17 +197,6 @@ export async function getProjectDonations(projectId: number, limit = 50) {
   return data
 }
 
-export async function getPublicDonationFeed(limit = 20) {
-  const supabase = createServerClient()
-  const { data, error } = await supabase
-    .from('public_donation_feed')
-    .select('*')
-    .limit(limit)
-
-  if (error) throw error
-  return data as PublicDonationFeed[]
-}
-
 // ============= CREATE OPERATIONS =============
 
 export async function createProject(projectData: {
@@ -313,50 +301,4 @@ export async function isProjectGoalReached(projectId: number) {
 
   if (error) throw error
   return data as boolean
-}
-
-// ============= STATISTICS =============
-
-export async function getDashboardStats() {
-  const supabase = createServerClient()
-
-  const [
-    { count: totalProjects },
-    { count: activeProjects },
-    { count: totalDonations },
-    { data: donations },
-    { data: recentDonations },
-    { data: topProjects },
-  ] = await Promise.all([
-    supabase.from('projects').select('*', { count: 'exact', head: true }),
-    supabase
-      .from('projects')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'active'),
-    supabase
-      .from('donations')
-      .select('*', { count: 'exact', head: true })
-      .in('donation_status', ['paid', 'confirmed', 'delivering', 'completed']),
-    supabase
-      .from('donations')
-      .select('amount')
-      .in('donation_status', ['paid', 'confirmed', 'delivering', 'completed']),
-    supabase.from('public_donation_feed').select('*').limit(10),
-    supabase
-      .from('project_stats')
-      .select('*')
-      .order('donation_count', { ascending: false })
-      .limit(5),
-  ])
-
-  const totalAmountRaised = donations?.reduce((sum, d) => sum + Number((d as any).amount), 0) || 0
-
-  return {
-    total_projects: totalProjects || 0,
-    active_projects: activeProjects || 0,
-    total_donations: totalDonations || 0,
-    total_amount_raised: totalAmountRaised,
-    recent_donations: recentDonations || [],
-    top_projects: topProjects || [],
-  }
 }

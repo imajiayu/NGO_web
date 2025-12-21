@@ -3,14 +3,12 @@
 import { createWayForPayPayment } from '@/lib/wayforpay/server'
 import { getProjectById } from '@/lib/supabase/queries'
 import { donationFormSchema } from '@/lib/validations'
-import { createServiceClient } from '@/lib/supabase/server'
+import { createAnonClient } from '@/lib/supabase/server'
 import type { DonationStatus } from '@/types/database'
 import { getProjectName, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
-import { sendDonationConfirmation } from '@/lib/email/server'
 
 type WayForPayPaymentResult =
-  | { success: true; paymentParams: any; amount: number; orderReference: string; skipPayment?: false }
-  | { success: true; skipPayment: true; amount: number; orderReference: string }
+  | { success: true; paymentParams: any; amount: number; orderReference: string }
   | { success: false; error: 'quantity_exceeded'; remainingUnits: number; unitName: string }
   | { success: false; error: 'project_not_found' | 'project_not_active' | 'server_error' }
 
@@ -120,7 +118,8 @@ export async function createWayForPayDonation(data: {
 
     // Create pending donation records (one per unit)
     // These will be updated to 'paid' status when webhook receives payment confirmation
-    const supabase = createServiceClient()
+    // SECURITY: Use anonymous client - RLS policy enforces pending status only
+    const supabase = createAnonClient()
     const donationRecords = []
 
     for (let i = 0; i < validated.quantity; i++) {
@@ -168,52 +167,6 @@ export async function createWayForPayDonation(data: {
     }
 
     console.log(`[DONATION] Created ${insertedData.length} pending records: ${orderReference}`)
-
-    // TEST MODE: Skip payment and simulate success
-    if (process.env.NEXT_PUBLIC_TEST_MODE_SKIP_PAYMENT === 'true') {
-      console.log('🧪 TEST MODE: Skipping payment, simulating success')
-
-      // Update donations to 'paid' status (simulating webhook)
-      const { data: updatedDonations, error: updateError } = await supabase
-        .from('donations')
-        .update({ donation_status: 'paid' })
-        .eq('order_reference', orderReference)
-        .select()
-
-      if (updateError) {
-        console.error('Error updating test donations:', updateError)
-      } else {
-        console.log('✅ Test donations updated to paid status')
-      }
-
-      // Send confirmation email (simulating webhook behavior)
-      try {
-        const donationIds = updatedDonations?.map(d => d.donation_public_id) || []
-
-        await sendDonationConfirmation({
-          to: validated.donor_email,
-          donorName: validated.donor_name,
-          projectName: projectName,
-          donationIds,
-          totalAmount,
-          currency: 'USD',
-          locale: validated.locale as 'en' | 'zh' | 'ua',
-        })
-
-        console.log(`✅ TEST MODE: Confirmation email sent to ${validated.donor_email}`)
-      } catch (emailError) {
-        console.error('❌ TEST MODE: Failed to send confirmation email:', emailError)
-        // Don't fail the test, just log the error
-      }
-
-      // Return success with skipPayment flag
-      return {
-        success: true,
-        skipPayment: true,
-        amount: totalAmount,
-        orderReference,
-      }
-    }
 
     // Return payment parameters to client
     return {

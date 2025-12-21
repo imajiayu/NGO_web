@@ -7,7 +7,6 @@ export * from './database'
 export type Project = Tables<'projects'>
 export type Donation = Tables<'donations'>
 export type ProjectStats = Views<'project_stats'>
-export type PublicDonationFeed = Views<'public_donation_feed'>
 
 // Public donation view with obfuscated email (security-enhanced)
 export interface PublicProjectDonation {
@@ -118,16 +117,6 @@ export interface DonationFilters {
   date_from?: string
   date_to?: string
   locale?: 'en' | 'zh' | 'ua'
-}
-
-// Dashboard statistics
-export interface DashboardStats {
-  total_projects: number
-  active_projects: number
-  total_donations: number
-  total_amount_raised: number
-  recent_donations: PublicDonationFeed[]
-  top_projects: ProjectWithProgress[]
 }
 
 // Email notification types

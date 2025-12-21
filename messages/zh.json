@@ -222,7 +222,6 @@
     },
     "formCard": {
       "noProjectDescription": "从上方画廊中选择一个项目以查看详情并进行捐赠",
-      "testModeBanner": "测试模式：将跳过支付",
       "projectEnded": "项目已结束"
     },
     "submit": "提交捐赠",
