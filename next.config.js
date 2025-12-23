@@ -12,7 +12,7 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: '2mb',
+      bodySizeLimit: '50mb', // 增加到 50MB 以支持文件上传
       allowedOrigins: [
         'waytofutureua.org.ua',
         'www.waytofutureua.org.ua',

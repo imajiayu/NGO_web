@@ -6,7 +6,7 @@
 
 **最后更新**: 2025-12-23
 **数据库版本**: PostgreSQL (Supabase)
-**迁移文件数量**: 19 个
+**迁移文件数量**: 26 个
 
 ---
 
@@ -15,10 +15,10 @@
 ### 核心组件统计
 - **表 (Tables)**: 2 个
 - **视图 (Views)**: 3 个
-- **函数 (Functions)**: 5 个（2个业务函数 + 2个触发器函数 + 1个ID生成函数）
-- **触发器 (Triggers)**: 3 个
+- **函数 (Functions)**: 8 个（2个业务函数 + 4个触发器函数 + 1个ID生成函数 + 1个管理员认证函数）
+- **触发器 (Triggers)**: 5 个（2个updated_at触发器 + 1个项目单位更新触发器 + 2个字段不可变触发器）
 - **存储桶 (Storage Buckets)**: 1 个
-- **RLS 策略 (RLS Policies)**: 4 个
+- **RLS 策略 (RLS Policies)**: 12 个（4个公开策略 + 8个管理员策略）
 
 ---
 
@@ -292,7 +292,8 @@ SELECT
   d.amount,
   d.currency,
   d.donation_status,
-  d.donated_at
+  d.donated_at,
+  d.updated_at  -- ✨ 2025-12-23 新增：显示最后更新时间
 FROM donations d
 WHERE d.donation_status IN ('paid', 'confirmed', 'delivering', 'completed')
 ORDER BY d.donated_at DESC;
@@ -429,6 +430,7 @@ RETURNS TABLE (
   currency VARCHAR(10),
   donation_status VARCHAR(20),
   donated_at TIMESTAMPTZ,
+  updated_at TIMESTAMPTZ,  -- ✨ 2025-12-23 新增
   project_name VARCHAR(255),
   project_name_i18n JSONB,
   location VARCHAR(255),
@@ -571,6 +573,40 @@ GRANT EXECUTE ON FUNCTION request_donation_refund TO anon, authenticated;
 
 ---
 
+### 4. `is_admin()` → BOOLEAN
+
+检查当前用户是否为管理员（已登录的认证用户）。
+
+#### 认证逻辑
+
+```sql
+CREATE OR REPLACE FUNCTION is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN auth.uid() IS NOT NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+```
+
+**说明**:
+- 本系统采用管理员专用认证，无用户注册功能
+- 只要能通过 `auth.uid()` 获取到用户 ID，即为管理员
+- 用于管理员 RLS 策略的权限检查
+
+#### 使用场景
+
+- 管理员后台登录验证
+- RLS 策略中的权限检查
+- 管理员操作的 Server Actions
+
+#### 权限
+
+```sql
+-- SECURITY DEFINER: 使用函数所有者权限执行
+```
+
+---
+
 ## 🔧 触发器函数 (Trigger Functions)
 
 ### 1. `update_updated_at_column()`
@@ -661,6 +697,86 @@ END;
 | paid | refunding | -1 |
 | refunding | refunded | 无变化 |
 | pending | failed | 无变化 |
+
+---
+
+### 3. `prevent_project_immutable_fields()`
+
+防止修改项目表的不可变字段（额外保护层）。
+
+#### 实现
+
+```sql
+CREATE OR REPLACE FUNCTION prevent_project_immutable_fields()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- 不允许修改 id
+  IF OLD.id != NEW.id THEN
+    RAISE EXCEPTION 'Cannot modify project id';
+  END IF;
+
+  -- 不允许修改 created_at
+  IF OLD.created_at != NEW.created_at THEN
+    RAISE EXCEPTION 'Cannot modify project created_at';
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+#### 应用于
+
+- `projects` 表（BEFORE UPDATE 触发器）
+
+#### 保护字段
+
+- `id` - 主键不可修改
+- `created_at` - 创建时间不可修改
+
+---
+
+### 4. `prevent_donation_immutable_fields()`
+
+防止修改捐赠表的不可变字段（额外保护层）。
+
+#### 实现
+
+```sql
+CREATE OR REPLACE FUNCTION prevent_donation_immutable_fields()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- 检查所有不可变字段
+  IF OLD.id != NEW.id THEN
+    RAISE EXCEPTION 'Cannot modify donation id';
+  END IF;
+
+  IF OLD.donation_public_id != NEW.donation_public_id THEN
+    RAISE EXCEPTION 'Cannot modify donation_public_id';
+  END IF;
+
+  [其他字段检查...]
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+#### 应用于
+
+- `donations` 表（BEFORE UPDATE 触发器）
+
+#### 保护字段
+
+- `id` - 主键
+- `donation_public_id` - 公开ID
+- `project_id` - 项目关联
+- `donor_name` / `donor_email` - 捐赠者信息
+- `amount` - 捐赠金额
+- `order_reference` - 订单号
+- `created_at` - 创建时间
+
+**说明**: 管理员只能修改 `donation_status` 和 `donation_result_url` 字段。
 
 ---
 
@@ -769,6 +885,134 @@ USING (bucket_id = 'donation-results');
 
 ---
 
+### 管理员 RLS 策略 (Admin Policies)
+
+> 以下策略用于管理员后台系统，基于 `is_admin()` 函数验证权限
+
+#### Projects 表管理员策略
+
+##### 5. "Admins can insert projects"
+
+```sql
+CREATE POLICY "Admins can insert projects"
+ON projects FOR INSERT
+TO authenticated
+WITH CHECK (is_admin());
+```
+
+**说明**: 管理员可以创建新项目。
+
+##### 6. "Admins can update projects"
+
+```sql
+CREATE POLICY "Admins can update projects"
+ON projects FOR UPDATE
+TO authenticated
+USING (is_admin())
+WITH CHECK (is_admin());
+```
+
+**说明**:
+- 管理员可以更新项目信息
+- 不可变字段（id, created_at）由 `prevent_project_immutable_fields()` 触发器保护
+- 应用层 Server Actions 已过滤不应修改的字段
+
+**注意**: 没有 DELETE 策略，管理员无法删除项目。
+
+---
+
+#### Donations 表管理员策略
+
+##### 7. "Admins can view all donations"
+
+```sql
+CREATE POLICY "Admins can view all donations"
+ON donations FOR SELECT
+TO authenticated
+USING (is_admin());
+```
+
+**说明**: 管理员可以查看所有捐赠记录（用于后台管理）。
+
+##### 8. "Admins can update donation status"
+
+```sql
+CREATE POLICY "Admins can update donation status"
+ON donations FOR UPDATE
+TO authenticated
+USING (is_admin())
+WITH CHECK (is_admin());
+```
+
+**说明**:
+- 管理员可以更新 `donation_status` 和 `donation_result_url` 字段
+- 不可变字段由 `prevent_donation_immutable_fields()` 触发器保护
+- 状态转换验证在应用层 Server Actions 中处理
+
+**允许的状态转换**:
+```
+refunding → refunded
+paid → confirmed
+confirmed → delivering
+delivering → completed
+```
+
+---
+
+#### Storage 管理员策略 (donation-results bucket)
+
+##### 9. "Admins can upload to donation-results"
+
+```sql
+CREATE POLICY "Admins can upload to donation-results"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (
+  bucket_id = 'donation-results' AND
+  is_admin()
+);
+```
+
+##### 10. "Admins can delete from donation-results"
+
+```sql
+CREATE POLICY "Admins can delete from donation-results"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (
+  bucket_id = 'donation-results' AND
+  is_admin()
+);
+```
+
+##### 11. "Admins can view donation-results"
+
+```sql
+CREATE POLICY "Admins can view donation-results"
+ON storage.objects FOR SELECT
+TO authenticated
+USING (
+  bucket_id = 'donation-results' AND
+  is_admin()
+);
+```
+
+##### 12. "Admins can update donation-results metadata"
+
+```sql
+CREATE POLICY "Admins can update donation-results metadata"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (
+  bucket_id = 'donation-results' AND
+  is_admin()
+);
+```
+
+**说明**: 管理员对 donation-results 存储桶拥有完全的 CRUD 权限。
+
+---
+
 ## 📦 存储桶 (Storage Buckets)
 
 ### `donation-results`
@@ -845,6 +1089,32 @@ EXECUTE FUNCTION update_updated_at_column();
 ```
 
 **作用**: 自动更新捐赠记录的 `updated_at` 字段。
+
+---
+
+### 4. `prevent_project_immutable_fields_trigger`
+
+```sql
+CREATE TRIGGER prevent_project_immutable_fields_trigger
+BEFORE UPDATE ON projects
+FOR EACH ROW
+EXECUTE FUNCTION prevent_project_immutable_fields();
+```
+
+**作用**: 防止修改项目表的不可变字段（id, created_at）。
+
+---
+
+### 5. `prevent_donation_immutable_fields_trigger`
+
+```sql
+CREATE TRIGGER prevent_donation_immutable_fields_trigger
+BEFORE UPDATE ON donations
+FOR EACH ROW
+EXECUTE FUNCTION prevent_donation_immutable_fields();
+```
+
+**作用**: 防止修改捐赠表的不可变字段（id, donation_public_id, project_id, donor info, amount, order_reference, created_at）。
 
 ---
 
@@ -1002,6 +1272,10 @@ idx_donations_refund_status      -- 退款查询
 | 17 | `20251222000000_fix_ambiguous_column_reference.sql` | 修复列名歧义 |
 | 18 | `20251222010000_include_pending_in_order_view.sql` | 订单视图包含 pending 状态 |
 | 19 | `20251223000000_cleanup_and_add_donation_updated_at.sql` | 清理未使用函数 + 添加 donations.updated_at 字段 |
+| 20 | `20251223100000_enable_admin_auth.sql` | 启用管理员认证系统（is_admin函数） |
+| 21 | `20251223120000_add_admin_rls_policies.sql` | 添加管理员 RLS 策略 |
+| 22 | `20251223130000_add_updated_at_to_public_views.sql` | 公开视图添加 updated_at 字段 |
+| 23 | `20251223140000_fix_admin_rls_policies.sql` | 修复管理员 RLS 策略 + 添加字段保护触发器 |
 
 ---
 
@@ -1036,6 +1310,18 @@ idx_donations_refund_status      -- 退款查询
   - 删除 `is_project_goal_reached` - 前端直接计算更高效
 - ✅ 为 donations 表添加 `updated_at` 字段
 - ✅ 添加自动更新触发器 `update_donations_updated_at`
+- ✅ **启用管理员认证系统**
+  - 创建 `is_admin()` 函数用于权限验证
+  - 添加管理员 RLS 策略（Projects、Donations、Storage）
+  - 管理员可以创建/更新项目
+  - 管理员可以更新捐赠状态（仅限合法状态转换）
+  - 管理员可以管理 donation-results 存储桶
+- ✅ 添加数据库级字段保护
+  - `prevent_project_immutable_fields()` 触发器
+  - `prevent_donation_immutable_fields()` 触发器
+- ✅ 公开视图添加 `updated_at` 字段
+  - `public_project_donations` 视图
+  - `get_donations_by_email_verified()` 函数
 
 ---
 
@@ -1102,4 +1388,4 @@ COMMENT ON POLICY "Allow anonymous insert pending donations" ON donations IS '..
 
 **文档维护者**: 开发团队
 **最后审核**: 2025-12-23
-**版本**: 1.1.0 (数据库函数清理 + donations.updated_at 字段)
+**版本**: 1.2.0 (管理员认证系统 + 字段保护触发器)

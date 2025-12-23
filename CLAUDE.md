@@ -33,11 +33,12 @@
 - ✅ **实时更新**: 基于 Supabase 的实时数据同步
 - ✅ **邮件通知**: Resend 自动发送捐赠确认邮件
 - ✅ **捐赠追踪**: 用户可查询和追踪捐赠状态
+- ✅ **管理员后台**: 项目管理、捐赠状态更新、配送管理
 - ✅ **安全可靠**: 完整的 RLS 策略和签名验证
 
 ### 项目信息
 
-**当前版本**: 1.0.0
+**当前版本**: 1.1.0
 **最后更新**: 2025-12-23
 **开发状态**: 生产就绪
 
@@ -98,6 +99,13 @@
 - 3 种语言（en/zh/ua）
 - 动态语言切换
 - 服务端渲染翻译
+
+### 5. 管理员后台
+
+- 管理员登录/登出
+- 项目创建和编辑
+- 捐赠状态管理
+- 配送结果上传
 
 ---
 
@@ -184,7 +192,13 @@ NGO_web/
 │   │   ├── track-donation/       # 捐赠追踪
 │   │   ├── privacy-policy/       # 隐私政策
 │   │   └── public-agreement/     # 公开协议
+│   ├── admin/                    # 管理员后台 (新增)
+│   │   ├── layout.tsx            # 管理员布局
+│   │   ├── login/                # 管理员登录
+│   │   ├── projects/             # 项目管理
+│   │   └── donations/            # 捐赠管理
 │   ├── actions/                  # Server Actions
+│   │   ├── admin.ts              # 管理员操作 (新增)
 │   │   ├── donation.ts           # 捐赠创建
 │   │   ├── donation-result.ts    # 捐赠结果查询
 │   │   └── track-donation.ts     # 捐赠追踪
@@ -192,12 +206,14 @@ NGO_web/
 │       ├── webhooks/wayforpay/   # WayForPay 回调
 │       └── donations/            # 捐赠查询 API
 ├── components/                   # React 组件
+│   ├── admin/                    # 管理员组件 (新增)
 │   ├── home/                     # 主页组件
 │   ├── projects/                 # 项目组件
 │   ├── donate/                   # 捐赠组件
 │   └── ...                       # 其他组件
 ├── lib/                          # 工具库
 │   ├── supabase/                 # Supabase 集成
+│   │   └── admin-auth.ts         # 管理员认证 (新增)
 │   ├── wayforpay/                # WayForPay 集成
 │   ├── email/                    # 邮件服务
 │   ├── validations.ts            # Zod 验证
@@ -252,6 +268,14 @@ NGO_web/
 | `/api/donations/project-public/[projectId]` | GET | 查询项目公开捐赠列表 |
 | `/api/donate/success-redirect` | GET/POST | WayForPay 重定向处理 |
 
+### 管理员页面 (新增)
+
+| 路径 | 组件 | 功能 | 权限 |
+|------|------|------|------|
+| `/admin/login` | `admin/login/page.tsx` | 管理员登录 | 公开 |
+| `/admin/projects` | `admin/projects/page.tsx` | 项目管理 | 需要登录 |
+| `/admin/donations` | `admin/donations/page.tsx` | 捐赠管理 | 需要登录 |
+
 ### Server Actions
 
 | 文件 | 主函数 | 用途 |
@@ -260,6 +284,13 @@ NGO_web/
 | `actions/donation-result.ts` | `getDonationResultUrl()` | 获取捐赠结果图片 |
 | `actions/track-donation.ts` | `trackDonations()` | 追踪捐赠记录 |
 | `actions/track-donation.ts` | `requestRefund()` | 申请退款 |
+| `actions/admin.ts` | `adminLogin()` | 管理员登录 (新增) |
+| `actions/admin.ts` | `adminLogout()` | 管理员登出 (新增) |
+| `actions/admin.ts` | `getAdminProjects()` | 获取所有项目 (新增) |
+| `actions/admin.ts` | `createProject()` | 创建项目 (新增) |
+| `actions/admin.ts` | `updateProject()` | 更新项目 (新增) |
+| `actions/admin.ts` | `getAdminDonations()` | 获取所有捐赠 (新增) |
+| `actions/admin.ts` | `updateDonationStatus()` | 更新捐赠状态 (新增) |
 
 ---
 
@@ -317,6 +348,18 @@ NGO_web/
 |------|------|------|
 | CopyButton | `CopyButton.tsx` | 复制文本到剪贴板 |
 | LanguageSwitcher | `LanguageSwitcher.tsx` | 语言切换下拉菜单 |
+
+### 管理员组件 (新增)
+
+位于 `components/admin/` 目录:
+
+| 组件 | 用途 | 类型 |
+|------|------|------|
+| AdminNav | 管理员导航栏（登出按钮、页面导航） | Client Component |
+| ProjectsTable | 项目列表表格（编辑、状态管理） | Client Component |
+| ProjectEditModal | 项目编辑模态框（多语言表单） | Client Component |
+| DonationsTable | 捐赠列表表格（状态更新） | Client Component |
+| DonationEditModal | 捐赠编辑模态框（状态转换、结果上传） | Client Component |
 
 ---
 
@@ -393,6 +436,346 @@ pending → failed (支付失败)
 6. 展示捐赠列表（ID、项目、金额、状态、日期）
    ↓
 7. 用户可选择申请退款
+```
+
+---
+
+## 管理员功能
+
+### 系统架构
+
+管理员系统采用基于 Supabase Auth 的认证方案，只有管理员登录功能，无用户注册。
+
+#### 认证逻辑
+
+```
+登录用户 = 管理员
+判断依据: auth.uid() IS NOT NULL
+```
+
+**特点**:
+- ✅ 简化的权限模型（只有管理员和匿名用户两种角色）
+- ✅ 基于 Supabase RLS 的安全保护
+- ✅ 数据库级字段保护（触发器）
+- ✅ 应用层双重验证
+
+### 功能模块
+
+#### 1. 管理员登录
+
+**路径**: `/admin/login`
+
+**功能**:
+- 邮箱 + 密码登录
+- Session 持久化
+- 登录失败提示
+
+**实现**:
+```typescript
+// Server Action
+await adminLogin(email, password)
+
+// 底层使用 Supabase Auth
+supabase.auth.signInWithPassword({ email, password })
+```
+
+**安全特性**:
+- ✅ HTTPS 加密传输
+- ✅ Session Cookie 保护
+- ✅ 登录失败不泄露账户信息
+
+---
+
+#### 2. 项目管理
+
+**路径**: `/admin/projects`
+
+**功能**:
+- 查看所有项目列表
+- 创建新项目
+- 编辑现有项目
+- 更新项目状态
+
+**权限控制**:
+```sql
+-- RLS 策略
+CREATE POLICY "Admins can insert projects" ON projects
+FOR INSERT TO authenticated WITH CHECK (is_admin());
+
+CREATE POLICY "Admins can update projects" ON projects
+FOR UPDATE TO authenticated USING (is_admin());
+```
+
+**字段保护**:
+- ✅ **可编辑字段**: project_name, location, description, target_units, status 等
+- ❌ **不可编辑字段**: id, created_at（触发器保护）
+- ⚙️ **自动更新字段**: updated_at（触发器自动更新）
+
+**状态管理**:
+```
+planned (计划中)
+  ↓
+active (进行中)
+  ↓
+completed / paused (已完成/已暂停)
+```
+
+---
+
+#### 3. 捐赠管理
+
+**路径**: `/admin/donations`
+
+**功能**:
+- 查看所有捐赠记录（含完整信息）
+- 更新捐赠状态
+- 上传配送结果图片
+
+**权限控制**:
+```sql
+-- 管理员可以查看所有捐赠
+CREATE POLICY "Admins can view all donations" ON donations
+FOR SELECT TO authenticated USING (is_admin());
+
+-- 管理员可以更新捐赠状态
+CREATE POLICY "Admins can update donation status" ON donations
+FOR UPDATE TO authenticated USING (is_admin());
+```
+
+**状态转换规则**:
+
+管理员只能执行以下状态转换：
+
+| 当前状态 | 可转换为 | 说明 |
+|---------|---------|------|
+| `paid` | `confirmed` | 确认收款 |
+| `confirmed` | `delivering` | 开始配送 |
+| `delivering` | `completed` | 配送完成（需上传结果图片） |
+| `refunding` | `refunded` | 完成退款 |
+
+**字段保护**:
+- ✅ **可编辑字段**: donation_status, donation_result_url
+- ❌ **不可编辑字段**: id, donation_public_id, project_id, donor_name, donor_email, amount, order_reference, created_at（触发器保护）
+- ⚙️ **自动更新字段**: updated_at（触发器自动更新）
+
+**配送完成流程**:
+1. 管理员将状态从 `delivering` 更新为 `completed`
+2. 必须上传配送结果图片到 `donation-results` 存储桶
+3. 图片 URL 存储在 `donation_result_url` 字段
+4. 用户可通过捐赠追踪查看配送照片
+
+---
+
+#### 4. Storage 管理
+
+**存储桶**: `donation-results`
+
+**权限**:
+```sql
+-- 管理员拥有完整 CRUD 权限
+- INSERT: 上传新文件
+- SELECT: 查看文件列表
+- UPDATE: 更新文件元数据
+- DELETE: 删除文件
+```
+
+**使用场景**:
+- 上传配送完成照片
+- 管理项目进展图片
+- 存储捐赠成果展示
+
+**公开访问**:
+- ✅ 所有用户可以查看（bucket.public = true）
+- ❌ 只有管理员可以上传/删除
+
+---
+
+### 安全机制
+
+#### 1. 数据库 RLS 策略
+
+```
+┌─────────────────────────────────────┐
+│     匿名用户（anon key）             │
+├─────────────────────────────────────┤
+│ ✓ 读取项目                           │
+│ ✓ 读取捐赠（视图混淆邮箱）            │
+│ ✓ 插入待支付捐赠                      │
+│ ✗ 更新捐赠状态                       │
+│ ✗ 创建/编辑项目                      │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│   管理员（authenticated + is_admin）│
+├─────────────────────────────────────┤
+│ ✓ 读取所有数据（含敏感信息）          │
+│ ✓ 创建项目                           │
+│ ✓ 更新项目（字段受限）                │
+│ ✓ 更新捐赠状态（状态转换受限）         │
+│ ✓ 管理 Storage                      │
+│ ✗ 删除项目/捐赠（无 DELETE 策略）     │
+└─────────────────────────────────────┘
+```
+
+#### 2. 触发器保护
+
+**防止修改不可变字段**:
+
+```sql
+-- Projects 表触发器
+CREATE TRIGGER prevent_project_immutable_fields_trigger
+BEFORE UPDATE ON projects
+EXECUTE FUNCTION prevent_project_immutable_fields();
+-- 保护: id, created_at
+
+-- Donations 表触发器
+CREATE TRIGGER prevent_donation_immutable_fields_trigger
+BEFORE UPDATE ON donations
+EXECUTE FUNCTION prevent_donation_immutable_fields();
+-- 保护: id, donation_public_id, project_id,
+--       donor_name, donor_email, amount,
+--       order_reference, created_at
+```
+
+**好处**:
+- ✅ 数据库级强制保护
+- ✅ 即使 RLS 策略被绕过也无法修改
+- ✅ 防止应用层错误
+
+#### 3. 应用层验证
+
+**Server Actions 双重检查**:
+
+```typescript
+// 1. 检查管理员权限
+export async function updateProject(id: number, updates: ProjectUpdate) {
+  await requireAdmin() // 抛出异常如果未登录
+
+  // 2. 过滤不可变字段
+  const { id: _, created_at, updated_at, ...safeUpdates } = updates
+
+  // 3. 执行更新
+  await supabase.from('projects').update(safeUpdates).eq('id', id)
+}
+```
+
+**状态转换验证**:
+
+```typescript
+// 验证状态转换是否合法
+const validTransitions: Record<string, string[]> = {
+  refunding: ['refunded'],
+  paid: ['confirmed'],
+  confirmed: ['delivering'],
+  delivering: ['completed'],
+}
+
+if (!validTransitions[currentStatus].includes(newStatus)) {
+  throw new Error(`Invalid status transition: ${currentStatus} → ${newStatus}`)
+}
+```
+
+---
+
+### 管理员工作流程
+
+#### 项目创建流程
+
+```
+1. 管理员登录 /admin/login
+   ↓
+2. 访问 /admin/projects
+   ↓
+3. 点击"创建项目"
+   ↓
+4. 填写项目信息（支持多语言）
+   - 项目名称（en/zh/ua）
+   - 地点（en/zh/ua）
+   - 描述（en/zh/ua）
+   - 目标单位数
+   - 单位价格
+   - 单位名称
+   - 开始日期/结束日期
+   ↓
+5. 提交 → createProject() Server Action
+   ↓
+6. RLS 验证 is_admin()
+   ↓
+7. 插入数据库 → 触发器自动设置 created_at, updated_at
+   ↓
+8. 重新验证页面缓存
+   ↓
+9. 项目出现在公开主页
+```
+
+---
+
+#### 捐赠状态管理流程
+
+```
+1. 用户完成支付 → 状态: pending
+   ↓
+2. Webhook 确认 → 状态: paid
+   ↓
+3. 管理员查看 /admin/donations
+   ↓
+4. 确认收款 → 点击"确认" → paid → confirmed
+   ↓
+5. 采购物资 → 点击"配送中" → confirmed → delivering
+   ↓
+6. 配送完成 → 上传照片 → 点击"完成"
+   ↓
+7. Server Action 验证:
+   - delivering → completed ✅
+   - 必须有 donation_result_url ✅
+   ↓
+8. 更新状态 → 状态: completed
+   ↓
+9. 用户通过捐赠追踪查看结果图片
+```
+
+---
+
+### 开发指南
+
+#### 创建管理员账户
+
+**步骤**:
+
+1. 在 Supabase Dashboard 创建用户:
+   ```
+   Authentication → Users → Add User
+   Email: admin@example.com
+   Password: [secure-password]
+   Email Confirm: ✓
+   ```
+
+2. 或使用 SQL:
+   ```sql
+   -- 注意：需要在 Supabase SQL Editor 中执行
+   SELECT auth.admin_create_user(
+     email := 'admin@example.com',
+     password := 'secure-password',
+     email_confirm := true
+   );
+   ```
+
+3. 使用该账户登录 `/admin/login`
+
+#### 本地测试管理员功能
+
+```bash
+# 1. 确保环境变量正确
+NEXT_PUBLIC_SUPABASE_URL=your-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+
+# 2. 运行开发服务器
+npm run dev
+
+# 3. 访问管理员登录页
+http://localhost:3000/admin/login
+
+# 4. 使用测试管理员账户登录
 ```
 
 ---
@@ -779,6 +1162,6 @@ Value: v=DMARC1; p=none; rua=mailto:dmarc@yourdomain.com
 
 ---
 
-**文档版本**: 1.0.0
+**文档版本**: 1.1.0 (新增管理员功能文档)
 **最后更新**: 2025-12-23
 **维护者**: 开发团队

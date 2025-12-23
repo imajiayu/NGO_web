@@ -25,7 +25,7 @@ export async function GET(
 
   try {
     // Use regular server client (RLS enforced)
-    const supabase = createServerClient()
+    const supabase = await createServerClient()
 
     // Fetch from secure view with obfuscated emails
     const { data: donations, error } = await supabase

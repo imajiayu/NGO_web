@@ -339,6 +339,7 @@
       "donationId": "捐赠ID",
       "amount": "金额",
       "date": "日期",
+      "updatedAt": "最后更新",
       "project": "项目",
       "status": "状态"
     },
@@ -416,6 +417,7 @@
       "donationId": "捐赠ID",
       "amount": "金额",
       "time": "日期",
+      "updatedAt": "最后更新",
       "status": "状态",
       "action": "操作"
     },
@@ -439,6 +441,8 @@
     "donationId": "捐赠ID",
     "loading": "加载结果中...",
     "download": "下载图片",
+    "downloadAll": "下载所有文件",
+    "downloading": "下载中...",
     "imageAlt": "捐赠 {donationId} 的结果图片",
     "contactSupport": "如果您认为这是错误，请联系我们的支持团队。",
     "errors": {
@@ -449,6 +453,7 @@
       "storageFailed": "无法访问存储。请稍后重试。",
       "urlFailed": "无法生成图片URL。",
       "loadFailed": "加载结果图片失败。",
+      "downloadFailed": "下载文件失败。请重试。",
       "serverError": "服务器错误。请稍后重试。"
     }
   },

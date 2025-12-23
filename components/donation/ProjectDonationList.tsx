@@ -13,6 +13,7 @@ type Donation = {
   currency: string
   donation_status: 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
   donated_at: string
+  updated_at: string
 }
 
 interface ProjectDonationListProps {
@@ -120,6 +121,7 @@ export default function ProjectDonationList({
               <th className="text-left py-3 px-4 font-semibold text-gray-900">{t('columns.donationId')}</th>
               <th className="text-left py-3 px-4 font-semibold text-gray-900">{t('columns.amount')}</th>
               <th className="text-left py-3 px-4 font-semibold text-gray-900">{t('columns.time')}</th>
+              <th className="text-left py-3 px-4 font-semibold text-gray-900">{t('columns.updatedAt')}</th>
               <th className="text-left py-3 px-4 font-semibold text-gray-900">{t('columns.status')}</th>
               <th className="text-left py-3 px-4 font-semibold text-gray-900">{t('columns.action')}</th>
             </tr>
@@ -140,6 +142,9 @@ export default function ProjectDonationList({
                 </td>
                 <td className="py-4 px-4 text-sm text-gray-600">
                   {formatDate(donation.donated_at, locale as SupportedLocale)}
+                </td>
+                <td className="py-4 px-4 text-sm text-gray-600">
+                  {formatDate(donation.updated_at, locale as SupportedLocale)}
                 </td>
                 <td className="py-4 px-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(donation.donation_status)}`}>
@@ -201,10 +206,18 @@ export default function ProjectDonationList({
             </div>
 
             {/* Time */}
-            <div className="mb-3">
+            <div className="mb-2">
               <div className="text-xs font-medium text-gray-700 mb-1">{t('columns.time')}</div>
               <div className="text-sm text-gray-900">
                 {formatDate(donation.donated_at, locale as SupportedLocale)}
+              </div>
+            </div>
+
+            {/* Updated At */}
+            <div className="mb-3">
+              <div className="text-xs font-medium text-gray-700 mb-1">{t('columns.updatedAt')}</div>
+              <div className="text-sm text-gray-900">
+                {formatDate(donation.updated_at, locale as SupportedLocale)}
               </div>
             </div>
 

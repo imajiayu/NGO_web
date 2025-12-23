@@ -1,10 +1,31 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createServerClient as createSSRClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 import type { Database } from '@/types/database'
 
-export const createServerClient = () => {
-  return createServerComponentClient<Database>({ cookies })
+export const createServerClient = async () => {
+  const cookieStore = await cookies()
+
+  return createSSRClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {
+            // 在某些 Next.js 上下文中可能无法设置 cookie
+          }
+        },
+      },
+    }
+  )
 }
 
 // Anon client for API routes (respects RLS, no auth required)

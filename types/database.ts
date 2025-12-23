@@ -12,31 +12,6 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.1"
   }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       donations: {
@@ -57,6 +32,7 @@ export type Database = {
           order_reference: string | null
           payment_method: string | null
           project_id: number
+          updated_at: string
         }
         Insert: {
           amount: number
@@ -75,6 +51,7 @@ export type Database = {
           order_reference?: string | null
           payment_method?: string | null
           project_id: number
+          updated_at?: string
         }
         Update: {
           amount?: number
@@ -93,6 +70,7 @@ export type Database = {
           order_reference?: string | null
           payment_method?: string | null
           project_id?: number
+          updated_at?: string
         }
         Relationships: [
           {
@@ -231,6 +209,7 @@ export type Database = {
           donor_email_obfuscated: string | null
           id: number | null
           project_id: number | null
+          updated_at: string | null
         }
         Insert: {
           amount?: number | null
@@ -241,6 +220,7 @@ export type Database = {
           donor_email_obfuscated?: never
           id?: number | null
           project_id?: number | null
+          updated_at?: string | null
         }
         Update: {
           amount?: number | null
@@ -251,6 +231,7 @@ export type Database = {
           donor_email_obfuscated?: never
           id?: number | null
           project_id?: number | null
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -300,8 +281,10 @@ export type Database = {
           project_name_i18n: Json
           unit_name: string
           unit_name_i18n: Json
+          updated_at: string
         }[]
       }
+      is_admin: { Args: never; Returns: boolean }
       request_donation_refund: {
         Args: { p_donation_public_id: string; p_email: string }
         Returns: Json
@@ -434,9 +417,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },

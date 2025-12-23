@@ -10,7 +10,7 @@ import type {
 // ============= PROJECT QUERIES =============
 
 export async function getProjects(filters?: ProjectFilters) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   let query = supabase.from('projects').select('*')
 
   if (filters?.status) {
@@ -36,7 +36,7 @@ export async function getProjects(filters?: ProjectFilters) {
 }
 
 export async function getProjectById(id: number) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data, error } = await supabase
     .from('projects')
     .select('*')
@@ -48,7 +48,7 @@ export async function getProjectById(id: number) {
 }
 
 export async function getActiveProjects() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data, error } = await supabase
     .from('projects')
     .select('*')
@@ -60,7 +60,7 @@ export async function getActiveProjects() {
 }
 
 export async function getProjectStats(projectId?: number) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   let query = supabase.from('project_stats').select('*')
 
   if (projectId) {
@@ -74,7 +74,7 @@ export async function getProjectStats(projectId?: number) {
 }
 
 export async function getAllProjectsWithStats(filters?: ProjectFilters) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   let query = supabase.from('project_stats').select('*')
 
   if (filters?.status) {
@@ -110,7 +110,7 @@ export async function getAllProjectsWithStats(filters?: ProjectFilters) {
 // ============= DONATION QUERIES =============
 
 export async function getDonations(filters?: DonationFilters) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   let query = supabase.from('donations').select('*, projects(id, project_name, project_name_i18n, location, location_i18n, unit_name, unit_name_i18n)')
 
   if (filters?.project_id) {
@@ -140,7 +140,7 @@ export async function getDonations(filters?: DonationFilters) {
 }
 
 export async function getDonationByPublicId(publicId: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data, error } = await supabase
     .from('donations')
     .select('*, projects(id, project_name, project_name_i18n, location, location_i18n, unit_name, unit_name_i18n)')
@@ -152,7 +152,7 @@ export async function getDonationByPublicId(publicId: string) {
 }
 
 export async function getDonationsByEmail(email: string) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data, error } = await supabase
     .from('donations')
     .select('*, projects(id, project_name, project_name_i18n, location, location_i18n, unit_name, unit_name_i18n)')
@@ -164,7 +164,7 @@ export async function getDonationsByEmail(email: string) {
 }
 
 export async function getProjectDonations(projectId: number, limit = 50) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data, error } = await supabase
     .from('public_project_donations')
     .select('*')
@@ -188,7 +188,7 @@ export async function createProject(projectData: {
   unit_name?: string
   status?: 'planned' | 'active'
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data, error } = await supabase
     .from('projects')
     // @ts-expect-error - Supabase generated types are overly restrictive
@@ -212,10 +212,9 @@ export async function createDonation(donationData: {
   donation_status?: 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
   locale?: 'en' | 'zh' | 'ua'
 }) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data, error } = await supabase
     .from('donations')
-    // @ts-expect-error - Supabase generated types are overly restrictive
     .insert(donationData)
     .select()
     .single()
@@ -230,10 +229,9 @@ export async function updateProject(
   projectId: number,
   updates: Partial<Project>
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data, error } = await supabase
     .from('projects')
-    // @ts-expect-error - Supabase generated types are overly restrictive
     .update(updates)
     .eq('id', projectId)
     .select()
@@ -247,10 +245,9 @@ export async function updateDonationStatus(
   donationId: number,
   status: 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
 ) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data, error } = await supabase
     .from('donations')
-    // @ts-expect-error - Supabase generated types are overly restrictive
     .update({ donation_status: status })
     .eq('id', donationId)
     .select()
@@ -263,7 +260,7 @@ export async function updateDonationStatus(
 // ============= HELPER FUNCTIONS =============
 
 export async function generateDonationPublicId(projectId: number) {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   const { data, error } = await supabase.rpc('generate_donation_public_id', {
     project_id_input: projectId,
   } as any)

@@ -339,6 +339,7 @@
       "donationId": "Donation ID",
       "amount": "Amount",
       "date": "Date",
+      "updatedAt": "Last Updated",
       "project": "Project",
       "status": "Status"
     },
@@ -416,6 +417,7 @@
       "donationId": "Donation ID",
       "amount": "Amount",
       "time": "Date",
+      "updatedAt": "Last Updated",
       "status": "Status",
       "action": "Action"
     },
@@ -439,6 +441,8 @@
     "donationId": "Donation ID",
     "loading": "Loading result...",
     "download": "Download Image",
+    "downloadAll": "Download All",
+    "downloading": "Downloading...",
     "imageAlt": "Result image for donation {donationId}",
     "contactSupport": "If you believe this is an error, please contact our support team.",
     "errors": {
@@ -449,6 +453,7 @@
       "storageFailed": "Failed to access storage. Please try again later.",
       "urlFailed": "Failed to generate image URL.",
       "loadFailed": "Failed to load the result image.",
+      "downloadFailed": "Failed to download files. Please try again.",
       "serverError": "Server error. Please try again later."
     }
   },

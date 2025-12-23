@@ -17,6 +17,7 @@ type Donation = {
   currency: string
   donation_status: 'pending' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded' | 'failed'
   donated_at: string
+  updated_at: string
   projects: {
     id: number
     project_name: string
@@ -246,7 +247,7 @@ export default function TrackDonationForm({ locale }: Props) {
                   </div>
 
                   {/* Details Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                     <div>
                       <div className="text-xs text-gray-500 font-medium mb-1">{t('results.donationId')}</div>
                       <code className="text-sm font-mono bg-gray-100 px-3 py-1.5 rounded-lg inline-block font-semibold text-gray-800">
@@ -263,6 +264,16 @@ export default function TrackDonationForm({ locale }: Props) {
                       <div className="text-xs text-gray-500 font-medium mb-1">{t('results.date')}</div>
                       <div className="text-sm text-gray-700 font-medium">
                         {formatDate(donation.donated_at, locale as SupportedLocale, {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-500 font-medium mb-1">{t('results.updatedAt')}</div>
+                      <div className="text-sm text-gray-700 font-medium">
+                        {formatDate(donation.updated_at, locale as SupportedLocale, {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric'
