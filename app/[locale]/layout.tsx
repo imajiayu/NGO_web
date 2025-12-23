@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { Analytics } from '@vercel/analytics/react'
 import { locales } from '@/i18n/config'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
@@ -57,6 +58,7 @@ export default async function RootLayout({
           </main>
           <Footer />
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   )

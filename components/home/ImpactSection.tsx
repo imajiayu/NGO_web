@@ -1,10 +1,8 @@
-'use client'
-
-import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 
-export default function ImpactSection() {
-  const t = useTranslations('home.hero.impact')
+export default async function ImpactSection() {
+  const t = await getTranslations('home.hero.impact')
 
   const stats = [
     {
@@ -48,7 +46,7 @@ export default function ImpactSection() {
           alt="Impact"
           fill
           className="object-cover"
-          quality={90}
+          quality={75}
         />
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/90 via-purple-900/85 to-pink-900/90" />
       </div>

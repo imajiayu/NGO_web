@@ -1,10 +1,8 @@
-'use client'
-
-import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 
-export default function MissionSection() {
-  const t = useTranslations('home.hero.mission')
+export default async function MissionSection() {
+  const t = await getTranslations('home.hero.mission')
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -16,7 +14,7 @@ export default function MissionSection() {
           fill
           className="object-cover"
           priority
-          quality={90}
+          quality={75}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
       </div>

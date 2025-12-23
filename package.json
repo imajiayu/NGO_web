@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--no-deprecation' next dev",
+    "dev:verbose": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -13,8 +14,10 @@
     "prepare:deploy": "bash scripts/prepare-deploy.sh"
   },
   "dependencies": {
+    "@sentry/nextjs": "^10.32.1",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.39.0",
+    "@vercel/analytics": "^1.6.1",
     "clsx": "^2.1.0",
     "jszip": "^3.10.1",
     "lucide-react": "^0.562.0",

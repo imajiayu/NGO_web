@@ -1,9 +1,7 @@
-'use client'
+import { getTranslations } from 'next-intl/server'
 
-import { useTranslations } from 'next-intl'
-
-export default function ComplianceSection() {
-  const t = useTranslations('home.hero.compliance')
+export default async function ComplianceSection() {
+  const t = await getTranslations('home.hero.compliance')
 
   const documents = [
     { key: 'registration', file: '非营利组织登记册摘录.pdf' },

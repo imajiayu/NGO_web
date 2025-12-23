@@ -7,6 +7,13 @@ import { locales, localeNames } from '@/i18n/config'
 import { useState, useTransition, useEffect } from 'react'
 import GlobalLoadingSpinner from './GlobalLoadingSpinner'
 
+// Loading text for each language
+const loadingTexts: Record<string, string> = {
+  en: 'Loading...',
+  zh: '加载中...',
+  ua: 'Завантаження...',
+}
+
 export default function Navigation() {
   const t = useTranslations('navigation')
   const tMeta = useTranslations('metadata')
@@ -16,13 +23,22 @@ export default function Navigation() {
   const [isPending, startTransition] = useTransition()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isNavigating, setIsNavigating] = useState(false)
+  const [targetLocale, setTargetLocale] = useState<string | null>(null)
 
   // Reset loading state when pathname changes
   useEffect(() => {
     setIsNavigating(false)
   }, [pathname])
 
+  // Reset targetLocale when language switch is complete
+  useEffect(() => {
+    if (!isPending) {
+      setTargetLocale(null)
+    }
+  }, [isPending])
+
   const handleLocaleChange = (newLocale: string) => {
+    setTargetLocale(newLocale)
     startTransition(() => {
       router.replace(pathname, { locale: newLocale })
     })
@@ -46,7 +62,10 @@ export default function Navigation() {
 
   return (
     <>
-      <GlobalLoadingSpinner isLoading={isNavigating} />
+      <GlobalLoadingSpinner
+        isLoading={isNavigating || isPending}
+        loadingText={targetLocale ? loadingTexts[targetLocale] : undefined}
+      />
       <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
