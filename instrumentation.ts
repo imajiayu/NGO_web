@@ -26,9 +26,9 @@ export async function register() {
         // Remove sensitive data from request body
         if (event.request?.data) {
           const data = event.request.data
-          if (typeof data === 'object') {
+          if (typeof data === 'object' && data !== null) {
             // Redact sensitive fields
-            const redactedData = { ...data }
+            const redactedData = { ...data } as Record<string, any>
             const sensitiveFields = ['email', 'password', 'token', 'secret', 'apiKey', 'merchantAccount']
 
             for (const field of sensitiveFields) {
