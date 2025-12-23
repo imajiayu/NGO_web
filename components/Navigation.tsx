@@ -4,7 +4,8 @@ import { useLocale, useTranslations } from 'next-intl'
 import { usePathname, useRouter } from '@/i18n/navigation'
 import Image from 'next/image'
 import { locales, localeNames } from '@/i18n/config'
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
+import GlobalLoadingSpinner from './GlobalLoadingSpinner'
 
 export default function Navigation() {
   const t = useTranslations('navigation')
@@ -14,6 +15,12 @@ export default function Navigation() {
   const pathname = usePathname()
   const [isPending, startTransition] = useTransition()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [isNavigating, setIsNavigating] = useState(false)
+
+  // Reset loading state when pathname changes
+  useEffect(() => {
+    setIsNavigating(false)
+  }, [pathname])
 
   const handleLocaleChange = (newLocale: string) => {
     startTransition(() => {
@@ -23,21 +30,30 @@ export default function Navigation() {
   }
 
   const handleDonateClick = () => {
+    setIsNavigating(true)
     router.push('/donate')
   }
 
   const handleTrackDonation = () => {
+    setIsNavigating(true)
     router.push('/track-donation')
   }
 
+  const handleLogoClick = () => {
+    setIsNavigating(true)
+    router.push('/')
+  }
+
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm w-full">
+    <>
+      <GlobalLoadingSpinner isLoading={isNavigating} />
+      <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left: Logo */}
           <div className="flex-shrink-0">
-            <a
-              href={`/${locale}`}
+            <button
+              onClick={handleLogoClick}
               className="flex items-center transition-opacity duration-200 hover:opacity-75 cursor-pointer"
             >
               <Image
@@ -48,7 +64,7 @@ export default function Navigation() {
                 className="h-12 w-auto"
                 priority
               />
-            </a>
+            </button>
           </div>
 
           {/* Right: Action Buttons + Language Switcher */}
@@ -170,5 +186,6 @@ export default function Navigation() {
         </div>
       </div>
     </nav>
+    </>
   )
 }

@@ -1,11 +1,13 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { Link } from '@/i18n/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
+import { useState, useEffect } from 'react'
 import type { ProjectStats } from '@/types'
 import { getProjectName, getLocation, getUnitName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
 import ProjectProgressBar from './ProjectProgressBar'
 import ProjectCardCompact from './ProjectCardCompact'
+import GlobalLoadingSpinner from '@/components/GlobalLoadingSpinner'
 
 interface ProjectCardProps {
   project: ProjectStats
@@ -31,11 +33,24 @@ export default function ProjectCard({
   onSelect,
 }: ProjectCardProps) {
   const t = useTranslations('projects')
+  const router = useRouter()
+  const pathname = usePathname()
+  const [isNavigating, setIsNavigating] = useState(false)
+
+  // Reset loading state when pathname changes
+  useEffect(() => {
+    setIsNavigating(false)
+  }, [pathname])
 
   // Get translated project data
   const projectName = getProjectName(project.project_name_i18n, project.project_name, locale as SupportedLocale)
   const location = getLocation(project.location_i18n, project.location, locale as SupportedLocale)
   const unitName = getUnitName(project.unit_name_i18n, project.unit_name, locale as SupportedLocale)
+
+  const handleDonateClick = () => {
+    setIsNavigating(true)
+    router.push(`/donate?project=${project.id}`)
+  }
 
   // Use compact mode component if specified
   if (mode === 'compact') {
@@ -64,13 +79,15 @@ export default function ProjectCard({
   }
 
   return (
-    <div
-      className="group flex-shrink-0 w-80 bg-white rounded-2xl border-2 border-gray-200 hover:border-blue-500 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden relative bg-cover bg-center bg-no-repeat"
-      style={{
-        backgroundImage: `url(/images/projects/${project.id}/background.webp)`,
-        backgroundColor: 'white'
-      }}
-    >
+    <>
+      <GlobalLoadingSpinner isLoading={isNavigating} />
+      <div
+        className="group flex-shrink-0 w-80 bg-white rounded-2xl border-2 border-gray-200 hover:border-blue-500 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden relative bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(/images/projects/${project.id}/background.webp)`,
+          backgroundColor: 'white'
+        }}
+      >
       {/* Semi-transparent overlay for the entire card */}
       <div className="absolute inset-0 bg-white/75 backdrop-blur-[2px]"></div>
 
@@ -176,22 +193,23 @@ export default function ProjectCard({
         {/* Action Button */}
         <div className="p-5 pt-0">
           {project.status === 'active' ? (
-            <Link
-              href={`/donate?project=${project.id}`}
+            <button
+              onClick={handleDonateClick}
               className="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-xl"
             >
               {t('donateNow')}
-            </Link>
+            </button>
           ) : (
-            <Link
-              href={`/donate?project=${project.id}`}
+            <button
+              onClick={handleDonateClick}
               className="block w-full text-center py-3 px-4 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl font-semibold hover:from-gray-600 hover:to-gray-700 transition-all duration-300 shadow-md hover:shadow-xl"
             >
               {t('donateNow')}
-            </Link>
+            </button>
           )}
         </div>
       </div>
     </div>
+    </>
   )
 }

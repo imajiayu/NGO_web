@@ -1,0 +1,165 @@
+'use client'
+
+interface DonationStatusProgressProps {
+  currentStatus: string
+  onStatusSelect?: (status: string) => void
+  selectedStatus?: string
+}
+
+const NORMAL_FLOW_STATUSES = [
+  { key: 'pending', label: 'Pending', color: 'gray' },
+  { key: 'paid', label: 'Paid', color: 'yellow' },
+  { key: 'confirmed', label: 'Confirmed', color: 'purple' },
+  { key: 'delivering', label: 'Delivering', color: 'blue' },
+  { key: 'completed', label: 'Completed', color: 'green' },
+] as const
+
+const STATUS_TRANSITIONS: Record<string, string[]> = {
+  pending: [],
+  paid: ['confirmed'],
+  confirmed: ['delivering'],
+  delivering: ['completed'],
+  completed: [],
+}
+
+export default function DonationStatusProgress({
+  currentStatus,
+  onStatusSelect,
+  selectedStatus,
+}: DonationStatusProgressProps) {
+  const currentIndex = NORMAL_FLOW_STATUSES.findIndex((s) => s.key === currentStatus)
+  const allowedNextStatuses = STATUS_TRANSITIONS[currentStatus] || []
+
+  const getStatusState = (status: string, index: number): 'completed' | 'current' | 'next' | 'future' => {
+    if (index < currentIndex) return 'completed'
+    if (status === currentStatus) return 'current'
+    if (allowedNextStatuses.includes(status)) return 'next'
+    return 'future'
+  }
+
+  const getStatusStyles = (state: 'completed' | 'current' | 'next' | 'future', isSelected: boolean) => {
+    if (state === 'completed') {
+      return {
+        circle: 'bg-green-500 text-white border-green-500',
+        label: 'text-green-700',
+        line: 'bg-green-500',
+      }
+    }
+    if (state === 'current') {
+      return {
+        circle: isSelected
+          ? 'bg-blue-600 text-white border-blue-600 ring-4 ring-blue-200'
+          : 'bg-blue-600 text-white border-blue-600',
+        label: 'text-blue-700 font-semibold',
+        line: 'bg-gray-300',
+      }
+    }
+    if (state === 'next') {
+      return {
+        circle: isSelected
+          ? 'bg-blue-100 text-blue-700 border-blue-500 ring-4 ring-blue-200 cursor-pointer hover:bg-blue-200'
+          : 'bg-white text-blue-600 border-blue-500 cursor-pointer hover:bg-blue-50',
+        label: 'text-blue-600 font-medium',
+        line: 'bg-gray-300',
+      }
+    }
+    // future
+    return {
+      circle: 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed',
+      label: 'text-gray-400',
+      line: 'bg-gray-300',
+    }
+  }
+
+  return (
+    <div className="py-6">
+      <div className="flex items-center justify-between">
+        {NORMAL_FLOW_STATUSES.map((status, index) => {
+          const state = getStatusState(status.key, index)
+          const isClickable = state === 'next' && onStatusSelect
+          const isSelected = selectedStatus === status.key
+          const styles = getStatusStyles(state, isSelected)
+          const isLast = index === NORMAL_FLOW_STATUSES.length - 1
+
+          return (
+            <div key={status.key} className="flex items-center flex-1">
+              <div className="flex flex-col items-center relative">
+                {/* Circle */}
+                <button
+                  type="button"
+                  onClick={() => isClickable && onStatusSelect(status.key)}
+                  disabled={!isClickable}
+                  className={`
+                    w-10 h-10 rounded-full border-2 flex items-center justify-center
+                    transition-all duration-200 z-10
+                    ${styles.circle}
+                  `}
+                  title={
+                    state === 'completed'
+                      ? 'Completed'
+                      : state === 'current'
+                        ? 'Current status'
+                        : state === 'next'
+                          ? 'Click to select this status'
+                          : 'Not available yet'
+                  }
+                >
+                  {state === 'completed' ? (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  ) : (
+                    <span className="text-sm font-semibold">{index + 1}</span>
+                  )}
+                </button>
+
+                {/* Label */}
+                <span className={`mt-2 text-xs text-center whitespace-nowrap ${styles.label}`}>
+                  {status.label}
+                </span>
+              </div>
+
+              {/* Connecting Line */}
+              {!isLast && (
+                <div className="flex-1 h-0.5 mx-2 relative" style={{ top: '-20px' }}>
+                  <div className={`h-full ${styles.line}`} />
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Special Status Info */}
+      {(currentStatus === 'refunding' || currentStatus === 'refunded' || currentStatus === 'failed') && (
+        <div className="mt-6 p-4 rounded-lg border-2 border-orange-300 bg-orange-50">
+          <div className="flex items-center gap-2">
+            <span
+              className={`
+              px-3 py-1 rounded-full text-sm font-semibold
+              ${
+                currentStatus === 'refunding'
+                  ? 'bg-orange-100 text-orange-800 ring-2 ring-orange-400'
+                  : currentStatus === 'refunded'
+                    ? 'bg-slate-200 text-slate-700'
+                    : 'bg-red-200 text-red-800'
+              }
+            `}
+            >
+              {currentStatus.toUpperCase()}
+            </span>
+            <span className="text-sm text-gray-700">
+              {currentStatus === 'refunding' && 'This donation is being refunded'}
+              {currentStatus === 'refunded' && 'This donation has been refunded'}
+              {currentStatus === 'failed' && 'Payment failed'}
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

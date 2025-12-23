@@ -144,7 +144,13 @@ export default function DonationsTable({ initialDonations }: Props) {
                               ? 'bg-purple-100 text-purple-800'
                               : donation.donation_status === 'paid'
                                 ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-gray-100 text-gray-800'
+                                : donation.donation_status === 'refunding'
+                                  ? 'bg-orange-100 text-orange-800 ring-2 ring-orange-400'
+                                  : donation.donation_status === 'refunded'
+                                    ? 'bg-slate-100 text-slate-700'
+                                    : donation.donation_status === 'failed'
+                                      ? 'bg-red-100 text-red-800'
+                                      : 'bg-gray-100 text-gray-800'
                       }`}
                     >
                       {donation.donation_status}

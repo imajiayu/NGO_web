@@ -99,6 +99,9 @@ export async function updateProject(id: number, updates: ProjectUpdate) {
 
 /**
  * 获取所有捐赠（管理员视图）
+ * 排序规则：
+ * 1. failed 状态排在最后
+ * 2. 其他状态按 donated_at 降序排序
  */
 export async function getAdminDonations() {
   await requireAdmin()
@@ -113,10 +116,22 @@ export async function getAdminDonations() {
         project_name_i18n
       )
     `)
-    .order('created_at', { ascending: false })
 
   if (error) throw error
-  return data as (Donation & { projects: { project_name: string; project_name_i18n: any } })[]
+
+  // 自定义排序：failed 状态排在最后，其他按 donated_at 降序
+  const sorted = (data || []).sort((a, b) => {
+    // 首先按状态排序：failed 排在最后
+    if (a.donation_status === 'failed' && b.donation_status !== 'failed') return 1
+    if (a.donation_status !== 'failed' && b.donation_status === 'failed') return -1
+
+    // 如果状态相同（都是 failed 或都不是 failed），按 donated_at 降序排序
+    const dateA = new Date(a.donated_at).getTime()
+    const dateB = new Date(b.donated_at).getTime()
+    return dateB - dateA
+  })
+
+  return sorted as (Donation & { projects: { project_name: string; project_name_i18n: any } })[]
 }
 
 /**
