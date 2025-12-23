@@ -302,32 +302,6 @@ export type Database = {
           unit_name_i18n: Json
         }[]
       }
-      get_project_progress: {
-        Args: { project_id_input: number }
-        Returns: {
-          current_units: number
-          progress_percentage: number
-          project_id: number
-          project_name: string
-          target_units: number
-          total_amount: number
-          total_donations: number
-        }[]
-      }
-      get_recent_donations: {
-        Args: { limit_count?: number; project_id_input: number }
-        Returns: {
-          amount: number
-          currency: string
-          donated_at: string
-          donation_public_id: string
-          donor_name: string
-        }[]
-      }
-      is_project_goal_reached: {
-        Args: { project_id_input: number }
-        Returns: boolean
-      }
       request_donation_refund: {
         Args: { p_donation_public_id: string; p_email: string }
         Returns: Json

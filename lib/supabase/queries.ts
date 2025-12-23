@@ -107,16 +107,6 @@ export async function getAllProjectsWithStats(filters?: ProjectFilters) {
   return sortedData
 }
 
-export async function getProjectProgress(projectId: number) {
-  const supabase = createServerClient()
-  const { data, error } = await supabase.rpc('get_project_progress', {
-    project_id_input: projectId,
-  } as any)
-
-  if (error) throw error
-  return data ? data[0] : null
-}
-
 // ============= DONATION QUERIES =============
 
 export async function getDonations(filters?: DonationFilters) {
@@ -171,17 +161,6 @@ export async function getDonationsByEmail(email: string) {
 
   if (error) throw error
   return data
-}
-
-export async function getRecentDonations(projectId: number, limit = 10) {
-  const supabase = createServerClient()
-  const { data, error } = await supabase.rpc('get_recent_donations', {
-    project_id_input: projectId,
-    limit_count: limit,
-  } as any)
-
-  if (error) throw error
-  return data || []
 }
 
 export async function getProjectDonations(projectId: number, limit = 50) {
@@ -291,14 +270,4 @@ export async function generateDonationPublicId(projectId: number) {
 
   if (error) throw error
   return data as string
-}
-
-export async function isProjectGoalReached(projectId: number) {
-  const supabase = createServerClient()
-  const { data, error } = await supabase.rpc('is_project_goal_reached', {
-    project_id_input: projectId,
-  } as any)
-
-  if (error) throw error
-  return data as boolean
 }

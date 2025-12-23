@@ -1,1101 +1,784 @@
-# NGO Platform - Technical Documentation
+# NGO 平台 - 项目技术文档
 
-## Project Overview
+> 一个现代化的非政府组织(NGO)捐赠平台，支持多语言、在线支付和捐赠追踪
 
-This is a modern NGO (Non-Governmental Organization) platform built around independent projects. The platform allows NGOs to showcase their projects and receive donations through an integrated payment system with full internationalization support.
+---
 
-### Core Concept
-- **Project-Centric Architecture**: Each project is an independent entity with its own details, goals, and donation tracking
-- **Donation Management**: Integrated WayForPay payment processing with refund support
-- **Multi-language Support**: Full i18n support with next-intl (English, Chinese, Ukrainian)
-- **Real-time Updates**: Leveraging Supabase real-time capabilities for live project updates
-- **Email Notifications**: Automated donation confirmations via Resend
-- **Simplified ID System**: Project-based donation IDs for easy tracking (format: {project_id}-{XXXXXX})
+## 📋 目录
 
-## Tech Stack
+1. [项目概述](#项目概述)
+2. [技术栈](#技术栈)
+3. [核心功能](#核心功能)
+4. [数据库架构](#数据库架构)
+5. [应用架构](#应用架构)
+6. [页面与路由](#页面与路由)
+7. [组件目录](#组件目录)
+8. [业务流程](#业务流程)
+9. [国际化方案](#国际化方案)
+10. [开发指南](#开发指南)
+11. [部署说明](#部署说明)
 
-### Frontend & Framework
-- **Next.js 14** (App Router)
-  - Server Components for optimal performance
-  - Server Actions for mutations
-  - API Routes for backend logic
-  - TypeScript for type safety
-- **next-intl** for internationalization
-  - Server-side translations
-  - Route-based locale detection
-  - Type-safe translation keys
+---
 
-### Backend & Database
-- **Supabase**
-  - PostgreSQL database
-  - Built-in authentication (Email, OAuth, Magic Links)
-  - Row Level Security (RLS) for data protection
-  - Service Role Key for webhook operations
-  - Real-time subscriptions
-  - Storage for images and files
+## 项目概述
 
-### Payment Processing
-- **WayForPay**
-  - Ukrainian payment gateway
-  - Widget-based payment flow
-  - Webhooks for payment confirmation
-  - MD5 signature verification
-  - Support for UAH, USD, EUR currencies
+### 核心理念
 
-### Email Service
-- **Resend**
-  - Transactional email delivery
-  - Multi-language email templates
-  - Domain verification with SPF/DKIM
-  - Delivery tracking and monitoring
+这是一个以项目为中心的 NGO 捐赠平台，每个项目都是独立的实体，拥有自己的目标、进度和捐赠追踪系统。
 
-### Deployment & Infrastructure
-- **Vercel**
-  - Edge functions
-  - Automatic deployments from Git
-  - Environment variable management
-  - Analytics and monitoring
+### 主要特性
 
-### Styling & UI
-- **Tailwind CSS**
-  - Utility-first styling
-  - Responsive design
-  - Custom color scheme
-  - Component variants
+- ✅ **多语言支持**: 完整的中文、英文、乌克兰语支持
+- ✅ **在线支付**: WayForPay 支付网关集成
+- ✅ **实时更新**: 基于 Supabase 的实时数据同步
+- ✅ **邮件通知**: Resend 自动发送捐赠确认邮件
+- ✅ **捐赠追踪**: 用户可查询和追踪捐赠状态
+- ✅ **安全可靠**: 完整的 RLS 策略和签名验证
 
-## Architecture Design
+### 项目信息
 
-### Application Layers
+**当前版本**: 1.0.0
+**最后更新**: 2025-12-23
+**开发状态**: 生产就绪
 
+---
+
+## 技术栈
+
+### 前端框架
+
+- **Next.js 14** (App Router) - React 服务端渲染框架
+- **TypeScript** - 类型安全
+- **Tailwind CSS** - 原子化 CSS 框架
+- **next-intl** - 国际化解决方案
+
+### 后端服务
+
+- **Supabase** - PostgreSQL 数据库 + 认证 + 实时订阅
+- **WayForPay** - 乌克兰支付网关
+- **Resend** - 邮件发送服务
+
+### 部署平台
+
+- **Vercel** - 前端托管和边缘函数
+- **Supabase Cloud** - 数据库托管
+
+### 开发工具
+
+- **ESLint** + **Prettier** - 代码规范
+- **Git** - 版本控制
+
+---
+
+## 核心功能
+
+### 1. 项目展示与管理
+
+- 项目列表展示（网格视图）
+- 项目详情页面
+- 实时进度追踪
+- 多语言项目信息
+
+### 2. 捐赠流程
+
+- 项目选择
+- 捐赠表单填写
+- WayForPay 在线支付
+- 支付成功确认
+- 邮件通知
+
+### 3. 捐赠追踪
+
+- 邮箱验证查询
+- 捐赠状态实时更新
+- 退款申请
+
+### 4. 多语言支持
+
+- 3 种语言（en/zh/ua）
+- 动态语言切换
+- 服务端渲染翻译
+
+---
+
+## 数据库架构
+
+### 核心表结构
+
+#### `projects` - 项目表
+
+存储所有 NGO 项目的信息和进度。
+
+**关键字段**:
+- `id` - 主键
+- `project_name_i18n` - 多语言项目名称 (JSONB)
+- `location_i18n` - 多语言地点 (JSONB)
+- `target_units` - 目标单位数
+- `current_units` - 当前完成单位数（自动更新）
+- `unit_price` - 单位价格
+- `status` - 项目状态 (planned/active/completed/paused)
+- `description_i18n` - 多语言描述 (JSONB)
+
+**状态流转**: planned → active → completed/paused
+
+#### `donations` - 捐赠表
+
+跟踪所有捐赠记录和支付详情。
+
+**关键字段**:
+- `id` - 主键
+- `donation_public_id` - 公开捐赠 ID（格式：{项目ID}-{6位随机码}）
+- `project_id` - 关联项目
+- `donor_name` / `donor_email` - 捐赠者信息
+- `amount` - 捐赠金额
+- `order_reference` - WayForPay 订单号
+- `donation_status` - 捐赠状态
+- `locale` - 用户语言（en/zh/ua）
+
+**状态流转**:
 ```
-┌─────────────────────────────────────────────────┐
-│          User Interface (UI)                    │
-│    Next.js App Router Pages with i18n          │
-│           [locale]/donate, [locale]/...         │
-└─────────────────────────────────────────────────┘
-                      ↓
-┌─────────────────────────────────────────────────┐
-│         React Server Components                 │
-│   (Data fetching, Server Actions, i18n)        │
-└─────────────────────────────────────────────────┘
-                      ↓
-┌──────────────┬──────────────┬──────────────┬────────────┐
-│  Supabase    │ WayForPay    │   Resend     │ next-intl  │
-│ (Data/Auth)  │ (Payments)   │   (Email)    │(Translate) │
-│ - Client     │              │              │            │
-│ - Service    │              │              │            │
-└──────────────┴──────────────┴──────────────┴────────────┘
+pending → paid → confirmed → delivering → completed
+                    ↓
+               refunding → refunded
 ```
 
-### Key Design Decisions
+### 数据库视图
 
-1. **Server-First Rendering**
-   - Use React Server Components by default
-   - Client components only when needed (interactivity, browser APIs)
-   - Reduces JavaScript bundle size
-   - Improves initial page load
+| 视图名 | 用途 | 特性 |
+|--------|------|------|
+| `project_stats` | 项目统计信息 | 聚合捐赠总额、进度百分比 |
+| `public_project_donations` | 公开捐赠列表 | 邮箱混淆保护隐私 |
+| `order_donations_secure` | 订单捐赠查询 | 用于支付成功页面 |
 
-2. **Type Safety**
-   - Database types generated from Supabase schema
-   - Zod for runtime validation
-   - TypeScript strict mode enabled
+### 核心数据库函数
 
-3. **Internationalization**
-   - Server-side translations with next-intl
-   - Locale detection via URL path (/en, /zh)
-   - Fallback to default locale (en)
-   - Translation files in /messages directory
+| 函数名 | 用途 | 返回值 |
+|--------|------|--------|
+| `generate_donation_public_id()` | 生成唯一捐赠 ID | TEXT (如: 1-A1B2C3) |
+| `get_donations_by_email_verified()` | 验证邮箱并查询捐赠 | TABLE |
+| `request_donation_refund()` | 处理退款请求 | JSON |
 
-4. **Dual Supabase Client Pattern**
-   - **Regular Client**: For authenticated user operations (RLS enforced)
-   - **Service Role Client**: For trusted server operations (RLS bypassed)
-     - Used in webhooks for inserting donations
-     - Never expose service role key to client
+### 安全机制
 
-5. **Payment Flow**
-   - WayForPay widget integration
-   - MD5 signature verification for security
-   - Order reference linking donations to projects
-   - Pending status until payment confirmed
-   - Per-unit donation records for granular tracking
+- ✅ **RLS (行级安全)**: 所有表启用 RLS 策略
+- ✅ **双客户端模式**:
+  - 常规客户端: 用户操作（强制 RLS）
+  - 服务角色客户端: Webhook 操作（绕过 RLS）
+- ✅ **邮箱混淆**: 公开视图中邮箱自动混淆（如: j***e@e***.com）
+- ✅ **防枚举攻击**: 查询需要邮箱+捐赠ID双重验证
 
-6. **Email Notifications**
-   - Resend for transactional emails
-   - Localized templates based on user's language
-   - Automated confirmation on payment success
-   - HTML and plain text versions
+> 详细的数据库文档请参考: [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)
 
-## Directory Structure
+---
+
+## 应用架构
+
+### 目录结构
 
 ```
 NGO_web/
-├── app/                           # Next.js App Router
-│   ├── [locale]/                  # Internationalized routes
-│   │   ├── donate/                # Donation flow
-│   │   │   ├── wayforpay-widget.tsx # Client: WayForPay widget
-│   │   │   ├── success/           # Payment success page
-│   │   │   │   └── page.tsx       # Server: Success confirmation
-│   │   │   └── page.tsx           # Server: Donation page
-│   │   ├── layout.tsx             # Root layout with i18n provider
-│   │   └── page.tsx               # Home page
-│   │
-│   ├── actions/                   # Server Actions
-│   │   └── donation.ts            # Donation creation with pending status
-│   │
-│   ├── api/                       # API Routes
-│   │   └── webhooks/
-│   │       └── wayforpay/         # WayForPay webhook handler
-│   │           └── route.ts       # Payment confirmation and email
-│   │
-│   └── globals.css                # Global styles
-│
-├── components/                    # React Components
-│   └── (to be organized as needed)
-│
-├── i18n/                          # Internationalization
-│   ├── config.ts                  # i18n configuration
-│   ├── navigation.ts              # Localized navigation
-│   └── request.ts                 # Request configuration
-│
-├── lib/                           # Utilities & Configuration
-│   ├── supabase/
-│   │   ├── client.ts              # Client-side Supabase client
-│   │   ├── server.ts              # Server-side clients (regular + service)
-│   │   └── queries.ts             # Database query functions
-│   ├── wayforpay/
-│   │   └── server.ts              # WayForPay integration & signature
-│   ├── email/
-│   │   └── server.ts              # Resend email service
-│   ├── utils.ts                   # Helper functions
-│   └── validations.ts             # Zod schemas
-│
-├── messages/                      # Translation files
-│   ├── en.json                    # English translations
-│   ├── zh.json                    # Chinese translations
-│   └── ua.json                    # Ukrainian translations
-│
-├── supabase/                      # Supabase configuration
-│   ├── migrations/                # Database migrations (current)
-│   │   ├── 001_init_schema.sql           # Tables and constraints
-│   │   ├── 002_init_functions_views.sql  # Functions and views
-│   │   └── 003_init_policies.sql         # RLS policies
-│   └── migrations_archive/        # Archived old migrations
-│
-├── types/                         # TypeScript Types
-│   ├── database.ts                # Supabase generated types
-│   └── index.ts                   # Application types
-│
-├── public/                        # Static Assets
-│   ├── images/
-│   └── icons/
-│
-├── .env.local                     # Environment variables (not in git)
-├── .env.example                   # Environment variables template
-├── i18n.ts                        # i18n request configuration
-├── middleware.ts                  # Next.js middleware (i18n routing)
-├── next.config.js                 # Next.js configuration
-├── tailwind.config.js             # Tailwind configuration
-├── tsconfig.json                  # TypeScript configuration
-├── docs/                          # Documentation
-│   ├── SUPABASE_CLI_GUIDE.md      # Supabase CLI usage guide
-│   ├── PAYMENT_METHODS.md         # Payment configuration guide
-│   ├── TROUBLESHOOTING.md         # Common issues and solutions
-│   └── DONATE_PAGE_UI_DESIGN.md   # UI design specifications
-├── CLAUDE.md                      # Technical documentation (this file)
-├── README.md                      # Project overview
-└── package.json                   # Dependencies
+├── app/                          # Next.js App Router
+│   ├── [locale]/                 # 国际化路由
+│   │   ├── page.tsx              # 主页
+│   │   ├── donate/               # 捐赠流程
+│   │   ├── track-donation/       # 捐赠追踪
+│   │   ├── privacy-policy/       # 隐私政策
+│   │   └── public-agreement/     # 公开协议
+│   ├── actions/                  # Server Actions
+│   │   ├── donation.ts           # 捐赠创建
+│   │   ├── donation-result.ts    # 捐赠结果查询
+│   │   └── track-donation.ts     # 捐赠追踪
+│   └── api/                      # API 路由
+│       ├── webhooks/wayforpay/   # WayForPay 回调
+│       └── donations/            # 捐赠查询 API
+├── components/                   # React 组件
+│   ├── home/                     # 主页组件
+│   ├── projects/                 # 项目组件
+│   ├── donate/                   # 捐赠组件
+│   └── ...                       # 其他组件
+├── lib/                          # 工具库
+│   ├── supabase/                 # Supabase 集成
+│   ├── wayforpay/                # WayForPay 集成
+│   ├── email/                    # 邮件服务
+│   ├── validations.ts            # Zod 验证
+│   ├── utils.ts                  # 工具函数
+│   └── i18n-utils.ts             # 国际化工具
+├── messages/                     # 翻译文件
+│   ├── en.json                   # 英文
+│   ├── zh.json                   # 中文
+│   └── ua.json                   # 乌克兰语
+├── types/                        # TypeScript 类型
+│   ├── database.ts               # 数据库类型（自动生成）
+│   └── index.ts                  # 应用类型
+├── supabase/                     # Supabase 配置
+│   └── migrations/               # 数据库迁移
+├── docs/                         # 项目文档
+│   ├── DATABASE_SCHEMA.md        # 数据库架构文档
+│   └── UNUSED_DATABASE_FUNCTIONS.md
+├── i18n/                         # 国际化配置
+├── middleware.ts                 # Next.js 中间件
+└── CLAUDE.md                     # 本文档
 ```
 
-## Data Flow
+### 架构设计原则
 
-### Project Viewing Flow
-1. User navigates to `/en/donate` or `/zh/donate`
-2. Middleware detects locale from URL
-3. Server Component fetches active projects from Supabase
-4. Translations loaded server-side via next-intl
-5. Projects rendered on server with initial data
-6. Client-side hydration for interactive elements
+1. **服务端优先**: 默认使用 React Server Components
+2. **类型安全**: TypeScript 严格模式 + Zod 运行时验证
+3. **国际化优先**: 所有文本支持多语言
+4. **安全第一**: RLS + 签名验证 + 输入验证
+5. **用户体验**: 实时更新 + 优化加载状态
 
-### Donation Flow (End-to-End)
+---
+
+## 页面与路由
+
+### 公开页面
+
+| 路径 | 组件 | 功能 | 特性 |
+|------|------|------|------|
+| `/[locale]/` | `page.tsx` | 主页 | 展示使命、项目、影响力 |
+| `/[locale]/donate` | `donate/page.tsx` | 捐赠页面 | 项目选择 + 捐赠表单 |
+| `/[locale]/donate/success` | `donate/success/page.tsx` | 支付成功页 | 展示捐赠详情 |
+| `/[locale]/track-donation` | `track-donation/page.tsx` | 捐赠追踪 | 邮箱验证查询 |
+| `/[locale]/privacy-policy` | `privacy-policy/page.tsx` | 隐私政策 | 法律声明 |
+| `/[locale]/public-agreement` | `public-agreement/page.tsx` | 公开协议 | 捐赠条款 |
+
+### API 端点
+
+| 端点 | 方法 | 用途 |
+|------|------|------|
+| `/api/webhooks/wayforpay` | POST | WayForPay 支付回调 |
+| `/api/donations/order/[orderReference]` | GET | 查询订单的所有捐赠 |
+| `/api/donations/project-public/[projectId]` | GET | 查询项目公开捐赠列表 |
+| `/api/donate/success-redirect` | GET/POST | WayForPay 重定向处理 |
+
+### Server Actions
+
+| 文件 | 主函数 | 用途 |
+|------|--------|------|
+| `actions/donation.ts` | `createWayForPayDonation()` | 创建捐赠并生成支付参数 |
+| `actions/donation-result.ts` | `getDonationResultUrl()` | 获取捐赠结果图片 |
+| `actions/track-donation.ts` | `trackDonations()` | 追踪捐赠记录 |
+| `actions/track-donation.ts` | `requestRefund()` | 申请退款 |
+
+---
+
+## 组件目录
+
+### 布局组件
+
+| 组件 | 文件 | 功能 |
+|------|------|------|
+| Navigation | `Navigation.tsx` | 导航栏（Logo + 语言切换 + 操作按钮） |
+| Footer | `Footer.tsx` | 页脚（社交链接 + 联系信息 + 政策链接） |
+
+### 主页组件
+
+位于 `components/home/` 目录:
+
+| 组件 | 用途 |
+|------|------|
+| MissionSection | 使命宣言展示 |
+| ApproachSection | 工作方法介绍 |
+| ImpactSection | 影响力数据展示 |
+| DonationJourneySection | 捐赠流程说明 |
+| ComplianceSection | 合规信息展示 |
+
+### 项目组件
+
+位于 `components/projects/` 目录:
+
+| 组件 | 用途 | 类型 |
+|------|------|------|
+| ProjectsGrid | 项目网格展示 | Server Component |
+| ProjectCard | 项目卡片（完整模式） | Client Component |
+| ProjectCardCompact | 项目卡片（紧凑模式） | Client Component |
+| ProjectProgressBar | 进度条组件 | Client Component |
+| ProjectProgressCard | 进度卡片 | Client Component |
+| ProjectDetailContent | 项目详情内容 | Client Component |
+| ProjectSuppliesInfo | 项目物资信息 | Client Component |
+| ProjectsGallery | 项目选择库 | Client Component |
+
+### 捐赠组件
+
+位于 `components/donate/` 和 `components/donation/` 目录:
+
+| 组件 | 用途 | 关键功能 |
+|------|------|----------|
+| DonationFormCard | 捐赠表单 | 表单验证 + 调用 Server Action |
+| DonationStatusFlow | 状态流程可视化 | 展示捐赠状态转换 |
+| ProjectDonationList | 项目捐赠列表 | 展示公开捐赠记录 |
+| DonationResultViewer | 捐赠结果查看器 | 展示配送完成照片 |
+| ProjectSelector | 项目选择器 | 项目搜索和筛选 |
+
+### 工具组件
+
+| 组件 | 文件 | 用途 |
+|------|------|------|
+| CopyButton | `CopyButton.tsx` | 复制文本到剪贴板 |
+| LanguageSwitcher | `LanguageSwitcher.tsx` | 语言切换下拉菜单 |
+
+---
+
+## 业务流程
+
+### 完整捐赠流程
 
 ```
-User Side:
-1. User selects project, quantity, and enters info
-2. Form validated with Zod schema
-3. Server Action creates pending donations in database
-   ├─ Validates project exists and is active
-   ├─ Calculates total amount
-   ├─ For each unit: Generate unique donation_public_id (e.g., 1-A1B2C3)
-   ├─ Insert donation records with status 'pending'
-   ├─ Generate order_reference: DONATE-{project_id}-{timestamp}
-   └─ Save donor info, locale (en/zh/ua), and order_reference
-
-4. WayForPay widget loads with payment parameters
-   ├─ Generate MD5 signature from payment data
-   ├─ Include returnUrl and serviceUrl (webhook)
-   └─ User sees payment form in modal/widget
-
-5. User completes payment via WayForPay
-6. WayForPay processes payment
-
-Server Side (Webhook):
-7. WayForPay sends payment notification to serviceUrl
-8. MD5 signature verified for authenticity
-9. Service Role Client bypasses RLS
-10. For transaction status "Approved":
-    ├─ Find pending donations by order_reference
-    ├─ Update all donations to status 'paid'
-    ├─ Database trigger auto-updates project current_units
-    ├─ Send confirmation email via Resend
-    └─ Email includes all donation IDs
-
-11. User redirected to returnUrl (success page)
-12. Success page fetches donations by order_reference
-13. Display donation IDs and confirmation message
-
-Donation Status Flow:
-[pending] → [paid] → [confirmed] → [delivering] → [completed]
-                ↓
-           [refunding] → [refunded]
+1. 用户进入捐赠页面
+   ↓
+2. 选择项目
+   ↓
+3. 填写捐赠表单（姓名、邮箱、数量、可选信息）
+   ↓
+4. 提交表单 → Server Action: createWayForPayDonation()
+   ↓
+5. 验证项目状态和数量限制
+   ↓
+6. 为每个单位创建 pending 状态捐赠记录
+   ↓
+7. 生成支付参数和 MD5 签名
+   ↓
+8. 加载 WayForPay 支付小部件
+   ↓
+9. 用户完成支付
+   ↓
+10. WayForPay Webhook 回调 /api/webhooks/wayforpay
+    ├─ 验证签名
+    ├─ 更新捐赠状态为 paid
+    └─ 发送确认邮件（Resend）
+   ↓
+11. 重定向到 /donate/success?order={orderReference}
+   ↓
+12. 成功页面轮询获取捐赠详情
+   ↓
+13. 展示捐赠 ID 和确认信息
 ```
 
-### Authentication Flow
-1. User submits login/signup form
-2. Supabase Auth validates credentials
-3. Session cookie set via Auth Helpers
-4. Middleware validates protected routes
-5. User data available in Server Components
+### 捐赠状态转换
 
-## Database Schema
+```
+创建: pending (待支付)
+  ↓ 用户支付成功
+paid (已支付)
+  ↓ NGO 确认
+confirmed (已确认)
+  ↓ 开始配送
+delivering (配送中)
+  ↓ 配送完成
+completed (已完成)
 
-### Tables
+退款流程:
+paid/confirmed/delivering → refunding (退款中) → refunded (已退款)
 
-#### 1. `projects` - Core Project Information
-
-Stores all NGO projects with their details and progress tracking.
-
-| Column | Type | Description |
-|--------|------|-------------|
-| `id` | BIGSERIAL | Primary key, auto-incrementing |
-| `project_name` | VARCHAR(255) | Name of the project |
-| `location` | VARCHAR(255) | Geographic location where project is executed |
-| `start_date` | DATE | Project start date |
-| `end_date` | DATE (nullable) | Project end date (NULL for long-term projects) |
-| `is_long_term` | BOOLEAN | Flag for projects without fixed end date |
-| `target_units` | INTEGER | Goal number of units to fund (e.g., 100 kits) |
-| `current_units` | INTEGER | Current number of units funded |
-| `unit_price` | NUMERIC(10,2) | Price per unit in USD |
-| `unit_name` | VARCHAR(50) | Name of the unit (default: 'kit') |
-| `status` | VARCHAR(20) | Project status: 'planned', 'active', 'completed', 'paused' |
-| `created_at` | TIMESTAMPTZ | Record creation timestamp |
-| `updated_at` | TIMESTAMPTZ | Last update timestamp (auto-updated) |
-
-**Constraints:**
-- `status` must be one of: planned, active, completed, paused
-- `current_units` and `target_units` must be >= 0
-- `unit_price` must be > 0
-- `end_date` must be >= `start_date` (if not NULL)
-
-**Indexes:**
-- `idx_projects_status` on `status`
-- `idx_projects_start_date` on `start_date`
-
-#### 2. `donations` - Donation Records
-
-Tracks all donations made to projects with payment details.
-
-| Column | Type | Description |
-|--------|------|-------------|
-| `id` | BIGSERIAL | Primary key, auto-incrementing |
-| `donation_public_id` | VARCHAR(50) | **NEW FORMAT**: {project_id}-{XXXXXX} (e.g., 1-A1B2C3) |
-| `project_id` | BIGINT | Foreign key to projects.id |
-| `donor_name` | VARCHAR(255) | Donor's name (can be pseudonym) |
-| `donor_email` | VARCHAR(255) | Donor's email address |
-| `donor_message` | TEXT (nullable) | Optional message from donor |
-| `contact_telegram` | VARCHAR(255) (nullable) | Telegram contact |
-| `contact_whatsapp` | VARCHAR(255) (nullable) | WhatsApp contact |
-| `amount` | NUMERIC(10,2) | Donation amount per unit |
-| `currency` | VARCHAR(10) | Currency code (default: 'USD') |
-| `payment_method` | VARCHAR(50) (nullable) | Payment method used (e.g., 'WayForPay') |
-| `order_reference` | VARCHAR(255) (nullable) | WayForPay order reference (format: DONATE-{project_id}-{timestamp}) |
-| `donation_status` | VARCHAR(20) | Status: 'pending', 'paid', 'confirmed', 'delivering', 'completed', 'refunding', 'refunded' |
-| `locale` | VARCHAR(5) | User language at donation time: 'en', 'zh', 'ua' (default: 'en') |
-| `donated_at` | TIMESTAMPTZ | When donation was made (default: now()) |
-| `created_at` | TIMESTAMPTZ | Record creation timestamp |
-
-**Constraints:**
-- `donation_public_id` must be unique
-- `donation_status` must be one of: **pending, paid, confirmed, delivering, completed, refunding, refunded**
-- `locale` must be one of: en, zh, ua
-- `amount` must be > 0
-- Foreign key to `projects(id)` with CASCADE delete
-
-**Indexes:**
-- `idx_donations_project_id` on `project_id`
-- `idx_donations_status` on `donation_status`
-- `idx_donations_public_id` on `donation_public_id`
-- `idx_donations_email` on `donor_email`
-- `idx_donations_order_reference` on `order_reference` (unique, partial index)
-- `idx_donations_order_ref_status` on `(order_reference, donation_status)` (partial index)
-- `idx_donations_locale` on `locale`
-- `idx_donations_refund_status` on `donation_status` (for refunding/refunded)
-
-### Views
-
-#### 1. `project_stats` - Aggregated Project Statistics
-
-Pre-computed statistics for each project including donation totals and progress.
-
-**Columns:**
-- `id`, `project_name`, `status`, `target_units`, `current_units`, `unit_name`
-- `total_raised` - Sum of all confirmed donations
-- `donation_count` - Number of confirmed donations
-- `progress_percentage` - (current_units / target_units * 100)
-
-#### 2. `public_donation_feed` - Anonymized Donation Feed
-
-Public view of donations with anonymized donor names for privacy.
-
-**Columns:**
-- `donation_public_id`, `project_name`, `project_id`
-- `donor_display_name` - Anonymized (e.g., "John D.")
-- `amount`, `currency`, `donated_at`
-
-**Anonymization Rules:**
-- If name has space: "First Last" → "First L."
-- If no space: "Name" → "N***"
-
-### Database Functions
-
-#### 1. `generate_donation_public_id(project_id_input BIGINT)`
-
-**NEW FORMAT**: Generates unique project-scoped donation IDs.
-
-**Format**: `{project_id}-{XXXXXX}`
-- `project_id`: The project ID (1, 23, 456, etc.)
-- `XXXXXX`: 6-character random alphanumeric uppercase
-
-**Examples:**
-- `1-A1B2C3` (Project 1)
-- `23-D4E5F6` (Project 23)
-- `456-G7H8I9` (Project 456)
-
-**Benefits:**
-- **Shorter**: 8-10 characters vs 17 characters
-- **Project-scoped**: Each project has independent namespace
-- **Low collision**: 16^6 = 16,777,216 combinations per project
-- **Semantic**: Immediately shows which project
-
-#### 2. `get_project_progress(project_id_input BIGINT)`
-
-Returns detailed progress information for a specific project.
-
-**Returns:**
-- `project_id`, `project_name`
-- `target_units`, `current_units`, `progress_percentage`
-- `total_donations`, `total_amount`
-
-#### 3. `get_recent_donations(project_id_input BIGINT, limit_count INTEGER)`
-
-Returns recent donations for a project (default limit: 10).
-
-#### 4. `is_project_goal_reached(project_id_input BIGINT)`
-
-Returns boolean indicating if project has reached its goal.
-
-### Triggers
-
-#### 1. `update_projects_updated_at`
-Automatically updates `updated_at` timestamp on projects table when records are modified.
-
-#### 2. `update_project_units_trigger`
-Automatically increments/decrements `current_units` when donation status changes:
-- Increments when status is paid/confirmed/delivering/completed
-- Decrements when status changes to refunded
-- Handles refunding state transitions
-
-### Row Level Security (RLS)
-
-All tables have RLS enabled with the following policies:
-
-**Projects:**
-- ✅ Public can view active and completed projects
-- 🔒 Admins can insert, update, and delete projects
-
-**Donations:**
-- ✅ Public can view confirmed donations
-- 🔒 Admins can view and update all donations
-- 🔑 Service role can insert and update donations (from WayForPay webhooks)
-
-**Admin Identification:**
-Admins are identified by checking `auth.users.raw_user_meta_data->>'role' = 'admin'`
-
-### Migration Files
-
-Database schema is defined in SQL migrations located in `supabase/migrations/`:
-1. ✅ `001_init_schema.sql` - Core database tables, constraints, and indexes
-2. ✅ `002_init_functions_views.sql` - Helper functions and database views
-3. ✅ `003_init_policies.sql` - RLS policies and donation triggers
-
-**Archived migrations**: Old migration files are preserved in `supabase/migrations_archive/` for reference.
-
-**To apply migrations**: Use Supabase CLI `supabase db push` - See `SUPABASE_CLI_GUIDE.md`
-
-## Internationalization (i18n)
-
-### Supported Languages
-- 🇺🇸 English (en) - Default
-- 🇨🇳 Chinese (zh)
-- 🇺🇦 Ukrainian (ua)
-
-### Implementation
-
-**Routing:**
-- `/en/donate` - English donation page
-- `/zh/donate` - Chinese donation page
-- `/` - Redirects to `/en` (default locale)
-
-**Middleware:**
-```typescript
-// middleware.ts
-import createMiddleware from 'next-intl/middleware'
-
-export default createMiddleware({
-  locales: ['en', 'zh'],
-  defaultLocale: 'en',
-  localePrefix: 'always'  // Always show locale in URL
-})
+支付失败:
+pending → failed (支付失败)
 ```
 
-**Server-side translations:**
+### 捐赠追踪流程
+
+```
+1. 用户进入 /track-donation
+   ↓
+2. 输入邮箱和捐赠 ID
+   ↓
+3. 提交查询 → trackDonations() Server Action
+   ↓
+4. 调用数据库函数 get_donations_by_email_verified()
+   ├─ 验证所有权（邮箱 + 捐赠 ID）
+   └─ 防止枚举攻击
+   ↓
+5. 返回该邮箱的所有捐赠记录
+   ↓
+6. 展示捐赠列表（ID、项目、金额、状态、日期）
+   ↓
+7. 用户可选择申请退款
+```
+
+---
+
+## 国际化方案
+
+### 支持的语言
+
+| 代码 | 语言 | 文件 |
+|------|------|------|
+| `en` | 英文（默认） | `messages/en.json` |
+| `zh` | 中文（简体） | `messages/zh.json` |
+| `ua` | 乌克兰语 | `messages/ua.json` |
+
+### 路由结构
+
+```
+/en/              → 英文主页
+/zh/              → 中文主页
+/ua/              → 乌克兰语主页
+/en/donate        → 英文捐赠页面
+/zh/donate        → 中文捐赠页面
+...
+```
+
+### 翻译使用方式
+
+#### Server Components (服务端组件)
+
 ```typescript
 import { getTranslations } from 'next-intl/server'
 
-const t = await getTranslations('donate')
-<h1>{t('title')}</h1>  // "Make a Donation" or "进行捐赠"
-```
-
-**Translation files structure:**
-```json
-{
-  "common": { ... },
-  "navigation": { ... },
-  "donate": {
-    "title": "Make a Donation",
-    "submit": "Complete Donation",
-    "errors": {
-      "invalidEmail": "Please enter a valid email address."
-    }
-  },
-  "donateSuccess": { ... }
+export default async function Page() {
+  const t = await getTranslations('namespace')
+  return <h1>{t('title')}</h1>
 }
 ```
 
-## Development Guidelines
-
-### Code Style
-- Use TypeScript strict mode
-- Prefer Server Components over Client Components
-- Use Server Actions for mutations
-- Follow Next.js 14 best practices
-- Use meaningful variable and function names
-- Add 'use client' directive only when needed
-
-### Component Patterns
+#### Client Components (客户端组件)
 
 ```typescript
-// Server Component (default) - can use async/await
-export default async function DonatePage() {
-  const projects = await getActiveProjects()
-  const t = await getTranslations('donate')
-  return <DonationForm projects={projects} />
-}
-
-// Client Component (when needed for interactivity)
 'use client'
-export default function DonationForm({ projects }) {
+import { useTranslations } from 'next-intl'
+
+export default function Component() {
+  const t = useTranslations('namespace')
+  return <h1>{t('title')}</h1>
+}
+```
+
+#### 动态内容（数据库 i18n 字段）
+
+```typescript
+import { getTranslatedText } from '@/lib/i18n-utils'
+
+const projectName = getTranslatedText(
+  project.project_name_i18n,
+  locale,
+  project.project_name // 后备值
+)
+```
+
+### 翻译文件结构
+
+```json
+{
+  "common": { "..." },
+  "navigation": { "..." },
+  "home": { "..." },
+  "donate": { "..." },
+  "donateSuccess": { "..." },
+  "trackDonation": { "..." },
+  "footer": { "..." },
+  "metadata": { "..." }
+}
+```
+
+---
+
+## 开发指南
+
+### 前置要求
+
+- Node.js 18+
+- npm 或 pnpm
+- Git
+- Supabase 账户
+- WayForPay 商户账户
+- Resend 账户
+
+### 本地开发
+
+#### 1. 克隆项目
+
+```bash
+git clone <repository-url>
+cd NGO_web
+```
+
+#### 2. 安装依赖
+
+```bash
+npm install
+# 或
+pnpm install
+```
+
+#### 3. 配置环境变量
+
+创建 `.env.local` 文件:
+
+```bash
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
+SUPABASE_SERVICE_ROLE_KEY=eyJxxx...
+
+# WayForPay
+WAYFORPAY_MERCHANT_ACCOUNT=your_merchant_account
+WAYFORPAY_SECRET_KEY=your_secret_key
+
+# Resend
+RESEND_API_KEY=re_xxx...
+RESEND_FROM_EMAIL=noreply@yourdomain.com
+
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+#### 4. 运行数据库迁移
+
+```bash
+# 登录 Supabase
+npx supabase login
+
+# 链接项目
+npx supabase link --project-ref your-project-ref
+
+# 推送迁移
+npx supabase db push
+```
+
+#### 5. 启动开发服务器
+
+```bash
+npm run dev
+```
+
+访问: http://localhost:3000
+
+### 代码规范
+
+#### TypeScript
+
+- 使用严格模式
+- 优先使用 Server Components
+- 必要时才使用 Client Components（添加 `'use client'` 指令）
+
+#### 组件编写
+
+**Server Component 示例**:
+
+```typescript
+// app/[locale]/page.tsx
+import { getTranslations } from 'next-intl/server'
+import { getActiveProjects } from '@/lib/supabase/queries'
+
+export default async function HomePage() {
+  const t = await getTranslations('home')
+  const projects = await getActiveProjects()
+
+  return (
+    <div>
+      <h1>{t('title')}</h1>
+      {/* ... */}
+    </div>
+  )
+}
+```
+
+**Client Component 示例**:
+
+```typescript
+// components/DonationForm.tsx
+'use client'
+import { useTranslations } from 'next-intl'
+import { useState } from 'react'
+
+export default function DonationForm() {
+  const t = useTranslations('donate')
   const [amount, setAmount] = useState(0)
-  const t = useTranslations('donate')  // Client hook
+
   return <form>{/* ... */}</form>
 }
 ```
 
-### Error Handling
+#### Server Actions
 
-- Use try-catch for async operations
-- Show user-friendly error messages with i18n
-- Log errors for debugging
-- Handle WayForPay webhook errors gracefully
-- Validate inputs with Zod schemas
-- Email failures don't block payment processing
+```typescript
+// app/actions/donation.ts
+'use server'
+import { z } from 'zod'
 
-**Example:**
+const schema = z.object({
+  projectId: z.number(),
+  amount: z.number().positive()
+})
+
+export async function createDonation(formData: FormData) {
+  const data = schema.parse(Object.fromEntries(formData))
+  // ... 业务逻辑
+  return { success: true }
+}
+```
+
+### 错误处理
+
+#### 表单验证
+
+```typescript
+import { z } from 'zod'
+
+const schema = z.object({
+  email: z.string().email('errors.invalidEmail')
+})
+
+try {
+  const data = schema.parse(input)
+} catch (err) {
+  if (err instanceof z.ZodError) {
+    setError(t(err.errors[0].message))
+  }
+}
+```
+
+#### API 错误处理
+
 ```typescript
 try {
-  const result = await createDonationIntent(data)
+  const result = await createDonation(data)
 } catch (err) {
-  if (err instanceof Error && err.message.includes('email')) {
-    setError(t('errors.invalidEmail'))
-  } else {
+  if (err instanceof Error) {
+    console.error(err.message)
     setError(t('errors.serverError'))
   }
 }
 ```
 
-### Security Best Practices
+### 安全最佳实践
 
-1. **Row Level Security**: Enable RLS on all Supabase tables
-2. **Service Role Isolation**: Use service role ONLY in trusted server contexts
-3. **Input Validation**: Validate all user inputs with Zod
-4. **Webhook Verification**: Always verify WayForPay MD5 signatures
-5. **Environment Variables**: Never commit secrets to version control
-6. **Type Safety**: Use TypeScript to catch errors at compile time
-7. **Email Security**: Use verified domain with SPF/DKIM records
+1. **永远不要在客户端使用 Service Role Key**
+2. **所有用户输入必须验证** (使用 Zod)
+3. **Webhook 必须验证签名**
+4. **使用 RLS 保护数据库**
+5. **公开 API 使用邮箱混淆视图**
 
-## Supabase Setup
+---
 
-### Client Types
+## 部署说明
 
-**Regular Client (createServerClient)**
-- Used for: User-facing operations
-- RLS: ✅ Enforced
-- Usage: Server Components, Server Actions
-- Auth: Uses user's session cookie
+### Vercel 部署
 
-**Service Role Client (createServiceClient)**
-- Used for: Trusted server operations (webhooks)
-- RLS: ❌ Bypassed
-- Usage: API routes (webhooks only)
-- Auth: Service role key
-
-```typescript
-// lib/supabase/server.ts
-export const createServerClient = () => {
-  return createServerComponentClient<Database>({ cookies })
-}
-
-export const createServiceClient = () => {
-  return createClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-}
-```
-
-### Required Configuration
-
-1. ✅ Create new Supabase project
-2. ✅ Enable Email authentication
-3. ✅ Run database migrations
-4. ✅ Set up Row Level Security policies
-5. ⏳ Configure storage buckets for images (if needed)
-
-### Environment Variables
+#### 1. 推送代码到 GitHub
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
-SUPABASE_SERVICE_ROLE_KEY=eyJxxx...  # ⚠️ Keep secret!
+git add .
+git commit -m "Initial commit"
+git push origin main
 ```
 
-## WayForPay Setup
+#### 2. 在 Vercel 导入项目
 
-### Implementation Details
+1. 访问 [vercel.com](https://vercel.com)
+2. 点击 "Import Project"
+3. 选择 GitHub 仓库
+4. 配置项目名称
 
-**Payment Flow:**
-1. Create pending donations in database
-2. Generate order reference: DONATE-{project_id}-{timestamp}
-3. Generate WayForPay payment parameters with MD5 signature
-4. Load WayForPay widget with payment data
-5. User completes payment in widget
-6. WayForPay sends webhook to serviceUrl
-7. Verify signature and update donations to 'paid'
-8. Send confirmation email via Resend
+#### 3. 配置环境变量
 
-**Payment Parameters:**
-```typescript
-{
-  merchantAccount: "merchant_name",
-  merchantAuthType: "SimpleSignature",
-  merchantDomainName: "yourdomain.com",
-  merchantSignature: "generated_md5_hash",
-  orderReference: "DONATE-1-1234567890",
-  orderDate: 1234567890, // Unix timestamp
-  amount: 100.00,
-  currency: "UAH", // or "USD", "EUR"
-  productName: ["Clean Water Kit"],
-  productPrice: [20.00],
-  productCount: [5],
-  clientFirstName: "John",
-  clientLastName: "Doe",
-  clientEmail: "john@example.com",
-  language: "UA", // or "EN"
-  returnUrl: "https://yourdomain.com/en/donate/success?orderReference=...",
-  serviceUrl: "https://yourdomain.com/api/webhooks/wayforpay"
-}
+在 Vercel 项目设置中添加所有环境变量:
+
+```
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+WAYFORPAY_MERCHANT_ACCOUNT
+WAYFORPAY_SECRET_KEY
+RESEND_API_KEY
+RESEND_FROM_EMAIL
+NEXT_PUBLIC_APP_URL
 ```
 
-**MD5 Signature Generation:**
-Order matters! Signature includes:
+#### 4. 部署
+
+点击 "Deploy" 开始部署。
+
+### 部署后配置
+
+#### 1. 配置 WayForPay Webhook
+
+在 WayForPay 商户后台设置 Webhook URL:
+
 ```
-merchantAccount;merchantDomainName;orderReference;orderDate;amount;currency;productName;productCount;productPrice
-```
-
-### Required Configuration
-
-1. ✅ Create WayForPay merchant account
-2. ✅ Get merchant account name and secret key
-3. ✅ Set up webhook endpoint: `/api/webhooks/wayforpay`
-4. ✅ Configure returnUrl for success page
-5. ✅ Test with test credentials
-
-### Environment Variables
-
-```bash
-WAYFORPAY_MERCHANT_ACCOUNT=your_merchant_account
-WAYFORPAY_SECRET_KEY=your_secret_key
-NEXT_PUBLIC_APP_URL=https://yourdomain.com
+https://yourdomain.com/api/webhooks/wayforpay
 ```
 
-### Testing
+#### 2. 配置 Resend 域名
 
-**Test Mode:**
-- Use test merchant credentials provided by WayForPay
-- Test card numbers available in WayForPay documentation
-- Monitor webhook logs for debugging
+在 Resend 控制台:
+1. 添加并验证域名
+2. 配置 DNS 记录（SPF、DKIM、DMARC）
 
-**Webhook Verification:**
-```bash
-# Test webhook locally with ngrok
-ngrok http 3000
+**DNS 记录示例**:
 
-# Update serviceUrl temporarily to ngrok URL
-# https://xxxx.ngrok.io/api/webhooks/wayforpay
-```
-
-## Resend Setup
-
-### Implementation Details
-
-**Email Flow:**
-1. Payment confirmed via WayForPay webhook
-2. Fetch donation details from database
-3. Generate localized email content (en/zh/ua)
-4. Send email via Resend API
-5. Log email delivery status
-
-**Email Templates:**
-- HTML version with styling
-- Plain text version for compatibility
-- Localized content based on user's locale
-- Includes donation IDs, project name, amount
-- Next steps and contact information
-
-### Required Configuration
-
-1. ✅ Create Resend account
-2. ✅ Add and verify custom domain
-3. ✅ Configure DNS records (SPF, DKIM, DMARC)
-4. ✅ Get API key
-5. ✅ Set sender email address
-
-### Domain Verification
-
-**DNS Records Required:**
 ```
 # SPF Record
 Type: TXT
 Name: @
 Value: v=spf1 include:_spf.resend.com ~all
 
-# DKIM Records (provided by Resend)
+# DKIM Record (由 Resend 提供)
 Type: TXT
 Name: resend._domainkey
-Value: [provided by Resend]
+Value: [Resend 提供的值]
 
-# DMARC Record (recommended)
+# DMARC Record
 Type: TXT
 Name: _dmarc
 Value: v=DMARC1; p=none; rua=mailto:dmarc@yourdomain.com
 ```
 
-### Environment Variables
+#### 3. 测试完整流程
 
-```bash
-RESEND_API_KEY=re_your-resend-api-key
-RESEND_FROM_EMAIL=noreply@send.yourdomain.com
-```
-
-### Testing
-
-**Test Email Sending:**
-```bash
-# Run test script
-npm run test:email
-
-# Test with specific locale
-npm run test:email:zh
-```
-
-**Monitor Delivery:**
-- Check Resend dashboard for delivery status
-- Review bounce and spam reports
-- Monitor email open rates (if enabled)
-
-## Deployment
-
-### Vercel Deployment Steps
-
-1. ✅ Push code to GitHub repository
-2. ⏳ Import project in Vercel
-3. ⏳ Configure environment variables
-4. ⏳ Deploy
-
-### Environment Configuration
-
-Add all environment variables in Vercel dashboard:
-
-**Supabase:**
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-
-**WayForPay:**
-- `WAYFORPAY_MERCHANT_ACCOUNT`
-- `WAYFORPAY_SECRET_KEY`
-
-**Resend:**
-- `RESEND_API_KEY`
-- `RESEND_FROM_EMAIL`
-
-**App:**
-- `NEXT_PUBLIC_APP_URL` (e.g., https://yourdomain.vercel.app)
-
-### Post-Deployment Checklist
-
-⏳ To be completed after deployment:
-1. Test authentication flow
-2. Configure Resend DNS records (SPF, DKIM, DMARC)
-3. Verify email domain in Resend dashboard
-4. Test donation flow end-to-end
-5. Configure WayForPay webhook URL: `https://yourdomain.com/api/webhooks/wayforpay`
-6. Verify webhook is receiving events
-7. Test email delivery to different providers (Gmail, Outlook)
-8. Check database connections
-9. Monitor error logs
-10. Test all locales (/en, /zh, /ua)
-
-## Current Implementation Status
-
-### ✅ Phase 1 - Core Features (MOSTLY COMPLETE)
-
-#### Database & Schema
-- ✅ Projects table with all fields
-- ✅ Donations table with enhanced fields
-- ✅ Helper functions (donation ID generation)
-- ✅ RLS policies
-- ✅ Views (project_stats, public_donation_feed)
-- ✅ Triggers (auto-update units)
-- ✅ Updated donation ID format (project-based)
-
-#### Internationalization
-- ✅ next-intl configuration
-- ✅ Middleware for locale routing
-- ✅ English translations
-- ✅ Chinese translations
-- ✅ Server-side translation loading
-- ✅ Client-side hooks
-
-#### Donation Flow
-- ✅ Project selection form
-- ✅ Donor information form
-- ✅ Contact methods (Telegram, WhatsApp)
-- ✅ Donation message field
-- ✅ Pending donation creation in database
-- ✅ WayForPay widget integration
-- ✅ MD5 signature generation and verification
-- ✅ Webhook handler for payment confirmation
-- ✅ Service role client for RLS bypass
-- ✅ Multiple donation record creation (per unit)
-- ✅ Success page with donation details
-- ✅ Error handling with localized messages
-- ✅ Automated email confirmation via Resend
-- ✅ Localized email templates (en/zh/ua)
-
-#### Pages & Routes
-- ✅ Home page ([locale]/page.tsx)
-- ✅ Donate page ([locale]/donate/page.tsx)
-- ✅ Success page ([locale]/donate/success/page.tsx)
-- ⏳ Projects listing page (to be built)
-- ⏳ Project detail page (to be built)
-
-#### Supabase Integration
-- ✅ Client setup (regular + service role)
-- ✅ Database queries module
-- ✅ Type generation from schema
-- ⏳ Authentication pages (to be built)
-
-#### WayForPay Integration
-- ✅ Server-side signature generation
-- ✅ Widget integration
-- ✅ Webhook endpoint
-- ✅ Signature verification
-- ✅ Error handling
-
-#### Resend Integration
-- ✅ Email service setup
-- ✅ Multi-language templates
-- ✅ HTML and text versions
-- ✅ Domain verification
-- ✅ Automated sending on payment
-
-### 🚧 Phase 1 - Remaining Items
-
-- ⏳ Navigation header with language switcher
-- ⏳ Footer component
-- ⏳ Projects listing page
-- ⏳ Project detail page with progress bar
-- ⏳ Public donation feed display
-- ⏳ Authentication (login/signup)
-- ⏳ Admin dashboard (basic)
-- ⏳ Email notifications
-
-### 📋 Phase 2 - Planned Enhancements
-
-- Recurring donations support
-- Project updates timeline
-- Advanced email notifications
-- Social sharing features
-- Donor dashboard
-- Project categories/tags
-- Search and filtering
-- Analytics dashboard
-
-### 🔮 Phase 3 - Future Vision
-
-- Advanced analytics
-- Multi-currency support
-- Mobile app (React Native)
-- Volunteer management
-- Impact reporting
-- API for third-party integrations
-
-## Testing Strategy
-
-### Manual Testing Checklist
-
-#### Donation Flow
-- ✅ Can view active projects
-- ✅ Can select project and quantity
-- ✅ Can enter donor information
-- ✅ Email validation works
-- ✅ Can proceed to payment
-- ✅ Stripe payment form loads
-- ✅ Can complete payment with test card (4242 4242 4242 4242)
-- ✅ Webhook receives payment confirmation
-- ✅ Donations created in database
-- ✅ Correct donation_public_id format (e.g., 1-A1B2C3)
-- ✅ Project current_units updated
-- ✅ Success page shows correct details
-- ✅ Multiple units create multiple donation records
-
-#### Internationalization
-- ✅ Root path (/) redirects to /en
-- ✅ /en shows English content
-- ✅ /zh shows Chinese content
-- ✅ All pages accessible in both locales
-- ⏳ Language switcher works (when built)
-
-#### Error Handling
-- ✅ Invalid email shows localized error
-- ✅ Validation errors display correctly
-- ✅ Payment failure handled gracefully
-- ⏳ Network errors handled
-
-### Automated Testing (To Be Implemented)
-
-#### Unit Tests
-- Test utility functions
-- Test validation schemas
-- Test component logic
-- Test helper functions
-
-#### Integration Tests
-- Test API routes
-- Test Server Actions
-- Test database queries
-- Test webhook handling
-
-#### E2E Tests (Recommended: Playwright)
-- Test complete donation flow
-- Test language switching
-- Test form validation
-- Test payment success/failure scenarios
-
-## Performance Optimization
-
-### Implemented ✅
-- Server-side rendering for initial load
-- Server Components reduce client JS
-- Code splitting via Next.js App Router
-- Tailwind CSS with minimal output
-- next-intl translations loaded server-side
-
-### Planned 📋
-- Database query optimization with proper indexes
-- Implement caching strategy (Next.js cache, Redis)
-- Optimize images with next/image
-- Add CDN for static assets
-- Implement rate limiting on API routes
-
-## Common Issues & Solutions
-
-### Issue: 404 on all pages after fresh install
-**Cause**: `next-intl` package not installed
-**Solution**:
-```bash
-npm install next-intl
-rm -rf .next && npm run dev
-```
-
-### Issue: Middleware redirects not working
-**Solution**: Ensure `matcher` config in middleware.ts is correct and next-intl is properly configured
-
-### Issue: WayForPay webhook returns 400 "Invalid signature"
-**Cause**: Signature calculation mismatch
-**Solution**:
-- Verify field order matches exactly: merchantAccount;orderReference;amount;currency;authCode;cardPan;transactionStatus;reasonCode
-- Ensure secret key is correct in environment variables
-- Check for extra spaces or encoding issues in fields
-- Log both received and calculated signatures for debugging
-
-### Issue: WayForPay webhook returns 500 error
-**Cause**: RLS blocking webhook update operations
-**Solution**:
-- Use `createServiceClient()` in webhook handlers
-- Service role key must be set in environment variables
-- Never use service role client in user-facing operations
-
-### Issue: Emails not being delivered
-**Cause**: Domain not verified or DNS records missing
-**Solution**:
-1. Verify domain in Resend dashboard
-2. Add SPF record: `v=spf1 include:_spf.resend.com ~all`
-3. Add DKIM records provided by Resend
-4. Add DMARC record (recommended)
-5. Wait for DNS propagation (can take up to 48 hours)
-6. Test with `npm run test:email`
-
-### Issue: donation_public_id generation fails
-**Cause**: Function signature updated to require project_id
-**Solution**:
-- Apply migration 004_update_donation_id_format.sql
-- Pass project_id when calling the function
-- Update database types in types/database.ts
-
-### Issue: Translations not loading
-**Cause**: i18n.ts configuration issue with `requestLocale`
-**Solution**:
-```typescript
-// i18n.ts - Use requestLocale (not locale)
-export default getRequestConfig(async ({ requestLocale }) => {
-  let locale = await requestLocale
-  // ... rest of config
-})
-```
-
-### Issue: Supabase RLS blocking queries
-**Solution**:
-1. Review RLS policies in Supabase dashboard
-2. Use service role key for admin operations
-3. Check user authentication state
-4. Verify policy matches your use case
-
-### Issue: TypeScript errors with Supabase types
-**Solution**:
-1. Regenerate types: `npx supabase gen types typescript`
-2. Update types/database.ts with new types
-3. Update function signatures if schema changed
-
-## Monitoring & Analytics (To Be Implemented)
-
-### Recommended Tools
-- **Vercel Analytics**: Page views and performance
-- **Sentry**: Error tracking and monitoring
-- **WayForPay Dashboard**: Payment monitoring and reconciliation
-- **Resend Dashboard**: Email delivery and bounce tracking
-- **Supabase Dashboard**: Database performance and queries
-- **PostHog**: Product analytics (optional)
-
-## Resources
-
-### Documentation
-- [Next.js 14 Documentation](https://nextjs.org/docs)
-- [next-intl Documentation](https://next-intl-docs.vercel.app/)
-- [Supabase Documentation](https://supabase.com/docs)
-- [WayForPay API Documentation](https://wiki.wayforpay.com)
-- [Resend Documentation](https://resend.com/docs)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [TypeScript Documentation](https://www.typescriptlang.org/docs)
-
-### Project-Specific Guides
-- `docs/SUPABASE_CLI_GUIDE.md` - Supabase CLI usage and migration guide
-- `docs/PAYMENT_METHODS.md` - Payment methods configuration
-- `docs/TROUBLESHOOTING.md` - Common issues and solutions
-- `docs/DONATE_PAGE_UI_DESIGN.md` - UI design specifications
-- `.env.example` - Environment variable template
-
-## Next Steps
-
-### Immediate (Now)
-1. ✅ Database schema consolidated (3 migration files)
-2. ✅ Refund workflow implemented (paid/confirmed/delivering/completed/refunding/refunded)
-3. ✅ Locale tracking added (en/zh/ua)
-4. ⏳ Build donation status tracking UI
-5. ⏳ Build project donation list component
-
-### Short-term (This Week)
-6. ⏳ Build donation tracking page (by email)
-7. ⏳ Implement refund request functionality
-8. ⏳ Email notifications with localization
-9. ⏳ Update user terms for refunds
-10. ⏳ Test complete refund workflow
-
-### Medium-term (Next 2 Weeks)
-11. ⏳ Write automated tests
-12. ⏳ Optimize performance
-13. ⏳ Add monitoring and analytics
-14. ⏳ User acceptance testing
-15. ⏳ Production deployment
-
-### Long-term (Next Month+)
-16. ⏳ Phase 2 features (recurring donations, updates timeline)
-17. ⏳ Advanced analytics dashboard
-18. ⏳ Mobile app planning
-19. ⏳ API documentation
+- ✅ 测试捐赠流程
+- ✅ 测试 Webhook 接收
+- ✅ 测试邮件发送
+- ✅ 测试所有语言版本
+- ✅ 测试捐赠追踪
 
 ---
 
-**Last Updated**: 2025-12-19
-**Version**: 0.4.0
-**Status**: Payment Gateway Migrated - WayForPay + Resend Integration Complete
+## 附录
 
-**Recent Updates (v0.4.0):**
-- ✅ Migrated from Stripe to WayForPay payment gateway
-- ✅ Integrated Resend for email notifications
-- ✅ Localized email templates for 3 languages
-- ✅ Automated email confirmation on payment success
-- ✅ Updated documentation with WayForPay and Resend setup
-- ✅ Updated deployment guides and troubleshooting
+### 常见问题
 
-**Key Achievements:**
-- ✅ Internationalization with 3 languages (en/zh/ua)
-- ✅ Donation flow complete end-to-end
-- ✅ WayForPay integration with webhooks
-- ✅ Resend email notifications with localization
-- ✅ Modern donation ID format (project-based)
-- ✅ Service role pattern for webhook security
-- ✅ Comprehensive error handling
-- ✅ Clean database migration structure
+#### Q: 如何添加新语言？
 
-**Next Milestone**: Build refund workflow UI and admin dashboard
+1. 在 `messages/` 目录创建新的语言文件（如 `fr.json`）
+2. 在 `i18n/config.ts` 添加语言代码
+3. 在 `middleware.ts` 添加语言支持
+4. 更新 `LanguageSwitcher` 组件
+
+#### Q: 如何更新数据库 schema？
+
+1. 在 `supabase/migrations/` 创建新迁移文件
+2. 运行 `supabase db push`
+3. 更新 TypeScript 类型: `npx supabase gen types typescript`
+
+#### Q: Webhook 签名验证失败？
+
+检查:
+1. `WAYFORPAY_SECRET_KEY` 是否正确
+2. 签名字段顺序是否一致
+3. 字段值是否有额外空格
+
+#### Q: 邮件发送失败？
+
+检查:
+1. DNS 记录是否正确配置
+2. `RESEND_API_KEY` 是否有效
+3. 发件人邮箱是否已验证
+
+### 相关文档
+
+- [数据库架构详细文档](docs/DATABASE_SCHEMA.md)
+- [未使用的数据库函数分析](docs/UNUSED_DATABASE_FUNCTIONS.md)
+- [Supabase 官方文档](https://supabase.com/docs)
+- [Next.js 14 文档](https://nextjs.org/docs)
+- [next-intl 文档](https://next-intl-docs.vercel.app/)
+
+### 技术支持
+
+如有问题，请联系开发团队或在 GitHub 仓库提交 Issue。
+
+---
+
+**文档版本**: 1.0.0
+**最后更新**: 2025-12-23
+**维护者**: 开发团队
