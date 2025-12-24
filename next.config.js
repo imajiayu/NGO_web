@@ -67,6 +67,9 @@ const sentryWebpackPluginOptions = {
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
 
+  // Disable source map upload in local development (speeds up build)
+  disableSourceMapUpload: !process.env.CI && !process.env.VERCEL,
+
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
 

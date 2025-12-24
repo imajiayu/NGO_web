@@ -140,7 +140,8 @@
       "completed": "Completed",
       "planned": "Planned",
       "paused": "Paused"
-    }
+    },
+    "viewDetails": "View Details"
   },
   "donate": {
     "title": "Make a Donation",
@@ -222,7 +223,9 @@
     },
     "formCard": {
       "noProjectDescription": "Choose a project from the gallery above to view details and make a donation",
-      "projectEnded": "Project Ended"
+      "projectEnded": "Project Ended",
+      "cannotDonateNow": "Cannot Donate Now",
+      "projectNotActive": "This project is not currently accepting donations"
     },
     "submit": "Submit Donation",
     "submitting": "Processing...",

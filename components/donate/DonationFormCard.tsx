@@ -392,7 +392,7 @@ export default function DonationFormCard({
   // Show donation form
   return (
     <div ref={formContainerRef} className="lg:sticky lg:top-24">
-      <div className="bg-white rounded-xl border-2 border-gray-200 shadow-lg overflow-hidden">
+      <div className="bg-white rounded-xl border-2 border-gray-200 shadow-lg overflow-hidden relative">
         {/* Project Summary */}
         <div className="bg-gradient-to-br from-blue-50 to-white p-6 border-b border-gray-200">
           <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2">
@@ -702,6 +702,25 @@ export default function DonationFormCard({
             }
           </button>
         </form>
+
+        {/* Overlay when project is not active - covers entire card */}
+        {project.status !== 'active' && (
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-10 rounded-xl">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm mx-4 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-100 flex items-center justify-center">
+                <svg className="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                {t('formCard.cannotDonateNow')}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {t('formCard.projectNotActive')}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

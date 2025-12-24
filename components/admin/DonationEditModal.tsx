@@ -36,7 +36,7 @@ const STATUS_TRANSITIONS: Record<string, string[]> = {
 }
 
 export default function DonationEditModal({ donation, onClose, onSaved }: Props) {
-  const [newStatus, setNewStatus] = useState<string>(donation.donation_status || '')
+  const [newStatus, setNewStatus] = useState<string>('')
   const [filesToUpload, setFilesToUpload] = useState<File[]>([])
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)

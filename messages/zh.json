@@ -140,7 +140,8 @@
       "completed": "已完成",
       "planned": "计划中",
       "paused": "已暂停"
-    }
+    },
+    "viewDetails": "查看详情"
   },
   "donate": {
     "title": "进行捐赠",
@@ -222,7 +223,9 @@
     },
     "formCard": {
       "noProjectDescription": "从上方画廊中选择一个项目以查看详情并进行捐赠",
-      "projectEnded": "项目已结束"
+      "projectEnded": "项目已结束",
+      "cannotDonateNow": "现在无法捐赠",
+      "projectNotActive": "该项目当前不接受捐赠"
     },
     "submit": "提交捐赠",
     "submitting": "处理中...",

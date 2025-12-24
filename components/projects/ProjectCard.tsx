@@ -70,19 +70,19 @@ export default function ProjectCard({
   const currentUnits = project.current_units || 0
   const targetUnits = project.target_units || 1
 
-  // Status badge color mapping
+  // Status badge color mapping with vibrant colors
   const statusColors: Record<string, string> = {
-    active: 'bg-green-100 text-green-800 border-green-200',
-    completed: 'bg-blue-100 text-blue-800 border-blue-200',
-    planned: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    paused: 'bg-gray-100 text-gray-800 border-gray-200'
+    active: 'bg-emerald-100 text-emerald-700 border-emerald-300',
+    completed: 'bg-blue-100 text-blue-700 border-blue-300',
+    planned: 'bg-amber-100 text-amber-700 border-amber-300',
+    paused: 'bg-slate-100 text-slate-700 border-slate-300'
   }
 
   return (
     <>
       <GlobalLoadingSpinner isLoading={isNavigating} />
       <div
-        className="group flex-shrink-0 w-80 bg-white rounded-2xl border-2 border-gray-200 hover:border-blue-500 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden relative bg-cover bg-center bg-no-repeat"
+        className="group flex-shrink-0 w-80 bg-white rounded-2xl border-2 border-gray-200 hover:border-blue-500 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden relative bg-cover bg-center bg-no-repeat flex flex-col"
         style={{
           backgroundImage: `url(/images/projects/${project.id}/background.webp)`,
           backgroundColor: 'white'
@@ -92,7 +92,7 @@ export default function ProjectCard({
       <div className="absolute inset-0 bg-white/75 backdrop-blur-[2px]"></div>
 
       {/* Content wrapper */}
-      <div className="relative z-10">
+      <div className="relative z-10 flex flex-col h-full">
         {/* Header with Tags */}
         <div className="p-5 border-b border-gray-100 bg-gradient-to-br from-blue-50/80 to-white/80">
           <div className="flex items-start justify-between gap-2 mb-3">
@@ -115,7 +115,7 @@ export default function ProjectCard({
         </div>
 
         {/* Project Details */}
-        <div className="p-5 space-y-3">
+        <div className="p-5 space-y-3 flex-grow">
           {/* Location */}
           <div className="flex items-start gap-2">
             <svg className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -190,23 +190,14 @@ export default function ProjectCard({
           )}
         </div>
 
-        {/* Action Button */}
-        <div className="p-5 pt-0">
-          {project.status === 'active' ? (
-            <button
-              onClick={handleDonateClick}
-              className="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-xl"
-            >
-              {t('donateNow')}
-            </button>
-          ) : (
-            <button
-              onClick={handleDonateClick}
-              className="block w-full text-center py-3 px-4 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl font-semibold hover:from-gray-600 hover:to-gray-700 transition-all duration-300 shadow-md hover:shadow-xl"
-            >
-              {t('donateNow')}
-            </button>
-          )}
+        {/* Action Button - Fixed at bottom */}
+        <div className="p-5 pt-0 mt-auto">
+          <button
+            onClick={handleDonateClick}
+            className="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-xl"
+          >
+            {t('viewDetails')}
+          </button>
         </div>
       </div>
     </div>
