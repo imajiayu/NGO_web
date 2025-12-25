@@ -4,18 +4,20 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { trackDonations, requestRefund } from '@/app/actions/track-donation'
 import { Link } from '@/i18n/navigation'
-import { Search, Mail, Hash, ArrowRight, ExternalLink, CheckCircle2, Clock, AlertTriangle } from 'lucide-react'
+import { Search, Mail, Hash, ArrowRight, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react'
 import DonationResultViewer from '@/components/donation/DonationResultViewer'
+import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
 import { getProjectName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
-import type { I18nText } from '@/types'
+import type { I18nText, DonationStatus } from '@/types'
 
 type Donation = {
   id: number
   donation_public_id: string
+  order_reference: string
   donor_email: string
   amount: number
   currency: string
-  donation_status: 'pending' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded' | 'failed'
+  donation_status: DonationStatus
   donated_at: string
   updated_at: string
   projects: {
@@ -60,24 +62,32 @@ export default function TrackDonationForm({ locale }: Props) {
     }
   }
 
-  async function handleRequestRefund(donationPublicId: string) {
-    setRefundingDonationId(donationPublicId)
+  async function handleRequestRefund(orderReference: string) {
+    setRefundingDonationId(orderReference)
     setError('')
 
     try {
+      // Get any donation ID from this order for verification
+      const donation = donations?.find(d => d.order_reference === orderReference)
+      if (!donation) {
+        setError(t('errors.donationNotFound'))
+        return
+      }
+
       const result = await requestRefund({
-        donationPublicId,
+        donationPublicId: donation.donation_public_id,
         email,
       })
 
       if (result.error) {
         setError(t(`errors.${result.error}`))
       } else if (result.success) {
-        // Update the local donations state to reflect the status change
+        // Update all donations in this order to the new status
+        const newStatus = (result as any).status || 'refund_processing'
         setDonations(prev =>
           prev ? prev.map(d =>
-            d.donation_public_id === donationPublicId
-              ? { ...d, donation_status: 'refunding' as const }
+            d.order_reference === orderReference
+              ? { ...d, donation_status: newStatus as DonationStatus }
               : d
           ) : null
         )
@@ -90,38 +100,6 @@ export default function TrackDonationForm({ locale }: Props) {
     }
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'bg-gray-100 text-gray-600 border-gray-300'
-      case 'completed':
-        return 'bg-green-100 text-green-800 border-green-200'
-      case 'delivering':
-        return 'bg-blue-100 text-blue-800 border-blue-200'
-      case 'confirmed':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-      case 'paid':
-        return 'bg-purple-100 text-purple-800 border-purple-200'
-      case 'refunding':
-        return 'bg-orange-100 text-orange-800 border-orange-200'
-      case 'refunded':
-        return 'bg-gray-100 text-gray-800 border-gray-200'
-      case 'failed':
-        return 'bg-red-100 text-red-800 border-red-200'
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
-    }
-  }
-
-  const getStatusIcon = (status: string) => {
-    if (status === 'completed') {
-      return <CheckCircle2 className="w-4 h-4" />
-    }
-    if (status === 'failed') {
-      return <AlertTriangle className="w-4 h-4" />
-    }
-    return <Clock className="w-4 h-4" />
-  }
 
   return (
     <div className="pb-20">
@@ -204,121 +182,208 @@ export default function TrackDonationForm({ locale }: Props) {
       </div>
 
       {/* Results Section */}
-      {donations && donations.length > 0 && (
-        <div className="space-y-6">
-          {/* Results Header */}
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">
-              {t('results.title', { count: donations.length })}
-            </h2>
-          </div>
+      {donations && donations.length > 0 && (() => {
+        // Group donations by order_reference
+        const orderGroups = donations.reduce((acc, donation) => {
+          const orderRef = donation.order_reference
+          if (!acc[orderRef]) {
+            acc[orderRef] = []
+          }
+          acc[orderRef].push(donation)
+          return acc
+        }, {} as Record<string, typeof donations>)
 
-          {/* Donation Cards */}
-          <div className="grid gap-4">
-            {donations.map((donation) => {
-              // Get translated project name
-              const projectName = getProjectName(
-                donation.projects.project_name_i18n,
-                donation.projects.project_name,
-                locale as SupportedLocale
-              )
+        const orders = Object.entries(orderGroups)
 
-              return (
-              <div
-                key={donation.id}
-                className="bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 overflow-hidden"
-              >
-                <div className="p-6">
-                  {/* Header Row */}
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-                    <div className="flex-1">
-                      <Link
-                        href={`/donate?project=${donation.projects.id}`}
-                        className="text-lg font-bold text-gray-900 hover:text-blue-600 transition-colors flex items-center gap-2 group"
-                      >
-                        {projectName}
-                        <ExternalLink className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </Link>
-                    </div>
-                    <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border ${getStatusColor(donation.donation_status)}`}>
-                      {getStatusIcon(donation.donation_status)}
-                      {t(`status.${donation.donation_status}`)}
-                    </div>
-                  </div>
+        return (
+          <div className="space-y-6">
+            {/* Results Header */}
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                {t('results.title', { count: orders.length })}
+              </h2>
+            </div>
 
-                  {/* Details Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                    <div>
-                      <div className="text-xs text-gray-500 font-medium mb-1">{t('results.donationId')}</div>
-                      <code className="text-sm font-mono bg-gray-100 px-3 py-1.5 rounded-lg inline-block font-semibold text-gray-800">
-                        {donation.donation_public_id}
-                      </code>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500 font-medium mb-1">{t('results.amount')}</div>
-                      <div className="text-lg font-bold text-gray-900">
-                        {donation.currency} {donation.amount.toFixed(2)}
+            {/* Order Cards */}
+            <div className="grid gap-4">
+              {orders.map(([orderReference, orderDonations]) => {
+                const firstDonation = orderDonations[0]
+
+                // Only count paid/confirmed/delivering/completed for display amount
+                const displayAmount = orderDonations
+                  .filter(d => ['paid', 'confirmed', 'delivering', 'completed'].includes(d.donation_status))
+                  .reduce((sum, d) => sum + Number(d.amount), 0)
+
+                // Only count paid/confirmed/delivering for refundable amount (exclude completed)
+                const refundableAmount = orderDonations
+                  .filter(d => ['paid', 'confirmed', 'delivering'].includes(d.donation_status))
+                  .reduce((sum, d) => sum + Number(d.amount), 0)
+
+                // Get unique projects in this order
+                const projectCount = new Set(orderDonations.map(d => d.projects.id)).size
+
+                return (
+                  <div
+                    key={orderReference}
+                    className="bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 overflow-hidden"
+                  >
+                    <div className="p-6">
+                      {/* Header Row */}
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-gray-900">
+                            {t('results.orderTitle')} #{orderReference.slice(-8)}
+                          </h3>
+                          {projectCount > 1 && (
+                            <p className="text-sm text-gray-600 mt-1">
+                              {t('results.multipleProjects', { count: projectCount })}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500 font-medium mb-1">{t('results.date')}</div>
-                      <div className="text-sm text-gray-700 font-medium">
-                        {formatDate(donation.donated_at, locale as SupportedLocale, {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500 font-medium mb-1">{t('results.updatedAt')}</div>
-                      <div className="text-sm text-gray-700 font-medium">
-                        {formatDate(donation.updated_at, locale as SupportedLocale, {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-100">
-                    {donation.donation_status === 'completed' ? (
-                      <button
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
-                        onClick={() => setViewResultDonationId(donation.donation_public_id)}
-                      >
-                        <CheckCircle2 className="w-4 h-4" />
-                        {t('actions.viewResult')}
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    ) : (donation.donation_status === 'paid' || donation.donation_status === 'confirmed' || donation.donation_status === 'delivering') ? (
-                      <button
-                        className="flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 border border-orange-200 rounded-lg hover:bg-orange-200 transition-colors font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                        onClick={() => setConfirmRefundId(donation.donation_public_id)}
-                        disabled={refundingDonationId === donation.donation_public_id}
-                      >
-                        {refundingDonationId === donation.donation_public_id ? (
-                          <>
-                            <div className="w-4 h-4 border-2 border-orange-700 border-t-transparent rounded-full animate-spin"></div>
-                            {t('form.processing')}
-                          </>
-                        ) : (
-                          <>
-                            {t('actions.requestRefund')}
+                      {/* Order Details Grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                        {/* Order Reference */}
+                        <div>
+                          <div className="text-xs text-gray-500 font-medium mb-1">{t('results.orderReference')}</div>
+                          <code className="text-xs font-mono bg-gray-100 px-2 py-1 rounded inline-block text-gray-800">
+                            {orderReference}
+                          </code>
+                        </div>
+
+                        {/* Quantity */}
+                        <div>
+                          <div className="text-xs text-gray-500 font-medium mb-1">{t('results.quantity')}</div>
+                          <div className="text-lg font-bold text-gray-900">
+                            {orderDonations.length} {orderDonations.length === 1 ? 'unit' : 'units'}
+                          </div>
+                        </div>
+
+                        {/* Total Amount */}
+                        <div>
+                          <div className="text-xs text-gray-500 font-medium mb-1">{t('results.totalAmount')}</div>
+                          <div className="text-lg font-bold text-gray-900">
+                            {firstDonation.currency} {displayAmount.toFixed(2)}
+                          </div>
+                        </div>
+
+                        {/* Date */}
+                        <div>
+                          <div className="text-xs text-gray-500 font-medium mb-1">{t('results.date')}</div>
+                          <div className="text-sm text-gray-700 font-medium">
+                            {formatDate(firstDonation.donated_at, locale as SupportedLocale, {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Individual Donations List */}
+                      <div className="mb-4">
+                        <div className="text-xs text-gray-500 font-medium mb-3">{t('results.donations')}</div>
+                        <div className="space-y-2">
+                          {orderDonations.map((donation) => {
+                            // Get translated project name for this donation
+                            const donationProjectName = getProjectName(
+                              donation.projects.project_name_i18n,
+                              donation.projects.project_name,
+                              locale as SupportedLocale
+                            )
+
+                            return (
+                              <div
+                                key={donation.id}
+                                className="flex flex-col gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200"
+                              >
+                                {/* Top Row: Donation ID + Status */}
+                                <div className="flex items-center justify-between gap-2">
+                                  <code className="text-xs font-mono bg-blue-50 text-blue-900 px-2 py-1 rounded border border-blue-200">
+                                    {donation.donation_public_id}
+                                  </code>
+                                  <DonationStatusBadge status={donation.donation_status} />
+                                </div>
+
+                                {/* Middle Row: Project Name (clickable) */}
+                                <div>
+                                  <Link
+                                    href={`/donate?project=${donation.projects.id}`}
+                                    className="text-sm font-semibold text-gray-900 hover:text-blue-600 transition-colors inline-flex items-center gap-1 group"
+                                  >
+                                    {donationProjectName}
+                                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  </Link>
+                                </div>
+
+                                {/* Bottom Row: Amount + Date */}
+                                <div className="flex items-center justify-between gap-2 text-xs text-gray-600">
+                                  <span className="font-semibold text-gray-900">
+                                    {donation.currency} {Number(donation.amount).toFixed(2)}
+                                  </span>
+                                  <span>
+                                    {formatDate(donation.donated_at, locale as SupportedLocale, {
+                                      year: 'numeric',
+                                      month: 'short',
+                                      day: 'numeric'
+                                    })}
+                                  </span>
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-100">
+                        {/* View Result button - show if any donation is completed */}
+                        {orderDonations.some(d => d.donation_status === 'completed') && (
+                          <button
+                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
+                            onClick={() => {
+                              const completedDonation = orderDonations.find(d => d.donation_status === 'completed')
+                              if (completedDonation) {
+                                setViewResultDonationId(completedDonation.donation_public_id)
+                              }
+                            }}
+                          >
+                            <CheckCircle2 className="w-4 h-4" />
+                            {t('actions.viewResult')}
                             <ArrowRight className="w-4 h-4" />
-                          </>
+                          </button>
                         )}
-                      </button>
-                    ) : null}
+
+                        {/* Refund button - show only if there are refundable donations (paid/confirmed/delivering) */}
+                        {refundableAmount > 0 && (
+                          <button
+                            className="flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 border border-orange-200 rounded-lg hover:bg-orange-200 transition-colors font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={() => setConfirmRefundId(orderReference)}
+                            disabled={refundingDonationId === orderReference}
+                          >
+                            {refundingDonationId === orderReference ? (
+                              <>
+                                <div className="w-4 h-4 border-2 border-orange-700 border-t-transparent rounded-full animate-spin"></div>
+                                {t('form.processing')}
+                              </>
+                            ) : (
+                              <>
+                                {t('actions.requestRefund')}
+                                <ArrowRight className="w-4 h-4" />
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            )})}
+                )
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* No Results */}
       {donations && donations.length === 0 && (

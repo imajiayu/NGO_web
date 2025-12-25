@@ -1,33 +1,17 @@
 /**
- * Test script for Chinese email only
- * Run with: npm run test:email:zh
+ * Test script for donation completed email
+ * Run with: npx tsx scripts/test-donation-completed-email.ts
  */
 
 // Load environment variables from .env.local
 import { config } from 'dotenv'
 config({ path: '.env.local' })
 
-import { sendPaymentSuccessEmail } from '../lib/email'
+import { sendDonationCompletedEmail } from '../lib/email'
 
-// Generate random donation ID
-function generateDonationId(projectId: number): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  let id = ''
-  for (let i = 0; i < 6; i++) {
-    id += chars.charAt(Math.floor(Math.random() * chars.length))
-  }
-  return `${projectId}-${id}`
-}
-
-async function testChineseEmail() {
-  console.log('🇨🇳 Testing Chinese Email Only\n')
+async function testDonationCompletedEmail() {
+  console.log('📧 Testing Donation Completed Email\n')
   console.log('='.repeat(60))
-
-  const donationIds = [
-    generateDonationId(2),
-    generateDonationId(2),
-    generateDonationId(2),
-  ]
 
   const params = {
     to: 'majiayu110@gmail.com',
@@ -47,28 +31,29 @@ async function testChineseEmail() {
       zh: '医疗包',
       ua: 'медичний набір'
     },
-    donationIds,
-    quantity: 3,
-    unitPrice: 50.00,
-    totalAmount: 150.00,
+    donationIds: ['2-ABC123'],
+    quantity: 1,
+    totalAmount: 50.00,
     currency: 'UAH',
     locale: 'zh' as const,
+    resultImageUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800' // 示例图片
   }
 
-  console.log('\n📧 发送中文邮件，参数：')
+  console.log('\n📧 发送捐赠完成邮件，参数：')
   console.log(`   收件人: ${params.to}`)
   console.log(`   捐赠人: ${params.donorName}`)
-  console.log(`   项目名称: ${params.projectNameI18n.zh}`)
+  console.log(`   项目: ${params.projectNameI18n.zh}`)
   console.log(`   地点: ${params.locationI18n.zh}`)
   console.log(`   数量: ${params.quantity} ${params.unitNameI18n.zh}`)
   console.log(`   金额: ${params.currency} ${params.totalAmount.toFixed(2)}`)
   console.log(`   捐赠ID: ${params.donationIds.join(', ')}`)
   console.log(`   语言: ${params.locale}`)
+  console.log(`   结果图片: ${params.resultImageUrl}`)
   console.log('')
 
   try {
     console.log('⏳ 正在发送...\n')
-    const result = await sendPaymentSuccessEmail(params)
+    const result = await sendDonationCompletedEmail(params)
 
     console.log('✅ 邮件发送成功！')
     console.log(`📬 Resend Email ID: ${result?.id}`)
@@ -78,7 +63,12 @@ async function testChineseEmail() {
     console.log('\n💡 请执行以下步骤：')
     console.log('1. 检查收件箱: majiayu110@gmail.com')
     console.log('2. 检查垃圾邮件文件夹')
-    console.log('3. 访问 Resend Dashboard 查看详细送达状态：')
+    console.log('3. 确认邮件内容包含：')
+    console.log('   - 祝贺信息')
+    console.log('   - 捐赠编号: 2-ABC123')
+    console.log('   - 配送确认图片')
+    console.log('   - 追踪按钮链接到: http://localhost:3000/zh/track-donation')
+    console.log('4. 访问 Resend Dashboard 查看详细送达状态：')
     console.log('   https://resend.com/emails/' + result?.id)
     console.log('\n')
   } catch (error) {
@@ -88,4 +78,4 @@ async function testChineseEmail() {
   }
 }
 
-testChineseEmail()
+testDonationCompletedEmail()

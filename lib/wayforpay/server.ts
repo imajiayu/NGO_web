@@ -144,14 +144,35 @@ export function verifyWayForPaySignature(
 }
 
 /**
- * WayForPay transaction statuses
+ * WayForPay Transaction Status Values
+ *
+ * Complete list based on official documentation:
+ * @see https://wiki.wayforpay.com/en/view/852131
+ * @see docs/PAYMENT_WORKFLOW.md
+ *
+ * Status Categories:
+ * - Success: APPROVED
+ * - Processing: IN_PROCESSING, WAITING_AUTH_COMPLETE, PENDING
+ * - Failed: DECLINED, EXPIRED
+ * - Refund: REFUND_IN_PROCESSING, REFUNDED, VOIDED
  */
 export const WAYFORPAY_STATUS = {
-  APPROVED: 'Approved', // Payment successful
-  DECLINED: 'Declined', // Payment declined
-  PENDING: 'Pending', // Payment pending
-  REFUND_IN_PROCESSING: 'RefundInProcessing', // Refund being processed
+  // Success
+  APPROVED: 'Approved', // Payment successful, funds withdrawn from card
+
+  // Processing
+  IN_PROCESSING: 'inProcessing', // Under processing, awaiting payment gate completion
+  WAITING_AUTH_COMPLETE: 'WaitingAuthComplete', // Successful hold (pre-authorization)
+  PENDING: 'Pending', // Under anti-fraud verification
+
+  // Failed
+  DECLINED: 'Declined', // Operation cannot be completed (bank declined)
+  EXPIRED: 'Expired', // Payment term has elapsed
+
+  // Refund
+  REFUND_IN_PROCESSING: 'RefundInProcessing', // Refund awaiting sufficient merchant balance
   REFUNDED: 'Refunded', // Refund completed
+  VOIDED: 'Voided', // Asset un-holding completed (pre-auth cancellation)
 } as const
 
 export type WayForPayStatus = typeof WAYFORPAY_STATUS[keyof typeof WAYFORPAY_STATUS]
@@ -168,4 +189,133 @@ export function generateWebhookResponseSignature(
 ): string {
   const signatureValues = [orderReference, status, time]
   return generateSignature(signatureValues)
+}
+
+/**
+ * WayForPay Refund Request Parameters
+ */
+export interface WayForPayRefundParams {
+  transactionType: 'REFUND'
+  merchantAccount: string
+  orderReference: string
+  amount: number
+  currency: 'UAH' | 'USD' | 'EUR'
+  comment: string
+  merchantSignature: string
+}
+
+/**
+ * WayForPay Refund Response
+ */
+export interface WayForPayRefundResponse {
+  merchantAccount: string
+  orderReference: string
+  transactionStatus: 'Refunded' | 'Voided' | 'Declined' | 'RefundInProcessing'
+  reason?: string
+  reasonCode: number
+  merchantSignature?: string
+}
+
+/**
+ * Create WayForPay refund request
+ * @see https://wiki.wayforpay.com/en/view/852115
+ */
+export function createWayForPayRefund({
+  orderReference,
+  amount,
+  currency = 'UAH',
+  comment,
+}: {
+  orderReference: string
+  amount: number
+  currency?: 'UAH' | 'USD' | 'EUR'
+  comment: string
+}): WayForPayRefundParams {
+  // Generate signature
+  // Order: merchantAccount;orderReference;amount;currency
+  const signatureValues = [
+    WAYFORPAY_MERCHANT_ACCOUNT,
+    orderReference,
+    amount,
+    currency,
+  ]
+
+  const merchantSignature = generateSignature(signatureValues)
+
+  return {
+    transactionType: 'REFUND',
+    merchantAccount: WAYFORPAY_MERCHANT_ACCOUNT,
+    orderReference,
+    amount,
+    currency,
+    comment,
+    merchantSignature,
+  }
+}
+
+/**
+ * Verify WayForPay refund response signature
+ */
+export function verifyRefundResponseSignature(
+  data: WayForPayRefundResponse,
+  receivedSignature: string
+): boolean {
+  // Signature fields order for refund response:
+  // merchantAccount;orderReference;transactionStatus;reasonCode
+  const signatureValues = [
+    data.merchantAccount,
+    data.orderReference,
+    data.transactionStatus,
+    data.reasonCode,
+  ]
+
+  const calculatedSignature = generateSignature(signatureValues)
+  return calculatedSignature === receivedSignature
+}
+
+/**
+ * Call WayForPay API to process refund
+ * @returns Promise with refund response
+ */
+export async function processWayForPayRefund({
+  orderReference,
+  amount,
+  currency = 'UAH',
+  comment,
+}: {
+  orderReference: string
+  amount: number
+  currency?: 'UAH' | 'USD' | 'EUR'
+  comment: string
+}): Promise<WayForPayRefundResponse> {
+  const refundParams = createWayForPayRefund({
+    orderReference,
+    amount,
+    currency,
+    comment,
+  })
+
+  const response = await fetch('https://api.wayforpay.com/api', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(refundParams),
+  })
+
+  if (!response.ok) {
+    throw new Error(`WayForPay API error: ${response.status} ${response.statusText}`)
+  }
+
+  const data = await response.json() as WayForPayRefundResponse
+
+  // Verify response signature if provided
+  if (data.merchantSignature) {
+    const isValid = verifyRefundResponseSignature(data, data.merchantSignature)
+    if (!isValid) {
+      throw new Error('Invalid refund response signature')
+    }
+  }
+
+  return data
 }

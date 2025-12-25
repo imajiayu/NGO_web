@@ -46,6 +46,10 @@ export default function Navigation() {
   }
 
   const handleDonateClick = () => {
+    // 如果当前已经在 /donate 页面，不执行任何操作
+    if (pathname === '/donate') {
+      return
+    }
     setIsNavigating(true)
     router.push('/donate')
   }

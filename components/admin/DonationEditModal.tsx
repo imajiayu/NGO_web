@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import type { Database } from '@/types/database'
+import type { DonationStatus } from '@/types'
 import {
   updateDonationStatus,
   uploadDonationResultFile,
@@ -9,6 +10,7 @@ import {
   deleteDonationResultFile
 } from '@/app/actions/admin'
 import DonationStatusProgress from './DonationStatusProgress'
+import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
 
 type Donation = Database['public']['Tables']['donations']['Row']
 
@@ -28,8 +30,9 @@ interface DonationFile {
   updatedAt: string
 }
 
+// 管理员只能修改正常业务流程的状态
+// 退款状态由 WayForPay API 自动处理，管理员无权手动修改
 const STATUS_TRANSITIONS: Record<string, string[]> = {
-  refunding: ['refunded'],
   paid: ['confirmed'],
   confirmed: ['delivering'],
   delivering: ['completed'],
@@ -272,31 +275,6 @@ export default function DonationEditModal({ donation, onClose, onSaved }: Props)
                     </div>
                   )}
 
-                  {/* Fallback Dropdown (for special cases like refunding) */}
-                  {currentStatus === 'refunding' && (
-                    <div className="mb-3">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Complete Refund:
-                      </label>
-                      <select
-                        value={newStatus}
-                        onChange={(e) => setNewStatus(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                        required
-                      >
-                        <option value="">-- Select Status --</option>
-                        {allowedStatuses.map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
-                      <p className="mt-1 text-xs text-gray-500">
-                        Allowed transitions: {currentStatus} → {allowedStatuses.join(' / ')}
-                      </p>
-                    </div>
-                  )}
-
                   <div className="flex justify-end space-x-3">
                     <button
                       type="button"
@@ -325,6 +303,11 @@ export default function DonationEditModal({ donation, onClose, onSaved }: Props)
                 <div className="mt-4 pt-4 border-t border-gray-300">
                   <div className="mb-3 p-3 bg-yellow-50 text-yellow-800 rounded text-sm">
                     This donation cannot be updated. Current status: <strong>{currentStatus}</strong>
+                    {['refunding', 'refund_processing', 'refunded'].includes(currentStatus) && (
+                      <div className="mt-2 text-xs">
+                        ℹ️ Refund statuses are managed automatically by WayForPay and cannot be modified manually.
+                      </div>
+                    )}
                   </div>
                   <div className="flex justify-end">
                     <button
@@ -557,9 +540,9 @@ export default function DonationEditModal({ donation, onClose, onSaved }: Props)
                   <span className="font-medium text-gray-600">Project ID:</span>
                   <span className="ml-2 text-gray-900">{donation.project_id}</span>
                 </div>
-                <div>
+                <div className="flex items-center gap-2">
                   <span className="font-medium text-gray-600">Status:</span>
-                  <span className="ml-2 font-bold text-gray-900">{currentStatus}</span>
+                  <DonationStatusBadge status={currentStatus as DonationStatus} />
                 </div>
               </div>
             </div>

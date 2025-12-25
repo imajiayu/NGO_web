@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import DonationResultViewer from './DonationResultViewer'
+import DonationStatusBadge from './DonationStatusBadge'
 import { formatDate, type SupportedLocale } from '@/lib/i18n-utils'
+import type { DonationStatus } from '@/types'
 
 type Donation = {
   id: number
@@ -11,7 +13,7 @@ type Donation = {
   donor_email_obfuscated: string | null
   amount: number
   currency: string
-  donation_status: 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
+  donation_status: DonationStatus
   donated_at: string
   updated_at: string
 }
@@ -56,25 +58,6 @@ export default function ProjectDonationList({
 
     fetchDonations()
   }, [projectId])
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-800'
-      case 'delivering':
-        return 'bg-blue-100 text-blue-800'
-      case 'confirmed':
-        return 'bg-yellow-100 text-yellow-800'
-      case 'paid':
-        return 'bg-purple-100 text-purple-800'
-      case 'refunding':
-        return 'bg-orange-100 text-orange-800'
-      case 'refunded':
-        return 'bg-gray-100 text-gray-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
-  }
 
   // No project selected
   if (!projectId) {
@@ -147,9 +130,7 @@ export default function ProjectDonationList({
                   {formatDate(donation.updated_at, locale as SupportedLocale)}
                 </td>
                 <td className="py-4 px-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(donation.donation_status)}`}>
-                    {t(`status.${donation.donation_status}`)}
-                  </span>
+                  <DonationStatusBadge status={donation.donation_status} namespace="projectDonationList" />
                 </td>
                 <td className="py-4 px-4">
                   {donation.donation_status === 'completed' && (
@@ -191,9 +172,7 @@ export default function ProjectDonationList({
                 </div>
               </div>
               <div>
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(donation.donation_status)}`}>
-                  {t(`status.${donation.donation_status}`)}
-                </span>
+                <DonationStatusBadge status={donation.donation_status} namespace="projectDonationList" />
               </div>
             </div>
 

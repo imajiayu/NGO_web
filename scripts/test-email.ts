@@ -1,13 +1,16 @@
 /**
- * Test script for email functionality
+ * Test script for email functionality - All Languages
  * Run with: npx tsx scripts/test-email.ts
  *
- * This script sends 3 test emails in different languages (en, zh, ua)
+ * This script sends test emails in all 3 languages using the new email system
  */
 
 // Load environment variables from .env.local
 import { config } from 'dotenv'
 config({ path: '.env.local' })
+
+import { sendPaymentSuccessEmail } from '../lib/email'
+import type { Locale } from '../lib/email'
 
 // Generate random donation ID in format: {project_id}-{6 chars}
 function generateDonationId(projectId: number): string {
@@ -20,8 +23,6 @@ function generateDonationId(projectId: number): string {
 }
 
 async function testEmail() {
-  // Dynamic import after dotenv is configured
-  const { sendDonationConfirmation } = await import('../lib/email/server')
   console.log('🧪 Testing email functionality - Sending 3 emails in different languages\n')
   console.log('='.repeat(60))
   console.log('\n')
@@ -30,27 +31,69 @@ async function testEmail() {
 
   const testCases = [
     {
-      locale: 'en' as const,
+      locale: 'en' as Locale,
       donorName: 'John Smith',
-      projectName: 'Clean Water Project',
+      projectNameI18n: {
+        en: 'Clean Water Project',
+        zh: '清洁水源项目',
+        ua: 'Проект чистої води'
+      },
+      locationI18n: {
+        en: 'Kyiv, Ukraine',
+        zh: '乌克兰基辅',
+        ua: 'Київ, Україна'
+      },
+      unitNameI18n: {
+        en: 'water filter',
+        zh: '净水器',
+        ua: 'фільтр для води'
+      },
       projectId: 1,
       quantity: 3,
       unitPrice: 50.00,
       flag: '🇺🇸'
     },
     {
-      locale: 'zh' as const,
+      locale: 'zh' as Locale,
       donorName: '张伟',
-      projectName: '清洁水源项目',
+      projectNameI18n: {
+        en: 'Medical Supplies Project',
+        zh: '医疗物资项目',
+        ua: 'Проект медичних товарів'
+      },
+      locationI18n: {
+        en: 'Lviv, Ukraine',
+        zh: '乌克兰利沃夫',
+        ua: 'Львів, Україна'
+      },
+      unitNameI18n: {
+        en: 'medical kit',
+        zh: '医疗包',
+        ua: 'медичний набір'
+      },
       projectId: 2,
       quantity: 5,
       unitPrice: 30.00,
       flag: '🇨🇳'
     },
     {
-      locale: 'ua' as const,
+      locale: 'ua' as Locale,
       donorName: 'Олександр Петренко',
-      projectName: 'Проект чистої води',
+      projectNameI18n: {
+        en: 'Food Assistance Project',
+        zh: '食品援助项目',
+        ua: 'Проект продовольчої допомоги'
+      },
+      locationI18n: {
+        en: 'Kharkiv, Ukraine',
+        zh: '乌克兰哈尔科夫',
+        ua: 'Харків, Україна'
+      },
+      unitNameI18n: {
+        en: 'food package',
+        zh: '食品包',
+        ua: 'продуктовий пакет'
+      },
       projectId: 3,
       quantity: 4,
       unitPrice: 40.00,
@@ -73,8 +116,12 @@ async function testEmail() {
     const params = {
       to: testEmail,
       donorName: test.donorName,
-      projectName: test.projectName,
+      projectNameI18n: test.projectNameI18n,
+      locationI18n: test.locationI18n,
+      unitNameI18n: test.unitNameI18n,
       donationIds,
+      quantity: test.quantity,
+      unitPrice: test.unitPrice,
       totalAmount,
       currency: 'UAH',
       locale: test.locale,
@@ -82,14 +129,16 @@ async function testEmail() {
 
     console.log('📧 Sending email with params:')
     console.log(`   Donor: ${params.donorName}`)
-    console.log(`   Project: ${params.projectName}`)
+    console.log(`   Project: ${params.projectNameI18n[params.locale]}`)
+    console.log(`   Location: ${params.locationI18n[params.locale]}`)
+    console.log(`   Quantity: ${params.quantity} ${params.unitNameI18n[params.locale]}`)
     console.log(`   Amount: ${params.currency} ${params.totalAmount.toFixed(2)}`)
     console.log(`   IDs: ${params.donationIds.join(', ')}`)
     console.log(`   Locale: ${params.locale}`)
     console.log('')
 
     try {
-      const result = await sendDonationConfirmation(params)
+      const result = await sendPaymentSuccessEmail(params)
       console.log('✅ Email sent successfully!')
       console.log(`📬 Email ID: ${result?.id}`)
       successCount++

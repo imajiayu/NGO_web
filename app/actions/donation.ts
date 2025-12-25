@@ -199,3 +199,63 @@ export async function createWayForPayDonation(data: {
     }
   }
 }
+
+/**
+ * Mark donation as failed due to widget load failure
+ *
+ * Use case:
+ * - widget_load_failed: Payment widget script failed to load (network issue)
+ *
+ * Note: User cancellation (closing payment window) is no longer tracked client-side.
+ * WayForPay will send an 'Expired' webhook after the timeout period if payment is not completed.
+ *
+ * @param orderReference - The order reference to mark as failed
+ * @returns Success status
+ */
+export async function markDonationWidgetFailed(
+  orderReference: string
+): Promise<{ success: boolean; error?: string }> {
+  console.log(`[DONATION] markDonationWidgetFailed called - Order: ${orderReference}`)
+
+  try {
+    // SECURITY: Use anonymous client - RLS policy will enforce restrictions
+    const supabase = createAnonClient()
+
+    console.log('[DONATION] Querying for pending donations...')
+
+    // Update all pending donations with this order_reference
+    const { data, error } = await supabase
+      .from('donations')
+      .update({ donation_status: 'widget_load_failed' })
+      .eq('order_reference', orderReference)
+      .eq('donation_status', 'pending')
+      .select()
+
+    if (error) {
+      console.error('[DONATION] Failed to mark as widget_load_failed:', error)
+      console.error('[DONATION] Error details:', {
+        message: error.message,
+        code: error.code,
+        hint: error.hint,
+        details: error.details
+      })
+      return { success: false, error: error.message }
+    }
+
+    if (!data || data.length === 0) {
+      console.warn(`[DONATION] No pending donations found for order: ${orderReference}`)
+      return { success: true } // Not an error, just already updated
+    }
+
+    console.log(`[DONATION] Successfully marked ${data.length} donations as widget_load_failed: ${orderReference}`)
+    console.log('[DONATION] Updated donation IDs:', data.map(d => d.donation_public_id).join(', '))
+    return { success: true }
+
+  } catch (error) {
+    console.error('[DONATION] Unexpected error:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }
+  }
+}

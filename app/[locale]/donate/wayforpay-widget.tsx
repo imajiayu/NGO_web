@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { markDonationWidgetFailed } from '@/app/actions/donation'
 
 interface Props {
   paymentParams: any
@@ -61,6 +62,9 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
         if (!scriptLoadedRef.current) {
           setError(t('errors.paymentLoadFailed'))
           setIsLoading(false)
+          // Mark donation as widget_load_failed
+          markDonationWidgetFailed(paymentParams.orderReference)
+            .catch(err => console.error('[WIDGET] Failed to mark as widget_load_failed:', err))
         }
       }, 15000)
 
@@ -78,6 +82,9 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
         }
         setError(t('errors.paymentLoadFailed'))
         setIsLoading(false)
+        // Mark donation as widget_load_failed
+        markDonationWidgetFailed(paymentParams.orderReference)
+          .catch(err => console.error('[WIDGET] Failed to mark as widget_load_failed:', err))
       }
 
       document.body.appendChild(script)
@@ -109,16 +116,14 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
           // Pending callback
           function (response: any) {
             if (response && response.orderReference) {
+              // User completed payment action, redirect to success page
               hasRedirectedRef.current = true
               if (paymentParams.returnUrl) {
                 window.location.href = paymentParams.returnUrl
               }
-            } else {
-              hasRedirectedRef.current = true
-              setError(tWidget('windowClosed'))
-              setIsLoading(false)
-              setIsRedirecting(false)
             }
+            // Note: If user closes window without payment, donation stays 'pending'
+            // WayForPay will send 'Expired' webhook after timeout period
           }
         )
 

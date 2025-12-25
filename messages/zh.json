@@ -276,7 +276,6 @@
   },
   "wayforpayWidget": {
     "networkError": "无网络连接。请检查您的网络后重试。",
-    "windowClosed": "支付窗口已关闭。您可以重试，如果您认为这是错误，请联系客服。",
     "popupBlocked": "支付页面未打开。请检查您的弹窗拦截设置后重试。",
     "windowOpening": "支付窗口即将打开",
     "redirecting": {
@@ -338,7 +337,13 @@
       "processing": "处理中..."
     },
     "results": {
-      "title": "您的捐赠记录（{count}条）",
+      "title": "您的订单（{count}个）",
+      "orderTitle": "订单",
+      "multipleProjects": "此订单包含{count}个项目",
+      "orderReference": "订单编号",
+      "donations": "捐赠记录",
+      "quantity": "数量",
+      "totalAmount": "订单总额",
       "donationId": "捐赠ID",
       "amount": "金额",
       "date": "日期",
@@ -347,14 +352,20 @@
       "status": "状态"
     },
     "status": {
-      "pending": "确认中",
-      "paid": "支付成功",
+      "pending": "支付待确认",
+      "widget_load_failed": "未支付",
+      "processing": "支付处理中",
+      "fraud_check": "安全审核中",
+      "paid": "已支付",
       "confirmed": "已确认",
       "delivering": "配送中",
       "completed": "已完成",
-      "refunding": "退款中",
-      "refunded": "已退款",
-      "failed": "支付失败"
+      "expired": "支付超时",
+      "declined": "银行拒绝支付",
+      "failed": "支付失败",
+      "refunding": "退款处理中",
+      "refund_processing": "退款处理中",
+      "refunded": "已退款"
     },
     "actions": {
       "viewResult": "查看结果",
@@ -362,7 +373,7 @@
     },
     "refundDialog": {
       "title": "申请退款",
-      "description": "您确定要对此笔捐赠申请退款吗？我们的团队将审核您的请求，并在3-5个工作日内处理。",
+      "description": "您确定要对此订单申请退款吗？退款将自动处理。",
       "confirm": "确认退款",
       "cancel": "取消"
     },
@@ -373,7 +384,11 @@
       "serverError": "服务器错误，请稍后重试。",
       "unauthorized": "您无权对此笔捐赠申请退款。",
       "cannotRefundCompleted": "已完成的捐赠无法退款。如需帮助请联系客服。",
-      "alreadyRefunding": "此笔捐赠已在退款处理中或已退款。"
+      "alreadyRefunding": "此笔捐赠已在退款处理中或已退款。",
+      "cannotRefundPending": "支付待确认或失败的捐赠无法退款。如款项已扣除请联系客服。",
+      "invalidStatus": "此捐赠当前状态无法申请退款。",
+      "refundDeclined": "支付平台拒绝了退款请求。请联系客服寻求帮助。",
+      "refundApiError": "退款处理失败，请稍后重试或联系客服。"
     }
   },
   "donationStatusFlow": {
@@ -425,14 +440,20 @@
       "action": "操作"
     },
     "status": {
-      "pending": "确认中",
-      "paid": "支付成功",
+      "pending": "支付待确认",
+      "widget_load_failed": "未支付",
+      "processing": "支付处理中",
+      "fraud_check": "安全审核中",
+      "paid": "已支付",
       "confirmed": "已确认",
       "delivering": "配送中",
       "completed": "已完成",
-      "refunding": "退款中",
-      "refunded": "已退款",
-      "failed": "支付失败"
+      "expired": "支付超时",
+      "declined": "银行拒绝支付",
+      "failed": "支付失败",
+      "refunding": "退款处理中",
+      "refund_processing": "退款处理中",
+      "refunded": "已退款"
     },
     "actions": {
       "viewResult": "查看结果"

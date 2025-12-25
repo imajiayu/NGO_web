@@ -4,6 +4,7 @@ import { useState } from 'react'
 import type { Database } from '@/types/database'
 import ProjectEditModal from './ProjectEditModal'
 import { createProject } from '@/app/actions/admin'
+import ProjectStatusBadge from '@/components/projects/ProjectStatusBadge'
 
 type Project = Database['public']['Tables']['projects']['Row']
 
@@ -102,17 +103,7 @@ export default function ProjectsTable({ initialProjects }: Props) {
                     {project.location}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        project.status === 'active'
-                          ? 'bg-green-100 text-green-800'
-                          : project.status === 'completed'
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-gray-100 text-gray-800'
-                      }`}
-                    >
-                      {project.status}
-                    </span>
+                    <ProjectStatusBadge status={project.status || 'active'} />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {project.current_units} / {project.target_units || 0}

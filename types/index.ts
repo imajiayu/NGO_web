@@ -115,7 +115,7 @@ export interface ProjectFilters {
 
 export interface DonationFilters {
   project_id?: number
-  status?: 'pending' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded' | 'failed'
+  status?: DonationStatus
   donor_email?: string
   date_from?: string
   date_to?: string
@@ -135,7 +135,61 @@ export interface DonationConfirmationEmail {
 
 // Constants
 export const PROJECT_STATUSES = ['planned', 'active', 'completed', 'paused'] as const
-export const DONATION_STATUSES = ['pending', 'paid', 'confirmed', 'delivering', 'completed', 'refunding', 'refunded', 'failed'] as const
+
+/**
+ * Donation Status Values
+ *
+ * Pre-payment:
+ * - pending: Order created, awaiting payment
+ * - widget_load_failed: Payment widget failed to load (network issue)
+ *
+ * Processing:
+ * - processing: Payment being processed by gateway (WayForPay inProcessing)
+ * - fraud_check: Under anti-fraud verification (WayForPay Pending)
+ *
+ * Payment Complete:
+ * - paid: Payment successful, funds received
+ * - confirmed: NGO confirmed the donation
+ * - delivering: Items being delivered
+ * - completed: Delivery completed
+ *
+ * Payment Failed:
+ * - expired: Payment timeout (WayForPay Expired) - also used when user abandons payment
+ * - declined: Bank declined the payment (WayForPay Declined)
+ * - failed: Other payment failures
+ *
+ * Refund:
+ * - refunding: Refund requested by donor
+ * - refund_processing: Refund being processed (WayForPay RefundInProcessing)
+ * - refunded: Refund completed (includes WayForPay Refunded and Voided)
+ *
+ * Note: user_cancelled was removed - pending donations that are never completed
+ * will be marked as 'expired' by WayForPay's authoritative webhook.
+ *
+ * @see docs/PAYMENT_WORKFLOW.md
+ */
+export const DONATION_STATUSES = [
+  // Pre-payment
+  'pending',
+  'widget_load_failed',
+  // Processing
+  'processing',
+  'fraud_check',
+  // Payment complete
+  'paid',
+  'confirmed',
+  'delivering',
+  'completed',
+  // Payment failed
+  'expired',
+  'declined',
+  'failed',
+  // Refund
+  'refunding',
+  'refund_processing',
+  'refunded',
+] as const
+
 export const DONATION_LOCALES = ['en', 'zh', 'ua'] as const
 export const CURRENCIES = ['USD', 'UAH', 'EUR'] as const
 export const PAYMENT_METHODS = ['WayForPay', 'Bank Transfer'] as const

@@ -276,7 +276,6 @@
   },
   "wayforpayWidget": {
     "networkError": "No internet connection. Please check your network and try again.",
-    "windowClosed": "Payment window was closed. You can try again or contact support if you believe this is an error.",
     "popupBlocked": "Payment page did not open. Please check your popup blocker settings and try again.",
     "windowOpening": "A payment window will open shortly",
     "redirecting": {
@@ -338,7 +337,13 @@
       "processing": "Processing..."
     },
     "results": {
-      "title": "Your Donations ({count})",
+      "title": "Your Orders ({count})",
+      "orderTitle": "Order",
+      "multipleProjects": "{count} projects in this order",
+      "orderReference": "Order Number",
+      "donations": "Donations",
+      "quantity": "Quantity",
+      "totalAmount": "Total Amount",
       "donationId": "Donation ID",
       "amount": "Amount",
       "date": "Date",
@@ -347,14 +352,20 @@
       "status": "Status"
     },
     "status": {
-      "pending": "Pending",
-      "paid": "Paid",
+      "pending": "Payment Pending",
+      "widget_load_failed": "Not Paid",
+      "processing": "Processing Payment",
+      "fraud_check": "Security Review",
+      "paid": "Payment Received",
       "confirmed": "Confirmed",
-      "delivering": "Delivering",
+      "delivering": "In Progress",
       "completed": "Completed",
-      "refunding": "Refunding",
-      "refunded": "Refunded",
-      "failed": "Failed"
+      "expired": "Payment Expired",
+      "declined": "Payment Declined",
+      "failed": "Payment Failed",
+      "refunding": "Refund In Progress",
+      "refund_processing": "Refund In Progress",
+      "refunded": "Refunded"
     },
     "actions": {
       "viewResult": "View Result",
@@ -362,7 +373,7 @@
     },
     "refundDialog": {
       "title": "Request Refund",
-      "description": "Are you sure you want to request a refund for this donation? Our team will review your request and process it within 3-5 business days.",
+      "description": "Are you sure you want to request a refund for this order? The refund will be processed automatically.",
       "confirm": "Confirm Refund",
       "cancel": "Cancel"
     },
@@ -373,7 +384,11 @@
       "serverError": "Server error. Please try again later.",
       "unauthorized": "You are not authorized to request a refund for this donation.",
       "cannotRefundCompleted": "Cannot refund completed donations. Please contact support for assistance.",
-      "alreadyRefunding": "This donation is already being refunded or has been refunded."
+      "alreadyRefunding": "This donation is already being refunded or has been refunded.",
+      "cannotRefundPending": "Cannot refund pending or failed donations. Please contact support if payment was deducted.",
+      "invalidStatus": "This donation cannot be refunded due to its current status.",
+      "refundDeclined": "Refund was declined by the payment provider. Please contact support for assistance.",
+      "refundApiError": "Failed to process refund with payment provider. Please try again later or contact support."
     }
   },
   "donationStatusFlow": {
@@ -425,14 +440,20 @@
       "action": "Action"
     },
     "status": {
-      "pending": "Pending",
-      "paid": "Paid",
+      "pending": "Payment Pending",
+      "widget_load_failed": "Not Paid",
+      "processing": "Processing Payment",
+      "fraud_check": "Security Review",
+      "paid": "Payment Received",
       "confirmed": "Confirmed",
-      "delivering": "Delivering",
+      "delivering": "In Progress",
       "completed": "Completed",
-      "refunding": "Refunding",
-      "refunded": "Refunded",
-      "failed": "Failed"
+      "expired": "Payment Expired",
+      "declined": "Payment Declined",
+      "failed": "Payment Failed",
+      "refunding": "Refund In Progress",
+      "refund_processing": "Refund In Progress",
+      "refunded": "Refunded"
     },
     "actions": {
       "viewResult": "View Result"

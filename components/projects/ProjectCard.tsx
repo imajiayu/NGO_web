@@ -8,6 +8,7 @@ import { getProjectName, getLocation, getUnitName, formatDate, type SupportedLoc
 import ProjectProgressBar from './ProjectProgressBar'
 import ProjectCardCompact from './ProjectCardCompact'
 import GlobalLoadingSpinner from '@/components/GlobalLoadingSpinner'
+import ProjectStatusBadge from './ProjectStatusBadge'
 
 interface ProjectCardProps {
   project: ProjectStats
@@ -70,14 +71,6 @@ export default function ProjectCard({
   const currentUnits = project.current_units || 0
   const targetUnits = project.target_units || 1
 
-  // Status badge color mapping with vibrant colors
-  const statusColors: Record<string, string> = {
-    active: 'bg-emerald-100 text-emerald-700 border-emerald-300',
-    completed: 'bg-blue-100 text-blue-700 border-blue-300',
-    planned: 'bg-amber-100 text-amber-700 border-amber-300',
-    paused: 'bg-slate-100 text-slate-700 border-slate-300'
-  }
-
   return (
     <>
       <GlobalLoadingSpinner isLoading={isNavigating} />
@@ -97,9 +90,7 @@ export default function ProjectCard({
         <div className="p-5 border-b border-gray-100 bg-gradient-to-br from-blue-50/80 to-white/80">
           <div className="flex items-start justify-between gap-2 mb-3">
             {/* Status Badge */}
-            <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${statusColors[project.status || 'active']}`}>
-              {t(`status.${project.status}` as any)}
-            </span>
+            <ProjectStatusBadge status={project.status || 'active'} />
 
             {/* Long-term Badge */}
             {project.is_long_term === true && (

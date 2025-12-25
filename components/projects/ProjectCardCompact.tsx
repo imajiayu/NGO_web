@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 import type { ProjectStats } from '@/types'
 import { getProjectName, getLocation, getUnitName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
 import ProjectProgressBar from './ProjectProgressBar'
+import ProjectStatusBadge from './ProjectStatusBadge'
 
 interface ProjectCardCompactProps {
   project: ProjectStats
@@ -28,14 +29,6 @@ export default function ProjectCardCompact({
   // Calculate totals using unit count
   const currentUnits = project.current_units || 0
   const targetUnits = project.target_units || 1
-
-  // Status badge color mapping
-  const statusColors: Record<string, string> = {
-    active: 'bg-green-100 text-green-800 border-green-200',
-    completed: 'bg-blue-100 text-blue-800 border-blue-200',
-    planned: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    paused: 'bg-gray-100 text-gray-800 border-gray-200'
-  }
 
   return (
     <button
@@ -67,9 +60,7 @@ export default function ProjectCardCompact({
           <div className="flex items-start justify-between gap-2 mb-2">
             <div className="flex items-start gap-2 flex-wrap">
               {/* Status Badge */}
-              <span className={`px-2.5 py-0.5 text-xs font-semibold rounded-full border ${statusColors[project.status || 'active']}`}>
-                {t(`status.${project.status}` as any)}
-              </span>
+              <ProjectStatusBadge status={project.status || 'active'} />
 
               {/* Long-term Badge */}
               {project.is_long_term === true && (

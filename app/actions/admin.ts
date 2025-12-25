@@ -144,18 +144,19 @@ export async function updateDonationStatus(
   await requireAdmin()
   const supabase = await createAuthClient()
 
-  // 获取当前捐赠记录（包含 donation_public_id 用于验证文件）
+  // 获取当前捐赠记录（包含更多信息用于发送邮件）
   const { data: current, error: fetchError } = await supabase
     .from('donations')
-    .select('donation_status, donation_public_id')
+    .select('donation_status, donation_public_id, donor_email, donor_name, amount, locale, project_id')
     .eq('id', id)
     .single()
 
   if (fetchError) throw fetchError
 
   // 验证状态转换
+  // 管理员只能修改正常业务流程的状态，不能修改退款相关状态
+  // 退款状态由 WayForPay API 自动处理
   const validTransitions: Record<string, string[]> = {
-    refunding: ['refunded'],
     paid: ['confirmed'],
     confirmed: ['delivering'],
     delivering: ['completed'],
@@ -166,18 +167,54 @@ export async function updateDonationStatus(
 
   if (!allowedNext.includes(newStatus)) {
     throw new Error(
-      `Invalid status transition: ${currentStatus} → ${newStatus}`
+      `Invalid status transition: ${currentStatus} → ${newStatus}. Admin can only modify: paid→confirmed, confirmed→delivering, delivering→completed. Refund statuses are handled automatically.`
     )
   }
 
-  // 如果是 delivering → completed，验证文件是否已上传
+  // 如果是 delivering → completed，尝试获取结果图片（非强制）
+  let resultImageUrl: string | undefined
   if (currentStatus === 'delivering' && newStatus === 'completed') {
-    const { data: files } = await supabase.storage
-      .from('donation-results')
-      .list(current.donation_public_id, { limit: 1 })
+    try {
+      const { data: files, error: listError } = await supabase.storage
+        .from('donation-results')
+        .list(current.donation_public_id, { limit: 100 })
 
-    if (!files || files.length === 0) {
-      throw new Error('Please upload a result image/video before marking as completed')
+      if (listError) {
+        console.error('[ADMIN] Error listing files:', listError)
+        // 继续执行，只是没有图片
+      } else {
+        // 过滤掉文件夹（.thumbnails）和隐藏文件，只保留实际的图片/视频文件
+        const actualFiles = files?.filter(f =>
+          f.name &&
+          !f.name.startsWith('.') &&
+          f.id // 文件有 id，文件夹没有
+        ) || []
+
+        if (actualFiles.length > 0) {
+          // 只选择图片文件（邮件中无法嵌入视频）
+          const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp']
+          const imageFile = actualFiles.find(f =>
+            imageExtensions.some(ext => f.name.toLowerCase().endsWith(ext))
+          )
+
+          if (imageFile) {
+            const { data: { publicUrl } } = supabase.storage
+              .from('donation-results')
+              .getPublicUrl(`${current.donation_public_id}/${imageFile.name}`)
+            resultImageUrl = publicUrl
+            console.log(`[ADMIN] Result image URL: ${resultImageUrl} (${imageFile.name})`)
+          } else {
+            console.warn(`[ADMIN] Only video files found for donation ${current.donation_public_id}, email will not show media (videos cannot be embedded in emails)`)
+            // 只有视频没有图片，邮件中不显示，用户需要去追踪页面查看
+          }
+        } else {
+          console.warn(`[ADMIN] No result files found for donation ${current.donation_public_id}`)
+          // 没有文件也继续，邮件中不显示图片
+        }
+      }
+    } catch (error) {
+      console.error('[ADMIN] Error getting result image:', error)
+      // 获取图片失败也不影响状态更新，只是邮件中没有图片
     }
   }
 
@@ -190,6 +227,41 @@ export async function updateDonationStatus(
     .single()
 
   if (error) throw error
+
+  // 如果是 delivering → completed，发送完成邮件
+  if (currentStatus === 'delivering' && newStatus === 'completed') {
+    try {
+      // 获取项目的多语言信息
+      const { data: project } = await supabase
+        .from('projects')
+        .select('project_name_i18n, location_i18n, unit_name_i18n')
+        .eq('id', current.project_id)
+        .single()
+
+      if (project && current.donor_email) {
+        const { sendDonationCompletedEmail } = await import('@/lib/email')
+
+        await sendDonationCompletedEmail({
+          to: current.donor_email,
+          donorName: current.donor_name,
+          projectNameI18n: project.project_name_i18n as { en: string; zh: string; ua: string },
+          locationI18n: project.location_i18n as { en: string; zh: string; ua: string },
+          unitNameI18n: project.unit_name_i18n as { en: string; zh: string; ua: string },
+          donationIds: [current.donation_public_id],
+          quantity: 1,
+          totalAmount: current.amount,
+          currency: 'UAH',
+          locale: (current.locale || 'en') as 'en' | 'zh' | 'ua',
+          resultImageUrl
+        })
+
+        console.log(`[ADMIN] Donation completed email sent to ${current.donor_email} for donation ${current.donation_public_id}`)
+      }
+    } catch (emailError) {
+      console.error('[ADMIN] Failed to send completion email:', emailError)
+      // Don't throw - email failure shouldn't fail the status update
+    }
+  }
 
   revalidatePath('/admin/donations')
   return data as Donation
@@ -386,5 +458,72 @@ export async function deleteDonationResultFile(donationId: number, filePath: str
   }
 
   return { success: true }
+}
+
+/**
+ * 批量更新捐赠状态
+ */
+export async function batchUpdateDonationStatus(
+  donationIds: number[],
+  newStatus: string
+) {
+  await requireAdmin()
+  const supabase = await createAuthClient()
+
+  if (donationIds.length === 0) {
+    throw new Error('No donations selected')
+  }
+
+  // 获取所有选中的捐赠
+  const { data: donations, error: fetchError } = await supabase
+    .from('donations')
+    .select('id, donation_status, donation_public_id')
+    .in('id', donationIds)
+
+  if (fetchError) throw fetchError
+
+  if (!donations || donations.length === 0) {
+    throw new Error('No donations found')
+  }
+
+  // 验证所有捐赠的状态是否相同
+  const statuses = new Set(donations.map(d => d.donation_status))
+  if (statuses.size !== 1) {
+    throw new Error('All selected donations must have the same status')
+  }
+
+  const currentStatus = donations[0].donation_status || ''
+
+  // delivering → completed 不支持批量更新（需要上传文件）
+  if (currentStatus === 'delivering' && newStatus === 'completed') {
+    throw new Error('Batch update from delivering to completed is not supported. Please update donations individually to upload result files.')
+  }
+
+  // 验证状态转换
+  const validTransitions: Record<string, string[]> = {
+    paid: ['confirmed'],
+    confirmed: ['delivering'],
+    delivering: ['completed'],
+  }
+
+  const allowedNext = validTransitions[currentStatus] || []
+
+  if (!allowedNext.includes(newStatus)) {
+    throw new Error(
+      `Invalid status transition: ${currentStatus} → ${newStatus}. Admin can only modify: paid→confirmed, confirmed→delivering, delivering→completed. Refund statuses are handled automatically.`
+    )
+  }
+
+  // 批量更新状态
+  const { data, error } = await supabase
+    .from('donations')
+    .update({ donation_status: newStatus })
+    .in('id', donationIds)
+    .select()
+
+  if (error) throw error
+
+  revalidatePath('/admin/donations')
+  return data as Donation[]
 }
 
