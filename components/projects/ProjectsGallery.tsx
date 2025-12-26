@@ -32,20 +32,6 @@ export default function ProjectsGallery({
   const t = useTranslations(mode === 'compact' ? 'donate' : 'home')
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
-  // Auto-scroll to selected project when it changes
-  useEffect(() => {
-    if (selectedProjectId && mode === 'compact') {
-      const selectedCard = document.getElementById(`project-card-${selectedProjectId}`)
-      if (selectedCard) {
-        selectedCard.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'center'
-        })
-      }
-    }
-  }, [selectedProjectId, mode])
-
   if (projects.length === 0) {
     return (
       <div className="text-center py-12">

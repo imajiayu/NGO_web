@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import type { ProjectStats } from '@/types'
@@ -20,33 +20,42 @@ interface DonatePageClientProps {
 }
 
 export default function DonatePageClient({
-  projects,
+  projects: initialProjects,
   locale,
   initialProjectId
 }: DonatePageClientProps) {
   const t = useTranslations('donate')
+  const [projects, setProjects] = useState<ProjectStats[]>(initialProjects)
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(
     initialProjectId
   )
   const [isFlowExpanded, setIsFlowExpanded] = useState(false)
 
+  // Shared form fields state (preserved across project switches)
+  // Only preserve donor personal information, NOT project-specific fields
+  const [donorName, setDonorName] = useState('')
+  const [donorEmail, setDonorEmail] = useState('')
+  const [donorMessage, setDonorMessage] = useState('')
+  const [contactTelegram, setContactTelegram] = useState('')
+  const [contactWhatsapp, setContactWhatsapp] = useState('')
+
   const selectedProject = projects.find(p => p.id === selectedProjectId) || null
 
-  // Smooth scroll to content section when project is selected
+  // Callback to update all projects stats
+  const handleProjectsUpdate = (updatedProjects: ProjectStats[]) => {
+    setProjects(updatedProjects)
+  }
+
+  // Handle project selection (no auto-scroll)
   const handleProjectSelect = (id: number) => {
     setSelectedProjectId(id)
-
-    // Scroll to content area after a small delay to allow state update
-    setTimeout(() => {
-      const contentSection = document.getElementById('donation-content')
-      if (contentSection) {
-        contentSection.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        })
-      }
-    }, 100)
   }
+
+  // Prevent auto-scroll on initial load when coming from home page
+  useEffect(() => {
+    // Force scroll to top on mount to prevent any default scroll behavior
+    window.scrollTo(0, 0)
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -61,7 +70,7 @@ export default function DonatePageClient({
 
       {/* Main Content Area */}
       <div id="donation-content" className="max-w-7xl mx-auto px-6 py-12">
-        {selectedProject && selectedProjectId ? (
+        {selectedProject && selectedProjectId !== null ? (
           <>
             {/* Mobile Only: Scroll to Donation Form Button - At the top */}
             <div className="lg:hidden mb-6">
@@ -117,9 +126,19 @@ export default function DonatePageClient({
             {/* Right Side: Donation Form (40%) */}
             <div className="lg:col-span-2" id="donation-form">
               <DonationFormCard
-                key={`form-${selectedProjectId}`}
                 project={selectedProject}
                 locale={locale}
+                onProjectsUpdate={handleProjectsUpdate}
+                donorName={donorName}
+                setDonorName={setDonorName}
+                donorEmail={donorEmail}
+                setDonorEmail={setDonorEmail}
+                donorMessage={donorMessage}
+                setDonorMessage={setDonorMessage}
+                contactTelegram={contactTelegram}
+                setContactTelegram={setContactTelegram}
+                contactWhatsapp={contactWhatsapp}
+                setContactWhatsapp={setContactWhatsapp}
               />
             </div>
           </div>
@@ -166,7 +185,7 @@ export default function DonatePageClient({
         </div>
 
         {/* Project Donations List */}
-        {selectedProjectId && selectedProject && (
+        {selectedProjectId !== null && selectedProject && (
           <div className="mt-16">
             <ProjectDonationList
               key={`donations-${selectedProjectId}`}

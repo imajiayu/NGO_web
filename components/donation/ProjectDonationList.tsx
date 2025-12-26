@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import DonationResultViewer from './DonationResultViewer'
 import DonationStatusBadge from './DonationStatusBadge'
@@ -11,6 +11,7 @@ type Donation = {
   id: number
   donation_public_id: string
   donor_email_obfuscated: string | null
+  order_id: string // MD5 hash for grouping donations from same payment
   amount: number
   currency: string
   donation_status: DonationStatus
@@ -34,9 +35,27 @@ export default function ProjectDonationList({
   const [loading, setLoading] = useState(false)
   const [viewResultDonationId, setViewResultDonationId] = useState<string | null>(null)
 
+  // Helper function to group donations by order_id
+  const groupDonationsByOrder = (donations: Donation[]): Donation[][] => {
+    const groups: { [key: string]: Donation[] } = {}
+
+    donations.forEach(donation => {
+      const orderId = donation.order_id
+      if (!groups[orderId]) {
+        groups[orderId] = []
+      }
+      groups[orderId].push(donation)
+    })
+
+    return Object.values(groups)
+  }
+
+  // Get grouped donations
+  const donationGroups = groupDonationsByOrder(donations)
+
   // Fetch donations when projectId changes
   useEffect(() => {
-    if (!projectId) {
+    if (projectId === null) {
       setDonations([])
       return
     }
@@ -60,7 +79,7 @@ export default function ProjectDonationList({
   }, [projectId])
 
   // No project selected
-  if (!projectId) {
+  if (projectId === null) {
     return null
   }
 
@@ -110,105 +129,142 @@ export default function ProjectDonationList({
             </tr>
           </thead>
           <tbody>
-            {donations.map((donation) => (
-              <tr key={donation.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                <td className="py-4 px-4 text-sm text-gray-600">
-                  {donation.donor_email_obfuscated || 'N/A'}
-                </td>
-                <td className="py-4 px-4">
-                  <code className="text-sm font-mono bg-blue-50 text-blue-900 px-2 py-1 rounded border border-blue-200">
-                    {donation.donation_public_id}
-                  </code>
-                </td>
-                <td className="py-4 px-4 text-sm font-medium text-gray-900">
-                  {donation.currency} {donation.amount.toFixed(2)}
-                </td>
-                <td className="py-4 px-4 text-sm text-gray-600">
-                  {formatDate(donation.donated_at, locale as SupportedLocale)}
-                </td>
-                <td className="py-4 px-4 text-sm text-gray-600">
-                  {formatDate(donation.updated_at, locale as SupportedLocale)}
-                </td>
-                <td className="py-4 px-4">
-                  <DonationStatusBadge status={donation.donation_status} namespace="projectDonationList" />
-                </td>
-                <td className="py-4 px-4">
-                  {donation.donation_status === 'completed' && (
-                    <button
-                      className="text-sm text-blue-600 hover:text-blue-800 font-medium hover:underline"
-                      onClick={() => setViewResultDonationId(donation.donation_public_id)}
-                    >
-                      {t('actions.viewResult')}
-                    </button>
-                  )}
-                </td>
-              </tr>
+            {donationGroups.map((group, groupIndex) => (
+              <React.Fragment key={`group-${groupIndex}`}>
+                {/* Group wrapper - only show border if group has multiple donations */}
+                {group.map((donation, donationIndex) => (
+                  <tr
+                    key={donation.id}
+                    className={`
+                      border-b border-gray-100 hover:bg-gray-50 transition-colors
+                      ${group.length > 1 ? 'border-l-4 border-l-blue-500' : ''}
+                      ${group.length > 1 && donationIndex === 0 ? 'border-t-2 border-t-blue-500' : ''}
+                      ${group.length > 1 && donationIndex === group.length - 1 ? 'border-b-2 border-b-blue-500' : ''}
+                    `}
+                  >
+                    <td className="py-4 px-4 text-sm text-gray-600">
+                      {donation.donor_email_obfuscated || 'N/A'}
+                    </td>
+                    <td className="py-4 px-4">
+                      <code className="text-sm font-mono bg-blue-50 text-blue-900 px-2 py-1 rounded border border-blue-200">
+                        {donation.donation_public_id}
+                      </code>
+                    </td>
+                    <td className="py-4 px-4 text-sm font-medium text-gray-900">
+                      {donation.currency} {donation.amount.toFixed(2)}
+                    </td>
+                    <td className="py-4 px-4 text-sm text-gray-600">
+                      {formatDate(donation.donated_at, locale as SupportedLocale)}
+                    </td>
+                    <td className="py-4 px-4 text-sm text-gray-600">
+                      {formatDate(donation.updated_at, locale as SupportedLocale)}
+                    </td>
+                    <td className="py-4 px-4">
+                      <DonationStatusBadge status={donation.donation_status} namespace="projectDonationList" />
+                    </td>
+                    <td className="py-4 px-4">
+                      {donation.donation_status === 'completed' && (
+                        <button
+                          className="text-sm text-blue-600 hover:text-blue-800 font-medium hover:underline"
+                          onClick={() => setViewResultDonationId(donation.donation_public_id)}
+                        >
+                          {t('actions.viewResult')}
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </React.Fragment>
             ))}
           </tbody>
         </table>
       </div>
 
       {/* Mobile Card View - Visible only on Mobile */}
-      <div className="md:hidden space-y-4">
-        {donations.map((donation) => (
+      <div className="md:hidden space-y-2">
+        {donationGroups.map((group, groupIndex) => (
           <div
-            key={donation.id}
-            className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
+            key={`mobile-group-${groupIndex}`}
+            className={`
+              ${group.length > 1 ? 'border-l-4 border-blue-500 bg-blue-50/20 rounded-r-lg' : ''}
+            `}
           >
-            {/* Donation ID - Most Prominent */}
-            <div className="mb-3 pb-3 border-b border-gray-200">
-              <div className="text-xs font-medium text-gray-700 mb-1">{t('columns.donationId')}</div>
-              <code className="text-base font-mono bg-blue-600 text-white px-3 py-2 rounded-md inline-block font-semibold shadow-sm">
-                {donation.donation_public_id}
-              </code>
-            </div>
-
-            {/* Amount and Status Row */}
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <div className="text-xs font-medium text-gray-700 mb-1">{t('columns.amount')}</div>
-                <div className="text-lg font-bold text-gray-900">
-                  {donation.currency} {donation.amount.toFixed(2)}
+            {/* Compact group indicator */}
+            {group.length > 1 && (
+              <div className="px-2 pt-1.5 pb-1">
+                <div className="text-[10px] font-bold text-blue-600 uppercase tracking-wider flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"/>
+                    <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"/>
+                  </svg>
+                  <span>{t('groupIndicator', { count: group.length })}</span>
                 </div>
               </div>
-              <div>
-                <DonationStatusBadge status={donation.donation_status} namespace="projectDonationList" />
-              </div>
-            </div>
-
-            {/* Email */}
-            <div className="mb-2">
-              <div className="text-xs font-medium text-gray-700 mb-1">{t('columns.email')}</div>
-              <div className="text-sm text-gray-900 font-medium break-all">
-                {donation.donor_email_obfuscated || 'N/A'}
-              </div>
-            </div>
-
-            {/* Time */}
-            <div className="mb-2">
-              <div className="text-xs font-medium text-gray-700 mb-1">{t('columns.time')}</div>
-              <div className="text-sm text-gray-900">
-                {formatDate(donation.donated_at, locale as SupportedLocale)}
-              </div>
-            </div>
-
-            {/* Updated At */}
-            <div className="mb-3">
-              <div className="text-xs font-medium text-gray-700 mb-1">{t('columns.updatedAt')}</div>
-              <div className="text-sm text-gray-900">
-                {formatDate(donation.updated_at, locale as SupportedLocale)}
-              </div>
-            </div>
-
-            {/* Action Button */}
-            {donation.donation_status === 'completed' && (
-              <button
-                className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
-                onClick={() => setViewResultDonationId(donation.donation_public_id)}
-              >
-                {t('actions.viewResult')}
-              </button>
             )}
+
+            <div className={`${group.length > 1 ? 'space-y-1.5' : 'space-y-2'}`}>
+              {group.map((donation) => (
+                <div
+                  key={donation.id}
+                  className="bg-white border border-gray-200 rounded-lg p-2.5 shadow-sm"
+                >
+                  {/* Row 1: Donation ID (full width) */}
+                  <div className="mb-2">
+                    <code className="text-xs font-mono bg-blue-600 text-white px-2 py-1 rounded font-semibold">
+                      {donation.donation_public_id}
+                    </code>
+                  </div>
+
+                  {/* Row 2: Amount + Status */}
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-base font-bold text-gray-900">
+                      {donation.currency} {donation.amount.toFixed(2)}
+                    </div>
+                    <div className="scale-90 origin-right">
+                      <DonationStatusBadge status={donation.donation_status} namespace="projectDonationList" />
+                    </div>
+                  </div>
+
+                  {/* Row 3: Email (compact) */}
+                  <div className="mb-1.5 flex items-baseline gap-1.5">
+                    <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wide shrink-0">{t('emailLabel')}</span>
+                    <span className="text-xs text-gray-900 font-medium break-all leading-tight">
+                      {donation.donor_email_obfuscated || 'N/A'}
+                    </span>
+                  </div>
+
+                  {/* Row 4: Time + Updated At (two columns) */}
+                  <div className="grid grid-cols-2 gap-2 mb-1.5">
+                    <div>
+                      <div className="text-[10px] font-medium text-gray-500 uppercase tracking-wide mb-0.5">
+                        {t('columns.time')}
+                      </div>
+                      <div className="text-xs text-gray-900 leading-tight">
+                        {formatDate(donation.donated_at, locale as SupportedLocale)}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-medium text-gray-500 uppercase tracking-wide mb-0.5">
+                        {t('columns.updatedAt')}
+                      </div>
+                      <div className="text-xs text-gray-900 leading-tight">
+                        {formatDate(donation.updated_at, locale as SupportedLocale)}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Button (compact) */}
+                  {donation.donation_status === 'completed' && (
+                    <button
+                      className="w-full mt-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded text-xs transition-colors"
+                      onClick={() => setViewResultDonationId(donation.donation_public_id)}
+                    >
+                      {t('actions.viewResult')}
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         ))}
       </div>

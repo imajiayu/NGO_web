@@ -1,16 +1,51 @@
 'use server'
 
 import { createWayForPayPayment } from '@/lib/wayforpay/server'
-import { getProjectById } from '@/lib/supabase/queries'
+import { getProjectStats } from '@/lib/supabase/queries'
 import { donationFormSchema } from '@/lib/validations'
 import { createAnonClient } from '@/lib/supabase/server'
 import type { DonationStatus } from '@/types'
 import { getProjectName, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
 
 type WayForPayPaymentResult =
-  | { success: true; paymentParams: any; amount: number; orderReference: string }
-  | { success: false; error: 'quantity_exceeded'; remainingUnits: number; unitName: string }
-  | { success: false; error: 'project_not_found' | 'project_not_active' | 'server_error' }
+  | { success: true; paymentParams: any; amount: number; orderReference: string; allProjectsStats: any[] }
+  | { success: false; error: 'quantity_exceeded'; remainingUnits: number; unitName: string; allProjectsStats: any[] }
+  | { success: false; error: 'amount_limit_exceeded'; maxQuantity: number; unitName: string; allProjectsStats: any[] }
+  | { success: false; error: 'project_not_found' | 'project_not_active' | 'server_error'; allProjectsStats?: any[] }
+
+/**
+ * Helper function: Create quantity exceeded error
+ */
+function createQuantityExceededError(
+  remainingUnits: number,
+  unitName: string,
+  allProjectsStats: any[]
+): WayForPayPaymentResult {
+  return {
+    success: false,
+    error: 'quantity_exceeded',
+    remainingUnits,
+    unitName,
+    allProjectsStats,
+  }
+}
+
+/**
+ * Helper function: Create amount limit exceeded error
+ */
+function createAmountLimitExceededError(
+  maxQuantity: number,
+  unitName: string,
+  allProjectsStats: any[]
+): WayForPayPaymentResult {
+  return {
+    success: false,
+    error: 'amount_limit_exceeded',
+    maxQuantity,
+    unitName,
+    allProjectsStats,
+  }
+}
 
 /**
  * Create WayForPay payment for donation
@@ -18,24 +53,30 @@ type WayForPayPaymentResult =
 export async function createWayForPayDonation(data: {
   project_id: number
   quantity: number
+  amount?: number // For aggregated projects: direct donation amount
   donor_name: string
   donor_email: string
   donor_message?: string
   contact_telegram?: string
   contact_whatsapp?: string
+  tip_amount?: number
   locale: 'en' | 'zh' | 'ua'
 }): Promise<WayForPayPaymentResult> {
   try {
     // Validate input
     const validated = donationFormSchema.parse(data)
 
-    // Get project details
-    const project = await getProjectById(validated.project_id)
+    // Get project details with stats (includes total_raised)
+    const project = await getProjectStats(validated.project_id) as any
+
+    // Get all projects stats for updating the entire page
+    const allProjectsStats = await getProjectStats() as any[]
 
     if (!project) {
       return {
         success: false,
         error: 'project_not_found',
+        allProjectsStats,
       }
     }
 
@@ -43,6 +84,7 @@ export async function createWayForPayDonation(data: {
       return {
         success: false,
         error: 'project_not_active',
+        allProjectsStats,
       }
     }
 
@@ -53,22 +95,69 @@ export async function createWayForPayDonation(data: {
       validated.locale as SupportedLocale
     )
 
-    // Check quantity limits for non-long-term projects
-    if (!project.is_long_term) {
-      const remainingUnits = (project.target_units || 0) - (project.current_units || 0)
-      if (validated.quantity > remainingUnits) {
+    // Calculate project amount based on project type
+    const unitPrice = project.unit_price
+    let projectAmount: number
+
+    if (project.aggregate_donations) {
+      // Aggregated projects: Use the amount passed from frontend
+      if (!validated.amount || validated.amount <= 0) {
         return {
           success: false,
-          error: 'quantity_exceeded',
-          remainingUnits,
-          unitName,
+          error: 'server_error',
+        }
+      }
+      projectAmount = validated.amount
+    } else {
+      // Non-aggregated projects: Calculate from unit_price * quantity
+      projectAmount = unitPrice * validated.quantity
+    }
+
+    // Check limits for non-long-term projects (target-based limits only)
+    if (!project.is_long_term) {
+      if (project.aggregate_donations) {
+        // For aggregated projects: target_units represents target amount (not units)
+        // Check if donation amount exceeds remaining target
+        const targetAmount = project.target_units || 0
+        const currentAmount = project.total_raised || 0
+        const remainingAmount = targetAmount - currentAmount
+
+        if (projectAmount > remainingAmount) {
+          // Return error with remaining amount info
+          return createAmountLimitExceededError(
+            Math.floor(remainingAmount), // Use maxQuantity to pass remaining amount
+            'USD', // For aggregated projects, unit is currency
+            allProjectsStats
+          )
+        }
+      } else {
+        // For non-aggregated projects: check quantity limits
+        const remainingUnits = (project.target_units || 0) - (project.current_units || 0)
+        if (validated.quantity > remainingUnits) {
+          return createQuantityExceededError(remainingUnits, unitName, allProjectsStats)
         }
       }
     }
 
-    // Calculate amount
-    const unitPrice = project.unit_price
-    const totalAmount = unitPrice * validated.quantity
+    const totalAmount = projectAmount + (validated.tip_amount || 0)
+
+    // =====================================================
+    // CRITICAL: Check total amount limit for ALL projects
+    // Maximum $10,000 per transaction (RLS policy limit)
+    // This is the ONLY place where we check the $10,000 limit
+    // (Long-term, non-long-term, aggregated, non-aggregated)
+    // =====================================================
+    if (totalAmount > 10000) {
+      // Calculate max allowed based on project type
+      if (project.aggregate_donations) {
+        // Aggregated: return max amount directly (in USD)
+        return createAmountLimitExceededError(10000, 'USD', allProjectsStats)
+      } else {
+        // Non-aggregated: calculate max units based on unit price
+        const maxQuantity = Math.floor(10000 / unitPrice)
+        return createAmountLimitExceededError(maxQuantity, unitName, allProjectsStats)
+      }
+    }
 
     // Generate unique order reference with random suffix to prevent duplicates
     const timestamp = Date.now()
@@ -100,13 +189,15 @@ export async function createWayForPayDonation(data: {
     )
 
     // Create WayForPay payment parameters
+    // For aggregated projects: productPrice = projectAmount, productCount = 1
+    // For non-aggregated projects: productPrice = unitPrice, productCount = quantity
     const paymentParams = createWayForPayPayment({
       orderReference,
       amount: totalAmount,
       currency: 'USD', // Using USD for international donations
       productName: [projectName],
-      productPrice: [unitPrice],
-      productCount: [validated.quantity],
+      productPrice: [project.aggregate_donations ? projectAmount : unitPrice],
+      productCount: [project.aggregate_donations ? 1 : validated.quantity],
       clientFirstName,
       clientLastName,
       clientEmail: validated.donor_email,
@@ -116,14 +207,17 @@ export async function createWayForPayDonation(data: {
       serviceUrl,
     })
 
-    // Create pending donation records (one per unit)
+    // Create pending donation records
+    // - If aggregate_donations = true: Create 1 aggregated record regardless of quantity
+    // - If aggregate_donations = false: Create one record per unit (traditional behavior)
     // These will be updated to 'paid' status when webhook receives payment confirmation
     // SECURITY: Use anonymous client - RLS policy enforces pending status only
     const supabase = createAnonClient()
     const donationRecords = []
 
-    for (let i = 0; i < validated.quantity; i++) {
-      // Generate donation public ID
+    // Main project donation records
+    if (project.aggregate_donations) {
+      // Aggregated mode: Create 1 record with total amount
       const { data: donationPublicId, error: idError } = await supabase.rpc(
         'generate_donation_public_id',
         { project_id_input: validated.project_id }
@@ -143,10 +237,68 @@ export async function createWayForPayDonation(data: {
         donor_message: validated.donor_message || null,
         contact_telegram: validated.contact_telegram || null,
         contact_whatsapp: validated.contact_whatsapp || null,
-        amount: unitPrice,
+        amount: projectAmount, // Use project amount (excluding tip) for aggregated donations
         currency: 'USD',
         payment_method: 'WayForPay',
-        donation_status: 'pending' as DonationStatus, // Will be updated to 'paid' by webhook
+        donation_status: 'pending' as DonationStatus,
+        locale: validated.locale,
+      })
+    } else {
+      // Traditional mode: Create one record per unit
+      for (let i = 0; i < validated.quantity; i++) {
+        const { data: donationPublicId, error: idError } = await supabase.rpc(
+          'generate_donation_public_id',
+          { project_id_input: validated.project_id }
+        )
+
+        if (idError || !donationPublicId) {
+          console.error(`Error generating donation ID:`, idError)
+          throw idError || new Error('Failed to generate donation ID')
+        }
+
+        donationRecords.push({
+          donation_public_id: donationPublicId,
+          order_reference: orderReference,
+          project_id: validated.project_id,
+          donor_name: validated.donor_name,
+          donor_email: validated.donor_email,
+          donor_message: validated.donor_message || null,
+          contact_telegram: validated.contact_telegram || null,
+          contact_whatsapp: validated.contact_whatsapp || null,
+          amount: unitPrice, // Use unit price for traditional mode
+          currency: 'USD',
+          payment_method: 'WayForPay',
+          donation_status: 'pending' as DonationStatus,
+          locale: validated.locale,
+        })
+      }
+    }
+
+    // Tip donation for project 0 (if provided)
+    if (validated.tip_amount && validated.tip_amount > 0) {
+      const { data: tipDonationId, error: tipIdError } = await supabase.rpc(
+        'generate_donation_public_id',
+        { project_id_input: 0 } // Project 0 = Rehabilitation Center Support
+      )
+
+      if (tipIdError || !tipDonationId) {
+        console.error(`Error generating tip donation ID:`, tipIdError)
+        throw tipIdError || new Error('Failed to generate tip donation ID')
+      }
+
+      donationRecords.push({
+        donation_public_id: tipDonationId,
+        order_reference: orderReference, // Same order reference for combined payment
+        project_id: 0, // Project 0
+        donor_name: validated.donor_name,
+        donor_email: validated.donor_email,
+        donor_message: validated.donor_message || null,
+        contact_telegram: validated.contact_telegram || null,
+        contact_whatsapp: validated.contact_whatsapp || null,
+        amount: validated.tip_amount, // Tip amount (aggregated as single record)
+        currency: 'USD',
+        payment_method: 'WayForPay',
+        donation_status: 'pending' as DonationStatus,
         locale: validated.locale,
       })
     }
@@ -190,6 +342,7 @@ export async function createWayForPayDonation(data: {
       },
       amount: totalAmount,
       orderReference,
+      allProjectsStats,
     }
   } catch (error) {
     console.error('Error creating WayForPay payment:', error)

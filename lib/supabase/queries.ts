@@ -63,14 +63,14 @@ export async function getProjectStats(projectId?: number) {
   const supabase = await createServerClient()
   let query = supabase.from('project_stats').select('*')
 
-  if (projectId) {
+  if (projectId !== undefined && projectId !== null) {
     query = query.eq('id', projectId)
   }
 
   const { data, error } = await query
 
   if (error) throw error
-  return projectId ? (data[0] as ProjectStats) : (data as ProjectStats[])
+  return (projectId !== undefined && projectId !== null) ? (data[0] as ProjectStats) : (data as ProjectStats[])
 }
 
 export async function getAllProjectsWithStats(filters?: ProjectFilters) {
@@ -93,7 +93,7 @@ export async function getAllProjectsWithStats(filters?: ProjectFilters) {
 
   if (error) throw error
 
-  // Sort by status: active first, then others
+  // Sort by status: active first, then by ID
   const sortedData = (data as ProjectStats[]).sort((a, b) => {
     const statusOrder: Record<string, number> = {
       active: 0,
@@ -101,7 +101,17 @@ export async function getAllProjectsWithStats(filters?: ProjectFilters) {
       completed: 2,
       paused: 3
     }
-    return (statusOrder[a.status || 'paused'] || 999) - (statusOrder[b.status || 'paused'] || 999)
+
+    const aOrder = statusOrder[a.status ?? 'paused'] ?? 999
+    const bOrder = statusOrder[b.status ?? 'paused'] ?? 999
+    const statusDiff = aOrder - bOrder
+
+    // If same status, sort by ID (ascending)
+    if (statusDiff === 0) {
+      return (a.id ?? 0) - (b.id ?? 0)
+    }
+
+    return statusDiff
   })
 
   return sortedData

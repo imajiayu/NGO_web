@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import type { Database } from '@/types/database'
 import ProjectEditModal from './ProjectEditModal'
-import { createProject } from '@/app/actions/admin'
+import ProjectCreateModal from './ProjectCreateModal'
 import ProjectStatusBadge from '@/components/projects/ProjectStatusBadge'
 
 type Project = Database['public']['Tables']['projects']['Row']
@@ -16,32 +16,18 @@ export default function ProjectsTable({ initialProjects }: Props) {
   const [projects, setProjects] = useState(initialProjects)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [isCreating, setIsCreating] = useState(false)
-  const [loading, setLoading] = useState(false)
 
   const handleEdit = (project: Project) => {
     setEditingProject(project)
   }
 
-  const handleCreateNew = async () => {
-    setLoading(true)
-    try {
-      // 创建默认项目
-      const newProject = await createProject({
-        project_name: 'New Project',
-        location: 'New Location',
-        start_date: new Date().toISOString().split('T')[0],
-        unit_price: 100,
-        target_units: 10,
-        status: 'planned',
-      })
-      setProjects([newProject, ...projects])
-      setEditingProject(newProject)
-    } catch (err: any) {
-      console.error('Failed to create project:', err)
-      alert(`Failed to create project: ${err.message || 'Unknown error'}`)
-    } finally {
-      setLoading(false)
-    }
+  const handleCreateNew = () => {
+    setIsCreating(true)
+  }
+
+  const handleCreated = (newProject: Project) => {
+    setProjects([newProject, ...projects])
+    setIsCreating(false)
   }
 
   const handleSaved = (updated: Project) => {
@@ -55,10 +41,9 @@ export default function ProjectsTable({ initialProjects }: Props) {
         <div className="mb-4">
           <button
             onClick={handleCreateNew}
-            disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
-            {loading ? 'Creating...' : 'Create New Project'}
+            Create New Project
           </button>
         </div>
 
@@ -77,6 +62,9 @@ export default function ProjectsTable({ initialProjects }: Props) {
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                   Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  Type
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                   Progress
@@ -105,6 +93,17 @@ export default function ProjectsTable({ initialProjects }: Props) {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <ProjectStatusBadge status={project.status || 'active'} />
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {project.aggregate_donations ? (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                        Aggregated
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        Unit-based
+                      </span>
+                    )}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {project.current_units} / {project.target_units || 0}
                   </td>
@@ -125,6 +124,13 @@ export default function ProjectsTable({ initialProjects }: Props) {
           </table>
         </div>
       </div>
+
+      {isCreating && (
+        <ProjectCreateModal
+          onClose={() => setIsCreating(false)}
+          onCreated={handleCreated}
+        />
+      )}
 
       {editingProject && (
         <ProjectEditModal

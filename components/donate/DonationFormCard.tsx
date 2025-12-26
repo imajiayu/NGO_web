@@ -10,6 +10,19 @@ import { getProjectName, getLocation, getUnitName, type SupportedLocale } from '
 interface DonationFormCardProps {
   project: ProjectStats | null
   locale: string
+  onProjectsUpdate?: (projects: ProjectStats[]) => void
+  // Shared form fields (preserved across project switches)
+  // Only donor personal information, NOT project-specific fields
+  donorName: string
+  setDonorName: (value: string) => void
+  donorEmail: string
+  setDonorEmail: (value: string) => void
+  donorMessage: string
+  setDonorMessage: (value: string) => void
+  contactTelegram: string
+  setContactTelegram: (value: string) => void
+  contactWhatsapp: string
+  setContactWhatsapp: (value: string) => void
 }
 
 interface PaymentWidgetContainerProps {
@@ -165,7 +178,18 @@ function PaymentWidgetContainer({
 
 export default function DonationFormCard({
   project,
-  locale
+  locale,
+  onProjectsUpdate,
+  donorName,
+  setDonorName,
+  donorEmail,
+  setDonorEmail,
+  donorMessage,
+  setDonorMessage,
+  contactTelegram,
+  setContactTelegram,
+  contactWhatsapp,
+  setContactWhatsapp,
 }: DonationFormCardProps) {
   const t = useTranslations('donate')
 
@@ -174,13 +198,12 @@ export default function DonationFormCard({
   const location = project ? getLocation(project.location_i18n, project.location, locale as SupportedLocale) : ''
   const unitName = project ? getUnitName(project.unit_name_i18n, project.unit_name, locale as SupportedLocale) : ''
 
+  // Project-specific fields (reset when project changes)
   const [quantity, setQuantity] = useState(1)
-  const [donorName, setDonorName] = useState('')
-  const [donorEmail, setDonorEmail] = useState('')
-  const [donorMessage, setDonorMessage] = useState('')
-  const [contactTelegram, setContactTelegram] = useState('')
-  const [contactWhatsapp, setContactWhatsapp] = useState('')
-  // const [operationalSupport, setOperationalSupport] = useState(0)
+  const [donationAmount, setDonationAmount] = useState(0.1) // For aggregate_donations projects
+  const [tipAmount, setTipAmount] = useState(0)
+
+  // UI state
   const [paymentParams, setPaymentParams] = useState<any | null>(null)
   const [showWidget, setShowWidget] = useState(false)
   const [processingState, setProcessingState] = useState<'idle' | 'creating' | 'ready' | 'error'>('idle')
@@ -190,11 +213,34 @@ export default function DonationFormCard({
   const nameInputRef = useRef<HTMLInputElement>(null)
   const emailInputRef = useRef<HTMLInputElement>(null)
 
-  const projectAmount = project ? (project.unit_price || 0) * quantity : 0
-  // const totalAmount = projectAmount + operationalSupport
-  const totalAmount = projectAmount
+  // Check if this is an aggregated donation project
+  const isAggregatedProject = project?.aggregate_donations === true
+
+  // Reset project-specific fields when project changes
+  useEffect(() => {
+    setQuantity(1)
+    setDonationAmount(0.1)
+    setTipAmount(0)
+    setError(null)
+    setShowWidget(false)
+    setPaymentParams(null)
+    setProcessingState('idle')
+  }, [project?.id])
+
+  // Calculate project amount based on project type
+  const projectAmount = project
+    ? (isAggregatedProject ? donationAmount : (project.unit_price || 0) * quantity)
+    : 0
+  const totalAmount = projectAmount + tipAmount
+
+  // Quick select options
   const quantityOptions = [1, 2, 5, 10]
-  // const supportOptions = [5, 10, 20]
+  const amountOptions = [10, 50, 100, 500] // For aggregated projects
+  const tipOptions = [5, 10, 20]
+
+  // Validation constants
+  const MAX_QUANTITY = 10  // Maximum units per order
+  const MAX_AMOUNT = 10000 // Maximum amount per order
 
   // Helper function to scroll to the form/widget area
   const scrollToFormArea = useCallback(() => {
@@ -273,18 +319,12 @@ export default function DonationFormCard({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!project || !project.id) return
+    if (!project || project.id === null || project.id === undefined) return
 
     // Prevent duplicate submissions
     if (processingState === 'creating') return
 
     setError(null)
-
-    // Validate quantity before submitting
-    if (!quantity || quantity < 1) {
-      setError(t('errors.invalidQuantity'))
-      return
-    }
 
     // IMMEDIATELY show widget and scroll to it
     setShowWidget(true)
@@ -292,16 +332,28 @@ export default function DonationFormCard({
     scrollToFormArea()
 
     try {
+      // For aggregated projects: pass amount directly with quantity=1
+      // For non-aggregated projects: pass quantity only
+      const submitQuantity = isAggregatedProject ? 1 : quantity
+      const submitAmount = isAggregatedProject ? donationAmount : undefined
+
       const result = await createWayForPayDonation({
         project_id: project.id,
-        quantity,
+        quantity: submitQuantity,
+        amount: submitAmount,
         donor_name: donorName.trim(),
         donor_email: donorEmail.trim(),
         donor_message: donorMessage || undefined,
         contact_telegram: contactTelegram ? contactTelegram.trim() : undefined,
         contact_whatsapp: contactWhatsapp ? contactWhatsapp.trim() : undefined,
+        tip_amount: tipAmount > 0 ? tipAmount : undefined,
         locale: locale as 'en' | 'zh' | 'ua',
       })
+
+      // Update projects stats if available
+      if (result.allProjectsStats && onProjectsUpdate) {
+        onProjectsUpdate(result.allProjectsStats)
+      }
 
       // Check if the result is successful
       if (!result.success) {
@@ -315,6 +367,23 @@ export default function DonationFormCard({
 
           // Show localized error message
           setError(t('errors.quantityExceeded', { remaining: remainingUnits, unitName }))
+        } else if (result.error === 'amount_limit_exceeded') {
+          const maxQuantity = result.maxQuantity || 1
+          const unitName = result.unitName || (locale === 'en' ? 'units' : '单位')
+
+          // For aggregated projects: maxQuantity represents remaining amount in USD
+          // For non-aggregated projects: maxQuantity represents max units
+          if (isAggregatedProject) {
+            // Set donation amount to remaining amount
+            setDonationAmount(maxQuantity)
+            // Show error message with amount
+            setError(t('errors.amountLimitExceeded', { max: maxQuantity, unitName }))
+          } else {
+            // Set quantity to maximum allowed quantity
+            setQuantity(maxQuantity)
+            // Show localized error message
+            setError(t('errors.amountLimitExceeded', { max: maxQuantity, unitName }))
+          }
         } else if (result.error === 'project_not_found') {
           setError(t('errors.projectNotFound'))
         } else if (result.error === 'project_not_active') {
@@ -425,156 +494,334 @@ export default function DonationFormCard({
             </div>
           )}
 
-          {/* Quantity Selection */}
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              {t('quantity.label')} *
-            </label>
-            <div className="grid grid-cols-4 gap-2 mb-3">
-              {quantityOptions.map((num) => (
-                <button
-                  key={num}
-                  type="button"
-                  onClick={() => setQuantity(num)}
-                  className={`px-3 py-2 rounded-lg border font-medium text-sm transition-all ${
-                    quantity === num
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-md'
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                  }`}
-                >
-                  {num}
-                </button>
-              ))}
-            </div>
-            <input
-              type="number"
-              min="1"
-              max="999"
-              value={quantity}
-              onChange={(e) => {
-                const val = e.target.value
-                if (val === '') {
-                  setQuantity(0)
-                } else {
-                  setQuantity(Number(e.target.value))
-                }
-              }}
-              onBlur={(e) => {
-                // Clean up on blur: ensure valid range and no leading zeros
-                const num = parseInt(e.target.value, 10)
-                if (isNaN(num) || num < 1) {
-                  setQuantity(1)
-                } else if (num > 999) {
-                  setQuantity(999)
-                } else {
-                  setQuantity(num) // This removes leading zeros
-                }
-              }}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder={t('quantity.custom')}
-            />
-            <div className="mt-2 p-2.5 bg-blue-50 rounded-lg">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-gray-700">
-                  {t('payment.projectTotal')}:
-                </span>
-                <span className="text-xl font-bold text-blue-600">
-                  ${projectAmount.toFixed(2)} {t('payment.currency')}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Operational Support - COMMENTED OUT */}
-          {/* <div className="border-t pt-5">
-            <div className="flex items-start gap-2 mb-3">
-              <div className="flex-1">
-                <h4 className="font-semibold text-gray-900">
-                  {t('operationalSupport.title')}
-                </h4>
-                <p className="text-xs text-gray-600 mt-1">
-                  {t('operationalSupport.description')}
-                </p>
-              </div>
-              <div className="flex-shrink-0 bg-amber-50 px-2 py-1 rounded text-xs font-medium text-amber-700">
-                Optional
-              </div>
-            </div>
-
-            <div className="bg-gray-50 rounded-lg p-3 mb-3">
-              <ul className="space-y-1.5 text-xs text-gray-600">
-                {(t.raw('operationalSupport.items') as string[]).map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <svg className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>{item}</span>
-                  </li>
+          {/* Amount/Quantity Selection - Different UI based on project type */}
+          {isAggregatedProject ? (
+            /* Aggregated Project: Direct Amount Input */
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                {t('amount.label')} *
+              </label>
+              <div className="grid grid-cols-4 gap-2 mb-3">
+                {amountOptions.map((amount) => (
+                  <button
+                    key={amount}
+                    type="button"
+                    onClick={() => setDonationAmount(amount)}
+                    className={`px-3 py-2 rounded-lg border font-medium text-sm transition-all ${
+                      donationAmount === amount
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    ${amount}
+                  </button>
                 ))}
-              </ul>
-            </div>
+              </div>
+              <input
+                type="number"
+                min="0.1"
+                max="10000"
+                step="0.1"
+                value={donationAmount || ''}
+                onKeyDown={(e) => {
+                  // Prevent: e, E, +, -
+                  if (
+                    e.key === 'e' ||
+                    e.key === 'E' ||
+                    e.key === '+' ||
+                    e.key === '-'
+                  ) {
+                    e.preventDefault()
+                  }
+                }}
+                onChange={(e) => {
+                  const val = e.target.value
+                  if (val === '') {
+                    setDonationAmount(0.1)
+                    return
+                  }
 
-            <div className="grid grid-cols-3 gap-2 mb-3">
-              {supportOptions.map((amount) => (
-                <button
-                  key={amount}
-                  type="button"
-                  onClick={() => setOperationalSupport(amount)}
-                  className={`px-3 py-2 rounded-lg border font-medium text-sm transition-all ${
-                    operationalSupport === amount
-                      ? 'bg-amber-600 text-white border-amber-600 shadow-md'
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                  }`}
-                >
-                  ${amount}
-                </button>
-              ))}
+                  const num = Number(val)
+                  // Prevent negative values during input
+                  if (num < 0) {
+                    setDonationAmount(0.1)
+                    return
+                  }
+
+                  // Limit to max amount
+                  if (num > MAX_AMOUNT) {
+                    setDonationAmount(MAX_AMOUNT)
+                    return
+                  }
+
+                  // Round to 1 decimal place
+                  setDonationAmount(Math.round(num * 10) / 10)
+                }}
+                onBlur={(e) => {
+                  // Clean up on blur: ensure valid range and round to 1 decimal
+                  const num = Number(e.target.value)
+
+                  if (isNaN(num) || num < 0.1) {
+                    setDonationAmount(0.1)
+                  } else if (num > MAX_AMOUNT) {
+                    setDonationAmount(MAX_AMOUNT)
+                  } else {
+                    setDonationAmount(Math.round(num * 10) / 10)
+                  }
+                }}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder={t('amount.placeholder')}
+              />
+              <div className="mt-2 p-2.5 bg-blue-50 rounded-lg">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-700">
+                    {t('payment.projectTotal')}:
+                  </span>
+                  <span className="text-xl font-bold text-blue-600">
+                    ${projectAmount.toFixed(2)} {t('payment.currency')}
+                  </span>
+                </div>
+              </div>
             </div>
-            <input
-              type="number"
-              min="0"
-              max="9999"
-              step="0.01"
-              value={operationalSupport || ''}
-              onChange={(e) => setOperationalSupport(Number(e.target.value) || 0)}
-              className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-              placeholder={t('operationalSupport.placeholder')}
-            />
-            {operationalSupport > 0 && (
-              <p className="mt-2 text-xs text-amber-700 flex items-center gap-1">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+          ) : (
+            /* Unit-based Project: Quantity Selection */
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                {t('quantity.label')} *
+              </label>
+              <div className="grid grid-cols-4 gap-2 mb-3">
+                {quantityOptions.map((num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => setQuantity(num)}
+                    className={`px-3 py-2 rounded-lg border font-medium text-sm transition-all ${
+                      quantity === num
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    {num}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="number"
+                min="1"
+                max="10"
+                value={quantity}
+                onKeyDown={(e) => {
+                  // Prevent: e, E, +, -, and decimal point (quantity must be integer)
+                  if (
+                    e.key === 'e' ||
+                    e.key === 'E' ||
+                    e.key === '+' ||
+                    e.key === '-' ||
+                    e.key === '.'
+                  ) {
+                    e.preventDefault()
+                  }
+                }}
+                onChange={(e) => {
+                  const val = e.target.value
+                  if (val === '') {
+                    setQuantity(0)
+                    return
+                  }
+
+                  const num = parseInt(val, 10)
+                  // Prevent negative values and non-integers during input
+                  if (isNaN(num) || num < 0) {
+                    setQuantity(0)
+                    return
+                  }
+
+                  // Limit to max value
+                  if (num > MAX_QUANTITY) {
+                    setQuantity(MAX_QUANTITY)
+                    return
+                  }
+
+                  setQuantity(num)
+                }}
+                onBlur={(e) => {
+                  // Clean up on blur: ensure valid range and no leading zeros
+                  const num = parseInt(e.target.value, 10)
+
+                  if (isNaN(num) || num < 1) {
+                    setQuantity(1)
+                  } else if (num > MAX_QUANTITY) {
+                    setQuantity(MAX_QUANTITY)
+                  } else {
+                    setQuantity(num) // This removes leading zeros
+                  }
+                }}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder={t('quantity.custom')}
+              />
+              <div className="mt-2 p-2.5 bg-blue-50 rounded-lg">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-700">
+                    {t('payment.projectTotal')}:
+                  </span>
+                  <span className="text-xl font-bold text-blue-600">
+                    ${projectAmount.toFixed(2)} {t('payment.currency')}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Tip for Rehabilitation Center - Only show if NOT project 0 */}
+          {project.id !== 0 && (
+            <div className="border-t pt-5">
+              <div className="flex items-start justify-between gap-2 mb-4">
+                <h4 className="font-semibold text-gray-900">
+                  {t('tip.title')}
+                </h4>
+                <div className="flex-shrink-0 bg-amber-50 px-2 py-1 rounded text-xs font-medium text-amber-700">
+                  {t('tip.optional')}
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-4 mb-3 border border-amber-200">
+                <p className="text-sm text-gray-800 font-medium mb-3">
+                  {t('tip.description')}
+                </p>
+
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <div className="bg-white/80 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-amber-600">1,600+</div>
+                    <div className="text-xs text-gray-600 mt-1">{t('tip.patientsServed')}</div>
+                  </div>
+                  <div className="bg-white/80 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-amber-600">$1,000</div>
+                    <div className="text-xs text-gray-600 mt-1">{t('tip.avgCostPerPatient')}</div>
+                  </div>
+                </div>
+
+                <div className="text-xs text-gray-600 text-center">
+                  {t('tip.asOfDate')}
+                </div>
+              </div>
+
+              <a
+                href={`/${locale}/donate?project=0`}
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1 mb-3"
+              >
+                {t('tip.viewDetails')}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-                {locale === 'en'
-                  ? 'Thank you for supporting our operations!'
-                  : '感谢您支持我们的运营！'}
-              </p>
-            )}
-          </div> */}
+              </a>
+
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                {tipOptions.map((amount) => (
+                  <button
+                    key={amount}
+                    type="button"
+                    onClick={() => setTipAmount(amount)}
+                    className={`px-3 py-2 rounded-lg border font-medium text-sm transition-all ${
+                      tipAmount === amount
+                        ? 'bg-amber-600 text-white border-amber-600 shadow-md'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    ${amount}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="number"
+                min="0"
+                max="9999"
+                step="0.1"
+                value={tipAmount || ''}
+                onKeyDown={(e) => {
+                  // Prevent: e, E, +, -, and other non-numeric keys except decimal point
+                  if (
+                    e.key === 'e' ||
+                    e.key === 'E' ||
+                    e.key === '+' ||
+                    e.key === '-'
+                  ) {
+                    e.preventDefault()
+                  }
+                }}
+                onChange={(e) => {
+                  const val = e.target.value
+                  if (val === '') {
+                    setTipAmount(0)
+                    return
+                  }
+
+                  const num = Number(val)
+                  // Prevent negative values during input
+                  if (num < 0) {
+                    setTipAmount(0)
+                    return
+                  }
+
+                  // Limit to max value
+                  if (num > 9999) {
+                    setTipAmount(9999)
+                    return
+                  }
+
+                  // Round to 1 decimal place
+                  setTipAmount(Math.round(num * 10) / 10)
+                }}
+                onBlur={(e) => {
+                  // Clean up on blur: ensure valid range and round to 1 decimal
+                  const num = Number(e.target.value)
+                  if (isNaN(num) || num < 0) {
+                    setTipAmount(0)
+                  } else if (num > 9999) {
+                    setTipAmount(9999)
+                  } else {
+                    setTipAmount(Math.round(num * 10) / 10)
+                  }
+                }}
+                className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                placeholder={t('tip.placeholder')}
+              />
+              {tipAmount > 0 && (
+                <p className="mt-2 text-xs text-amber-700 flex items-center gap-1">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                  </svg>
+                  {t('tip.thankYou')}
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Total Amount Summary */}
           <div className="border-t pt-3">
             <div className="p-3 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-200">
               <div className="space-y-2">
-                {/* <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600">
-                    {locale === 'en' ? 'Project Donation' : '项目捐赠'}:
-                  </span>
-                  <span className="font-semibold text-gray-900">
-                    ${projectAmount.toFixed(2)}
-                  </span>
-                </div> */}
-                {/* {operationalSupport > 0 && (
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-600">
-                      {locale === 'en' ? 'Operational Support' : '运营支持'}:
-                    </span>
-                    <span className="font-semibold text-amber-700">
-                      ${operationalSupport.toFixed(2)}
-                    </span>
-                  </div>
-                )} */}
-                {/* <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent my-2"></div> */}
+                {/* Show breakdown if there's a tip */}
+                {tipAmount > 0 && (
+                  <>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-600">
+                        {t('payment.projectDonation')}:
+                      </span>
+                      <span className="font-semibold text-gray-900">
+                        ${projectAmount.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-600">
+                        {t('payment.tipAmount')}:
+                      </span>
+                      <span className="font-semibold text-amber-700">
+                        ${tipAmount.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent my-2"></div>
+                  </>
+                )}
                 <div className="flex justify-between items-center">
                   <span className="text-base font-bold text-gray-900">
                     {t('payment.total')}:

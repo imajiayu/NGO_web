@@ -115,24 +115,21 @@ export default function ProjectDetailContent({
         </div>
 
         <div className="p-8">
-          <div className="p-6 bg-yellow-50 border-2 border-yellow-200 border-dashed rounded-lg">
-            <div className="flex items-start gap-3">
-              <svg className="w-6 h-6 text-yellow-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div className="p-8 bg-blue-50 border-2 border-blue-200 rounded-lg text-center">
+            <div className="flex flex-col items-center gap-3">
+              <svg className="w-12 h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
               <div>
-                <h4 className="font-bold text-yellow-900 mb-1">
-                  {locale === 'en' ? 'Content Not Available' : locale === 'zh' ? '内容暂未提供' : 'Контент недоступний'}
+                <h4 className="text-xl font-bold text-gray-900 mb-2">
+                  {locale === 'en' ? 'Project in Preparation' : locale === 'zh' ? '项目正在筹备中' : 'Проект готується'}
                 </h4>
-                <p className="text-sm text-yellow-800">
+                <p className="text-gray-600">
                   {locale === 'en'
-                    ? 'Content for this project has not been added yet. Please create: '
+                    ? 'Detailed information for this project will be available soon.'
                     : locale === 'zh'
-                    ? '此项目的内容尚未添加。请创建：'
-                    : 'Контент для цього проекту ще не додано. Будь ласка, створіть: '}
-                  <code className="bg-yellow-100 px-2 py-0.5 rounded text-xs ml-1">
-                    content/projects/project-{projectId}-{locale}.json
-                  </code>
+                    ? '该项目的详细信息即将发布。'
+                    : 'Детальна інформація про цей проект буде доступна найближчим часом.'}
                 </p>
               </div>
             </div>

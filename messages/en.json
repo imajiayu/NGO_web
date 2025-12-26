@@ -133,6 +133,7 @@
     "defaultDescription": "This project aims to make a positive impact in the community. Your donation will directly support the project goals and help those in need.",
     "fundingProgress": "Funding Progress",
     "target": "Target",
+    "currentUnits": "Collected",
     "donations": "donations",
     "perUnit": "per {unitName}",
     "status": {
@@ -170,7 +171,13 @@
       "label": "Number of Units",
       "custom": "Custom amount",
       "perUnit": "per {unitName}",
-      "total": "Total"
+      "total": "Total",
+      "remaining": "Remaining"
+    },
+    "amount": {
+      "label": "Donation Amount",
+      "placeholder": "Enter amount (e.g., 10.5)",
+      "remaining": "Remaining"
     },
     "donor": {
       "title": "Your Information",
@@ -210,10 +217,23 @@
         "high": "$20"
       }
     },
+    "tip": {
+      "title": "Support Our Rehabilitation Center",
+      "description": "Help us sustain operations to provide free rehabilitation for war victims",
+      "patientsServed": "Patients Served",
+      "avgCostPerPatient": "Avg. Cost/Patient",
+      "asOfDate": "As of January 1, 2026",
+      "viewDetails": "View project details",
+      "optional": "Optional",
+      "placeholder": "Enter custom amount (e.g., 5.5)",
+      "thankYou": "Thank you for supporting our operations!"
+    },
     "payment": {
       "title": "Payment Information",
       "total": "Total Amount",
       "projectTotal": "Project Total",
+      "projectDonation": "Project Donation",
+      "tipAmount": "Rehabilitation Center Support",
       "currency": "USD",
       "loading": "Loading payment window...",
       "processing": "Processing payment...",
@@ -239,6 +259,17 @@
       "emailRequired": "Please enter your email",
       "emailInvalid": "Please enter a valid email address",
       "messageMax": "Message must be less than {max} characters"
+    },
+    "errors": {
+      "invalidQuantity": "Please enter a valid quantity (minimum 1)",
+      "invalidAmount": "Please enter a valid amount (minimum $0.10, maximum $10,000)",
+      "projectNotFound": "Project not found",
+      "projectNotActive": "This project is not currently accepting donations",
+      "quantityExceeded": "Only {remaining} {unitName} remaining",
+      "amountLimitExceeded": "Single payment limit exceeded. Maximum {max} {unitName} allowed ($10,000 limit)",
+      "serverError": "An error occurred. Please try again.",
+      "invalidEmail": "Please enter a valid email address",
+      "validationError": "Please check your input and try again"
     },
     "processing": {
       "title": "Processing Your Donation",
@@ -269,6 +300,7 @@
       "invalidEmail": "Please enter a valid email address.",
       "validationError": "Please check your input and try again.",
       "invalidQuantity": "Please enter a valid quantity (minimum 1)",
+      "invalidAmount": "Please enter a valid amount (minimum $0.10)",
       "quantityExceeded": "The requested quantity exceeds available units. Maximum available: {remaining} {unitName}",
       "projectNotFound": "Project not found",
       "projectNotActive": "Project is not active"
@@ -458,7 +490,9 @@
     "actions": {
       "viewResult": "View Result"
     },
-    "totalDonations": "Total: {count} donations"
+    "totalDonations": "Total: {count} donations",
+    "groupIndicator": "{count} items",
+    "emailLabel": "Email:"
   },
   "donationResult": {
     "title": "Donation Result",

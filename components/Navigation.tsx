@@ -60,6 +60,10 @@ export default function Navigation() {
   }
 
   const handleLogoClick = () => {
+    // 如果当前已经在首页，不执行任何操作
+    if (pathname === '/') {
+      return
+    }
     setIsNavigating(true)
     router.push('/')
   }

@@ -123,6 +123,7 @@ export type Database = {
       }
       projects: {
         Row: {
+          aggregate_donations: boolean
           created_at: string | null
           current_units: number
           description_i18n: Json | null
@@ -142,6 +143,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          aggregate_donations?: boolean
           created_at?: string | null
           current_units?: number
           description_i18n?: Json | null
@@ -161,6 +163,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          aggregate_donations?: boolean
           created_at?: string | null
           current_units?: number
           description_i18n?: Json | null
@@ -203,6 +206,7 @@ export type Database = {
       }
       project_stats: {
         Row: {
+          aggregate_donations: boolean | null
           current_units: number | null
           description_i18n: Json | null
           donation_count: number | null
@@ -233,6 +237,7 @@ export type Database = {
           donation_status: string | null
           donor_email_obfuscated: string | null
           id: number | null
+          order_id: string | null
           project_id: number | null
           updated_at: string | null
         }
@@ -244,6 +249,7 @@ export type Database = {
           donation_status?: string | null
           donor_email_obfuscated?: never
           id?: number | null
+          order_id?: never
           project_id?: number | null
           updated_at?: string | null
         }
@@ -255,6 +261,7 @@ export type Database = {
           donation_status?: string | null
           donor_email_obfuscated?: never
           id?: number | null
+          order_id?: never
           project_id?: number | null
           updated_at?: string | null
         }
@@ -284,7 +291,6 @@ export type Database = {
       }
     }
     Functions: {
-      cleanup_expired_pending_payments: { Args: never; Returns: number }
       generate_donation_public_id: {
         Args: { project_id_input: number }
         Returns: string
@@ -311,10 +317,6 @@ export type Database = {
         }[]
       }
       is_admin: { Args: never; Returns: boolean }
-      request_donation_refund: {
-        Args: { p_donation_public_id: string; p_email: string }
-        Returns: Json
-      }
     }
     Enums: {
       [_ in never]: never

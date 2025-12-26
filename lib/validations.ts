@@ -47,12 +47,14 @@ export const createDonationSchema = z.object({
 
 export const donationFormSchema = z.object({
   project_id: z.number().int().positive(),
-  quantity: z.number().int().min(1).max(999),
+  quantity: z.number().int().min(1).max(10), // Max 10 units per order to prevent performance issues
+  amount: z.number().positive().max(10000).optional(), // For aggregated projects: direct donation amount (max $10,000 per order)
   donor_name: z.string().min(2, 'Name must be at least 2 characters').max(255),
   donor_email: z.string().email('Invalid email address'),
   donor_message: z.string().max(1000).optional(),
   contact_telegram: z.string().max(255).optional(),
   contact_whatsapp: z.string().max(255).optional(),
+  tip_amount: z.number().min(0).max(10000).optional(), // Optional tip for project 0 (max $10,000 per order)
   locale: z.enum(['en', 'zh', 'ua']),
 })
 

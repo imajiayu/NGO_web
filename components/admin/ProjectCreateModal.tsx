@@ -2,18 +2,27 @@
 
 import { useState } from 'react'
 import type { Database } from '@/types/database'
-import { updateProject } from '@/app/actions/admin'
+import { createProject } from '@/app/actions/admin'
 
 type Project = Database['public']['Tables']['projects']['Row']
+type ProjectInsert = Database['public']['Tables']['projects']['Insert']
 
 interface Props {
-  project: Project
   onClose: () => void
-  onSaved: (project: Project) => void
+  onCreated: (project: Project) => void
 }
 
-export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
-  const [formData, setFormData] = useState<Project>(project)
+export default function ProjectCreateModal({ onClose, onCreated }: Props) {
+  const [formData, setFormData] = useState<Partial<ProjectInsert>>({
+    project_name: '',
+    location: '',
+    unit_price: 100,
+    target_units: 0,
+    start_date: new Date().toISOString().split('T')[0],
+    status: 'planned',
+    is_long_term: false,
+    aggregate_donations: false,
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -23,22 +32,17 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
     setLoading(true)
 
     try {
-      const updated = await updateProject(project.id, formData)
-      onSaved(updated)
+      const newProject = await createProject(formData as ProjectInsert)
+      onCreated(newProject)
     } catch (err: any) {
-      setError(err.message || 'Failed to update project')
+      setError(err.message || 'Failed to create project')
     } finally {
       setLoading(false)
     }
   }
 
-  const updateField = (field: keyof Project, value: any) => {
+  const updateField = <K extends keyof ProjectInsert>(field: K, value: ProjectInsert[K]) => {
     setFormData({ ...formData, [field]: value })
-  }
-
-  const formatDateTime = (date: string | null) => {
-    if (!date) return 'N/A'
-    return new Date(date).toLocaleString()
   }
 
   return (
@@ -46,7 +50,7 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Edit Project #{project.id}</h2>
+            <h2 className="text-xl font-bold">Create New Project</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 text-2xl"
@@ -60,41 +64,6 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
               {error}
             </div>
           )}
-
-          {/* Read-only fields */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg space-y-2 text-sm">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <span className="font-medium text-gray-700">ID:</span>
-                <span className="ml-2 text-gray-900">{project.id}</span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700">Current Units:</span>
-                <span className="ml-2 text-gray-900">{project.current_units}</span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700">Created At:</span>
-                <span className="ml-2 text-gray-900">{formatDateTime(project.created_at)}</span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700">Updated At:</span>
-                <span className="ml-2 text-gray-900">{formatDateTime(project.updated_at)}</span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700">Long-term Project:</span>
-                <span className="ml-2 text-gray-900">{project.is_long_term ? 'Yes' : 'No'}</span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-700">Aggregate Donations:</span>
-                <span className="ml-2 text-gray-900">{project.aggregate_donations ? 'Yes' : 'No'}</span>
-              </div>
-            </div>
-            <div className="mt-2 pt-2 border-t border-gray-200">
-              <p className="text-xs text-gray-600 italic">
-                Note: Long-term and Aggregate Donations flags can only be set during project creation and cannot be modified afterwards.
-              </p>
-            </div>
-          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Basic Info */}
@@ -133,7 +102,7 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
                   </label>
                   <select
                     value={formData.status || 'planned'}
-                    onChange={(e) => updateField('status', e.target.value)}
+                    onChange={(e) => updateField('status', e.target.value as any)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   >
                     <option value="planned">Planned</option>
@@ -184,16 +153,16 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
                   <input
                     type="text"
                     value={formData.unit_name || ''}
-                    onChange={(e) => updateField('unit_name', e.target.value)}
+                    onChange={(e) => updateField('unit_name', e.target.value || null)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Dates */}
+            {/* Timeline & Project Type */}
             <div className="border-b pb-4">
-              <h3 className="text-lg font-semibold mb-3">Timeline</h3>
+              <h3 className="text-lg font-semibold mb-3">Timeline & Project Type</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -219,12 +188,59 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   />
                 </div>
+
+                <div className="col-span-2 space-y-3 bg-blue-50 p-4 rounded-lg">
+                  <p className="text-sm font-medium text-blue-900 mb-2">
+                    Project Configuration (Can only be set during creation)
+                  </p>
+
+                  <label className="flex items-start">
+                    <input
+                      type="checkbox"
+                      checked={formData.is_long_term || false}
+                      onChange={(e) => updateField('is_long_term', e.target.checked)}
+                      className="mr-2 mt-1"
+                    />
+                    <div>
+                      <span className="text-sm font-medium text-gray-700">
+                        Long-term project
+                      </span>
+                      <p className="text-xs text-gray-600 mt-1">
+                        Check this if the project has no fixed end date
+                      </p>
+                    </div>
+                  </label>
+
+                  <label className="flex items-start">
+                    <input
+                      type="checkbox"
+                      checked={formData.aggregate_donations || false}
+                      onChange={(e) => updateField('aggregate_donations', e.target.checked)}
+                      className="mr-2 mt-1"
+                    />
+                    <div>
+                      <span className="text-sm font-medium text-gray-700">
+                        Aggregate donations (allow direct amount input)
+                      </span>
+                      <p className="text-xs text-gray-600 mt-1">
+                        When enabled, donors can input any amount directly instead of selecting quantity.
+                        All donations will be aggregated into single records.
+                      </p>
+                    </div>
+                  </label>
+
+                  <div className="mt-2 pt-2 border-t border-blue-200">
+                    <p className="text-xs text-blue-800 font-medium">
+                      ⚠️ Note: These settings cannot be changed after project creation
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* i18n Fields (JSON) */}
+            {/* i18n Fields (JSON) - Optional */}
             <div className="border-b pb-4">
-              <h3 className="text-lg font-semibold mb-3">Internationalization (JSON)</h3>
+              <h3 className="text-lg font-semibold mb-3">Internationalization (Optional)</h3>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -321,7 +337,7 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
                 disabled={loading}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
               >
-                {loading ? 'Saving...' : 'Save'}
+                {loading ? 'Creating...' : 'Create Project'}
               </button>
             </div>
           </form>

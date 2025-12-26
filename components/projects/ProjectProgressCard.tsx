@@ -21,8 +21,9 @@ export default function ProjectProgressCard({
   const unitName = getUnitName(project.unit_name_i18n, project.unit_name, locale as SupportedLocale)
 
   // Calculate totals
-  const currentUnits = project.current_units || 0
-  const targetUnits = project.target_units || 1
+  const currentUnits = project.current_units ?? 0
+  const targetUnits = project.target_units ?? 0
+  const hasValidTarget = targetUnits > 0
 
   // Status badge color mapping
   const statusColors: Record<string, string> = {
@@ -84,31 +85,30 @@ export default function ProjectProgressCard({
         <div className="border-t border-gray-200 pt-3 mt-3">
           {/* Funding Information */}
           <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                {t('fundingProgress')}
-              </span>
-              <span className="text-sm font-bold text-purple-600">
-                {project.is_long_term === true
-                  ? `${currentUnits} ${unitName}`
-                  : `${currentUnits} / ${targetUnits}`
-                }
-              </span>
-            </div>
+            {/* Show current units for long-term NON-aggregated projects (since they don't have progress bar) */}
+            {project.is_long_term === true && !project.aggregate_donations && (
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">{t('currentUnits')}</span>
+                <span className="font-semibold text-purple-600">
+                  {currentUnits} {unitName}
+                </span>
+              </div>
+            )}
 
-            <div className="flex justify-between text-xs text-gray-500">
+            <div className="flex justify-between text-sm text-gray-600">
               <span>{project.donation_count || 0} {t('donations')}</span>
-              <span className="font-medium text-gray-600">
+              <span className="font-semibold text-gray-900">
                 ${(project.total_raised || 0).toFixed(2)}
               </span>
             </div>
 
-            {/* Progress Bar - Only show for fixed-term projects */}
-            {project.is_long_term !== true && (
+            {/* Progress Bar - Only show for fixed-term projects with valid targets */}
+            {project.is_long_term !== true && hasValidTarget && (
               <ProjectProgressBar
                 current={currentUnits}
                 target={targetUnits}
                 unitName={unitName}
+                showAsAmount={project.aggregate_donations ?? false}
                 className="mt-2"
               />
             )}
