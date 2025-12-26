@@ -426,7 +426,7 @@ export async function getDonationResultFiles(donationId: number) {
 }
 
 /**
- * 删除捐赠结果文件
+ * 删除捐赠结果文件（同时删除缩略图）
  */
 export async function deleteDonationResultFile(donationId: number, filePath: string) {
   await requireAdmin()
@@ -448,16 +448,30 @@ export async function deleteDonationResultFile(donationId: number, filePath: str
     throw new Error('Invalid file path')
   }
 
-  // 删除文件
+  // 准备要删除的文件列表
+  const filesToDelete = [filePath]
+
+  // 如果是图片文件，尝试删除对应的缩略图
+  const fileName = filePath.split('/').pop() || ''
+  const isImageFile = /\.(jpg|jpeg|png|gif|webp)$/i.test(fileName)
+
+  if (isImageFile) {
+    // 从文件名提取时间戳（假设格式为 {timestamp}.{ext}）
+    const timestamp = fileName.split('.')[0]
+    const thumbnailPath = `${donation.donation_public_id}/.thumbnails/${timestamp}_thumb.jpg`
+    filesToDelete.push(thumbnailPath)
+  }
+
+  // 批量删除文件（原始文件 + 缩略图）
   const { error: deleteError } = await supabase.storage
     .from('donation-results')
-    .remove([filePath])
+    .remove(filesToDelete)
 
   if (deleteError) {
     throw new Error(`Failed to delete file: ${deleteError.message}`)
   }
 
-  return { success: true }
+  return { success: true, deletedFiles: filesToDelete }
 }
 
 /**
