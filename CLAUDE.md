@@ -34,6 +34,7 @@
 - ✅ **邮件通知**: Resend 自动发送捐赠确认邮件
 - ✅ **捐赠追踪**: 用户可查询和追踪捐赠状态
 - ✅ **管理员后台**: 项目管理、捐赠状态更新、配送管理
+- ✅ **智能图像处理**: Cloudinary 自动压缩优化 + 人脸隐私保护
 - ✅ **安全可靠**: 完整的 RLS 策略和签名验证
 
 ### 项目信息
@@ -58,6 +59,7 @@
 - **Supabase** - PostgreSQL 数据库 + 认证 + 实时订阅
 - **WayForPay** - 乌克兰支付网关
 - **Resend** - 邮件发送服务
+- **Cloudinary** - 图像处理（压缩 + 人脸打码）
 
 ### 部署平台
 
@@ -590,6 +592,89 @@ FOR UPDATE TO authenticated USING (is_admin());
 
 ---
 
+#### 5. 图像处理（Cloudinary）
+
+**功能**: 自动优化上传的图片，保护隐私
+
+**处理流程**:
+
+```
+管理员上传图片
+  ↓
+1. 上传到 Cloudinary（临时）
+  ↓
+2. 应用智能转换：
+   • 人脸检测和打码（pixelate_faces:20）
+   • 智能压缩（quality: auto:good）
+   • 自动格式优化（f_auto）
+   • 尺寸限制（最大 1920px 宽）
+  ↓
+3. 下载处理后的图片
+  ↓
+4. 上传到 Supabase Storage
+  ↓
+5. 删除 Cloudinary 临时文件
+  ↓
+6. 生成缩略图（300px 宽）
+```
+
+**技术实现**:
+
+```typescript
+// lib/cloudinary.ts
+const transformedUrl = cloudinary.url(publicId, {
+  transformation: [
+    { effect: 'pixelate_faces:20' },        // 人脸打码
+    { width: 1920, crop: 'limit' },         // 尺寸限制
+    {
+      quality: 'auto:good',                 // 智能压缩
+      fetch_format: 'auto',                 // 自动格式
+      flags: 'lossy'                        // 有损压缩
+    }
+  ]
+})
+```
+
+**处理效果**:
+- ✅ **文件大小**: 通常减少 50-80%（几 MB → 几百 KB）
+- ✅ **隐私保护**: 自动检测并模糊人脸
+- ✅ **画质保持**: auto:good 模式保持高质量
+- ✅ **格式优化**: 现代浏览器使用 WebP，旧浏览器回退到 JPEG
+
+**支持的文件类型**:
+- **图片**: JPEG, PNG, GIF, WebP（自动处理）
+- **视频**: MP4, MOV（直接上传，不处理）
+
+**配置要求**:
+
+环境变量:
+```bash
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+```
+
+**测试命令**:
+
+```bash
+# 测试 Cloudinary 功能
+npm run test:cloudinary
+
+# 需要：在项目根目录放置 test-image.jpg
+# 输出：test-image-processed.{format}
+```
+
+**降级策略**:
+
+如果 Cloudinary 未配置或处理失败，系统会自动回退到直接上传原图，确保功能正常运行。
+
+**注意事项**:
+- ⚠️ Cloudinary 免费计划有每月配额限制
+- ⚠️ 人脸检测依赖 Cloudinary AI，可能有延迟
+- ⚠️ 视频文件不经过 Cloudinary 处理（直接上传）
+
+---
+
 ### 安全机制
 
 #### 1. 数据库 RLS 策略
@@ -1066,6 +1151,9 @@ WAYFORPAY_SECRET_KEY
 RESEND_API_KEY
 RESEND_FROM_EMAIL
 NEXT_PUBLIC_APP_URL
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+CLOUDINARY_API_KEY
+CLOUDINARY_API_SECRET
 ```
 
 #### 4. 部署
@@ -1107,13 +1195,40 @@ Name: _dmarc
 Value: v=DMARC1; p=none; rua=mailto:dmarc@yourdomain.com
 ```
 
-#### 3. 测试完整流程
+#### 3. 配置 Cloudinary（可选但推荐）
+
+**注册 Cloudinary 账户**:
+
+1. 访问 [cloudinary.com](https://cloudinary.com) 注册免费账户
+2. 获取配置信息（Dashboard 首页）:
+   - Cloud Name
+   - API Key
+   - API Secret
+
+**配置环境变量**:
+
+在 Vercel 项目设置中添加 Cloudinary 环境变量（已在步骤 3 添加）。
+
+**功能说明**:
+
+- ✅ **启用**: 自动压缩图片 + 人脸打码
+- ❌ **未启用**: 直接上传原图（功能仍可正常使用）
+
+**免费计划配额**:
+- 25 GB 存储空间
+- 25 GB 月流量
+- 25,000 次转换/月
+
+对于中小型 NGO，免费计划通常足够使用。
+
+#### 4. 测试完整流程
 
 - ✅ 测试捐赠流程
 - ✅ 测试 Webhook 接收
 - ✅ 测试邮件发送
 - ✅ 测试所有语言版本
 - ✅ 测试捐赠追踪
+- ✅ 测试图片上传和处理（如已配置 Cloudinary）
 
 ---
 
