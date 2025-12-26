@@ -112,17 +112,8 @@ export default function DonationEditModal({ donation, onClose, onSaved }: Props)
     formData.append('file', file)
     formData.append('donationId', donation.id.toString())
 
-    // 模拟进度（Server Action 无法跟踪真实进度）
-    setUploadProgress(10)
-    await new Promise(resolve => setTimeout(resolve, 100))
-    setUploadProgress(30)
-
+    // 上传文件（进度由外层控制）
     await uploadDonationResultFile(formData)
-
-    setUploadProgress(100)
-
-    // 重新加载文件列表
-    await loadFiles()
   }
 
   const handleDeleteFile = async (filePath: string) => {
@@ -155,10 +146,19 @@ export default function DonationEditModal({ donation, onClose, onSaved }: Props)
       // 上传所有文件
       for (let i = 0; i < filesToUpload.length; i++) {
         const file = filesToUpload[i]
-        const progress = Math.round(((i + 1) / filesToUpload.length) * 100)
-        setUploadProgress(progress)
+        // 上传前设置进度
+        const progressBefore = Math.round((i / filesToUpload.length) * 100)
+        setUploadProgress(progressBefore)
+
         await uploadFile(file)
+
+        // 上传后更新进度
+        const progressAfter = Math.round(((i + 1) / filesToUpload.length) * 100)
+        setUploadProgress(progressAfter)
       }
+
+      // 所有文件上传完成后重新加载文件列表
+      await loadFiles()
 
       setFilesToUpload([])
       // 清空文件输入
@@ -206,9 +206,15 @@ export default function DonationEditModal({ donation, onClose, onSaved }: Props)
           // 上传所有文件
           for (let i = 0; i < filesToUpload.length; i++) {
             const file = filesToUpload[i]
-            const progress = Math.round(((i + 1) / filesToUpload.length) * 100)
-            setUploadProgress(progress)
+            // 上传前设置进度
+            const progressBefore = Math.round((i / filesToUpload.length) * 100)
+            setUploadProgress(progressBefore)
+
             await uploadFile(file)
+
+            // 上传后更新进度
+            const progressAfter = Math.round(((i + 1) / filesToUpload.length) * 100)
+            setUploadProgress(progressAfter)
           }
         } catch (err: any) {
           throw new Error(`File upload failed: ${err.message}`)

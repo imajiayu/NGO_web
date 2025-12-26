@@ -404,8 +404,15 @@ export async function getDonationResultFiles(donationId: number) {
     throw new Error(`Failed to list files: ${listError.message}`)
   }
 
+  // 过滤掉 .thumbnails 文件夹和其他隐藏文件/文件夹
+  const actualFiles = (files || []).filter(file =>
+    file.name &&
+    !file.name.startsWith('.') &&
+    file.id // 文件有 id，文件夹没有
+  )
+
   // 为每个文件生成公开 URL
-  const filesWithUrls = (files || []).map(file => {
+  const filesWithUrls = actualFiles.map(file => {
     const filePath = `${donation.donation_public_id}/${file.name}`
     const { data: { publicUrl } } = supabase.storage
       .from('donation-results')
