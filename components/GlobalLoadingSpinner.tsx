@@ -38,8 +38,8 @@ export default function GlobalLoadingSpinner({ isLoading, loadingText }: GlobalL
         document.body.style.top = ''
         document.body.style.width = ''
 
-        // Restore scroll position
-        window.scrollTo(0, scrollY)
+        // For page navigation: scroll to top of new page
+        window.scrollTo(0, 0)
       }
     }
   }, [isLoading])

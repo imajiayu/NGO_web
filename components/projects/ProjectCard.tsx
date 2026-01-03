@@ -49,7 +49,7 @@ export default function ProjectCard({
 
   const handleDonateClick = () => {
     setIsNavigating(true)
-    router.push(`/donate?project=${project.id}`, { scroll: false })
+    router.push(`/donate?project=${project.id}`)
   }
 
   const handleSelectClick = () => {

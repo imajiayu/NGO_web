@@ -36,7 +36,7 @@ export const updateProjectSchema = z.object({
 
 // Donation validation schemas
 export const createDonationSchema = z.object({
-  project_id: z.number().int().positive('Project ID is required'),
+  project_id: z.number().int().min(0, 'Project ID is required'), // Allow 0 for rehabilitation center support
   donor_name: z.string().min(2, 'Name must be at least 2 characters').max(255),
   donor_email: z.string().email('Invalid email address').max(255),
   donor_phone: z.string().max(50).optional().nullable(),
@@ -46,7 +46,7 @@ export const createDonationSchema = z.object({
 })
 
 export const donationFormSchema = z.object({
-  project_id: z.number().int().positive(),
+  project_id: z.number().int().min(0), // Allow 0 for rehabilitation center support (tip project)
   quantity: z.number().int().min(1).max(10), // Max 10 units per order to prevent performance issues
   amount: z.number().positive().max(10000).optional(), // For aggregated projects: direct donation amount (max $10,000 per order)
   donor_name: z.string().min(2, 'Name must be at least 2 characters').max(255),
@@ -71,7 +71,7 @@ export const projectFiltersSchema = z.object({
 })
 
 export const donationFiltersSchema = z.object({
-  project_id: z.number().int().positive().optional(),
+  project_id: z.number().int().min(0).optional(), // Allow 0 for rehabilitation center support
   status: z.enum(['pending', 'confirmed', 'delivering', 'completed']).optional(),
   donor_email: z.string().email().optional(),
   date_from: z.string().optional(),

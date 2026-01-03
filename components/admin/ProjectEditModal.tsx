@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { Database } from '@/types/database'
 import { updateProject } from '@/app/actions/admin'
 
@@ -16,6 +16,29 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
   const [formData, setFormData] = useState<Project>(project)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    // Save current scroll position
+    const scrollY = window.scrollY
+
+    // Prevent scrolling
+    document.body.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${scrollY}px`
+    document.body.style.width = '100%'
+
+    return () => {
+      // Restore scrolling
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+
+      // Restore scroll position
+      window.scrollTo(0, scrollY)
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

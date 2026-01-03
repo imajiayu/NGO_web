@@ -62,6 +62,21 @@ export default function DonationResultViewer({
 
     try {
       setDownloading(true)
+
+      // If only one file, download it directly without zipping
+      if (files.length === 1) {
+        const file = files[0]
+        const link = document.createElement('a')
+        link.href = file.originalUrl
+        link.download = file.name
+        link.target = '_blank'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        return
+      }
+
+      // Multiple files: create zip
       const zip = new JSZip()
 
       // Download all files and add to zip
@@ -85,7 +100,7 @@ export default function DonationResultViewer({
       document.body.removeChild(link)
       URL.revokeObjectURL(link.href)
     } catch (err) {
-      console.error('Failed to create zip:', err)
+      console.error('Failed to download:', err)
       alert(t('errors.downloadFailed'))
     } finally {
       setDownloading(false)
@@ -115,6 +130,29 @@ export default function DonationResultViewer({
       setImageLoaded(false) // 切换图片时重置
     }
   }
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    // Save current scroll position
+    const scrollY = window.scrollY
+
+    // Prevent scrolling
+    document.body.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${scrollY}px`
+    document.body.style.width = '100%'
+
+    return () => {
+      // Restore scrolling
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+
+      // Restore scroll position
+      window.scrollTo(0, scrollY)
+    }
+  }, [])
 
   // Keyboard navigation for lightbox
   useEffect(() => {
@@ -234,7 +272,7 @@ export default function DonationResultViewer({
                     ) : (
                       <>
                         <Download className="w-4 h-4" />
-                        {t('downloadAll')} ({files.length})
+                        {files.length === 1 ? t('download') : `${t('downloadAll')} (${files.length})`}
                       </>
                     )}
                   </button>

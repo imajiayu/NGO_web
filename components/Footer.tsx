@@ -169,15 +169,15 @@ export default function Footer() {
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-          {/* Left: Social Media Icons + Copyright */}
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8 md:pb-16">
+          {/* Left: Social Media Icons */}
           <div className="flex-shrink-0">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">
               {t('followUs')}
             </h3>
 
             {/* 2x2 Grid - Equal height and width */}
-            <div className="grid grid-cols-2 gap-3 w-fit mb-6">
+            <div className="grid grid-cols-2 gap-3 w-fit">
               {socialLinks.map((social) => (
                 <a
                   key={social.name}
@@ -190,12 +190,6 @@ export default function Footer() {
                   {social.icon}
                 </a>
               ))}
-            </div>
-
-            {/* Copyright below Follow Us */}
-            <div className="text-sm text-gray-600">
-              <p>{t('copyrightLine1', { year: new Date().getFullYear() })}</p>
-              <p>{t('copyrightLine2')}</p>
             </div>
           </div>
 
@@ -250,6 +244,12 @@ export default function Footer() {
               </Link>
             </div>
           </div>
+        </div>
+
+        {/* Copyright - Bottom on mobile, bottom-left on desktop */}
+        <div className="text-sm text-gray-600 mt-8 md:mt-0 md:absolute md:bottom-12 md:left-4 lg:left-8">
+          <p>{t('copyrightLine1', { year: new Date().getFullYear() })}</p>
+          <p>{t('copyrightLine2')}</p>
         </div>
       </div>
     </footer>

@@ -186,7 +186,7 @@
       "nameHint": "You can use a real name or pseudonym",
       "email": "Email Address",
       "emailPlaceholder": "your@email.com",
-      "emailHint": "For confirmation and receipt"
+      "emailHint": "For payment confirmation, delivery notifications, and refund purposes only"
     },
     "contact": {
       "title": "Contact Methods (Optional)",
@@ -304,7 +304,8 @@
       "quantityExceeded": "The requested quantity exceeds available units. Maximum available: {remaining} {unitName}",
       "projectNotFound": "Project not found",
       "projectNotActive": "Project is not active"
-    }
+    },
+    "networkNotice": "If you are in mainland China or similar regions, international internet access is required to complete the payment process"
   },
   "wayforpayWidget": {
     "networkError": "No internet connection. Please check your network and try again.",

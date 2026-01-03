@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { trackDonations, requestRefund } from '@/app/actions/track-donation'
 import { Link } from '@/i18n/navigation'
@@ -41,6 +41,31 @@ export default function TrackDonationForm({ locale }: Props) {
   const [refundingDonationId, setRefundingDonationId] = useState<string | null>(null)
   const [confirmRefundId, setConfirmRefundId] = useState<string | null>(null)
   const [viewResultDonationId, setViewResultDonationId] = useState<string | null>(null)
+
+  // Lock body scroll when confirmation dialog is open
+  useEffect(() => {
+    if (!confirmRefundId) return
+
+    // Save current scroll position
+    const scrollY = window.scrollY
+
+    // Prevent scrolling
+    document.body.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${scrollY}px`
+    document.body.style.width = '100%'
+
+    return () => {
+      // Restore scrolling
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+
+      // Restore scroll position
+      window.scrollTo(0, scrollY)
+    }
+  }, [confirmRefundId])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

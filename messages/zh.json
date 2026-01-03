@@ -186,7 +186,7 @@
       "nameHint": "可以使用真实姓名或化名",
       "email": "电子邮箱",
       "emailPlaceholder": "your@email.com",
-      "emailHint": "用于确认和收据"
+      "emailHint": "仅用于支付确认、捐赠结果通知及退款相关事宜"
     },
     "contact": {
       "title": "联系方式（可选）",
@@ -294,7 +294,8 @@
       "amountLimitExceeded": "超出单次支付限额。最多可购买 {max} {unitName}（限额 $10,000）",
       "projectNotFound": "项目未找到",
       "projectNotActive": "项目未激活"
-    }
+    },
+    "networkNotice": "如果您身处中国大陆等地区，支付过程需要接入国际互联网环境以完成交易"
   },
   "wayforpayWidget": {
     "networkError": "无网络连接。请检查您的网络后重试。",

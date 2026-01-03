@@ -61,6 +61,29 @@ export default function DonationEditModal({ donation, onClose, onSaved }: Props)
   // 检查是否可以管理文件（只有 completed 状态才能独立管理文件）
   const canManageFiles = currentStatus === 'completed'
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    // Save current scroll position
+    const scrollY = window.scrollY
+
+    // Prevent scrolling
+    document.body.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${scrollY}px`
+    document.body.style.width = '100%'
+
+    return () => {
+      // Restore scrolling
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+
+      // Restore scroll position
+      window.scrollTo(0, scrollY)
+    }
+  }, [])
+
   // 加载现有文件
   useEffect(() => {
     if (canManageFiles) {

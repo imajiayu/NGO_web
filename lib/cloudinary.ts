@@ -17,6 +17,80 @@ function ensureCloudinaryConfig() {
   })
 }
 
+/**
+ * 带重试机制的 fetch 函数
+ * 用于处理 Cloudinary 转换延迟和网络不稳定问题
+ */
+interface FetchRetryOptions {
+  maxRetries: number
+  initialDelay: number
+  backoffMultiplier: number
+  timeout?: number
+}
+
+async function fetchWithRetry(
+  url: string,
+  options: FetchRetryOptions
+): Promise<Buffer> {
+  const { maxRetries, initialDelay, backoffMultiplier, timeout = 30000 } = options
+  let lastError: Error | null = null
+  let currentDelay = initialDelay
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(
+        `[Cloudinary] Fetching transformed image (attempt ${attempt + 1}/${maxRetries + 1})...`
+      )
+
+      // 创建带超时的 fetch
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), timeout)
+
+      const response = await fetch(url, {
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP ${response.status}: ${response.statusText}`
+        )
+      }
+
+      const arrayBuffer = await response.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+
+      // 获取并存储 Content-Type 用于后续使用
+      const contentType = response.headers.get('content-type') || 'image/jpeg'
+      // @ts-ignore - 临时存储 contentType
+      buffer._contentType = contentType
+
+      console.log(
+        `[Cloudinary] Successfully fetched transformed image (${buffer.length} bytes)`
+      )
+
+      return buffer
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error))
+      console.warn(
+        `[Cloudinary] Fetch attempt ${attempt + 1} failed: ${lastError.message}`
+      )
+
+      // 如果还有重试机会，等待后重试
+      if (attempt < maxRetries) {
+        console.log(`[Cloudinary] Retrying in ${currentDelay}ms...`)
+        await new Promise((resolve) => setTimeout(resolve, currentDelay))
+        currentDelay *= backoffMultiplier
+      }
+    }
+  }
+
+  throw new Error(
+    `Failed to fetch transformed image after ${maxRetries + 1} attempts: ${lastError?.message || 'Unknown error'}`
+  )
+}
+
 interface ProcessImageOptions {
   buffer: Buffer
   fileName: string
@@ -96,14 +170,13 @@ export async function processImageWithCloudinary(
 
     console.log(`[Cloudinary] Transform URL: ${transformedUrl}`)
 
-    // 步骤 3: 下载转换后的图片
-    const response = await fetch(transformedUrl)
-    if (!response.ok) {
-      throw new Error(`Failed to fetch transformed image: ${response.statusText}`)
-    }
-
-    const arrayBuffer = await response.arrayBuffer()
-    const optimizedBuffer = Buffer.from(arrayBuffer)
+    // 步骤 3: 下载转换后的图片（带重试机制）
+    // Cloudinary 的 AI 转换（如人脸检测）需要时间，所以添加重试
+    const optimizedBuffer = await fetchWithRetry(transformedUrl, {
+      maxRetries: 3,
+      initialDelay: 1000, // 首次重试前等待 1 秒
+      backoffMultiplier: 2, // 每次重试延迟翻倍
+    })
     const processedSize = optimizedBuffer.length
 
     console.log(
@@ -120,10 +193,10 @@ export async function processImageWithCloudinary(
       console.warn(`[Cloudinary] Failed to delete temp file:`, cleanupError)
     }
 
-    // 从响应头或默认使用 jpg 格式
-    // Cloudinary 的 f_auto 会自动选择格式，但 URL 中不显示扩展名
-    // 通过 Content-Type 头判断实际格式
-    const contentType = response.headers.get('content-type') || 'image/jpeg'
+    // 从存储的 Content-Type 中提取格式
+    // Cloudinary 的 f_auto 会自动选择格式（WebP for modern browsers, JPEG fallback）
+    // @ts-ignore - 从之前存储的 contentType 中提取
+    const contentType = (optimizedBuffer as any)._contentType || 'image/jpeg'
     const format = contentType.split('/')[1]?.split(';')[0] || 'jpg'
 
     return {
@@ -134,7 +207,42 @@ export async function processImageWithCloudinary(
     }
   } catch (error) {
     console.error('[Cloudinary] Processing failed:', error)
-    throw new Error(`Image processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    console.warn('[Cloudinary] Falling back to direct compression without face detection')
+
+    // 降级策略：使用 sharp 进行简单压缩（无人脸检测）
+    try {
+      const sharp = require('sharp')
+
+      const compressed = await sharp(buffer)
+        .resize(1920, undefined, {
+          fit: 'inside',
+          withoutEnlargement: true,
+        })
+        .jpeg({ quality: 85 }) // 高质量 JPEG
+        .toBuffer()
+
+      console.log(
+        `[Cloudinary] Fallback compression successful: ${originalSize} bytes → ${compressed.length} bytes ` +
+          `(${((1 - compressed.length / originalSize) * 100).toFixed(1)}% reduction)`
+      )
+
+      return {
+        optimizedBuffer: compressed,
+        originalSize,
+        processedSize: compressed.length,
+        format: 'jpg',
+      }
+    } catch (fallbackError) {
+      console.error('[Cloudinary] Fallback compression also failed:', fallbackError)
+      // 最后的降级：返回原图
+      console.warn('[Cloudinary] Using original image without processing')
+      return {
+        optimizedBuffer: buffer,
+        originalSize,
+        processedSize: originalSize,
+        format: fileName.split('.').pop() || 'jpg',
+      }
+    }
   }
 }
 

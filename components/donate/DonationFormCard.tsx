@@ -948,6 +948,11 @@ export default function DonationFormCard({
               : t('submit')
             }
           </button>
+
+          {/* Network Access Notice */}
+          <p className="text-sm text-amber-700 text-center font-medium">
+            {t('networkNotice')}
+          </p>
         </form>
 
         {/* Overlay when project is not active - covers entire card */}

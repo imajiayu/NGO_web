@@ -17,9 +17,10 @@
   }
 } */
 
-html {
+/* Removed scroll-behavior: smooth to prevent auto-scroll on route changes */
+/* html {
   scroll-behavior: smooth;
-}
+} */
 
 body {
   color: rgb(0, 0, 0);

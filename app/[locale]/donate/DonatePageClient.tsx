@@ -46,16 +46,10 @@ export default function DonatePageClient({
     setProjects(updatedProjects)
   }
 
-  // Handle project selection (no auto-scroll)
+  // Handle project selection
   const handleProjectSelect = (id: number) => {
     setSelectedProjectId(id)
   }
-
-  // Prevent auto-scroll on initial load when coming from home page
-  useEffect(() => {
-    // Force scroll to top on mount to prevent any default scroll behavior
-    window.scrollTo(0, 0)
-  }, [])
 
   return (
     <div className="min-h-screen bg-gray-50">
