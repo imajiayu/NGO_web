@@ -141,6 +141,12 @@ function PaymentWidgetContainer({
               </p>
             </div>
           </div>
+          {/* Network Access Notice */}
+          <div className="pt-3 border-t border-red-300">
+            <p className="text-sm text-amber-700 font-medium">
+              {t('networkNotice')}
+            </p>
+          </div>
         </div>
 
         {/* Back Button */}
