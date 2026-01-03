@@ -44,6 +44,8 @@ const nextConfig = {
               "connect-src 'self' https://secure.wayforpay.com https://*.supabase.co wss://*.supabase.co",
               "frame-src 'self' https://secure.wayforpay.com",
               "form-action 'self' https://secure.wayforpay.com",
+              "worker-src 'self' blob:",
+              "child-src 'self' blob: https://secure.wayforpay.com",
             ].join('; '),
           },
           {

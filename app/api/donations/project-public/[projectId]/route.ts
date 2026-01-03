@@ -16,7 +16,8 @@ export async function GET(
   const { projectId } = params
   const projectIdNum = parseInt(projectId)
 
-  if (!projectIdNum || isNaN(projectIdNum)) {
+  // Allow project ID 0 (Rehabilitation Center Support)
+  if (isNaN(projectIdNum) || projectIdNum < 0) {
     return NextResponse.json(
       { error: 'Invalid project ID' },
       { status: 400 }
