@@ -450,8 +450,8 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
                   {/* Title with Frosted Glass */}
                   <div className="absolute bottom-0 left-0 right-0 p-2 md:p-4">
-                    <div className="inline-block backdrop-blur-md bg-white/10 rounded-lg px-2 py-1 md:px-3 md:py-2 border border-white/30">
-                      <h3 className="font-bold text-white text-[10px] md:text-sm leading-tight whitespace-nowrap">
+                    <div className="inline-block backdrop-blur-md bg-white/10 rounded-lg px-2 py-1 md:px-3 md:py-2 border border-white/30 max-w-[90%]">
+                      <h3 className="font-bold text-white text-[10px] md:text-sm leading-tight">
                         {story.title}
                       </h3>
                     </div>
@@ -485,7 +485,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
             </div>
             <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4 md:p-6 text-center">
               <div className="text-3xl md:text-4xl font-bold text-red-600 mb-2">
-                {locale === 'en' ? '27K' : '2.7万'}
+                {locale === 'zh' ? '2.7万' : '27K'}
               </div>
               <div className="text-xs md:text-sm text-gray-700 leading-tight">
                 {locale === 'en'
@@ -497,7 +497,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
             </div>
             <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4 md:p-6 text-center">
               <div className="text-3xl md:text-4xl font-bold text-red-600 mb-2">
-                {locale === 'en' ? '360K' : '36万'}
+                {locale === 'zh' ? '36万' : '360K'}
               </div>
               <div className="text-xs md:text-sm text-gray-700 leading-tight">
                 {locale === 'en'

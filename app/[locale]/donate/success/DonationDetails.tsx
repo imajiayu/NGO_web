@@ -11,7 +11,7 @@ type Donation = {
   donation_public_id: string
   amount: number
   donor_email: string
-  donation_status: 'pending' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
+  donation_status: 'pending' | 'processing' | 'fraud_check' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refund_processing' | 'refunded'
   projects: {
     id: number
     project_name: string
@@ -105,7 +105,9 @@ export default function DonationDetails({ orderReference, locale }: Props) {
   const totalAmount = donations.reduce((sum, d) => sum + Number(d.amount), 0)
   const allDonationIds = donations.map((d) => d.donation_public_id).join('\n')
   const donorEmail = donations[0].donor_email
-  const isPending = donations.some((d) => d.donation_status === 'pending')
+  const isPending = donations.some((d) =>
+    ['pending', 'processing', 'fraud_check'].includes(d.donation_status)
+  )
 
   // Get translated project data
   const projectName = getProjectName(project.project_name_i18n, project.project_name, locale as SupportedLocale)

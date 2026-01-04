@@ -64,6 +64,7 @@ export async function trackDonations(data: {
         location_i18n: d.location_i18n,
         unit_name: d.unit_name,
         unit_name_i18n: d.unit_name_i18n,
+        aggregate_donations: d.aggregate_donations,
       },
     }))
 

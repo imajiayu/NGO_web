@@ -34,8 +34,10 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
   const scriptLoadedRef = useRef(false)
   const scriptLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const widgetOpenCheckTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const earlyDetectionIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const hasRedirectedRef = useRef(false)
   const widgetOpenedRef = useRef(false)
+  const widgetEverDetectedRef = useRef(false) // Track if widget was ever detected in DOM
 
   useEffect(() => {
     // Listen for iframe load errors (403, network errors, etc.)
@@ -43,7 +45,8 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
       // Check if error is related to WayForPay
       if (event.message && event.message.includes('wayforpay')) {
         console.error('[WIDGET] Window error detected:', event.message)
-        if (!widgetOpenedRef.current && !hasRedirectedRef.current) {
+        // Only mark as failed if widget was never detected (true load failure)
+        if (!widgetOpenedRef.current && !hasRedirectedRef.current && !widgetEverDetectedRef.current) {
           setError(t('errors.paymentLoadFailed'))
           setIsLoading(false)
           setIsRedirecting(false)
@@ -59,7 +62,12 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
       const wfpFrame = document.querySelector('iframe[src*="wayforpay"]')
       const wfpOverlay = document.querySelector('.wfp-overlay, .wayforpay-overlay, [class*="wfp-"], [id*="wayforpay"]')
       const wfpPopup = document.querySelector('[class*="wayforpay"], [class*="wfp"]')
-      return !!(wfpFrame || wfpOverlay || wfpPopup)
+      const isOpen = !!(wfpFrame || wfpOverlay || wfpPopup)
+      // Once detected, remember it permanently (widget may be closed later by user)
+      if (isOpen) {
+        widgetEverDetectedRef.current = true
+      }
+      return isOpen
     }
 
     window.addEventListener('error', handleWindowError, true)
@@ -169,15 +177,37 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
           }
         )
 
+        // Early detection: check for widget DOM elements every 500ms for the first 5 seconds
+        // This helps detect widget opening even if user closes it before the final check
+        earlyDetectionIntervalRef.current = setInterval(() => {
+          if (checkWidgetOpened()) {
+            console.log('[WIDGET] Early detection: widget found in DOM')
+            if (earlyDetectionIntervalRef.current) {
+              clearInterval(earlyDetectionIntervalRef.current)
+              earlyDetectionIntervalRef.current = null
+            }
+          }
+        }, 500)
+
         // Check if widget opened successfully after a short delay (5 seconds)
         // This gives WayForPay time to create its DOM elements
         widgetOpenCheckTimeoutRef.current = setTimeout(() => {
+          if (earlyDetectionIntervalRef.current) {
+            clearInterval(earlyDetectionIntervalRef.current)
+            earlyDetectionIntervalRef.current = null
+          }
           if (!widgetOpenedRef.current && !hasRedirectedRef.current) {
-            // Check DOM for WayForPay elements
-            if (checkWidgetOpened()) {
+            // First check if widget was ever detected (user may have closed it)
+            if (widgetEverDetectedRef.current) {
+              console.log('[WIDGET] Widget was previously detected - user may have closed it')
+              widgetOpenedRef.current = true
+              // Don't mark as failed - donation stays pending, WayForPay will handle expiration
+            } else if (checkWidgetOpened()) {
+              // Check DOM for WayForPay elements
               console.log('[WIDGET] Widget detected in DOM - marking as opened')
               widgetOpenedRef.current = true
             } else {
+              // Widget never appeared - true load failure
               console.error('[WIDGET] Widget failed to open - no WayForPay elements detected')
               setError(t('errors.paymentLoadFailed'))
               setIsLoading(false)
@@ -221,6 +251,9 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
       }
       if (widgetOpenCheckTimeoutRef.current) {
         clearTimeout(widgetOpenCheckTimeoutRef.current)
+      }
+      if (earlyDetectionIntervalRef.current) {
+        clearInterval(earlyDetectionIntervalRef.current)
       }
     }
   }, [paymentParams, t, tWidget])

@@ -322,6 +322,7 @@ export type Database = {
       get_donations_by_email_verified: {
         Args: { p_donation_id: string; p_email: string }
         Returns: {
+          aggregate_donations: boolean
           amount: number
           currency: string
           donated_at: string

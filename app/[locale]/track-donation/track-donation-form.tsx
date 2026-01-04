@@ -26,6 +26,7 @@ type Donation = {
     project_name_i18n: I18nText | null
     unit_name: string
     unit_name_i18n: I18nText | null
+    aggregate_donations: boolean | null
   }
 }
 
@@ -236,10 +237,8 @@ export default function TrackDonationForm({ locale }: Props) {
               {orders.map(([orderReference, orderDonations]) => {
                 const firstDonation = orderDonations[0]
 
-                // Only count paid/confirmed/delivering/completed for display amount
-                const displayAmount = orderDonations
-                  .filter(d => ['paid', 'confirmed', 'delivering', 'completed'].includes(d.donation_status))
-                  .reduce((sum, d) => sum + Number(d.amount), 0)
+                // Sum all donations in this order regardless of status
+                const displayAmount = orderDonations.reduce((sum, d) => sum + Number(d.amount), 0)
 
                 // Only count paid/confirmed/delivering for refundable amount (exclude completed)
                 const refundableAmount = orderDonations
@@ -255,6 +254,9 @@ export default function TrackDonationForm({ locale }: Props) {
                   firstDonation.projects.unit_name,
                   locale as SupportedLocale
                 )
+
+                // Check if any donation in this order belongs to an aggregate project
+                const hasAggregateProject = orderDonations.some(d => d.projects.aggregate_donations === true)
 
                 return (
                   <div
@@ -277,7 +279,7 @@ export default function TrackDonationForm({ locale }: Props) {
                       </div>
 
                       {/* Order Details Grid */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                      <div className={`grid grid-cols-1 sm:grid-cols-2 ${hasAggregateProject ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-4 mb-4`}>
                         {/* Order Reference */}
                         <div>
                           <div className="text-xs text-gray-500 font-medium mb-1">{t('results.orderReference')}</div>
@@ -286,13 +288,15 @@ export default function TrackDonationForm({ locale }: Props) {
                           </code>
                         </div>
 
-                        {/* Quantity */}
-                        <div>
-                          <div className="text-xs text-gray-500 font-medium mb-1">{t('results.quantity')}</div>
-                          <div className="text-lg font-bold text-gray-900">
-                            {orderDonations.length} {unitName}
+                        {/* Quantity - hide for aggregate projects */}
+                        {!hasAggregateProject && (
+                          <div>
+                            <div className="text-xs text-gray-500 font-medium mb-1">{t('results.quantity')}</div>
+                            <div className="text-lg font-bold text-gray-900">
+                              {orderDonations.length} {unitName}
+                            </div>
                           </div>
-                        </div>
+                        )}
 
                         {/* Total Amount */}
                         <div>
