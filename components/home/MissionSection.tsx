@@ -51,7 +51,7 @@ export default async function MissionSection() {
             ].map(({ key, image }) => (
               <div
                 key={key}
-                className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 h-[400px]"
+                className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 h-[240px] md:h-[400px]"
               >
                 {/* Background Image */}
                 <Image
