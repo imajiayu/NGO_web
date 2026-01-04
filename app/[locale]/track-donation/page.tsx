@@ -58,10 +58,10 @@ export default async function TrackDonationPage() {
             </div>
           </div>
 
-          {/* Mobile: Single center photo */}
+          {/* Mobile: Single first photo */}
           <div className="md:hidden absolute inset-0">
             <Image
-              src="/images/track-donation/bg-2.webp"
+              src="/images/track-donation/bg-1.webp"
               alt="Background"
               fill
               className="object-cover"
