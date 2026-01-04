@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import ProjectResultsMasonry from './ProjectResultsMasonry'
-import type { ProjectContent } from '@/types'
+import type { ProjectContent, ProjectResult } from '@/types'
 
 interface ProjectResultsSectionProps {
   projectId: number
@@ -13,7 +13,7 @@ export default function ProjectResultsSection({
   projectId,
   locale
 }: ProjectResultsSectionProps) {
-  const [results, setResults] = useState<ProjectContent['results']>([])
+  const [results, setResults] = useState<ProjectResult[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
