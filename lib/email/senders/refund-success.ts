@@ -4,7 +4,7 @@
 
 import { resend, FROM_EMAIL } from '../client'
 import { RefundSuccessEmailParams } from '../types'
-import { generateRefundSuccessEmail } from '../templates/refund-success'
+import { generateRefundSuccessEmail } from '../templates/transactional/refund-success'
 
 /**
  * Send refund success notification email

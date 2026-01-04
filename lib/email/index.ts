@@ -42,6 +42,6 @@ export { sendDonationCompletedEmail } from './senders/donation-completed'
 export { sendRefundSuccessEmail } from './senders/refund-success'
 
 // Export template generators (for advanced usage)
-export { generatePaymentSuccessEmail } from './templates/payment-success'
-export { generateDonationCompletedEmail } from './templates/donation-completed'
-export { generateRefundSuccessEmail } from './templates/refund-success'
+export { generatePaymentSuccessEmail } from './templates/transactional/payment-success'
+export { generateDonationCompletedEmail } from './templates/transactional/donation-completed'
+export { generateRefundSuccessEmail } from './templates/transactional/refund-success'

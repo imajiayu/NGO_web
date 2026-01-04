@@ -1,0 +1,313 @@
+{
+  "title": "Way to Health\nРеабілітаційний центр для постраждалих від війни в Україні",
+  "subtitle": "Допомагаємо пораненим на війні повернутися до повноцінного та змістовного життя",
+  "location": "Дніпро, Україна",
+  "locationDetail": "UTP Slobozhanske, вулиця Героїв України 27C",
+  "foundationDate": "1 серпня 2022 року",
+  "images": [
+    "/images/projects/project-0/event/event0.webp",
+    "/images/projects/project-0/event/event1.webp",
+    "/images/projects/project-0/event/event3.webp",
+    "/images/projects/project-0/event/event4.webp",
+    "/images/projects/project-0/event/event5.webp",
+    "/images/projects/project-0/event/event6.webp"
+  ],
+  "introduction": [
+    "Way to Health — це медичний центр, заснований 1 серпня 2022 року, який надає високоякісні реабілітаційні послуги постраждалим від війни в Україні. Наша місія — допомогти всім людям, які постраждали від війни, повернутися до повноцінного та змістовного життя, надаючи безкоштовні реабілітаційні послуги ветеранам та цивільним особам. Наші джерела фінансування:"
+  ],
+  "statistics": {
+    "patientsServed": {
+      "value": 1600,
+      "label": "Обслуговано пацієнтів",
+      "description": "Загальна кількість пацієнтів з моменту заснування"
+    },
+    "avgCostPerPatient": {
+      "value": 1000,
+      "label": "Середні витрати на пацієнта",
+      "description": "Середня вартість реабілітації на одного пацієнта (USD)",
+      "isAmount": true
+    }
+  },
+  "mission": {
+    "title": "Наша місія",
+    "content": "Допомогти всім людям, які постраждали від війни в Україні, повернутися до повноцінного та змістовного життя. Ми зобов'язуємося забезпечити кожному захиснику високоякісну реабілітацію, догляд та підтримку на шляху до одужання.",
+    "values": [
+      {
+        "name": "У Божих руках",
+        "description": "Ми віримо, що під Божим керівництвом Він дарує нам силу та ресурси для відновлення кожної людини, постраждалої від війни"
+      },
+      {
+        "name": "Людяність",
+        "description": "Ставлення до кожного пацієнта з емпатією та повагою"
+      },
+      {
+        "name": "Щирість",
+        "description": "Чесне та прозоре спілкування з пацієнтами та партнерами"
+      },
+      {
+        "name": "Відданість",
+        "description": "Всім серцем служимо реабілітації та добробуту наших пацієнтів"
+      },
+      {
+        "name": "Професіоналізм",
+        "description": "Надання медичних та реабілітаційних послуг найвищого рівня"
+      }
+    ]
+  },
+  "team": {
+    "title": "Наша команда",
+    "description": "Станом на 2025 рік медичний центр має 32+ професійних співробітників, зокрема:",
+    "members": [
+      "Ортопеди-травматологи",
+      "Сімейні лікарі",
+      "Ендокринологи",
+      "Гастроентерологи",
+      "Фізіотерапевти",
+      "Асистенти фізіотерапевтів",
+      "Ерготерапевти",
+      "Медсестри",
+      "Психологи",
+      "Логопеди",
+      "Команда менеджменту",
+      "Адміністративний персонал",
+      "Маркетинговий персонал"
+    ]
+  },
+  "treatmentPrograms": {
+    "title": "Програми лікування",
+    "description": "Ми надаємо спеціалізоване лікування для різних військових травм:",
+    "programs": [
+      {
+        "name": "Поранення від вибухів мін",
+        "description": "Спеціалізоване лікування складних травм від мін та вибухових пристроїв"
+      },
+      {
+        "name": "Осколкові та вогнепальні поранення",
+        "description": "Лікування проникних ран та осколкових поранень від бойових дій"
+      },
+      {
+        "name": "Черепно-мозкові травми",
+        "description": "Нейрореабілітація при травмах голови"
+      },
+      {
+        "name": "М'язово-скелетні травми",
+        "description": "Реабілітація при ушкодженнях кісток, м'язів та суглобів"
+      },
+      {
+        "name": "Тяжкі струси мозку",
+        "description": "Спеціалізоване лікування посттравматичного синдрому"
+      },
+      {
+        "name": "Інсульт",
+        "description": "Реабілітаційні тренування для пацієнтів після інсульту"
+      },
+      {
+        "name": "Ампутація кінцівок",
+        "description": "Протезування та реабілітаційні тренування після ампутації"
+      },
+      {
+        "name": "Посттравматичний стресовий розлад (ПТСР)",
+        "description": "Психологічна терапія та підтримка при воєнних травмах"
+      },
+      {
+        "name": "Тривожні розлади",
+        "description": "Професійне психологічне консультування при тривожних та емоційних розладах"
+      }
+    ]
+  },
+  "successStories": [
+    {
+      "title": "Повернення до мрії про мотоцикл",
+      "description": "Після втрати нижніх кінцівок він мріяв знову їздити на мотоциклі. Ми забезпечили його протезами, і він не тільки навчився бігати, але й повернувся до мотоцикла, знайшовши радість у житті.",
+      "image": "/images/projects/project-0/result/result1.webp"
+    },
+    {
+      "title": "Встановлення протезів під час відключень",
+      "description": "Під час важких відключень електрики ми працювали з ліхтариками та генераторами, щоб наші захисники вчасно отримували протези.",
+      "image": "/images/projects/project-0/progress/progress14.webp"
+    },
+    {
+      "title": "Від інвалідного візка до самостійної ходьби",
+      "description": "Пацієнт, який прибув у візку, нездатний рухати нижні кінцівки, тепер відновив здатність ходити самостійно.",
+      "image": "/images/projects/project-0/result/result13 2.webp"
+    },
+    {
+      "title": "Візити до лікарні для планування реабілітації",
+      "description": "Ми відвідуємо лікарні для підтримки новопоранених, надаючи професійні консультації з реабілітації та психологічну підтримку.",
+      "image": "/images/projects/project-0/progress/progress13.webp"
+    }
+  ],
+  "challenges": {
+    "title": "Дефіцит реабілітаційних ресурсів",
+    "content": [
+      "Попит на високоякісну реабілітацію в Україні значно перевищує наявні ресурси. Існуюча система не може задовольнити реальні потреби постраждалих від війни та ветеранів.",
+      "Наразі існує близько 30 спеціалізованих реабілітаційних центрів для постраждалих від війни, які можуть прийняти близько 27 000 пацієнтів щорічно. Проте загальна кількість постраждалих від війни та ветеранів становить приблизно 360 000 (офіційні дані Президента України).",
+      "При нинішній пропускній спроможності кожній пораненій людині потрібно чекати приблизно 13,5 років, щоб пройти один курс реабілітації. Галузь реабілітації терміново потребує масової підтримки, оскільки від цього залежить добробут захисників України."
+    ]
+  },
+  "financialStatus": {
+    "title": "Масштаби діяльності та фінансовий стан",
+    "description": "З моменту заснування у 2022 році Way to Health постійно розширюється, щоб обслуговувати більше постраждалих від війни. Незважаючи на благодійні внески та державну компенсацію, операційні витрати значно перевищують доходи, що призводить до значного дефіциту щороку.",
+    "yearlyData": [
+      {
+        "year": "2022",
+        "period": "5 місяців роботи",
+        "staffCount": 10,
+        "expenses": 1818400,
+        "donations": 70409,
+        "governmentCompensation": 0,
+        "deficit": -1747991,
+        "reportImage": "/images/projects/project-0/financial/report-2022.webp"
+      },
+      {
+        "year": "2023",
+        "period": "Весь рік",
+        "staffCount": 14,
+        "expenses": 6665580,
+        "donations": 2205484,
+        "governmentCompensation": 0,
+        "deficit": -4460096,
+        "reportImage": "/images/projects/project-0/financial/report-2023.webp"
+      },
+      {
+        "year": "2024",
+        "period": "Весь рік",
+        "staffCount": 17,
+        "expenses": 9207696,
+        "donations": 4125548,
+        "governmentCompensation": 2375637,
+        "deficit": -2706511,
+        "reportImage": "/images/projects/project-0/financial/report-2024.webp"
+      },
+      {
+        "year": "2025",
+        "period": "Перші 9 місяців",
+        "staffCount": 23,
+        "expenses": 9876312,
+        "donations": 2473138,
+        "governmentCompensation": 4094633,
+        "deficit": -3308541,
+        "reportImage": "/images/projects/project-0/financial/report-2025.webp"
+      }
+    ],
+    "breakdown": {
+      "title": "Основні категорії витрат",
+      "categories": [
+        {
+          "name": "Фонд заробітної плати",
+          "percentage": 75,
+          "description": "Лікарі, фізичні терапевти, психологи, медсестри та інші фахівці"
+        },
+        {
+          "name": "Оренда",
+          "percentage": 12,
+          "description": "Оренда медичного центру площею 240 м²"
+        },
+        {
+          "name": "Адміністративні витрати",
+          "percentage": 13,
+          "description": "Канцелярські товари, комунальні послуги, ліцензії на ПЗ, кава тощо"
+        }
+      ]
+    }
+  },
+  "callToAction": {
+    "title": "Нам потрібна ваша підтримка",
+    "content": "Кожен внесок допомагає відновити чиєсь життя. Ваша підтримка буде спрямована на:",
+    "purposes": [
+      {
+        "title": "Забезпечення безкоштовної роботи реабілітаційного центру та його розширення",
+        "description": "Гарантування того, що кожна людина, постраждала від війни, отримає безкоштовну професійну реабілітацію, та допомога нам у розширенні можливостей для обслуговування більшої кількості пацієнтів"
+      },
+      {
+        "title": "Покриття витрат на роботу сайту та реалізацію благодійних проєктів",
+        "description": "Підтримка цієї прозорої платформи для пожертв, щоб люди з усього світу могли легко долучитися до допомоги постраждалим від війни в Україні"
+      }
+    ],
+    "closing": "Війна триває, але реабілітація не може чекати. 360 000 поранених все ще чекають на лікування, і кожен ваш добрий вчинок дарує їм надію на повернення до нормального життя. Незалежно від суми, ваша пожертва безпосередньо змінить чиюсь долю."
+  },
+  "partners": {
+    "title": "Екосистема партнерів",
+    "description": "Way to Health — це не просто медичний центр, який надає високоякісні реабілітаційні послуги, а й важливий соціальний проєкт. Його екосистема включає Медичний центр Way to Health, Благодійний фонд Way to Health, голландську благодійну організацію A Warm Heart for Way to Health та інші фонди та ділові партнери. Завдяки їхній підтримці проєкт може надавати абсолютно безкоштовні послуги постраждалим від війни.",
+    "partners": [
+      {
+        "name": "Dnipro Christian Church",
+        "description": "Дніпровська християнська церква"
+      },
+      {
+        "name": "SHARE Mission Network",
+        "description": "Місійна мережа SHARE"
+      },
+      {
+        "name": "Medux",
+        "description": "Медичний партнер"
+      },
+      {
+        "name": "Sunflower Scotland",
+        "description": "Благодійна організація Sunflower Scotland"
+      },
+      {
+        "name": "Golfstrim",
+        "description": "Фонд Golfstrim"
+      },
+      {
+        "name": "REHAU",
+        "description": "Корпоративна підтримка REHAU"
+      },
+      {
+        "name": "A Warm Heart for Way to Health",
+        "description": "Голландська благодійна організація"
+      },
+      {
+        "name": "Superhumans Center",
+        "description": "Центр Superhumans - медична установа з протезування та реабілітації за безпосередньої підтримки Першої леді України Олени Зеленської"
+      }
+    ]
+  },
+  "hospitalVisits": {
+    "title": "Програма відвідувань лікарень",
+    "description": "Ми відвідуємо лікарні, щоб підтримати тих, хто щойно пережив ампутацію кінцівок, надаючи їм емоційну підтримку та надію на комплексну реабілітацію.",
+    "image": "/images/projects/project-0/progress/progress4.webp"
+  },
+  "faithBased": {
+    "title": "Віра як основа",
+    "quote": "Головним партнером Way to Health є Господь. Його підтримка щодня надихає нас допомагати пораненим, реабілітувати тих, хто постраждав від війни, і приносити надію тим, хто її потребує. Ми віримо, що під Божим керівництвом Він дарує нам силу та ресурси для відновлення кожної людини, постраждалої від війни, і веде їх шляхом до здоров'я."
+  },
+  "progressGallery": {
+    "title": "Прогрес лікування",
+    "description": "Документування шляху пацієнтів від травми до одужання",
+    "images": [
+      { "url": "/images/projects/project-0/progress/progress0.webp", "priority": 10 },
+      { "url": "/images/projects/project-0/progress/progress1.webp", "priority": 9 },
+      { "url": "/images/projects/project-0/progress/progress2.webp", "priority": 8 },
+      { "url": "/images/projects/project-0/progress/progress3.webp", "priority": 8 },
+      { "url": "/images/projects/project-0/progress/progress4.webp", "priority": 9 },
+      { "url": "/images/projects/project-0/progress/progress5.webp", "priority": 7 },
+      { "url": "/images/projects/project-0/progress/progress6.webp", "priority": 7 },
+      { "url": "/images/projects/project-0/progress/progress7.webp", "priority": 8 },
+      { "url": "/images/projects/project-0/progress/progress8.webp", "priority": 6 },
+      { "url": "/images/projects/project-0/progress/progress9.webp", "priority": 6 },
+      { "url": "/images/projects/project-0/progress/progress10.webp", "priority": 7 },
+      { "url": "/images/projects/project-0/progress/progress11.webp", "priority": 5 },
+      { "url": "/images/projects/project-0/progress/progress12.webp", "priority": 9 },
+      { "url": "/images/projects/project-0/progress/progress13.webp", "priority": 5 },
+      { "url": "/images/projects/project-0/progress/progress14.webp", "priority": 5 },
+      { "url": "/images/projects/project-0/progress/progress15.webp", "priority": 4 }
+    ]
+  },
+  "results": [
+    { "imageUrl": "/images/projects/project-0/result/result1.webp", "priority": 7 },
+    { "imageUrl": "/images/projects/project-0/result/result2.webp", "priority": 8 },
+    { "imageUrl": "/images/projects/project-0/result/result3.webp", "priority": 9 },
+    { "imageUrl": "/images/projects/project-0/result/result4.webp", "priority": 6 },
+    { "imageUrl": "/images/projects/project-0/result/result5.webp", "priority": 10 },
+    { "imageUrl": "/images/projects/project-0/result/result6.webp", "priority": 6 },
+    { "imageUrl": "/images/projects/project-0/result/result7.webp", "priority": 7 },
+    { "imageUrl": "/images/projects/project-0/result/result8.webp", "priority": 5 },
+    { "imageUrl": "/images/projects/project-0/result/result9.webp", "priority": 5 },
+    { "imageUrl": "/images/projects/project-0/result/result10.webp", "priority": 10 },
+    { "imageUrl": "/images/projects/project-0/result/result11.webp", "priority": 8 },
+    { "imageUrl": "/images/projects/project-0/result/result12.webp", "priority": 6 },
+    { "imageUrl": "/images/projects/project-0/result/result13.webp", "priority": 4 }
+  ]
+}

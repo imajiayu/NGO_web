@@ -4,21 +4,21 @@
 
 本文档详细记录了 NGO 平台数据库的完整架构，包括所有表、视图、函数、触发器、索引、RLS 策略和存储桶配置。
 
-**最后更新**: 2025-12-23
+**最后更新**: 2026-01-04
 **数据库版本**: PostgreSQL (Supabase)
-**迁移文件数量**: 26 个
+**迁移文件数量**: 39 个
 
 ---
 
 ## 📊 数据库概览
 
 ### 核心组件统计
-- **表 (Tables)**: 2 个
+- **表 (Tables)**: 3 个（projects, donations, email_subscriptions）
 - **视图 (Views)**: 3 个
-- **函数 (Functions)**: 8 个（2个业务函数 + 4个触发器函数 + 1个ID生成函数 + 1个管理员认证函数）
-- **触发器 (Triggers)**: 5 个（2个updated_at触发器 + 1个项目单位更新触发器 + 2个字段不可变触发器）
+- **函数 (Functions)**: 6 个（3个业务函数 + 3个触发器函数 + 1个ID生成函数 + 1个管理员认证函数）
+- **触发器 (Triggers)**: 7 个（3个updated_at触发器 + 1个项目单位更新触发器 + 3个字段不可变触发器）
 - **存储桶 (Storage Buckets)**: 1 个
-- **RLS 策略 (RLS Policies)**: 12 个（4个公开策略 + 8个管理员策略）
+- **RLS 策略 (RLS Policies)**: 14 个（5个公开策略 + 8个管理员策略 + 1个订阅策略）
 
 ---
 
@@ -47,6 +47,7 @@
 | `unit_name_i18n` | JSONB | NOT NULL | '{}' | 多语言单位名称 |
 | `description_i18n` | JSONB | NOT NULL | '{}' | 多语言项目描述 |
 | `status` | VARCHAR(20) | NOT NULL | 'planned' | 项目状态 |
+| `aggregate_donations` | BOOLEAN | NOT NULL | FALSE | 捐赠聚合标志（true=单条记录聚合，false=按单位拆分）|
 | `created_at` | TIMESTAMPTZ | NOT NULL | NOW() | 记录创建时间 |
 | `updated_at` | TIMESTAMPTZ | NOT NULL | NOW() | 记录更新时间（自动更新） |
 
@@ -81,6 +82,9 @@ CREATE INDEX idx_projects_status ON projects(status);
 
 -- 开始日期索引（用于排序）
 CREATE INDEX idx_projects_start_date ON projects(start_date);
+
+-- 聚合标志索引（用于筛选不同捐赠模式的项目）
+CREATE INDEX idx_projects_aggregate_donations ON projects(aggregate_donations);
 
 -- i18n 字段索引（用于多语言搜索）
 CREATE INDEX idx_projects_name_i18n_en ON projects((project_name_i18n->>'en'));
@@ -132,17 +136,32 @@ CREATE INDEX idx_projects_name_i18n_ua ON projects((project_name_i18n->>'ua'));
 CONSTRAINT fk_project FOREIGN KEY (project_id)
   REFERENCES projects(id) ON DELETE CASCADE
 
--- 状态约束
-CONSTRAINT valid_donation_status CHECK (
+-- 状态约束（15个有效状态）
+CONSTRAINT donations_status_check CHECK (
   donation_status IN (
-    'pending',    -- 待支付
-    'paid',       -- 已支付
-    'confirmed',  -- NGO已确认
-    'delivering', -- 配送中
-    'completed',  -- 已完成
-    'refunding',  -- 退款中
-    'refunded',   -- 已退款
-    'failed'      -- 支付失败
+    -- Pre-payment
+    'pending',           -- 待支付
+    'widget_load_failed',-- 支付窗口加载失败
+
+    -- Processing
+    'processing',        -- 支付处理中（WayForPay inProcessing）
+    'fraud_check',       -- 反欺诈审核中（WayForPay Pending）
+
+    -- Payment complete
+    'paid',              -- 已支付
+    'confirmed',         -- NGO已确认
+    'delivering',        -- 配送中
+    'completed',         -- 已完成
+
+    -- Payment failed
+    'expired',           -- 支付超时（WayForPay Expired）
+    'declined',          -- 银行拒绝（WayForPay Declined）
+    'failed',            -- 其他失败
+
+    -- Refund
+    'refunding',         -- 退款申请中
+    'refund_processing', -- 退款处理中（WayForPay RefundInProcessing）
+    'refunded'           -- 已退款（WayForPay Refunded/Voided）
   )
 )
 
@@ -193,24 +212,84 @@ WHERE donation_status IN ('refunding', 'refunded');
 
 ```
 用户捐赠流程：
-pending → paid → confirmed → delivering → completed
-                    ↓
-                refunding → refunded
+pending → processing → fraud_check → paid → confirmed → delivering → completed
+   ↓           ↓           ↓
+widget_load_failed    expired/declined
+
+退款流程：
+paid/confirmed/delivering → refunding → refund_processing → refunded
 
 支付失败流程：
-pending → failed
+pending → failed/expired/declined
 ```
 
-| 状态 | 英文 | 说明 | 计入项目进度 |
+| 状态 | 中文 | 说明 | 计入项目进度 |
 |------|------|------|-------------|
-| 待支付 | pending | 订单已创建，等待支付 | ❌ |
-| 已支付 | paid | 支付成功，等待NGO确认 | ✅ |
-| 已确认 | confirmed | NGO已确认收款 | ✅ |
-| 配送中 | delivering | 物资配送中 | ✅ |
-| 已完成 | completed | 配送完成 | ✅ |
-| 退款中 | refunding | 退款请求已提交 | ❌ |
-| 已退款 | refunded | 退款已完成 | ❌ |
-| 支付失败 | failed | 支付失败或被拒绝 | ❌ |
+| **Pre-payment (支付前)** |
+| pending | 待支付 | 订单已创建，等待支付 | ❌ |
+| widget_load_failed | 窗口加载失败 | 支付窗口加载失败 | ❌ |
+| **Processing (处理中)** |
+| processing | 处理中 | WayForPay 支付处理中 | ❌ |
+| fraud_check | 审核中 | 反欺诈审核中 | ❌ |
+| **Payment Complete (支付完成)** |
+| paid | 已支付 | 支付成功，等待NGO确认 | ✅ |
+| confirmed | 已确认 | NGO已确认收款 | ✅ |
+| delivering | 配送中 | 物资配送中 | ✅ |
+| completed | 已完成 | 配送完成 | ✅ |
+| **Payment Failed (支付失败)** |
+| expired | 超时 | 支付超时（WayForPay Expired） | ❌ |
+| declined | 被拒 | 银行拒绝（WayForPay Declined） | ❌ |
+| failed | 失败 | 其他失败原因 | ❌ |
+| **Refund (退款)** |
+| refunding | 退款申请中 | 退款请求已提交 | ❌ |
+| refund_processing | 退款处理中 | WayForPay 退款处理中 | ❌ |
+| refunded | 已退款 | 退款已完成 | ❌ |
+
+---
+
+### 3. `email_subscriptions` - 邮件订阅表
+
+存储用户邮件订阅信息，用于新项目通知群发。✨ 2026-01-04 新增
+
+#### 字段定义
+
+| 字段名 | 类型 | 约束 | 默认值 | 说明 |
+|--------|------|------|--------|------|
+| `id` | BIGSERIAL | PRIMARY KEY | auto | 主键，自增 |
+| `email` | TEXT | NOT NULL, UNIQUE | - | 订阅者邮箱地址 |
+| `locale` | TEXT | NOT NULL, CHECK | - | 语言偏好（en/zh/ua） |
+| `is_subscribed` | BOOLEAN | NOT NULL | TRUE | 订阅状态 |
+| `updated_at` | TIMESTAMPTZ | NOT NULL | NOW() | 最后更新时间（自动更新） |
+
+#### 约束条件
+
+```sql
+-- 语言约束
+CONSTRAINT valid_locale CHECK (
+  locale IN ('en', 'zh', 'ua')
+)
+```
+
+#### 索引
+
+```sql
+-- 邮箱索引（用于快速查找）
+CREATE INDEX idx_email_subscriptions_email ON email_subscriptions(email);
+
+-- 订阅状态部分索引（只索引已订阅的记录）
+CREATE INDEX idx_email_subscriptions_is_subscribed
+ON email_subscriptions(is_subscribed)
+WHERE is_subscribed = true;
+
+-- 语言索引（用于按语言分组群发）
+CREATE INDEX idx_email_subscriptions_locale ON email_subscriptions(locale);
+```
+
+#### 使用场景
+
+- 捐赠时用户选择订阅项目更新
+- 管理员群发新项目通知邮件
+- 用户通过邮件链接取消订阅
 
 ---
 
@@ -238,16 +317,17 @@ SELECT
   p.start_date,
   p.end_date,
   p.is_long_term,
+  p.aggregate_donations,              -- ✨ NEW: 捐赠聚合标志
   p.description_i18n,
   -- 聚合字段
   COALESCE(SUM(
     CASE WHEN d.donation_status IN ('paid', 'confirmed', 'delivering', 'completed')
     THEN d.amount ELSE 0 END
   ), 0) AS total_raised,              -- 总筹款金额
-  COUNT(
+  COUNT(DISTINCT
     CASE WHEN d.donation_status IN ('paid', 'confirmed', 'delivering', 'completed')
-    THEN 1 END
-  ) AS donation_count,                -- 捐赠笔数
+    THEN d.order_reference ELSE NULL END
+  ) AS donation_count,                -- ✨ UPDATED: 按订单号去重的捐赠笔数（支付交易数）
   CASE
     WHEN p.target_units > 0 THEN
       ROUND((p.current_units::NUMERIC / p.target_units::NUMERIC) * 100, 2)
@@ -289,6 +369,7 @@ SELECT
       [复杂的邮箱混淆逻辑]
     ELSE '***'
   END AS donor_email_obfuscated,
+  MD5(COALESCE(d.order_reference, '')) AS order_id,  -- ✨ 2025-12-25 新增：订单ID（MD5哈希）
   d.amount,
   d.currency,
   d.donation_status,
@@ -424,6 +505,7 @@ SELECT generate_donation_public_id(1);
 RETURNS TABLE (
   id BIGINT,
   donation_public_id VARCHAR(50),
+  order_reference VARCHAR(255),  -- ✨ 2025-12-24 新增
   project_id BIGINT,
   donor_email VARCHAR(255),
   amount NUMERIC(10,2),
@@ -483,97 +565,7 @@ GRANT EXECUTE ON FUNCTION get_donations_by_email_verified TO anon, authenticated
 
 ---
 
-### 3. `request_donation_refund(p_donation_public_id TEXT, p_email TEXT)` → JSON
-
-请求退款（需验证所有权）。
-
-#### 返回格式
-
-```json
-// 成功
-{
-  "success": true,
-  "message": "Refund request submitted successfully"
-}
-
-// 失败示例
-{
-  "error": "donationNotFound",
-  "message": "Donation not found or email does not match"
-}
-
-{
-  "error": "cannotRefundCompleted",
-  "message": "Cannot refund completed donations"
-}
-
-{
-  "error": "alreadyRefunding",
-  "message": "Refund already in progress or completed"
-}
-```
-
-#### 退款规则
-
-| 当前状态 | 可否退款 | 说明 |
-|----------|---------|------|
-| pending | ❌ | 未支付，无需退款 |
-| paid | ✅ | 可以退款 |
-| confirmed | ✅ | 可以退款 |
-| delivering | ✅ | 可以退款 |
-| completed | ❌ | 已完成，不可退款 |
-| refunding | ❌ | 已在退款中 |
-| refunded | ❌ | 已退款 |
-| failed | ❌ | 支付失败，无需退款 |
-
-#### 实现逻辑
-
-```sql
-BEGIN
-  -- 步骤1: 验证所有权并获取当前状态
-  SELECT id, donation_status INTO v_donation_id, v_status
-  FROM donations
-  WHERE donation_public_id = p_donation_public_id
-    AND LOWER(donor_email) = LOWER(p_email);
-
-  -- 步骤2: 检查捐赠是否存在
-  IF v_donation_id IS NULL THEN
-    RETURN json_build_object('error', 'donationNotFound', ...);
-  END IF;
-
-  -- 步骤3: 验证退款资格
-  IF v_status = 'completed' THEN
-    RETURN json_build_object('error', 'cannotRefundCompleted', ...);
-  END IF;
-  [其他状态检查...]
-
-  -- 步骤4: 更新状态为 'refunding'
-  UPDATE donations SET donation_status = 'refunding'
-  WHERE id = v_donation_id;
-
-  -- 步骤5: 返回成功
-  RETURN json_build_object('success', true, ...);
-END;
-```
-
-#### 副作用
-
-- 触发器自动更新 `projects.current_units`（减1）
-
-#### 使用场景
-
-- 用户自助退款功能
-- 捐赠追踪页面
-
-#### 权限
-
-```sql
-GRANT EXECUTE ON FUNCTION request_donation_refund TO anon, authenticated;
-```
-
----
-
-### 4. `is_admin()` → BOOLEAN
+### 3. `is_admin()` → BOOLEAN
 
 检查当前用户是否为管理员（已登录的认证用户）。
 
@@ -603,6 +595,113 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 ```sql
 -- SECURITY DEFINER: 使用函数所有者权限执行
+```
+
+---
+
+### 4. `upsert_email_subscription(p_email TEXT, p_locale TEXT)` → BIGINT
+
+订阅或更新邮件订阅信息（幂等操作）。✨ 2026-01-04 新增
+
+#### 功能
+
+- 新邮箱：创建订阅记录
+- 已存在：更新语言偏好，重新激活订阅
+
+#### 实现逻辑
+
+```sql
+CREATE OR REPLACE FUNCTION upsert_email_subscription(
+  p_email TEXT,
+  p_locale TEXT
+)
+RETURNS BIGINT AS $$
+DECLARE
+  v_subscription_id BIGINT;
+BEGIN
+  -- 验证输入
+  IF p_email IS NULL OR p_email !~ '^[^@]+@[^@]+\.[^@]+$' THEN
+    RAISE EXCEPTION 'Invalid email address';
+  END IF;
+
+  IF p_locale NOT IN ('en', 'zh', 'ua') THEN
+    RAISE EXCEPTION 'Invalid locale. Must be en, zh, or ua';
+  END IF;
+
+  -- Upsert 操作
+  INSERT INTO email_subscriptions (email, locale, is_subscribed)
+  VALUES (p_email, p_locale, true)
+  ON CONFLICT (email) DO UPDATE SET
+    locale = EXCLUDED.locale,
+    is_subscribed = true,
+    updated_at = NOW()
+  RETURNING id INTO v_subscription_id;
+
+  RETURN v_subscription_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+```
+
+#### 使用示例
+
+```sql
+-- 新订阅
+SELECT upsert_email_subscription('user@example.com', 'en');
+-- 返回: 订阅 ID
+
+-- 更新语言（如果已存在）
+SELECT upsert_email_subscription('user@example.com', 'zh');
+-- 返回: 同一个订阅 ID，语言已更新为 zh
+```
+
+#### 权限
+
+```sql
+-- SECURITY DEFINER: 使用函数所有者权限执行（绕过 RLS）
+```
+
+---
+
+### 5. `unsubscribe_email(p_email TEXT)` → BOOLEAN
+
+通过邮箱取消订阅。✨ 2026-01-04 新增
+
+#### 功能
+
+- 将指定邮箱的 `is_subscribed` 设置为 `false`
+- 返回是否成功取消（邮箱不存在或已取消则返回 false）
+
+#### 实现逻辑
+
+```sql
+CREATE OR REPLACE FUNCTION unsubscribe_email(p_email TEXT)
+RETURNS BOOLEAN AS $$
+DECLARE
+  v_updated INTEGER;
+BEGIN
+  UPDATE email_subscriptions
+  SET is_subscribed = false
+  WHERE email = p_email AND is_subscribed = true;
+
+  GET DIAGNOSTICS v_updated = ROW_COUNT;
+
+  RETURN v_updated > 0;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+```
+
+#### 使用示例
+
+```sql
+-- 取消订阅
+SELECT unsubscribe_email('user@example.com');
+-- 返回: true（成功）或 false（邮箱不存在或已取消）
+```
+
+#### 权限
+
+```sql
+-- SECURITY DEFINER: 使用函数所有者权限执行（允许公开调用）
 ```
 
 ---
@@ -720,6 +819,16 @@ BEGIN
     RAISE EXCEPTION 'Cannot modify project created_at';
   END IF;
 
+  -- ✨ 2025-12-25 新增：不允许修改 aggregate_donations
+  IF OLD.aggregate_donations != NEW.aggregate_donations THEN
+    RAISE EXCEPTION 'Cannot modify aggregate_donations after project creation';
+  END IF;
+
+  -- ✨ 2025-12-25 新增：不允许修改 is_long_term
+  IF OLD.is_long_term != NEW.is_long_term THEN
+    RAISE EXCEPTION 'Cannot modify is_long_term after project creation';
+  END IF;
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -733,12 +842,14 @@ $$ LANGUAGE plpgsql;
 
 - `id` - 主键不可修改
 - `created_at` - 创建时间不可修改
+- `aggregate_donations` - 捐赠聚合标志（创建后不可修改）✨ NEW
+- `is_long_term` - 长期项目标志（创建后不可修改）✨ NEW
 
 ---
 
 ### 4. `prevent_donation_immutable_fields()`
 
-防止修改捐赠表的不可变字段（额外保护层）。
+防止修改捐赠表的不可变字段（额外保护层）+ 管理员状态转换验证。
 
 #### 实现
 
@@ -756,6 +867,23 @@ BEGIN
   END IF;
 
   [其他字段检查...]
+
+  -- ✨ 2025-12-24 新增：验证管理员状态转换
+  IF OLD.donation_status != NEW.donation_status THEN
+    -- 如果是管理员（authenticated 用户）
+    IF auth.uid() IS NOT NULL THEN
+      -- 只允许以下状态转换
+      IF NOT (
+        (OLD.donation_status = 'paid' AND NEW.donation_status = 'confirmed') OR
+        (OLD.donation_status = 'confirmed' AND NEW.donation_status = 'delivering') OR
+        (OLD.donation_status = 'delivering' AND NEW.donation_status = 'completed')
+      ) THEN
+        RAISE EXCEPTION 'Invalid status transition: % → %. Admins can only update: paid→confirmed, confirmed→delivering, delivering→completed',
+          OLD.donation_status, NEW.donation_status;
+      END IF;
+    END IF;
+    -- 服务角色（auth.uid() IS NULL）允许任意状态转换（用于 Webhook）
+  END IF;
 
   RETURN NEW;
 END;
@@ -776,7 +904,22 @@ $$ LANGUAGE plpgsql;
 - `order_reference` - 订单号
 - `created_at` - 创建时间
 
-**说明**: 管理员只能修改 `donation_status` 和 `donation_result_url` 字段。
+#### 管理员状态转换规则（✨ 2025-12-24 新增）
+
+**允许的转换**:
+- `paid` → `confirmed`
+- `confirmed` → `delivering`
+- `delivering` → `completed`
+
+**禁止的转换**:
+- 所有退款相关状态（由 WayForPay API 自动处理）
+- `pending` → `paid`（由 Webhook 处理）
+- 其他非业务流程转换
+
+**说明**:
+- 管理员只能修改 `donation_status` 和 `donation_result_url` 字段
+- 状态转换严格限制为正常业务流程
+- 服务角色（Webhook）可以执行任意状态转换
 
 ---
 
@@ -868,11 +1011,35 @@ WITH CHECK (
 - 应用层在调用前已验证项目状态
 - Webhook 使用 service role 绕过 RLS 更新状态
 
+#### 4. "Allow anonymous update pending to widget_load_failed"
+
+```sql
+CREATE POLICY "Allow anonymous update pending to widget_load_failed"
+ON donations
+FOR UPDATE
+TO anon, authenticated
+USING (
+  -- 只能更新 pending 状态的捐赠
+  donation_status = 'pending'
+)
+WITH CHECK (
+  -- 只能更新为 widget_load_failed
+  donation_status = 'widget_load_failed'
+);
+```
+
+**安全特性**:
+- ✅ 只能从 `pending` 转换到 `widget_load_failed`
+- ✅ 用于客户端支付窗口加载失败的错误处理
+- ✅ 防止修改其他状态的捐赠
+
+**使用场景**: 当 WayForPay 支付窗口脚本加载失败时，客户端调用 Server Action 更新状态
+
 ---
 
 ### Storage 策略
 
-#### 4. "Public Access - View result images"
+#### 5. "Public Access - View result images"
 
 ```sql
 CREATE POLICY "Public Access - View result images"
@@ -891,7 +1058,7 @@ USING (bucket_id = 'donation-results');
 
 #### Projects 表管理员策略
 
-##### 5. "Admins can insert projects"
+##### 6. "Admins can insert projects"
 
 ```sql
 CREATE POLICY "Admins can insert projects"
@@ -902,7 +1069,7 @@ WITH CHECK (is_admin());
 
 **说明**: 管理员可以创建新项目。
 
-##### 6. "Admins can update projects"
+##### 7. "Admins can update projects"
 
 ```sql
 CREATE POLICY "Admins can update projects"
@@ -923,7 +1090,7 @@ WITH CHECK (is_admin());
 
 #### Donations 表管理员策略
 
-##### 7. "Admins can view all donations"
+##### 8. "Admins can view all donations"
 
 ```sql
 CREATE POLICY "Admins can view all donations"
@@ -934,7 +1101,7 @@ USING (is_admin());
 
 **说明**: 管理员可以查看所有捐赠记录（用于后台管理）。
 
-##### 8. "Admins can update donation status"
+##### 9. "Admins can update donation status"
 
 ```sql
 CREATE POLICY "Admins can update donation status"
@@ -961,7 +1128,7 @@ delivering → completed
 
 #### Storage 管理员策略 (donation-results bucket)
 
-##### 9. "Admins can upload to donation-results"
+##### 10. "Admins can upload to donation-results"
 
 ```sql
 CREATE POLICY "Admins can upload to donation-results"
@@ -973,7 +1140,7 @@ WITH CHECK (
 );
 ```
 
-##### 10. "Admins can delete from donation-results"
+##### 11. "Admins can delete from donation-results"
 
 ```sql
 CREATE POLICY "Admins can delete from donation-results"
@@ -985,7 +1152,7 @@ USING (
 );
 ```
 
-##### 11. "Admins can view donation-results"
+##### 12. "Admins can view donation-results"
 
 ```sql
 CREATE POLICY "Admins can view donation-results"
@@ -997,7 +1164,7 @@ USING (
 );
 ```
 
-##### 12. "Admins can update donation-results metadata"
+##### 13. "Admins can update donation-results metadata"
 
 ```sql
 CREATE POLICY "Admins can update donation-results metadata"
@@ -1010,6 +1177,24 @@ USING (
 ```
 
 **说明**: 管理员对 donation-results 存储桶拥有完全的 CRUD 权限。
+
+---
+
+#### Email Subscriptions 表策略 ✨ 2026-01-04 新增
+
+##### 14. "Admins can view all subscriptions"
+
+```sql
+CREATE POLICY "Admins can view all subscriptions"
+ON email_subscriptions FOR SELECT
+TO authenticated
+USING (is_admin());
+```
+
+**说明**:
+- 管理员可以查看所有订阅记录（用于群发邮件管理）
+- 订阅和取消订阅通过 SECURITY DEFINER 函数执行，不需要额外的 RLS 策略
+- 没有 INSERT/UPDATE/DELETE 策略，所有修改操作通过函数执行
 
 ---
 
@@ -1118,6 +1303,32 @@ EXECUTE FUNCTION prevent_donation_immutable_fields();
 
 ---
 
+### 6. `update_email_subscriptions_updated_at` ✨ 2026-01-04 新增
+
+```sql
+CREATE TRIGGER update_email_subscriptions_updated_at
+BEFORE UPDATE ON email_subscriptions
+FOR EACH ROW
+EXECUTE FUNCTION update_email_subscription_updated_at();
+```
+
+**作用**: 自动更新邮件订阅记录的 `updated_at` 字段。
+
+---
+
+### 7. `prevent_subscription_immutable_fields_trigger` ✨ 2026-01-04 新增
+
+```sql
+CREATE TRIGGER prevent_subscription_immutable_fields_trigger
+BEFORE UPDATE ON email_subscriptions
+FOR EACH ROW
+EXECUTE FUNCTION prevent_subscription_immutable_fields();
+```
+
+**作用**: 防止修改订阅表的不可变字段（id）。
+
+---
+
 ## 🔑 权限管理 (Permissions)
 
 ### 公开视图权限
@@ -1223,6 +1434,7 @@ TO anon, authenticated;
 ```sql
 idx_projects_status              -- 状态筛选
 idx_projects_start_date          -- 日期排序
+idx_projects_aggregate_donations -- 聚合标志筛选 ✨ NEW
 idx_projects_name_i18n_en        -- 英文搜索
 idx_projects_name_i18n_zh        -- 中文搜索
 idx_projects_name_i18n_ua        -- 乌克兰文搜索
@@ -1276,6 +1488,22 @@ idx_donations_refund_status      -- 退款查询
 | 21 | `20251223120000_add_admin_rls_policies.sql` | 添加管理员 RLS 策略 |
 | 22 | `20251223130000_add_updated_at_to_public_views.sql` | 公开视图添加 updated_at 字段 |
 | 23 | `20251223140000_fix_admin_rls_policies.sql` | 修复管理员 RLS 策略 + 添加字段保护触发器 |
+| 24 | `20251223075954_fix_donation_public_id_ambiguous_reference.sql` | 修复 get_donations_by_email_verified 函数列名歧义 |
+| 25 | `20251224000000_add_donation_status_constraints.sql` | 添加捐赠状态约束（16个状态） |
+| 26 | `20251224120000_restrict_admin_status_updates.sql` | 限制管理员状态更新权限 |
+| 27 | `20251224130000_add_order_reference_to_track_function.sql` | 为追踪函数添加 order_reference 字段 |
+| 28 | `20251224140000_fix_duplicate_donation_status_constraint.sql` | 修复重复的捐赠状态约束 |
+| 29 | `20251224150000_allow_anon_update_pending_to_failed.sql` | 允许匿名用户更新 pending → failed 状态 |
+| 30 | `20251224160000_remove_user_cancelled_status.sql` | 移除 user_cancelled 状态（减为15个状态） |
+| 31 | `20251225000000_add_aggregate_donations_flag.sql` | 为 projects 表添加 aggregate_donations 标志 |
+| 32 | `20251225000001_update_project_stats_view.sql` | 更新 project_stats 视图（添加 aggregate_donations 字段） |
+| 33 | `20251225000002_protect_aggregate_donations_field.sql` | 保护 aggregate_donations 字段不被修改 |
+| 34 | `20251225000003_fix_donation_count_logic.sql` | 修复捐赠计数逻辑（按订单号去重） |
+| 35 | `20251225000004_protect_is_long_term_field.sql` | 保护 is_long_term 字段不被修改 |
+| 36 | `20251225010000_cleanup_legacy_functions.sql` | 清理旧的无用函数 |
+| 37 | `20251225020000_remove_unused_refund_function.sql` | 删除未使用的 request_donation_refund 函数 |
+| 38 | `20251225030000_add_order_id_to_public_donations.sql` | 为 public_project_donations 视图添加 order_id 字段 |
+| 39 | `20260104000000_email_subscriptions.sql` | 添加邮件订阅系统（表、函数、触发器、RLS策略）✨ NEW |
 
 ---
 
@@ -1322,6 +1550,59 @@ idx_donations_refund_status      -- 退款查询
 - ✅ 公开视图添加 `updated_at` 字段
   - `public_project_donations` 视图
   - `get_donations_by_email_verified()` 函数
+
+**2025-12-24**
+- ✅ 修复 `get_donations_by_email_verified()` 函数列名歧义问题
+- ✅ **扩展捐赠状态系统**
+  - 添加捐赠状态约束（16 个状态）
+  - 支持完整的 WayForPay 支付流程状态
+  - 新增状态：processing, fraud_check, widget_load_failed, expired, declined, refund_processing
+- ✅ **限制管理员状态更新权限**
+  - 管理员只能执行 3 个业务流程转换（paid→confirmed, confirmed→delivering, delivering→completed）
+  - 退款状态由 WayForPay API 自动处理
+  - 数据库触发器强制执行状态转换规则
+- ✅ 为追踪函数添加 `order_reference` 字段（用于订单分组）
+- ✅ 修复重复的捐赠状态约束
+- ✅ 允许匿名用户更新 pending → widget_load_failed（客户端错误处理）
+- ✅ **移除 user_cancelled 状态**（减为 15 个状态）
+  - 原因：无法可靠检测客户端用户取消操作
+  - 改用 WayForPay Expired webhook（权威超时信号）
+
+**2025-12-25**
+- ✅ **新增 aggregate_donations 字段**
+  - 为 projects 表添加布尔标志
+  - 控制捐赠记录创建行为（聚合 vs 拆分）
+  - 适用场景：打赏项目（聚合）vs 物资项目（按单位拆分）
+- ✅ 更新 `project_stats` 视图
+  - 添加 `aggregate_donations` 字段
+  - 修复 `donation_count` 逻辑（按 order_reference 去重）
+  - donation_count 现在表示实际支付交易数而非记录数
+- ✅ 字段保护增强
+  - `aggregate_donations` 字段创建后不可修改
+  - `is_long_term` 字段创建后不可修改
+- ✅ 清理旧函数
+  - 删除 `update_project_units_on_donation` - 已被触发器替代
+  - 删除 `cleanup_expired_pending_payments` - 表已删除
+  - 删除 `update_pending_payment_expires_at` - 表已删除
+  - 删除 `request_donation_refund` - 未使用（实际使用 Server Action）
+- ✅ 为 `public_project_donations` 视图添加 `order_id` 字段
+  - 使用 MD5 哈希保护隐私
+  - 允许 UI 对同一订单的捐赠进行可视化分组
+
+**2026-01-04**
+- ✅ **新增邮件订阅系统**
+  - 创建 `email_subscriptions` 表存储订阅者信息
+  - 创建 `upsert_email_subscription()` 函数（幂等订阅/更新）
+  - 创建 `unsubscribe_email()` 函数（取消订阅）
+  - 创建 `update_email_subscription_updated_at()` 触发器函数
+  - 创建 `prevent_subscription_immutable_fields()` 触发器函数
+  - 添加 RLS 策略：管理员可查看所有订阅
+  - 添加索引：email、is_subscribed、locale
+- ✅ **邮件订阅功能**
+  - 捐赠表单添加订阅 checkbox
+  - 管理员群发邮件（按语言分组）
+  - 取消订阅链接支持
+  - 邮件模板系统（文件存储）
 
 ---
 
@@ -1387,5 +1668,5 @@ COMMENT ON POLICY "Allow anonymous insert pending donations" ON donations IS '..
 ---
 
 **文档维护者**: 开发团队
-**最后审核**: 2025-12-23
-**版本**: 1.2.0 (管理员认证系统 + 字段保护触发器)
+**最后审核**: 2026-01-04
+**版本**: 1.4.0 (新增邮件订阅系统)

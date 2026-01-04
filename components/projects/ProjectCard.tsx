@@ -5,7 +5,7 @@ import { useRouter, usePathname } from '@/i18n/navigation'
 import { useState, useEffect } from 'react'
 import type { ProjectStats } from '@/types'
 import { getProjectName, getLocation, getUnitName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
-import ProjectProgressBar from './ProjectProgressBar'
+import ProjectProgressBar from './shared/ProjectProgressBar'
 import GlobalLoadingSpinner from '@/components/GlobalLoadingSpinner'
 import ProjectStatusBadge from './ProjectStatusBadge'
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useCallback, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { X, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 
@@ -30,6 +31,12 @@ export default function ImageLightbox({
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
   const [imageLoaded, setImageLoaded] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  // Client-side only mounting for portal
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Update current index when initial index changes
   useEffect(() => {
@@ -101,11 +108,11 @@ export default function ImageLightbox({
     }
   }, [isOpen])
 
-  if (!isOpen || images.length === 0) return null
+  if (!isOpen || images.length === 0 || !mounted) return null
 
   const currentImage = images[currentIndex]
 
-  return (
+  const lightboxContent = (
     <div
       className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
       onClick={onClose}
@@ -152,56 +159,53 @@ export default function ImageLightbox({
 
       {/* Image/Video Container */}
       <div
-        className="relative w-full h-full flex flex-col items-center justify-center p-4 md:p-8"
+        className="w-full h-full flex items-center justify-center p-4"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Main Content */}
-        <div className="relative max-w-7xl max-h-[80vh] w-full h-full flex items-center justify-center">
-          {currentImage.isVideo ? (
-            <video
-              src={currentImage.url}
-              controls
-              autoPlay
-              className="max-w-full max-h-full rounded-lg object-contain"
-              style={{ maxHeight: '80vh' }}
-            />
-          ) : (
-            <div className="relative w-full h-full flex items-center justify-center">
-              {/* Thumbnail placeholder (if available) - shown while loading */}
-              {!imageLoaded && currentImage.thumbnailUrl && (
-                <img
-                  src={currentImage.thumbnailUrl}
-                  alt={currentImage.alt || currentImage.caption || `Image ${currentIndex + 1}`}
-                  className="max-w-full max-h-full object-contain rounded-lg blur-sm"
-                  style={{ maxHeight: '80vh' }}
-                />
-              )}
-
-              {/* Main image - always hidden until loaded, then fade in */}
+        {currentImage.isVideo ? (
+          <video
+            src={currentImage.url}
+            controls
+            autoPlay
+            className="max-w-[calc(100vw-80px)] max-h-[calc(100vh-80px)] rounded-lg object-contain"
+          />
+        ) : (
+          <>
+            {/* Thumbnail placeholder (if available) - shown while loading */}
+            {!imageLoaded && currentImage.thumbnailUrl && (
               <img
-                src={currentImage.url}
+                src={currentImage.thumbnailUrl}
                 alt={currentImage.alt || currentImage.caption || `Image ${currentIndex + 1}`}
-                className={`max-w-full max-h-full object-contain rounded-lg transition-opacity duration-300 ${
-                  imageLoaded ? 'opacity-100' : 'opacity-0 absolute'
-                }`}
-                style={{ maxHeight: '80vh' }}
-                onLoad={() => setImageLoaded(true)}
+                className="max-w-[calc(100vw-80px)] max-h-[calc(100vh-80px)] object-contain rounded-lg blur-sm"
               />
+            )}
 
-              {/* Loading spinner - shown while loading */}
-              {!imageLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="w-8 h-8 text-white animate-spin" />
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+            {/* Main image */}
+            <img
+              src={currentImage.url}
+              alt={currentImage.alt || currentImage.caption || `Image ${currentIndex + 1}`}
+              className={`max-w-[calc(100vw-80px)] max-h-[calc(100vh-80px)] object-contain rounded-lg transition-opacity duration-300 ${
+                imageLoaded ? 'opacity-100' : 'opacity-0 absolute'
+              }`}
+              onLoad={() => setImageLoaded(true)}
+            />
 
+            {/* Loading spinner - shown while loading */}
+            {!imageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <Loader2 className="w-8 h-8 text-white animate-spin" />
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* Bottom Info - fixed at bottom */}
+      <div className="absolute bottom-4 left-0 right-0 flex flex-col items-center gap-2 pointer-events-none">
         {/* Caption */}
         {currentImage.caption && (
-          <div className="mt-6 max-w-3xl text-center">
-            <p className="text-white text-sm md:text-base leading-relaxed px-4">
+          <div className="max-w-3xl text-center bg-black/50 rounded-lg px-4 py-2">
+            <p className="text-white text-sm md:text-base leading-relaxed">
               {currentImage.caption}
             </p>
           </div>
@@ -209,7 +213,7 @@ export default function ImageLightbox({
 
         {/* Progress Dots */}
         {images.length > 1 && (
-          <div className="mt-6 flex items-center gap-2">
+          <div className="flex items-center gap-2 pointer-events-auto">
             {images.map((_, index) => (
               <button
                 key={index}
@@ -229,10 +233,14 @@ export default function ImageLightbox({
         )}
 
         {/* Image Counter */}
-        <div className="mt-4 text-white/60 text-sm">
+        <div className="text-white/60 text-sm">
           {currentIndex + 1} / {images.length}
         </div>
       </div>
     </div>
   )
+
+  // Use Portal to render lightbox at document.body level
+  // This ensures it's not affected by parent transform/filter/backdrop-filter
+  return createPortal(lightboxContent, document.body)
 }

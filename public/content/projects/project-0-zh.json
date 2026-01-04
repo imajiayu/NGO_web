@@ -1,0 +1,313 @@
+{
+  "title": "Way to Health\n免费的乌克兰战争受伤者康复中心",
+  "subtitle": "帮助战争受伤者重返完整而有意义的生活",
+  "location": "第聂伯，乌克兰",
+  "locationDetail": "UTP Slobozhanske, Heroiv Ukrainy street 27C",
+  "foundationDate": "2022年8月1日",
+  "images": [
+    "/images/projects/project-0/event/event0.webp",
+    "/images/projects/project-0/event/event1.webp",
+    "/images/projects/project-0/event/event3.webp",
+    "/images/projects/project-0/event/event4.webp",
+    "/images/projects/project-0/event/event5.webp",
+    "/images/projects/project-0/event/event6.webp"
+  ],
+  "introduction": [
+    "Way to Health 是一个专门为乌克兰战争受伤者提供高质量康复服务的医疗中心，成立于2022年8月1日。我们的使命是帮助所有受战争影响的人重返完整而有意义的生活，为退伍军人与平民提供免费的康复服务。我们的资金来源为："
+  ],
+  "statistics": {
+    "patientsServed": {
+      "value": 1600,
+      "label": "服务患者",
+      "description": "自成立以来服务的患者总数"
+    },
+    "avgCostPerPatient": {
+      "value": 1000,
+      "label": "平均每位患者支出",
+      "description": "每位患者的平均康复费用（美元）",
+      "isAmount": true
+    }
+  },
+  "mission": {
+    "title": "我们的使命",
+    "content": "帮助所有受乌克兰战争影响的人重返完整而有意义的生活。我们致力于确保每位保卫者都能获得高质量的康复、护理和康复途中的支持。",
+    "values": [
+      {
+        "name": "在上帝手中",
+        "description": "我们相信在上帝的指引下，祂赋予我们力量和资源来恢复每一位受战争伤害的人"
+      },
+      {
+        "name": "人性",
+        "description": "以同理心和尊重对待每一位患者"
+      },
+      {
+        "name": "真诚",
+        "description": "诚实透明地与患者和合作伙伴沟通"
+      },
+      {
+        "name": "奉献",
+        "description": "全心全意为患者的康复和福祉服务"
+      },
+      {
+        "name": "专业",
+        "description": "提供最高标准的医疗和康复服务"
+      }
+    ]
+  },
+  "team": {
+    "title": "我们的团队",
+    "description": "截至2025年，医疗中心拥有32+名专业员工，包括：",
+    "members": [
+      "骨科创伤外科医生",
+      "家庭医生",
+      "内分泌学家",
+      "胃肠病学家",
+      "物理治疗师",
+      "物理治疗助理",
+      "职业治疗师",
+      "护士",
+      "心理学家",
+      "言语治疗师",
+      "管理团队",
+      "行政人员",
+      "营销人员"
+    ]
+  },
+  "treatmentPrograms": {
+    "title": "治疗项目",
+    "description": "我们为各类战争伤害提供专业治疗：",
+    "programs": [
+      {
+        "name": "地雷爆炸伤",
+        "description": "专业治疗地雷和爆炸装置造成的复杂伤害"
+      },
+      {
+        "name": "弹片和枪伤",
+        "description": "处理战斗中的穿透性伤口和弹片伤"
+      },
+      {
+        "name": "创伤性脑损伤",
+        "description": "针对头部创伤的神经康复治疗"
+      },
+      {
+        "name": "肌肉骨骼损伤",
+        "description": "骨骼、肌肉和关节损伤的康复"
+      },
+      {
+        "name": "严重脑震荡",
+        "description": "脑震荡后遗症的专业治疗"
+      },
+      {
+        "name": "中风",
+        "description": "中风患者的康复训练"
+      },
+      {
+        "name": "肢体截肢",
+        "description": "假肢适配和截肢后康复训练"
+      },
+      {
+        "name": "创伤后应激障碍 (PTSD)",
+        "description": "战争创伤的心理治疗和支持"
+      },
+      {
+        "name": "焦虑症",
+        "description": "焦虑和情绪障碍的专业心理咨询"
+      }
+    ]
+  },
+  "successStories": [
+    {
+      "title": "重拾摩托车梦想",
+      "description": "他失去下肢后悲伤哭泣，梦想重新骑摩托车。我们为他装配假肢后，他不仅能跑步，还重新骑上摩托车，找回生活的乐趣。",
+      "image": "/images/projects/project-0/result/result1.webp"
+    },
+    {
+      "title": "在停电期间安装假肢",
+      "description": "最困难的停电期间，我们用手电筒和发电机坚持工作，确保保卫者能够按时获得假肢。",
+      "image": "/images/projects/project-0/progress/progress14.webp"
+    },
+    {
+      "title": "从轮椅到独立行走",
+      "description": "一位坐轮椅来到中心、下肢完全无法活动的患者，现已恢复独立行走能力。",
+      "image": "/images/projects/project-0/result/result13 2.webp"
+    },
+    {
+      "title": "前往医院为伤者计划康复方案",
+      "description": "我们前往医院探访刚受伤的人，为他们提供专业的康复咨询和心理支持。",
+      "image": "/images/projects/project-0/progress/progress13.webp"
+    }
+  ],
+  "challenges": {
+    "title": "康复资源短缺",
+    "content": [
+      "乌克兰对高质量康复的需求大大超过了现有资源。现有系统无法满足战争受伤者和退伍军人的实际需求。",
+      "目前约有30个专门为战争受伤者服务的康复中心，每年可接待约27,000名患者。然而，战争受伤者和退伍军人总数约为360,000人（乌克兰总统官方数据）。",
+      "按照目前的接待能力，每个受伤者至少需要等待约13.5年才能完成一次康复疗程。康复行业迫切需要大量支持，因为乌克兰保卫者的福祉依赖于此。"
+    ]
+  },
+  "financialStatus": {
+    "title": "运营规模与财务状况",
+    "description": "自2022年成立以来，Way to Health 持续扩大规模以服务更多战争受伤者。尽管我们获得了慈善捐赠和政府补偿，但运营成本远超收入，每年面临巨大资金缺口。",
+    "yearlyData": [
+      {
+        "year": "2022",
+        "period": "5个月运营",
+        "staffCount": 10,
+        "expenses": 1818400,
+        "donations": 70409,
+        "governmentCompensation": 0,
+        "deficit": -1747991,
+        "reportImage": "/images/projects/project-0/financial/report-2022.webp"
+      },
+      {
+        "year": "2023",
+        "period": "全年",
+        "staffCount": 14,
+        "expenses": 6665580,
+        "donations": 2205484,
+        "governmentCompensation": 0,
+        "deficit": -4460096,
+        "reportImage": "/images/projects/project-0/financial/report-2023.webp"
+      },
+      {
+        "year": "2024",
+        "period": "全年",
+        "staffCount": 17,
+        "expenses": 9207696,
+        "donations": 4125548,
+        "governmentCompensation": 2375637,
+        "deficit": -2706511,
+        "reportImage": "/images/projects/project-0/financial/report-2024.webp"
+      },
+      {
+        "year": "2025",
+        "period": "前9个月",
+        "staffCount": 23,
+        "expenses": 9876312,
+        "donations": 2473138,
+        "governmentCompensation": 4094633,
+        "deficit": -3308541,
+        "reportImage": "/images/projects/project-0/financial/report-2025.webp"
+      }
+    ],
+    "breakdown": {
+      "title": "主要支出类别",
+      "categories": [
+        {
+          "name": "工资支出",
+          "percentage": 75,
+          "description": "医生、物理治疗师、心理学家、护士等专业团队"
+        },
+        {
+          "name": "租金",
+          "percentage": 12,
+          "description": "240平米医疗中心场地租赁"
+        },
+        {
+          "name": "行政费用",
+          "percentage": 13,
+          "description": "办公用品、水电网、软件许可、咖啡等"
+        }
+      ]
+    }
+  },
+  "callToAction": {
+    "title": "我们需要您的支持",
+    "content": "每一笔捐款都在帮助重建一个人的生活。您的支持将用于：",
+    "purposes": [
+      {
+        "title": "维持康复中心免费运转并扩大规模",
+        "description": "确保每一位受战争伤害的人都能获得免费、专业的康复服务，并帮助我们扩展服务能力以接待更多患者"
+      },
+      {
+        "title": "支付网站运营与慈善项目实施成本",
+        "description": "维护这个透明的捐赠平台，确保每一笔善款都能高效送达需要帮助的人手中"
+      }
+    ],
+    "closing": "战争仍在继续，但康复不能等待。360,000名伤者仍在等待救治，而您的每一份善举，都是他们重返正常生活的希望。无论金额大小，您的捐赠都将直接改变一个人的命运。"
+  },
+  "partners": {
+    "title": "合作伙伴生态系统",
+    "description": "Way to Health 不仅是一个提供高质量康复服务的医疗中心，更是一个重要的社会项目。其生态系统包括 Way to Health 医疗中心、Way to Health 慈善基金会、荷兰慈善机构 A Warm Heart for Way to Health，以及其他基金会和商业伙伴。得益于他们的支持，该项目能够为战争受伤者提供完全免费的服务。",
+    "partners": [
+      {
+        "name": "Dnipro Christian Church",
+        "description": "第聂伯基督教会"
+      },
+      {
+        "name": "SHARE Mission Network",
+        "description": "SHARE 宣教网络"
+      },
+      {
+        "name": "Medux",
+        "description": "医疗合作伙伴"
+      },
+      {
+        "name": "Sunflower Scotland",
+        "description": "苏格兰向日葵慈善组织"
+      },
+      {
+        "name": "Golfstrim",
+        "description": "Golfstrim 基金会"
+      },
+      {
+        "name": "REHAU",
+        "description": "REHAU 企业支持"
+      },
+      {
+        "name": "A Warm Heart for Way to Health",
+        "description": "荷兰慈善机构"
+      },
+      {
+        "name": "Superhumans Center",
+        "description": "超人中心 - 乌克兰第一夫人 Olena Zelenska 直接参与的假肢和康复医疗机构"
+      }
+    ]
+  },
+  "hospitalVisits": {
+    "title": "医院探访项目",
+    "description": "我们探访医院，支持那些刚刚经历肢体截肢的人，为他们提供精神支持和全面康复的希望。",
+    "image": "/images/projects/project-0/progress/progress4.webp"
+  },
+  "faithBased": {
+    "title": "信仰基础",
+    "quote": "Way to Health 的总合作伙伴是主。祂的支持每天激励我们帮助受伤者，康复那些受战争影响的人，并给有需要的人带来希望。我们相信在上帝的指引下，祂赋予我们力量和资源来恢复每一位受战争伤害的人，并引导他们走上健康之路。"
+  },
+  "progressGallery": {
+    "title": "治疗进展",
+    "description": "记录患者从受伤到康复的治疗过程",
+    "images": [
+      { "url": "/images/projects/project-0/progress/progress0.webp", "priority": 10 },
+      { "url": "/images/projects/project-0/progress/progress1.webp", "priority": 9 },
+      { "url": "/images/projects/project-0/progress/progress2.webp", "priority": 8 },
+      { "url": "/images/projects/project-0/progress/progress3.webp", "priority": 8 },
+      { "url": "/images/projects/project-0/progress/progress4.webp", "priority": 9 },
+      { "url": "/images/projects/project-0/progress/progress5.webp", "priority": 7 },
+      { "url": "/images/projects/project-0/progress/progress6.webp", "priority": 7 },
+      { "url": "/images/projects/project-0/progress/progress7.webp", "priority": 8 },
+      { "url": "/images/projects/project-0/progress/progress8.webp", "priority": 6 },
+      { "url": "/images/projects/project-0/progress/progress9.webp", "priority": 6 },
+      { "url": "/images/projects/project-0/progress/progress10.webp", "priority": 7 },
+      { "url": "/images/projects/project-0/progress/progress11.webp", "priority": 5 },
+      { "url": "/images/projects/project-0/progress/progress12.webp", "priority": 9 },
+      { "url": "/images/projects/project-0/progress/progress13.webp", "priority": 5 },
+      { "url": "/images/projects/project-0/progress/progress14.webp", "priority": 5 },
+      { "url": "/images/projects/project-0/progress/progress15.webp", "priority": 4 }
+    ]
+  },
+  "results": [
+    { "imageUrl": "/images/projects/project-0/result/result1.webp", "priority": 7 },
+    { "imageUrl": "/images/projects/project-0/result/result2.webp", "priority": 8 },
+    { "imageUrl": "/images/projects/project-0/result/result3.webp", "priority": 9 },
+    { "imageUrl": "/images/projects/project-0/result/result4.webp", "priority": 6 },
+    { "imageUrl": "/images/projects/project-0/result/result5.webp", "priority": 10 },
+    { "imageUrl": "/images/projects/project-0/result/result6.webp", "priority": 6 },
+    { "imageUrl": "/images/projects/project-0/result/result7.webp", "priority": 7 },
+    { "imageUrl": "/images/projects/project-0/result/result8.webp", "priority": 5 },
+    { "imageUrl": "/images/projects/project-0/result/result9.webp", "priority": 5 },
+    { "imageUrl": "/images/projects/project-0/result/result10.webp", "priority": 10 },
+    { "imageUrl": "/images/projects/project-0/result/result11.webp", "priority": 8 },
+    { "imageUrl": "/images/projects/project-0/result/result12.webp", "priority": 6 },
+    { "imageUrl": "/images/projects/project-0/result/result13.webp", "priority": 4 }
+  ]
+}

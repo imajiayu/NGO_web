@@ -128,14 +128,10 @@ export default function DonationDetails({ orderReference, locale }: Props) {
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-bold text-yellow-900 mb-2">
-                {locale === 'en' ? '⏳ Payment Processing' : locale === 'zh' ? '⏳ 支付处理中' : '⏳ Обробка платежу'}
+                {t('paymentProcessingTitle')}
               </h3>
               <p className="text-yellow-800 leading-relaxed">
-                {locale === 'en'
-                  ? 'Payment is being confirmed by the bank, usually takes 2-5 minutes. You can check the status anytime on the track donation page. Once confirmed, you will receive an email notification.'
-                  : locale === 'zh'
-                  ? '支付正在由银行确认中，通常需要 2-5 分钟。您可以随时在捐赠查询页面查看状态。收到邮件后表示支付已确认。'
-                  : 'Платіж підтверджується банком, зазвичай це займає 2-5 хвилин. Ви можете перевірити статус у будь-який час на сторінці відстеження донатів. Після підтвердження ви отримаєте електронний лист.'}
+                {t('paymentProcessingDescription')}
               </p>
             </div>
           </div>
@@ -159,11 +155,7 @@ export default function DonationDetails({ orderReference, locale }: Props) {
                 {t('emailReminderTitle')}
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                {locale === 'en'
-                  ? `We will send a confirmation email to ${donorEmail} shortly.`
-                  : locale === 'zh'
-                  ? `我们稍后会向 ${donorEmail} 发送确认邮件。`
-                  : `Ми незабаром надішлемо підтвердження на ${donorEmail}.`}
+                {t('emailReminderDescription', { email: donorEmail })}
               </p>
             </div>
           </div>

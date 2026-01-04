@@ -30,6 +30,7 @@ export default function AdminNav() {
   const navItems = [
     { href: '/admin/projects', label: 'Projects' },
     { href: '/admin/donations', label: 'Donations' },
+    { href: '/admin/subscriptions', label: 'Subscriptions' },
   ]
 
   return (

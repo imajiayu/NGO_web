@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl'
 import type { ProjectStats } from '@/types'
 import { getLocation, getUnitName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
-import ProjectProgressBar from './ProjectProgressBar'
+import ProjectProgressBar from './shared/ProjectProgressBar'
 
 interface ProjectProgressCardProps {
   project: ProjectStats

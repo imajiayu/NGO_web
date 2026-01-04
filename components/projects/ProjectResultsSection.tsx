@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import ProjectResultsMasonry from './ProjectResultsMasonry'
+import ProjectResultsMasonry from './shared/ProjectResultsMasonry'
 import type { ProjectContent, ProjectResult } from '@/types'
 
 interface ProjectResultsSectionProps {

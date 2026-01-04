@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import type { ProjectStats } from '@/types'
 import { createWayForPayDonation } from '@/app/actions/donation'
+import { createEmailSubscription } from '@/app/actions/subscription'
 import WayForPayWidget from '@/app/[locale]/donate/wayforpay-widget'
 import { getProjectName, getLocation, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
 
@@ -23,6 +24,8 @@ interface DonationFormCardProps {
   setContactTelegram: (value: string) => void
   contactWhatsapp: string
   setContactWhatsapp: (value: string) => void
+  subscribeToNewsletter: boolean
+  setSubscribeToNewsletter: (value: boolean) => void
 }
 
 interface PaymentWidgetContainerProps {
@@ -196,6 +199,8 @@ export default function DonationFormCard({
   setContactTelegram,
   contactWhatsapp,
   setContactWhatsapp,
+  subscribeToNewsletter,
+  setSubscribeToNewsletter,
 }: DonationFormCardProps) {
   const t = useTranslations('donate')
 
@@ -404,6 +409,20 @@ export default function DonationFormCard({
       // Success - set payment params and mark as ready
       setPaymentParams(result.paymentParams!)
       setProcessingState('ready')
+
+      // Handle newsletter subscription if checked
+      if (subscribeToNewsletter && donorEmail) {
+        try {
+          await createEmailSubscription(
+            donorEmail.trim(),
+            locale as 'en' | 'zh' | 'ua'
+          )
+          // Silently succeed - don't show error to user if subscription fails
+        } catch (subscriptionError) {
+          console.error('Failed to create email subscription:', subscriptionError)
+          // Don't block the donation flow if subscription fails
+        }
+      }
     } catch (err) {
       console.error('Error creating payment intent:', err)
       if (err instanceof Error && err.message.includes('email')) {
@@ -481,14 +500,16 @@ export default function DonationFormCard({
               </svg>
               <span>{location}</span>
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-blue-600">
-                ${(project.unit_price || 0).toFixed(2)}
-              </span>
-              <span className="text-sm text-gray-500">
-                {t('quantity.perUnit', { unitName })}
-              </span>
-            </div>
+            {!isAggregatedProject && (
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold text-blue-600">
+                  ${(project.unit_price || 0).toFixed(2)}
+                </span>
+                <span className="text-sm text-gray-500">
+                  {t('quantity.perUnit', { unitName })}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -937,6 +958,21 @@ export default function DonationFormCard({
             <p className="mt-1 text-xs text-gray-500">
               {t('message.hint', { remaining: 1000 - donorMessage.length })}
             </p>
+          </div>
+
+          {/* Newsletter Subscription */}
+          <div className="pt-2">
+            <label className="flex items-start gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={subscribeToNewsletter}
+                onChange={(e) => setSubscribeToNewsletter(e.target.checked)}
+                className="mt-0.5 w-3.5 h-3.5 text-gray-400 bg-transparent border-gray-300 rounded focus:ring-0 focus:ring-offset-0"
+              />
+              <span className="text-xs text-gray-500">
+                {t('subscription.label')} · {t('subscription.privacyNote')}
+              </span>
+            </label>
           </div>
 
           {/* Submit Button */}

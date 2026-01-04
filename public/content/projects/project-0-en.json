@@ -1,0 +1,313 @@
+{
+  "title": "Way to Health\nRehabilitation Center for Ukrainian War Victims",
+  "subtitle": "Helping war-injured individuals return to full and meaningful lives",
+  "location": "Dnipro, Ukraine",
+  "locationDetail": "UTP Slobozhanske, Heroiv Ukrainy street 27C",
+  "foundationDate": "August 1, 2022",
+  "images": [
+    "/images/projects/project-0/event/event0.webp",
+    "/images/projects/project-0/event/event1.webp",
+    "/images/projects/project-0/event/event3.webp",
+    "/images/projects/project-0/event/event4.webp",
+    "/images/projects/project-0/event/event5.webp",
+    "/images/projects/project-0/event/event6.webp"
+  ],
+  "introduction": [
+    "Way to Health is a medical center established on August 1, 2022, dedicated to providing high-quality rehabilitation services to Ukrainian war victims. Our mission is to help all people affected by war return to full and meaningful lives, providing free rehabilitation services to veterans and civilians. Our funding sources are:"
+  ],
+  "statistics": {
+    "patientsServed": {
+      "value": 1600,
+      "label": "Patients Served",
+      "description": "Total number of patients served since establishment"
+    },
+    "avgCostPerPatient": {
+      "value": 1000,
+      "label": "Avg. Cost Per Patient",
+      "description": "Average rehabilitation cost per patient (USD)",
+      "isAmount": true
+    }
+  },
+  "mission": {
+    "title": "Our Mission",
+    "content": "To help all people affected by the war in Ukraine return to full and meaningful lives. We are committed to ensuring that every defender receives high-quality rehabilitation, care, and support on their journey to recovery.",
+    "values": [
+      {
+        "name": "In God's Hands",
+        "description": "We believe that under God's guidance, He grants us the strength and resources to restore every person harmed by war"
+      },
+      {
+        "name": "Humanity",
+        "description": "Treating every patient with empathy and respect"
+      },
+      {
+        "name": "Sincerity",
+        "description": "Communicating honestly and transparently with patients and partners"
+      },
+      {
+        "name": "Dedication",
+        "description": "Wholeheartedly serving the rehabilitation and well-being of our patients"
+      },
+      {
+        "name": "Professionalism",
+        "description": "Providing the highest standards of medical and rehabilitation services"
+      }
+    ]
+  },
+  "team": {
+    "title": "Our Team",
+    "description": "As of 2025, the medical center has 32+ professional employees, including:",
+    "members": [
+      "Orthopedic Trauma Surgeons",
+      "Family Physicians",
+      "Endocrinologists",
+      "Gastroenterologists",
+      "Physical Therapists",
+      "Physical Therapy Assistants",
+      "Occupational Therapists",
+      "Nurses",
+      "Psychologists",
+      "Speech Therapists",
+      "Management Team",
+      "Administrative Staff",
+      "Marketing Personnel"
+    ]
+  },
+  "treatmentPrograms": {
+    "title": "Treatment Programs",
+    "description": "We provide specialized treatment for various war-related injuries:",
+    "programs": [
+      {
+        "name": "Mine Blast Injuries",
+        "description": "Specialized treatment for complex injuries caused by landmines and explosive devices"
+      },
+      {
+        "name": "Shrapnel and Gunshot Wounds",
+        "description": "Managing penetrating wounds and shrapnel injuries from combat"
+      },
+      {
+        "name": "Traumatic Brain Injury",
+        "description": "Neurorehabilitation for head trauma"
+      },
+      {
+        "name": "Musculoskeletal Injuries",
+        "description": "Rehabilitation for bone, muscle, and joint damage"
+      },
+      {
+        "name": "Severe Concussions",
+        "description": "Specialized treatment for post-concussion syndrome"
+      },
+      {
+        "name": "Stroke",
+        "description": "Rehabilitation training for stroke patients"
+      },
+      {
+        "name": "Limb Amputation",
+        "description": "Prosthetic fitting and post-amputation rehabilitation training"
+      },
+      {
+        "name": "Post-Traumatic Stress Disorder (PTSD)",
+        "description": "Psychological therapy and support for war trauma"
+      },
+      {
+        "name": "Anxiety Disorders",
+        "description": "Professional psychological counseling for anxiety and emotional disorders"
+      }
+    ]
+  },
+  "successStories": [
+    {
+      "title": "Reclaiming the Motorcycle Dream",
+      "description": "After losing his lower limbs, he dreamed of riding motorcycles again. We fitted him with prosthetics, and he not only learned to run but got back on a motorcycle, reclaiming his joy in life.",
+      "image": "/images/projects/project-0/result/result1.webp"
+    },
+    {
+      "title": "Fitting Prosthetics During Blackouts",
+      "description": "During severe blackouts, we worked with flashlights and generators to ensure our defenders received their prosthetics on time.",
+      "image": "/images/projects/project-0/progress/progress14.webp"
+    },
+    {
+      "title": "From Wheelchair to Independent Walking",
+      "description": "A patient who arrived in a wheelchair, unable to move their lower limbs, has now regained the ability to walk independently.",
+      "image": "/images/projects/project-0/result/result13 2.webp"
+    },
+    {
+      "title": "Hospital Visits to Plan Rehabilitation",
+      "description": "We visit hospitals to support newly injured individuals, providing professional rehabilitation consultation and psychological support.",
+      "image": "/images/projects/project-0/progress/progress13.webp"
+    }
+  ],
+  "challenges": {
+    "title": "Shortage of Rehabilitation Resources",
+    "content": [
+      "The demand for high-quality rehabilitation in Ukraine far exceeds available resources. The existing system cannot meet the actual needs of war-injured individuals and veterans.",
+      "There are currently about 30 specialized rehabilitation centers serving war victims, capable of receiving about 27,000 patients annually. However, the total number of war-injured individuals and veterans is approximately 360,000 (official data from the Ukrainian President).",
+      "At the current capacity, each injured person would need to wait approximately 13.5 years to complete a single rehabilitation course. The rehabilitation sector urgently needs massive support, as the well-being of Ukraine's defenders depends on it."
+    ]
+  },
+  "financialStatus": {
+    "title": "Operating Scale and Financial Status",
+    "description": "Since its establishment in 2022, Way to Health has continuously expanded to serve more war-injured individuals. Despite receiving charitable donations and government compensation, operating costs far exceed income, facing significant funding gaps each year.",
+    "yearlyData": [
+      {
+        "year": "2022",
+        "period": "5 months operation",
+        "staffCount": 10,
+        "expenses": 1818400,
+        "donations": 70409,
+        "governmentCompensation": 0,
+        "deficit": -1747991,
+        "reportImage": "/images/projects/project-0/financial/report-2022.webp"
+      },
+      {
+        "year": "2023",
+        "period": "Full year",
+        "staffCount": 14,
+        "expenses": 6665580,
+        "donations": 2205484,
+        "governmentCompensation": 0,
+        "deficit": -4460096,
+        "reportImage": "/images/projects/project-0/financial/report-2023.webp"
+      },
+      {
+        "year": "2024",
+        "period": "Full year",
+        "staffCount": 17,
+        "expenses": 9207696,
+        "donations": 4125548,
+        "governmentCompensation": 2375637,
+        "deficit": -2706511,
+        "reportImage": "/images/projects/project-0/financial/report-2024.webp"
+      },
+      {
+        "year": "2025",
+        "period": "First 9 months",
+        "staffCount": 23,
+        "expenses": 9876312,
+        "donations": 2473138,
+        "governmentCompensation": 4094633,
+        "deficit": -3308541,
+        "reportImage": "/images/projects/project-0/financial/report-2025.webp"
+      }
+    ],
+    "breakdown": {
+      "title": "Major Expense Categories",
+      "categories": [
+        {
+          "name": "Payroll",
+          "percentage": 75,
+          "description": "Doctors, physical therapists, psychologists, nurses, and other professionals"
+        },
+        {
+          "name": "Rent",
+          "percentage": 12,
+          "description": "240㎡ medical center facility lease"
+        },
+        {
+          "name": "Administrative Costs",
+          "percentage": 13,
+          "description": "Office supplies, utilities, software licenses, coffee, etc."
+        }
+      ]
+    }
+  },
+  "callToAction": {
+    "title": "We Need Your Support",
+    "content": "Every donation helps rebuild a life. Your support will be used for:",
+    "purposes": [
+      {
+        "title": "Keeping the rehabilitation center free and expanding its capacity",
+        "description": "Ensuring every person harmed by war can access free, professional rehabilitation services, and helping us expand our capacity to serve more patients"
+      },
+      {
+        "title": "Covering website operations and charitable project implementation costs",
+        "description": "Maintaining this transparent donation platform so that supporters worldwide can easily contribute to helping Ukrainian war victims"
+      }
+    ],
+    "closing": "The war continues, but rehabilitation cannot wait. 360,000 injured individuals are still waiting for treatment, and your every act of kindness brings them hope of returning to normal life. No matter the amount, your donation will directly change someone's destiny."
+  },
+  "partners": {
+    "title": "Partner Ecosystem",
+    "description": "Way to Health is not just a medical center providing high-quality rehabilitation services, but an important social project. Its ecosystem includes the Way to Health Medical Center, Way to Health Charitable Foundation, the Dutch charity A Warm Heart for Way to Health, and other foundations and business partners. Thanks to their support, the project can provide completely free services to war victims.",
+    "partners": [
+      {
+        "name": "Dnipro Christian Church",
+        "description": "Dnipro Christian Church"
+      },
+      {
+        "name": "SHARE Mission Network",
+        "description": "SHARE Mission Network"
+      },
+      {
+        "name": "Medux",
+        "description": "Medical Partner"
+      },
+      {
+        "name": "Sunflower Scotland",
+        "description": "Sunflower Scotland Charity"
+      },
+      {
+        "name": "Golfstrim",
+        "description": "Golfstrim Foundation"
+      },
+      {
+        "name": "REHAU",
+        "description": "REHAU Corporate Support"
+      },
+      {
+        "name": "A Warm Heart for Way to Health",
+        "description": "Dutch Charity"
+      },
+      {
+        "name": "Superhumans Center",
+        "description": "Superhumans Center - prosthetic and rehabilitation medical institution directly supported by Ukraine's First Lady Olena Zelenska"
+      }
+    ]
+  },
+  "hospitalVisits": {
+    "title": "Hospital Visit Program",
+    "description": "We visit hospitals to support those who have just experienced limb amputation, providing them with emotional support and hope for comprehensive rehabilitation.",
+    "image": "/images/projects/project-0/progress/progress4.webp"
+  },
+  "faithBased": {
+    "title": "Faith Foundation",
+    "quote": "The main partner of Way to Health is the Lord. His support inspires us daily to help the injured, rehabilitate those affected by war, and bring hope to those in need. We believe that under God's guidance, He grants us the strength and resources to restore every person harmed by war and lead them on the path to health."
+  },
+  "progressGallery": {
+    "title": "Treatment Progress",
+    "description": "Documenting the treatment journey of patients from injury to recovery",
+    "images": [
+      { "url": "/images/projects/project-0/progress/progress0.webp", "priority": 10 },
+      { "url": "/images/projects/project-0/progress/progress1.webp", "priority": 9 },
+      { "url": "/images/projects/project-0/progress/progress2.webp", "priority": 8 },
+      { "url": "/images/projects/project-0/progress/progress3.webp", "priority": 8 },
+      { "url": "/images/projects/project-0/progress/progress4.webp", "priority": 9 },
+      { "url": "/images/projects/project-0/progress/progress5.webp", "priority": 7 },
+      { "url": "/images/projects/project-0/progress/progress6.webp", "priority": 7 },
+      { "url": "/images/projects/project-0/progress/progress7.webp", "priority": 8 },
+      { "url": "/images/projects/project-0/progress/progress8.webp", "priority": 6 },
+      { "url": "/images/projects/project-0/progress/progress9.webp", "priority": 6 },
+      { "url": "/images/projects/project-0/progress/progress10.webp", "priority": 7 },
+      { "url": "/images/projects/project-0/progress/progress11.webp", "priority": 5 },
+      { "url": "/images/projects/project-0/progress/progress12.webp", "priority": 9 },
+      { "url": "/images/projects/project-0/progress/progress13.webp", "priority": 5 },
+      { "url": "/images/projects/project-0/progress/progress14.webp", "priority": 5 },
+      { "url": "/images/projects/project-0/progress/progress15.webp", "priority": 4 }
+    ]
+  },
+  "results": [
+    { "imageUrl": "/images/projects/project-0/result/result1.webp", "priority": 7 },
+    { "imageUrl": "/images/projects/project-0/result/result2.webp", "priority": 8 },
+    { "imageUrl": "/images/projects/project-0/result/result3.webp", "priority": 9 },
+    { "imageUrl": "/images/projects/project-0/result/result4.webp", "priority": 6 },
+    { "imageUrl": "/images/projects/project-0/result/result5.webp", "priority": 10 },
+    { "imageUrl": "/images/projects/project-0/result/result6.webp", "priority": 6 },
+    { "imageUrl": "/images/projects/project-0/result/result7.webp", "priority": 7 },
+    { "imageUrl": "/images/projects/project-0/result/result8.webp", "priority": 5 },
+    { "imageUrl": "/images/projects/project-0/result/result9.webp", "priority": 5 },
+    { "imageUrl": "/images/projects/project-0/result/result10.webp", "priority": 10 },
+    { "imageUrl": "/images/projects/project-0/result/result11.webp", "priority": 8 },
+    { "imageUrl": "/images/projects/project-0/result/result12.webp", "priority": 6 },
+    { "imageUrl": "/images/projects/project-0/result/result13.webp", "priority": 4 }
+  ]
+}

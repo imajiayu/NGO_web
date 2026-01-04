@@ -201,6 +201,11 @@
       "placeholder": "Leave an encouraging message for the Ukrainians who will receive your donation, or a special note for the team...",
       "hint": "{remaining} characters remaining"
     },
+    "subscription": {
+      "label": "Stay informed about our projects",
+      "description": "Receive email updates when we launch new projects",
+      "privacyNote": "We respect your privacy. You can unsubscribe at any time."
+    },
     "operationalSupport": {
       "title": "Support Our Operations (Optional)",
       "description": "Help us cover operational costs",
@@ -329,15 +334,17 @@
   },
   "donateSuccess": {
     "title": "Processing Your Donation",
-    "thankYou": "Your payment has been received!",
+    "thankYou": "We are confirming your payment",
     "loading": "Loading your donation details...",
     "important": "Important",
     "processing": "Processing Your Donation",
     "processingDescription": "We're finalizing your donation. Please check your email for confirmation, or contact support if you don't receive it within a few minutes.",
     "saveIdsTitle": "IMPORTANT: Save Your Donation IDs",
     "saveIdsDescription": "Please save these IDs to track your donations. You'll need them to check the status and view results.",
+    "paymentProcessingTitle": "⏳ Payment Processing",
+    "paymentProcessingDescription": "Payment is being confirmed by the bank, usually takes 2-5 minutes. You can check the status anytime on the track donation page. Once confirmed, you will receive an email notification.",
     "emailReminderTitle": "Check Your Email",
-    "emailReminderDescription": "We've sent a confirmation email to {email}. Please check your inbox.",
+    "emailReminderDescription": "If the payment is successful, we will send a confirmation email to {email} shortly.",
     "details": {
       "title": "Donation Details",
       "project": "Project",
@@ -664,6 +671,20 @@
       "emailValue": "contact@waytofutureua.org.ua",
       "phone": "Phone",
       "phoneValue": "+38 096 383 7878"
+    }
+  },
+  "unsubscribed": {
+    "title": "Unsubscribed Successfully",
+    "message": "You have been unsubscribed from our email newsletter.",
+    "description": "You will no longer receive project announcements and updates from us.",
+    "resubscribe": {
+      "title": "Want to stay informed?",
+      "description": "You can resubscribe anytime by checking the newsletter box during your next donation."
+    },
+    "backHome": "Back to Home",
+    "error": {
+      "title": "Unsubscribe Failed",
+      "message": "We couldn't process your unsubscribe request. Please try again later or contact us for assistance."
     }
   }
 }

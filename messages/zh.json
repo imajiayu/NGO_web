@@ -201,6 +201,11 @@
       "placeholder": "给将收到您捐赠的乌克兰人留下鼓励的话,或给团队的特别备注...",
       "hint": "还可输入 {remaining} 个字符"
     },
+    "subscription": {
+      "label": "了解我们的最新项目",
+      "description": "当我们启动新项目时接收邮件更新",
+      "privacyNote": "我们尊重您的隐私。您可以随时取消订阅。"
+    },
     "operationalSupport": {
       "title": "支持团队运营（可选）",
       "description": "帮助我们支付运营成本",
@@ -319,15 +324,17 @@
   },
   "donateSuccess": {
     "title": "正在处理您的捐赠",
-    "thankYou": "我们已收到您的支付！",
+    "thankYou": "我们正在确认您的支付",
     "loading": "正在加载您的捐赠详情...",
     "important": "重要",
     "processing": "正在处理您的捐赠",
     "processingDescription": "我们正在完成您的捐赠。请查看您的邮箱确认，如果几分钟内未收到，请联系客服。",
     "saveIdsTitle": "重要：请保存您的捐赠编号",
     "saveIdsDescription": "请妥善保存这些编号以追踪您的捐赠。您需要使用这些编号来查询状态和查看结果。",
+    "paymentProcessingTitle": "⏳ 支付处理中",
+    "paymentProcessingDescription": "支付正在由银行确认中，通常需要 2-5 分钟。您可以随时在捐赠查询页面查看状态。收到邮件后表示支付已确认。",
     "emailReminderTitle": "查收您的邮箱",
-    "emailReminderDescription": "我们已向 {email} 发送确认邮件，请查收您的邮箱。",
+    "emailReminderDescription": "如果支付成功，我们稍后会向 {email} 发送确认邮件。",
     "details": {
       "title": "捐赠详情",
       "project": "项目",
@@ -654,6 +661,20 @@
       "emailValue": "contact@waytofutureua.org.ua",
       "phone": "电话",
       "phoneValue": "+38 096 383 7878"
+    }
+  },
+  "unsubscribed": {
+    "title": "取消订阅成功",
+    "message": "您已成功取消订阅我们的邮件通讯。",
+    "description": "您将不再收到我们发送的项目通知和更新。",
+    "resubscribe": {
+      "title": "想要继续了解我们的项目？",
+      "description": "您可以在下次捐赠时勾选通讯订阅框，即可重新订阅。"
+    },
+    "backHome": "返回首页",
+    "error": {
+      "title": "取消订阅失败",
+      "message": "我们无法处理您的取消订阅请求。请稍后重试或联系我们寻求帮助。"
     }
   }
 }

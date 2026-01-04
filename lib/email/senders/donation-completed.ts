@@ -4,7 +4,7 @@
 
 import { resend, FROM_EMAIL } from '../client'
 import { DonationCompletedEmailParams } from '../types'
-import { generateDonationCompletedEmail } from '../templates/donation-completed'
+import { generateDonationCompletedEmail } from '../templates/transactional/donation-completed'
 
 /**
  * Send donation completed notification email

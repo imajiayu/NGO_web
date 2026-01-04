@@ -4,7 +4,7 @@
 
 import { resend, FROM_EMAIL } from '../client'
 import { PaymentSuccessEmailParams } from '../types'
-import { generatePaymentSuccessEmail } from '../templates/payment-success'
+import { generatePaymentSuccessEmail } from '../templates/transactional/payment-success'
 
 /**
  * Send payment success confirmation email

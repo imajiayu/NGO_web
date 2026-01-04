@@ -5,14 +5,51 @@ import { useTranslations } from 'next-intl'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import type { ProjectStats } from '@/types'
 import ProjectsGallery from '@/components/projects/ProjectsGallery'
-import ProjectDetailContent from '@/components/projects/ProjectDetailContent'
-import ProjectSuppliesInfo from '@/components/projects/ProjectSuppliesInfo'
-import ProjectProgressCard from '@/components/projects/ProjectProgressCard'
-import ProjectResultsSection from '@/components/projects/ProjectResultsSection'
+import {
+  Project0DetailContent,
+  Project3DetailContent,
+} from '@/components/projects/detail-pages'
 import DonationFormCard from '@/components/donate/DonationFormCard'
 import DonationStatusFlow from '@/components/donation/DonationStatusFlow'
 import ProjectDonationList from '@/components/donation/ProjectDonationList'
 import { getProjectName, type SupportedLocale } from '@/lib/i18n-utils'
+
+/**
+ * Project Detail Component Registry
+ *
+ * Each project has its own dedicated detail page component.
+ * To add a new project:
+ * 1. Create component in components/projects/detail-pages/ProjectN/index.tsx
+ * 2. Export from components/projects/detail-pages/index.ts
+ * 3. Add case to this switch statement
+ */
+function renderProjectDetail(
+  projectId: number,
+  project: ProjectStats,
+  locale: string
+): React.ReactNode {
+  const key = `detail-${projectId}`
+
+  switch (projectId) {
+    case 0:
+      return <Project0DetailContent key={key} project={project} locale={locale} />
+    case 3:
+      return <Project3DetailContent key={key} project={project} locale={locale} />
+    default:
+      // Fallback for projects without dedicated detail pages
+      return (
+        <div className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden p-8 text-center">
+          <p className="text-gray-600">
+            {locale === 'en'
+              ? 'Project details coming soon.'
+              : locale === 'zh'
+              ? '项目详情即将发布。'
+              : 'Деталі проекту скоро будуть доступні.'}
+          </p>
+        </div>
+      )
+  }
+}
 
 interface DonatePageClientProps {
   projects: ProjectStats[]
@@ -39,6 +76,7 @@ export default function DonatePageClient({
   const [donorMessage, setDonorMessage] = useState('')
   const [contactTelegram, setContactTelegram] = useState('')
   const [contactWhatsapp, setContactWhatsapp] = useState('')
+  const [subscribeToNewsletter, setSubscribeToNewsletter] = useState(true)
 
   const selectedProject = projects.find(p => p.id === selectedProjectId) || null
 
@@ -89,40 +127,10 @@ export default function DonatePageClient({
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-6">
-            {/* Left Side: Three sections stacked vertically (60%) */}
+            {/* Left Side: Project Detail Content (60%) */}
             <div className="lg:col-span-3 space-y-3 md:space-y-4">
-              {/* Section 1: Project Details */}
-              <ProjectDetailContent
-                key={`detail-${selectedProjectId}`}
-                projectId={selectedProjectId}
-                projectName={getProjectName(
-                  selectedProject.project_name_i18n,
-                  selectedProject.project_name,
-                  locale as SupportedLocale
-                )}
-                locale={locale}
-              />
-
-              {/* Section 2: Supplies & Expenses */}
-              <ProjectSuppliesInfo
-                key={`supplies-${selectedProjectId}`}
-                projectId={selectedProjectId}
-                locale={locale}
-              />
-
-              {/* Section 3: Project Progress */}
-              <ProjectProgressCard
-                key={`progress-${selectedProjectId}`}
-                project={selectedProject}
-                locale={locale}
-              />
-
-              {/* Section 4: Project Results Gallery */}
-              <ProjectResultsSection
-                key={`results-${selectedProjectId}`}
-                projectId={selectedProjectId}
-                locale={locale}
-              />
+              {/* Render project-specific detail component */}
+              {renderProjectDetail(selectedProjectId, selectedProject, locale)}
             </div>
 
             {/* Right Side: Donation Form (40%) */}
@@ -141,6 +149,8 @@ export default function DonatePageClient({
                 setContactTelegram={setContactTelegram}
                 contactWhatsapp={contactWhatsapp}
                 setContactWhatsapp={setContactWhatsapp}
+                subscribeToNewsletter={subscribeToNewsletter}
+                setSubscribeToNewsletter={setSubscribeToNewsletter}
               />
             </div>
           </div>

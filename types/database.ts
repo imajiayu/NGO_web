@@ -121,6 +121,30 @@ export type Database = {
           },
         ]
       }
+      email_subscriptions: {
+        Row: {
+          email: string
+          id: number
+          is_subscribed: boolean
+          locale: string
+          updated_at: string
+        }
+        Insert: {
+          email: string
+          id?: number
+          is_subscribed?: boolean
+          locale: string
+          updated_at?: string
+        }
+        Update: {
+          email?: string
+          id?: number
+          is_subscribed?: boolean
+          locale?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           aggregate_donations: boolean
@@ -317,6 +341,11 @@ export type Database = {
         }[]
       }
       is_admin: { Args: never; Returns: boolean }
+      unsubscribe_email: { Args: { p_email: string }; Returns: boolean }
+      upsert_email_subscription: {
+        Args: { p_email: string; p_locale: string }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
