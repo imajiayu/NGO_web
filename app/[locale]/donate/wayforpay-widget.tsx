@@ -38,6 +38,7 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
   const hasRedirectedRef = useRef(false)
   const widgetOpenedRef = useRef(false)
   const widgetEverDetectedRef = useRef(false) // Track if widget was ever detected in DOM
+  const widgetCheckCompletedRef = useRef(false) // Prevent duplicate checks from multiple useEffect runs
 
   useEffect(() => {
     // Listen for iframe load errors (403, network errors, etc.)
@@ -177,17 +178,37 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
           }
         )
 
-        // Early detection: check for widget DOM elements every 500ms for the first 5 seconds
-        // This helps detect widget opening even if user closes it before the final check
-        earlyDetectionIntervalRef.current = setInterval(() => {
+        // Early detection: check for widget DOM elements frequently
+        // Start with immediate check, then every 100ms for the first 2 seconds
+        // This helps detect widget opening even if user closes it quickly
+        const doEarlyCheck = () => {
           if (checkWidgetOpened()) {
             console.log('[WIDGET] Early detection: widget found in DOM')
             if (earlyDetectionIntervalRef.current) {
               clearInterval(earlyDetectionIntervalRef.current)
               earlyDetectionIntervalRef.current = null
             }
+            return true
           }
-        }, 500)
+          return false
+        }
+
+        // Immediate check after run() is called
+        setTimeout(() => doEarlyCheck(), 50)
+        setTimeout(() => doEarlyCheck(), 150)
+
+        // Then check every 100ms
+        earlyDetectionIntervalRef.current = setInterval(() => {
+          if (doEarlyCheck()) return
+        }, 100)
+
+        // Stop early detection after 2 seconds (widget should definitely be open by then)
+        setTimeout(() => {
+          if (earlyDetectionIntervalRef.current) {
+            clearInterval(earlyDetectionIntervalRef.current)
+            earlyDetectionIntervalRef.current = null
+          }
+        }, 2000)
 
         // Check if widget opened successfully after a short delay (5 seconds)
         // This gives WayForPay time to create its DOM elements
@@ -196,6 +217,14 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
             clearInterval(earlyDetectionIntervalRef.current)
             earlyDetectionIntervalRef.current = null
           }
+
+          // Skip if check already completed (prevents duplicate runs from React Strict Mode or re-renders)
+          if (widgetCheckCompletedRef.current) {
+            console.log('[WIDGET] Widget check already completed, skipping')
+            return
+          }
+          widgetCheckCompletedRef.current = true
+
           if (!widgetOpenedRef.current && !hasRedirectedRef.current) {
             // First check if widget was ever detected (user may have closed it)
             if (widgetEverDetectedRef.current) {

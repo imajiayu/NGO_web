@@ -355,18 +355,31 @@ export default function TrackDonationForm({ locale }: Props) {
                                   </Link>
                                 </div>
 
-                                {/* Bottom Row: Amount + Date */}
+                                {/* Bottom Row: Amount + Dates */}
                                 <div className="flex items-center justify-between gap-2 text-xs text-gray-600">
                                   <span className="font-semibold text-gray-900">
                                     {donation.currency} {Number(donation.amount).toFixed(2)}
                                   </span>
-                                  <span>
-                                    {formatDate(donation.donated_at, locale as SupportedLocale, {
-                                      year: 'numeric',
-                                      month: 'short',
-                                      day: 'numeric'
-                                    })}
-                                  </span>
+                                  <div className="flex flex-col items-end gap-0.5">
+                                    <span>
+                                      {formatDate(donation.donated_at, locale as SupportedLocale, {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric'
+                                      })}
+                                    </span>
+                                    {donation.updated_at && donation.updated_at !== donation.donated_at && (
+                                      <span className="text-gray-500">
+                                        {t('results.updatedAt')}: {formatDate(donation.updated_at, locale as SupportedLocale, {
+                                          year: 'numeric',
+                                          month: 'short',
+                                          day: 'numeric',
+                                          hour: '2-digit',
+                                          minute: '2-digit'
+                                        })}
+                                      </span>
+                                    )}
+                                  </div>
                                 </div>
 
                                 {/* View Result Button - shown only if this donation is completed */}
