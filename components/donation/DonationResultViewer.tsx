@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
-import { X, ImageIcon, Loader2, Download, ChevronLeft, ChevronRight, PlayCircle } from 'lucide-react'
+import { X, ImageIcon, Loader2, Download, PlayCircle } from 'lucide-react'
 import { getAllDonationResultFiles } from '@/app/actions/donation-result'
+import ImageLightbox, { type LightboxImage } from '@/components/ImageLightbox'
 import JSZip from 'jszip'
 
 interface DonationResultViewerProps {
@@ -29,9 +30,9 @@ export default function DonationResultViewer({
   const [files, setFiles] = useState<DonationFile[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
   const [downloading, setDownloading] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(false)
 
   useEffect(() => {
     async function fetchFiles() {
@@ -56,6 +57,20 @@ export default function DonationResultViewer({
 
     fetchFiles()
   }, [donationPublicId, t])
+
+  // Prepare images for lightbox
+  const lightboxImages = useMemo<LightboxImage[]>(
+    () =>
+      files.map((file) => ({
+        url: file.originalUrl,
+        caption: file.name,
+        alt: file.name,
+        isVideo: file.isVideo,
+        contentType: file.contentType,
+        thumbnailUrl: file.thumbnailUrl,
+      })),
+    [files]
+  )
 
   const handleDownloadAll = async () => {
     if (files.length === 0) return
@@ -109,26 +124,7 @@ export default function DonationResultViewer({
 
   const openLightbox = (index: number) => {
     setLightboxIndex(index)
-    setImageLoaded(false) // 重置加载状态
-  }
-
-  const closeLightbox = () => {
-    setLightboxIndex(null)
-    setImageLoaded(false)
-  }
-
-  const goToPrevious = () => {
-    if (lightboxIndex !== null && lightboxIndex > 0) {
-      setLightboxIndex(lightboxIndex - 1)
-      setImageLoaded(false) // 切换图片时重置
-    }
-  }
-
-  const goToNext = () => {
-    if (lightboxIndex !== null && lightboxIndex < files.length - 1) {
-      setLightboxIndex(lightboxIndex + 1)
-      setImageLoaded(false) // 切换图片时重置
-    }
+    setLightboxOpen(true)
   }
 
   // Lock body scroll when modal is open
@@ -153,20 +149,6 @@ export default function DonationResultViewer({
       window.scrollTo(0, scrollY)
     }
   }, [])
-
-  // Keyboard navigation for lightbox
-  useEffect(() => {
-    if (lightboxIndex === null) return
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeLightbox()
-      if (e.key === 'ArrowLeft') goToPrevious()
-      if (e.key === 'ArrowRight') goToNext()
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [lightboxIndex])
 
   return (
     <>
@@ -284,115 +266,12 @@ export default function DonationResultViewer({
       </div>
 
       {/* Lightbox */}
-      {lightboxIndex !== null && files[lightboxIndex] && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-95 flex items-center justify-center z-[60]"
-          onClick={closeLightbox}
-        >
-          {/* Previous Button */}
-          {lightboxIndex > 0 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                goToPrevious()
-              }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
-              aria-label="Previous"
-            >
-              <ChevronLeft className="w-8 h-8 text-white" />
-            </button>
-          )}
-
-          {/* Next Button */}
-          {lightboxIndex < files.length - 1 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                goToNext()
-              }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
-              aria-label="Next"
-            >
-              <ChevronRight className="w-8 h-8 text-white" />
-            </button>
-          )}
-
-          {/* Top Bar: File Counter */}
-          <div className="absolute top-0 left-0 right-0 flex items-center justify-center p-4 bg-gradient-to-b from-black/50 to-transparent pointer-events-none">
-            <div className="px-3 py-1 bg-black/50 rounded-full">
-              <p className="text-white text-sm font-medium">
-                {lightboxIndex + 1} / {files.length}
-              </p>
-            </div>
-          </div>
-
-          {/* Bottom Bar: Close Button & File Name */}
-          <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center p-4 bg-gradient-to-t from-black/70 to-transparent z-10">
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                closeLightbox()
-              }}
-              className="mb-3 px-6 py-3 bg-white/20 hover:bg-white/30 rounded-full transition-all flex items-center gap-2 group"
-              aria-label="Close"
-            >
-              <X className="w-5 h-5 text-white" />
-              <span className="text-white text-sm font-medium">Close</span>
-            </button>
-            <p className="text-white text-sm text-center truncate max-w-md pointer-events-none">
-              {files[lightboxIndex].name}
-            </p>
-          </div>
-
-          {/* Content */}
-          <div
-            className="absolute inset-0 flex items-center justify-center px-4 z-0"
-            style={{
-              paddingTop: '80px',   // 顶部栏高度
-              paddingBottom: '120px' // 底部栏高度
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {files[lightboxIndex].isImage && (
-              <div className="relative w-full h-full flex items-center justify-center">
-                {/* 先显示缩略图（如果有） */}
-                {!imageLoaded && files[lightboxIndex].thumbnailUrl && (
-                  <img
-                    src={files[lightboxIndex].thumbnailUrl}
-                    alt={files[lightboxIndex].name}
-                    className="max-w-full max-h-full object-contain rounded-lg blur-sm"
-                  />
-                )}
-
-                {/* 原图（后台加载） */}
-                <img
-                  src={files[lightboxIndex].originalUrl}
-                  alt={files[lightboxIndex].name}
-                  className={`max-w-full max-h-full object-contain rounded-lg transition-opacity duration-300 ${
-                    imageLoaded ? 'opacity-100' : files[lightboxIndex].thumbnailUrl ? 'opacity-0 absolute' : 'opacity-100'
-                  }`}
-                  onLoad={() => setImageLoaded(true)}
-                />
-
-                {/* 加载指示器 */}
-                {!imageLoaded && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Loader2 className="w-8 h-8 text-white animate-spin" />
-                  </div>
-                )}
-              </div>
-            )}
-            {files[lightboxIndex].isVideo && (
-              <video
-                src={files[lightboxIndex].originalUrl}
-                controls
-                autoPlay
-                className="max-w-full max-h-full rounded-lg object-contain"
-              />
-            )}
-          </div>
-        </div>
-      )}
+      <ImageLightbox
+        images={lightboxImages}
+        initialIndex={lightboxIndex}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+      />
     </>
   )
 }

@@ -5,7 +5,7 @@ export default async function MissionSection() {
   const t = await getTranslations('home.hero.mission')
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative flex items-center justify-center overflow-hidden py-12 md:py-16">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -20,30 +20,30 @@ export default async function MissionSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-center text-white py-20">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
         {/* Label */}
-        <div className="mb-4 md:mb-6">
+        <div className="mb-3">
           <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-white/10 backdrop-blur-sm border border-white/20 rounded-full">
             {t('label')}
           </span>
         </div>
 
         {/* Title */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 leading-tight">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-3 md:mb-4 leading-tight">
           {t('title')}
         </h1>
 
         {/* Subtitle */}
-        <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 max-w-4xl mx-auto mb-6 md:mb-12 leading-relaxed">
+        <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 max-w-4xl mx-auto mb-8 leading-relaxed">
           {t('subtitle')}
         </p>
 
         {/* Who We Help */}
-        <div className="mt-8 md:mt-16">
-          <h3 className="text-xl sm:text-2xl font-semibold mb-6 md:mb-8 text-white/90">
+        <div className="mt-8 md:mt-10">
+          <h3 className="text-xl sm:text-2xl font-semibold mb-5 md:mb-6 text-white/90">
             {t('who')}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {[
               { key: 'displaced', image: '/images/mission/displaced.webp' },
               { key: 'women', image: '/images/mission/women.webp' },
@@ -78,9 +78,9 @@ export default async function MissionSection() {
       </div>
 
       {/* Scroll Indicator - Hidden on mobile */}
-      <div className="hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+      <div className="hidden md:block absolute bottom-4 left-1/2 -translate-x-1/2 z-10 animate-bounce">
         <svg
-          className="w-6 h-6 text-white/70"
+          className="w-5 h-5 text-white/70"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

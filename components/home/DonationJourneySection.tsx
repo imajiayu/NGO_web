@@ -25,17 +25,17 @@ export default function DonationJourneySection() {
   return (
     <>
       <GlobalLoadingSpinner isLoading={isNavigating} />
-      <section className="relative bg-gradient-to-b from-white to-gray-50 pb-20">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <section className="relative bg-gradient-to-b from-gray-50 to-white py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full mb-6">
+          <div className="text-center mb-8 md:mb-10">
+            <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full mb-3">
               {t('label')}
             </span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 md:mb-4">
               {t('title')}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-6">
               {t('subtitle')}
             </p>
 
@@ -43,7 +43,7 @@ export default function DonationJourneySection() {
             <div className="flex justify-center">
               <button
                 onClick={handleTrackClick}
-                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
               >
                 {useTranslations('donationStatusFlow')('trackButton')}
               </button>

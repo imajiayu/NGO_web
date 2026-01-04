@@ -38,7 +38,7 @@ export default async function ImpactSection() {
   ]
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative flex items-center justify-center overflow-hidden py-12 md:py-16">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -58,22 +58,22 @@ export default async function ImpactSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-20">
-          <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-full mb-6">
+        <div className="text-center mb-8 md:mb-10">
+          <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-full mb-3">
             {t('label')}
           </span>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-3 md:mb-4">
             {t('title')}
           </h2>
-          <p className="text-xl sm:text-2xl text-white/90 max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto">
             {t('subtitle')}
           </p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {stats.map(({ key, icon, color, image }) => (
             <div
               key={key}
@@ -127,9 +127,9 @@ export default async function ImpactSection() {
       </div>
 
       {/* Scroll Indicator - Hidden on mobile */}
-      <div className="hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+      <div className="hidden md:block absolute bottom-4 left-1/2 -translate-x-1/2 z-10 animate-bounce">
         <svg
-          className="w-6 h-6 text-white/70"
+          className="w-5 h-5 text-white/70"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

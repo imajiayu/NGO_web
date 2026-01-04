@@ -198,3 +198,50 @@ export const PAYMENT_METHODS = ['WayForPay', 'Bank Transfer'] as const
 export type DonationStatus = typeof DONATION_STATUSES[number]
 export type DonationLocale = typeof DONATION_LOCALES[number]
 export type ProjectStatus = typeof PROJECT_STATUSES[number]
+
+// Project Results - for displaying project outcomes/achievements
+export interface ProjectResult {
+  imageUrl: string
+  caption: string
+  date?: string // ISO 8601 format: YYYY-MM-DD
+  priority?: number // Higher priority = displayed first (default: 5)
+  projectId?: number // Optional: link to source project
+}
+
+// Home Marquee Data - for homepage scrolling gallery
+export interface HomeMarqueeData {
+  title: string
+  subtitle: string
+  results: ProjectResult[]
+}
+
+// Extended project content type (for JSON files in /public/content/projects/)
+export interface ProjectContent {
+  title: string
+  subtitle: string
+  images?: string[]
+  introduction?: string[]
+  shelters?: Array<{
+    name: string
+    nameOriginal: string
+    address: string
+    childrenCount: number
+  }>
+  statistics?: {
+    totalChildren: number
+    totalCost: {
+      uah: number
+      usd: number
+    }
+    averagePerChild: number
+    currency: string
+  }
+  giftsList?: Array<{
+    shelter: string
+    children: Array<{
+      name: string
+      gift: string
+    }>
+  }>
+  results?: ProjectResult[] // Project outcome images with captions
+}

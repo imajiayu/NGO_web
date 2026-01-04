@@ -28,7 +28,7 @@ export default async function ProjectsGrid() {
         <div className="relative">
           {/* Horizontal Scrolling Container */}
           <div className="overflow-x-auto pb-4 pt-2 scrollbar-hide">
-            <div className="flex gap-6 min-w-min px-2">
+            <div className="flex gap-6 min-w-min px-6">
               {projects.map((project) => (
                 <ProjectCard
                   key={project.id}

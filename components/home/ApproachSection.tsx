@@ -56,7 +56,7 @@ export default function ApproachSection() {
   ]
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-100 overflow-x-hidden">
+    <section className="relative flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-100 overflow-x-hidden py-12 md:py-16">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-30">
         <Image
@@ -69,33 +69,33 @@ export default function ApproachSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-20">
-          <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-blue-100 text-blue-700 rounded-full mb-6">
+        <div className="text-center mb-8 md:mb-10">
+          <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-blue-100 text-blue-700 rounded-full mb-3">
             {t('label')}
           </span>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 break-words">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 break-words">
             {t('title')}
           </h2>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 max-w-5xl mx-auto">
-            <p className="text-xl sm:text-2xl text-gray-600 text-center sm:text-left break-words">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-5xl mx-auto">
+            <p className="text-lg sm:text-xl text-gray-600 text-center sm:text-left break-words">
               {t('subtitle')}
             </p>
             <button
               onClick={handleScrollToCompliance}
-              className="inline-flex items-center px-5 py-2.5 bg-white border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md flex-shrink-0"
+              className="inline-flex items-center px-4 py-2 bg-white border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md flex-shrink-0"
             >
-              <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <span className="whitespace-nowrap">{tCompliance('button')}</span>
+              <span className="whitespace-nowrap text-sm">{tCompliance('button')}</span>
             </button>
           </div>
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {features.map(({ key, icon, gradient, image }) => (
             <div
               key={key}
@@ -157,9 +157,9 @@ export default function ApproachSection() {
       </div>
 
       {/* Scroll Indicator - Hidden on mobile */}
-      <div className="hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+      <div className="hidden md:block absolute bottom-4 left-1/2 -translate-x-1/2 z-10 animate-bounce">
         <svg
-          className="w-6 h-6 text-gray-600"
+          className="w-5 h-5 text-gray-600"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

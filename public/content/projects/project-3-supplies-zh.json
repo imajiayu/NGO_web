@@ -130,7 +130,15 @@
   },
   "exchangeRateNote": "基于购买时汇率：1 美元 = 45 格里夫纳",
   "receipts": {
-    "description": "支出凭证将在采购完成后上传",
-    "images": []
+    "description": "采购支出凭证",
+    "images": [
+      "/images/projects/project-3/receipts/receipt-1.webp",
+      "/images/projects/project-3/receipts/receipt-2.webp",
+      "/images/projects/project-3/receipts/receipt-3.webp",
+      "/images/projects/project-3/receipts/receipt-4.webp",
+      "/images/projects/project-3/receipts/receipt-5.webp",
+      "/images/projects/project-3/receipts/receipt-6.webp",
+      "/images/projects/project-3/receipts/receipt-7.webp"
+    ]
   }
 }

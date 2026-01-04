@@ -80,7 +80,7 @@ export default function ProjectCard({
           }
         `}
         style={{
-          backgroundImage: `url(/images/projects/${project.id}/background.webp)`,
+          backgroundImage: `url(/images/projects/project-${project.id}/card/bg.webp)`,
           backgroundColor: 'white'
         }}
       >
@@ -225,9 +225,9 @@ export default function ProjectCard({
     <>
       <GlobalLoadingSpinner isLoading={isNavigating} />
       <div
-        className="group flex-shrink-0 w-80 bg-white rounded-2xl border-2 border-gray-200 hover:border-blue-500 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden relative bg-cover bg-center bg-no-repeat flex flex-col"
+        className="group flex-shrink-0 w-80 bg-white rounded-2xl border-2 border-gray-200 hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden relative bg-cover bg-center bg-no-repeat flex flex-col"
         style={{
-          backgroundImage: `url(/images/projects/${project.id}/background.webp)`,
+          backgroundImage: `url(/images/projects/project-${project.id}/card/bg.webp)`,
           backgroundColor: 'white'
         }}
       >

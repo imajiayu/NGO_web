@@ -7,7 +7,7 @@ import { Link } from '@/i18n/navigation'
 import { Search, Mail, Hash, ArrowRight, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react'
 import DonationResultViewer from '@/components/donation/DonationResultViewer'
 import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
-import { getProjectName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
+import { getProjectName, getUnitName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
 import type { I18nText, DonationStatus } from '@/types'
 
 type Donation = {
@@ -24,6 +24,8 @@ type Donation = {
     id: number
     project_name: string
     project_name_i18n: I18nText | null
+    unit_name: string
+    unit_name_i18n: I18nText | null
   }
 }
 
@@ -247,6 +249,13 @@ export default function TrackDonationForm({ locale }: Props) {
                 // Get unique projects in this order
                 const projectCount = new Set(orderDonations.map(d => d.projects.id)).size
 
+                // Get unit name for display (from first donation's project)
+                const unitName = getUnitName(
+                  firstDonation.projects.unit_name_i18n,
+                  firstDonation.projects.unit_name,
+                  locale as SupportedLocale
+                )
+
                 return (
                   <div
                     key={orderReference}
@@ -281,7 +290,7 @@ export default function TrackDonationForm({ locale }: Props) {
                         <div>
                           <div className="text-xs text-gray-500 font-medium mb-1">{t('results.quantity')}</div>
                           <div className="text-lg font-bold text-gray-900">
-                            {orderDonations.length} {orderDonations.length === 1 ? 'unit' : 'units'}
+                            {orderDonations.length} {unitName}
                           </div>
                         </div>
 
@@ -355,33 +364,28 @@ export default function TrackDonationForm({ locale }: Props) {
                                     })}
                                   </span>
                                 </div>
+
+                                {/* View Result Button - shown only if this donation is completed */}
+                                {donation.donation_status === 'completed' && (
+                                  <button
+                                    className="flex items-center justify-center gap-2 px-3 py-2 mt-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-xs"
+                                    onClick={() => setViewResultDonationId(donation.donation_public_id)}
+                                  >
+                                    <CheckCircle2 className="w-3.5 h-3.5" />
+                                    {t('actions.viewResult')}
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
                               </div>
                             )
                           })}
                         </div>
                       </div>
 
-                      {/* Action Buttons */}
-                      <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-100">
-                        {/* View Result button - show if any donation is completed */}
-                        {orderDonations.some(d => d.donation_status === 'completed') && (
-                          <button
-                            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
-                            onClick={() => {
-                              const completedDonation = orderDonations.find(d => d.donation_status === 'completed')
-                              if (completedDonation) {
-                                setViewResultDonationId(completedDonation.donation_public_id)
-                              }
-                            }}
-                          >
-                            <CheckCircle2 className="w-4 h-4" />
-                            {t('actions.viewResult')}
-                            <ArrowRight className="w-4 h-4" />
-                          </button>
-                        )}
-
-                        {/* Refund button - show only if there are refundable donations (paid/confirmed/delivering) */}
-                        {refundableAmount > 0 && (
+                      {/* Action Buttons - Order Level */}
+                      {refundableAmount > 0 && (
+                        <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-100">
+                          {/* Refund button - show only if there are refundable donations (paid/confirmed/delivering) */}
                           <button
                             className="flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 border border-orange-200 rounded-lg hover:bg-orange-200 transition-colors font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={() => setConfirmRefundId(orderReference)}
@@ -399,8 +403,8 @@ export default function TrackDonationForm({ locale }: Props) {
                               </>
                             )}
                           </button>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )

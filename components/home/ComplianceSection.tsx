@@ -15,14 +15,14 @@ export default async function ComplianceSection() {
   ]
 
   return (
-    <section id="compliance-section" className="relative bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 py-16">
-      <div className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12">
+    <section id="compliance-section" className="relative bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 py-12 md:py-16">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
             {t('title')}
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
             {t('subtitle')}
           </p>
         </div>

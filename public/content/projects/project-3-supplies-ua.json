@@ -130,7 +130,15 @@
   },
   "exchangeRateNote": "За курсом на момент покупки: 1 USD = 45 UAH",
   "receipts": {
-    "description": "Квитанції про витрати будуть завантажені після закупівлі",
-    "images": []
+    "description": "Квитанції про витрати на закупівлю",
+    "images": [
+      "/images/projects/project-3/receipts/receipt-1.webp",
+      "/images/projects/project-3/receipts/receipt-2.webp",
+      "/images/projects/project-3/receipts/receipt-3.webp",
+      "/images/projects/project-3/receipts/receipt-4.webp",
+      "/images/projects/project-3/receipts/receipt-5.webp",
+      "/images/projects/project-3/receipts/receipt-6.webp",
+      "/images/projects/project-3/receipts/receipt-7.webp"
+    ]
   }
 }

@@ -2,8 +2,9 @@
   "title": "圣诞礼物计划 - 第聂伯罗儿童",
   "subtitle": "为失去父母的儿童送去温暖与希望",
   "images": [
-    "/images/projects/project-3/shelter-visit-1.webp",
-    "/images/projects/project-3/shelter-visit-2.webp"
+    "/images/projects/project-3/details/shelter-visit-1.webp",
+    "/images/projects/project-3/details/shelter-visit-2.webp",
+    "/images/projects/project-3/details/shelter-visit-3.webp"
   ],
   "introduction": [
     "在圣诞节来临之际，我们走访了乌克兰第聂伯罗市的两家儿童庇护所和一家母亲儿童之家。这些机构收容的都是因战争失去双亲或父亲的儿童。",
@@ -42,87 +43,569 @@
     {
       "shelter": "「Shelter」庇护所",
       "children": [
-        {"name": "Ваня", "gift": "LEGO"},
-        {"name": "Богдана", "gift": "大娃娃"},
-        {"name": "Макс", "gift": "FNAF 玩具"},
-        {"name": "Коля（大）", "gift": "FNAF 玩具/游戏"},
-        {"name": "Коля（小）", "gift": "遥控车"},
-        {"name": "Даша", "gift": "史莱姆、化妆包"},
-        {"name": "Діма", "gift": "Nerf 手枪"},
-        {"name": "Діма С.", "gift": "Nerf 手枪"},
-        {"name": "Рома", "gift": "Nerf 手枪"},
-        {"name": "Афелія", "gift": "娃娃"},
-        {"name": "Денис", "gift": "LEGO 汽车"},
-        {"name": "Паша", "gift": "LEGO City"},
-        {"name": "Віталіна", "gift": "大号奇趣蛋"},
-        {"name": "Андрій", "gift": "Nerf 手枪"},
-        {"name": "Нікіта", "gift": "大号奇趣蛋"},
-        {"name": "Яся", "gift": "玩具枕头"},
-        {"name": "Настя", "gift": "毛绒小熊"},
-        {"name": "Сашко", "gift": "大号奇趣蛋"}
+        {
+          "name": "Ваня",
+          "gift": "LEGO"
+        },
+        {
+          "name": "Богдана",
+          "gift": "大娃娃"
+        },
+        {
+          "name": "Макс",
+          "gift": "FNAF 玩具"
+        },
+        {
+          "name": "Коля（大）",
+          "gift": "FNAF 玩具/游戏"
+        },
+        {
+          "name": "Коля（小）",
+          "gift": "遥控车"
+        },
+        {
+          "name": "Даша",
+          "gift": "史莱姆、化妆包"
+        },
+        {
+          "name": "Діма",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Діма С.",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Рома",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Афелія",
+          "gift": "娃娃"
+        },
+        {
+          "name": "Денис",
+          "gift": "LEGO 汽车"
+        },
+        {
+          "name": "Паша",
+          "gift": "LEGO City"
+        },
+        {
+          "name": "Віталіна",
+          "gift": "大号奇趣蛋"
+        },
+        {
+          "name": "Андрій",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Нікіта",
+          "gift": "大号奇趣蛋"
+        },
+        {
+          "name": "Яся",
+          "gift": "玩具枕头"
+        },
+        {
+          "name": "Настя",
+          "gift": "毛绒小熊"
+        },
+        {
+          "name": "Сашко",
+          "gift": "大号奇趣蛋"
+        }
       ]
     },
     {
       "shelter": "「阳光」庇护所",
       "children": [
-        {"name": "Артем", "gift": "LEGO 积木"},
-        {"name": "Софія", "gift": "大娃娃"},
-        {"name": "Максим", "gift": "FNAF 玩具"},
-        {"name": "Ілля", "gift": "FNAF 玩具/游戏"},
-        {"name": "Тимур", "gift": "遥控车"},
-        {"name": "Анастасія", "gift": "史莱姆、化妆包"},
-        {"name": "Денис", "gift": "Nerf 手枪"},
-        {"name": "Марко", "gift": "Nerf 手枪"},
-        {"name": "Олександр", "gift": "Nerf 手枪"},
-        {"name": "Єва", "gift": "娃娃"},
-        {"name": "Владислав", "gift": "LEGO 汽车"},
-        {"name": "Катерина", "gift": "LEGO City"},
-        {"name": "Вікторія", "gift": "大号奇趣蛋"},
-        {"name": "Андрій", "gift": "Nerf 手枪"},
-        {"name": "Нікіта", "gift": "大号奇趣蛋"},
-        {"name": "Яна", "gift": "玩具枕头"},
-        {"name": "Настя", "gift": "毛绒小熊"},
-        {"name": "Сава", "gift": "大号奇趣蛋"},
-        {"name": "Богдан", "gift": "LEGO 积木"},
-        {"name": "Ліза", "gift": "大娃娃"},
-        {"name": "Павло", "gift": "FNAF 玩具"},
-        {"name": "Олег", "gift": "FNAF 玩具/游戏"},
-        {"name": "Марія", "gift": "遥控车"},
-        {"name": "Ірина", "gift": "史莱姆、化妆包"},
-        {"name": "Арсен", "gift": "Nerf 手枪"},
-        {"name": "Тарас", "gift": "Nerf 手枪"},
-        {"name": "Лілія", "gift": "娃娃"},
-        {"name": "Микита", "gift": "LEGO 汽车"},
-        {"name": "Софія", "gift": "LEGO City"},
-        {"name": "Дмитро", "gift": "大号奇趣蛋"},
-        {"name": "Валерія", "gift": "玩具枕头"},
-        {"name": "Єгор", "gift": "大号奇趣蛋"},
-        {"name": "Влада", "gift": "毛绒小熊"},
-        {"name": "Марко", "gift": "Nerf 手枪"}
+        {
+          "name": "Артем",
+          "gift": "LEGO 积木"
+        },
+        {
+          "name": "Софія",
+          "gift": "大娃娃"
+        },
+        {
+          "name": "Максим",
+          "gift": "FNAF 玩具"
+        },
+        {
+          "name": "Ілля",
+          "gift": "FNAF 玩具/游戏"
+        },
+        {
+          "name": "Тимур",
+          "gift": "遥控车"
+        },
+        {
+          "name": "Анастасія",
+          "gift": "史莱姆、化妆包"
+        },
+        {
+          "name": "Денис",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Марко",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Олександр",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Єва",
+          "gift": "娃娃"
+        },
+        {
+          "name": "Владислав",
+          "gift": "LEGO 汽车"
+        },
+        {
+          "name": "Катерина",
+          "gift": "LEGO City"
+        },
+        {
+          "name": "Вікторія",
+          "gift": "大号奇趣蛋"
+        },
+        {
+          "name": "Андрій",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Нікіта",
+          "gift": "大号奇趣蛋"
+        },
+        {
+          "name": "Яна",
+          "gift": "玩具枕头"
+        },
+        {
+          "name": "Настя",
+          "gift": "毛绒小熊"
+        },
+        {
+          "name": "Сава",
+          "gift": "大号奇趣蛋"
+        },
+        {
+          "name": "Богдан",
+          "gift": "LEGO 积木"
+        },
+        {
+          "name": "Ліза",
+          "gift": "大娃娃"
+        },
+        {
+          "name": "Павло",
+          "gift": "FNAF 玩具"
+        },
+        {
+          "name": "Олег",
+          "gift": "FNAF 玩具/游戏"
+        },
+        {
+          "name": "Марія",
+          "gift": "遥控车"
+        },
+        {
+          "name": "Ірина",
+          "gift": "史莱姆、化妆包"
+        },
+        {
+          "name": "Арсен",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Тарас",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Лілія",
+          "gift": "娃娃"
+        },
+        {
+          "name": "Микита",
+          "gift": "LEGO 汽车"
+        },
+        {
+          "name": "Софія",
+          "gift": "LEGO City"
+        },
+        {
+          "name": "Дмитро",
+          "gift": "大号奇趣蛋"
+        },
+        {
+          "name": "Валерія",
+          "gift": "玩具枕头"
+        },
+        {
+          "name": "Єгор",
+          "gift": "大号奇趣蛋"
+        },
+        {
+          "name": "Влада",
+          "gift": "毛绒小熊"
+        },
+        {
+          "name": "Марко",
+          "gift": "Nerf 手枪"
+        }
       ]
     },
     {
       "shelter": "「彩虹」母亲儿童之家",
       "children": [
-        {"name": "Антон", "gift": "LEGO 积木"},
-        {"name": "Марина", "gift": "大娃娃"},
-        {"name": "Іван", "gift": "FNAF 玩具"},
-        {"name": "Олег", "gift": "FNAF 玩具/游戏"},
-        {"name": "Артем", "gift": "遥控车"},
-        {"name": "Катерина", "gift": "史莱姆、化妆包"},
-        {"name": "Денис", "gift": "Nerf 手枪"},
-        {"name": "Софія", "gift": "Nerf 手枪"},
-        {"name": "Роман", "gift": "Nerf 手枪"},
-        {"name": "Аліна", "gift": "娃娃"},
-        {"name": "Владислав", "gift": "LEGO 汽车"},
-        {"name": "Поліна", "gift": "LEGO City"},
-        {"name": "Віталія", "gift": "大号奇趣蛋"},
-        {"name": "Андрій", "gift": "Nerf 手枪"},
-        {"name": "Нікіта", "gift": "大号奇趣蛋"},
-        {"name": "Яна", "gift": "玩具枕头"},
-        {"name": "Настя", "gift": "毛绒小熊"},
-        {"name": "Сашко", "gift": "大号奇趣蛋"}
+        {
+          "name": "Антон",
+          "gift": "LEGO 积木"
+        },
+        {
+          "name": "Марина",
+          "gift": "大娃娃"
+        },
+        {
+          "name": "Іван",
+          "gift": "FNAF 玩具"
+        },
+        {
+          "name": "Олег",
+          "gift": "FNAF 玩具/游戏"
+        },
+        {
+          "name": "Артем",
+          "gift": "遥控车"
+        },
+        {
+          "name": "Катерина",
+          "gift": "史莱姆、化妆包"
+        },
+        {
+          "name": "Денис",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Софія",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Роман",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Аліна",
+          "gift": "娃娃"
+        },
+        {
+          "name": "Владислав",
+          "gift": "LEGO 汽车"
+        },
+        {
+          "name": "Поліна",
+          "gift": "LEGO City"
+        },
+        {
+          "name": "Віталія",
+          "gift": "大号奇趣蛋"
+        },
+        {
+          "name": "Андрій",
+          "gift": "Nerf 手枪"
+        },
+        {
+          "name": "Нікіта",
+          "gift": "大号奇趣蛋"
+        },
+        {
+          "name": "Яна",
+          "gift": "玩具枕头"
+        },
+        {
+          "name": "Настя",
+          "gift": "毛绒小熊"
+        },
+        {
+          "name": "Сашко",
+          "gift": "大号奇趣蛋"
+        }
       ]
+    }
+  ],
+  "results": [
+    {
+      "imageUrl": "/images/projects/project-3/results/group-photo-0.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 10
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/group-photo-1.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 9
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/group-photo-2.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 8
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/group-photo-3.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 9
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/delivery-1.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-18",
+      "priority": 7
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-2.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 6
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-3.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-4.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 6
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-5.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-6.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 6
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-7.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-8.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-9.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-10.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-11.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-12.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-13.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-14.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-15.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-16.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-17.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 2
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-18.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-19.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-20.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-21.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 2
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-22.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-23.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-24.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-25.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 2
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-26.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-27.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-28.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-29.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 2
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-30.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-31.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-32.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-33.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-34.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 2
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-35.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 2
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-36.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 1
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-37.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 1
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-38.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 1
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-39.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 1
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-40.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 1
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-41.webp",
+      "caption": "2025圣诞节第聂伯罗孤儿礼物包裹项目",
+      "date": "2024-12-25",
+      "priority": 1
     }
   ]
 }

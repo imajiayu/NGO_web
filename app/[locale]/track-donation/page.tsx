@@ -1,4 +1,5 @@
 import { getTranslations, getLocale } from 'next-intl/server'
+import Image from 'next/image'
 import TrackDonationForm from './track-donation-form'
 
 export async function generateMetadata({
@@ -20,16 +21,67 @@ export default async function TrackDonationPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-gray-50">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 py-20 pb-32">
-        <div className="absolute inset-0 bg-black/10 -z-10"></div>
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-white/20 backdrop-blur-sm border border-white/30 rounded-full mb-6 text-white">
+      <div className="relative overflow-hidden py-20 pb-32">
+        {/* Background Images - Three vertical photos */}
+        <div className="absolute inset-0 z-0">
+          {/* Desktop: Three photos side by side covering 100% width */}
+          <div className="hidden md:flex absolute inset-0">
+            <div className="relative w-1/3 h-full">
+              <Image
+                src="/images/track-donation/bg-1.webp"
+                alt="Background 1"
+                fill
+                className="object-cover"
+                quality={85}
+                priority={true}
+              />
+            </div>
+            <div className="relative w-1/3 h-full">
+              <Image
+                src="/images/track-donation/bg-2.webp"
+                alt="Background 2"
+                fill
+                className="object-cover"
+                quality={85}
+                priority={true}
+              />
+            </div>
+            <div className="relative w-1/3 h-full">
+              <Image
+                src="/images/track-donation/bg-3.webp"
+                alt="Background 3"
+                fill
+                className="object-cover"
+                quality={85}
+                priority={true}
+              />
+            </div>
+          </div>
+
+          {/* Mobile: Single center photo */}
+          <div className="md:hidden absolute inset-0">
+            <Image
+              src="/images/track-donation/bg-2.webp"
+              alt="Background"
+              fill
+              className="object-cover"
+              quality={85}
+              priority={true}
+            />
+          </div>
+
+          {/* Dark overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/30"></div>
+        </div>
+
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center flex flex-col items-center">
+          <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase mb-6 text-white bg-white/20 backdrop-blur-sm rounded-full border border-white/30 shadow-lg">
             {t('pageTitle')}
           </span>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 inline-block px-6 py-3 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg">
             {t('title')}
           </h1>
-          <p className="text-lg sm:text-xl text-blue-100 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-white max-w-2xl inline-block px-6 py-3 bg-black/15 backdrop-blur-sm rounded shadow-md">
             {t('description')}
           </p>
         </div>

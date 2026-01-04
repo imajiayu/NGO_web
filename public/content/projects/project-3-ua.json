@@ -2,8 +2,9 @@
   "title": "Програма різдвяних подарунків - Діти Дніпра",
   "subtitle": "Тепло та надія дітям, які втратили батьків",
   "images": [
-    "/images/projects/project-3/shelter-visit-1.webp",
-    "/images/projects/project-3/shelter-visit-2.webp"
+    "/images/projects/project-3/details/shelter-visit-1.webp",
+    "/images/projects/project-3/details/shelter-visit-2.webp",
+    "/images/projects/project-3/details/shelter-visit-3.webp"
   ],
   "introduction": [
     "Напередодні Різдва ми відвідали два дитячі притулки та один будинок матері і дитини у Дніпрі. У цих закладах проживають діти, які через війну втратили обох батьків або батька.",
@@ -42,86 +43,569 @@
     {
       "shelter": "Притулок «Шелтер»",
       "children": [
-        {"name": "Ваня", "gift": "LEGO"},
-        {"name": "Богдана", "gift": "велика лялька"},
-        {"name": "Макс", "gift": "іграшка FNAF"},
-        {"name": "Коля (старший)", "gift": "іграшка/гра FNAF"},
-        {"name": "Коля (молодший)", "gift": "машинка на пульті"},
-        {"name": "Даша", "gift": "слайм, косметичка"},
-        {"name": "Діма", "gift": "Nerf пістолет"},
-        {"name": "Діма С.", "gift": "Nerf пістолет"},
-        {"name": "Рома", "gift": "Nerf пістолет"},
-        {"name": "Афелія", "gift": "лялька"},
-        {"name": "Денис", "gift": "машинка LEGO"},
-        {"name": "Паша", "gift": "LEGO City"},
-        {"name": "Віталіна", "gift": "великий Kinder"},
-        {"name": "Андрій", "gift": "Nerf пістолет"},
-        {"name": "Нікіта", "gift": "великий Kinder"},
-        {"name": "Яся", "gift": "подушка-іграшка"},
-        {"name": "Настя", "gift": "плюшевий ведмедик"},
-        {"name": "Сашко", "gift": "великий Kinder"}
+        {
+          "name": "Ваня",
+          "gift": "LEGO"
+        },
+        {
+          "name": "Богдана",
+          "gift": "велика лялька"
+        },
+        {
+          "name": "Макс",
+          "gift": "іграшка FNAF"
+        },
+        {
+          "name": "Коля (старший)",
+          "gift": "іграшка/гра FNAF"
+        },
+        {
+          "name": "Коля (молодший)",
+          "gift": "машинка на пульті"
+        },
+        {
+          "name": "Даша",
+          "gift": "слайм, косметичка"
+        },
+        {
+          "name": "Діма",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Діма С.",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Рома",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Афелія",
+          "gift": "лялька"
+        },
+        {
+          "name": "Денис",
+          "gift": "машинка LEGO"
+        },
+        {
+          "name": "Паша",
+          "gift": "LEGO City"
+        },
+        {
+          "name": "Віталіна",
+          "gift": "великий Kinder"
+        },
+        {
+          "name": "Андрій",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Нікіта",
+          "gift": "великий Kinder"
+        },
+        {
+          "name": "Яся",
+          "gift": "подушка-іграшка"
+        },
+        {
+          "name": "Настя",
+          "gift": "плюшевий ведмедик"
+        },
+        {
+          "name": "Сашко",
+          "gift": "великий Kinder"
+        }
       ]
     },
     {
       "shelter": "Притулок «Сонечко»",
       "children": [
-        {"name": "Артем", "gift": "конструктор LEGO"},
-        {"name": "Софія", "gift": "велика лялька"},
-        {"name": "Максим", "gift": "іграшка FNAF"},
-        {"name": "Ілля", "gift": "іграшка/гра FNAF"},
-        {"name": "Тимур", "gift": "машинка на пульті"},
-        {"name": "Анастасія", "gift": "слайм, косметичка"},
-        {"name": "Денис", "gift": "Nerf пістолет"},
-        {"name": "Марко", "gift": "Nerf пістолет"},
-        {"name": "Олександр", "gift": "Nerf пістолет"},
-        {"name": "Єва", "gift": "лялька"},
-        {"name": "Владислав", "gift": "машинка LEGO"},
-        {"name": "Катерина", "gift": "LEGO City"},
-        {"name": "Вікторія", "gift": "великий Kinder"},
-        {"name": "Андрій", "gift": "Nerf пістолет"},
-        {"name": "Нікіта", "gift": "великий Kinder"},
-        {"name": "Яна", "gift": "подушка-іграшка"},
-        {"name": "Настя", "gift": "плюшевий ведмедик"},
-        {"name": "Сава", "gift": "великий Kinder"},
-        {"name": "Богдан", "gift": "конструктор LEGO"},
-        {"name": "Ліза", "gift": "велика лялька"},
-        {"name": "Павло", "gift": "іграшка FNAF"},
-        {"name": "Олег", "gift": "іграшка/гра FNAF"},
-        {"name": "Марія", "gift": "машинка на пульті"},
-        {"name": "Ірина", "gift": "слайм, косметичка"},
-        {"name": "Арсен", "gift": "Nerf пістолет"},
-        {"name": "Тарас", "gift": "Nerf пістолет"},
-        {"name": "Лілія", "gift": "лялька"},
-        {"name": "Микита", "gift": "машинка LEGO"},
-        {"name": "Софія", "gift": "LEGO City"},
-        {"name": "Дмитро", "gift": "великий Kinder"},
-        {"name": "Валерія", "gift": "подушка-іграшка"},
-        {"name": "Єгор", "gift": "великий Kinder"},
-        {"name": "Влада", "gift": "плюшевий ведмедик"},{"name": "Марко", "gift": "Nerf пістолет"}
+        {
+          "name": "Артем",
+          "gift": "конструктор LEGO"
+        },
+        {
+          "name": "Софія",
+          "gift": "велика лялька"
+        },
+        {
+          "name": "Максим",
+          "gift": "іграшка FNAF"
+        },
+        {
+          "name": "Ілля",
+          "gift": "іграшка/гра FNAF"
+        },
+        {
+          "name": "Тимур",
+          "gift": "машинка на пульті"
+        },
+        {
+          "name": "Анастасія",
+          "gift": "слайм, косметичка"
+        },
+        {
+          "name": "Денис",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Марко",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Олександр",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Єва",
+          "gift": "лялька"
+        },
+        {
+          "name": "Владислав",
+          "gift": "машинка LEGO"
+        },
+        {
+          "name": "Катерина",
+          "gift": "LEGO City"
+        },
+        {
+          "name": "Вікторія",
+          "gift": "великий Kinder"
+        },
+        {
+          "name": "Андрій",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Нікіта",
+          "gift": "великий Kinder"
+        },
+        {
+          "name": "Яна",
+          "gift": "подушка-іграшка"
+        },
+        {
+          "name": "Настя",
+          "gift": "плюшевий ведмедик"
+        },
+        {
+          "name": "Сава",
+          "gift": "великий Kinder"
+        },
+        {
+          "name": "Богдан",
+          "gift": "конструктор LEGO"
+        },
+        {
+          "name": "Ліза",
+          "gift": "велика лялька"
+        },
+        {
+          "name": "Павло",
+          "gift": "іграшка FNAF"
+        },
+        {
+          "name": "Олег",
+          "gift": "іграшка/гра FNAF"
+        },
+        {
+          "name": "Марія",
+          "gift": "машинка на пульті"
+        },
+        {
+          "name": "Ірина",
+          "gift": "слайм, косметичка"
+        },
+        {
+          "name": "Арсен",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Тарас",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Лілія",
+          "gift": "лялька"
+        },
+        {
+          "name": "Микита",
+          "gift": "машинка LEGO"
+        },
+        {
+          "name": "Софія",
+          "gift": "LEGO City"
+        },
+        {
+          "name": "Дмитро",
+          "gift": "великий Kinder"
+        },
+        {
+          "name": "Валерія",
+          "gift": "подушка-іграшка"
+        },
+        {
+          "name": "Єгор",
+          "gift": "великий Kinder"
+        },
+        {
+          "name": "Влада",
+          "gift": "плюшевий ведмедик"
+        },
+        {
+          "name": "Марко",
+          "gift": "Nerf пістолет"
+        }
       ]
     },
     {
       "shelter": "Дім матері і дитини «Веселка»",
       "children": [
-        {"name": "Антон", "gift": "конструктор LEGO"},
-        {"name": "Марина", "gift": "велика лялька"},
-        {"name": "Іван", "gift": "іграшка FNAF"},
-        {"name": "Олег", "gift": "іграшка/гра FNAF"},
-        {"name": "Артем", "gift": "машинка на пульті"},
-        {"name": "Катерина", "gift": "слайм, косметичка"},
-        {"name": "Денис", "gift": "Nerf пістолет"},
-        {"name": "Софія", "gift": "Nerf пістолет"},
-        {"name": "Роман", "gift": "Nerf пістолет"},
-        {"name": "Аліна", "gift": "лялька"},
-        {"name": "Владислав", "gift": "машинка LEGO"},
-        {"name": "Поліна", "gift": "LEGO City"},
-        {"name": "Віталія", "gift": "великий Kinder"},
-        {"name": "Андрій", "gift": "Nerf пістолет"},
-        {"name": "Нікіта", "gift": "великий Kinder"},
-        {"name": "Яна", "gift": "подушка-іграшка"},
-        {"name": "Настя", "gift": "плюшевий ведмедик"},
-        {"name": "Сашко", "gift": "великий Kinder"}
+        {
+          "name": "Антон",
+          "gift": "конструктор LEGO"
+        },
+        {
+          "name": "Марина",
+          "gift": "велика лялька"
+        },
+        {
+          "name": "Іван",
+          "gift": "іграшка FNAF"
+        },
+        {
+          "name": "Олег",
+          "gift": "іграшка/гра FNAF"
+        },
+        {
+          "name": "Артем",
+          "gift": "машинка на пульті"
+        },
+        {
+          "name": "Катерина",
+          "gift": "слайм, косметичка"
+        },
+        {
+          "name": "Денис",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Софія",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Роман",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Аліна",
+          "gift": "лялька"
+        },
+        {
+          "name": "Владислав",
+          "gift": "машинка LEGO"
+        },
+        {
+          "name": "Поліна",
+          "gift": "LEGO City"
+        },
+        {
+          "name": "Віталія",
+          "gift": "великий Kinder"
+        },
+        {
+          "name": "Андрій",
+          "gift": "Nerf пістолет"
+        },
+        {
+          "name": "Нікіта",
+          "gift": "великий Kinder"
+        },
+        {
+          "name": "Яна",
+          "gift": "подушка-іграшка"
+        },
+        {
+          "name": "Настя",
+          "gift": "плюшевий ведмедик"
+        },
+        {
+          "name": "Сашко",
+          "gift": "великий Kinder"
+        }
       ]
+    }
+  ],
+  "results": [
+    {
+      "imageUrl": "/images/projects/project-3/results/group-photo-0.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 10
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/group-photo-1.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 9
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/group-photo-2.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 8
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/group-photo-3.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 9
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/delivery-1.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-18",
+      "priority": 7
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-2.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 6
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-3.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-4.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 6
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-5.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-6.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 6
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-7.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-8.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-9.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-10.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-11.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-12.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-13.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-14.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-15.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-16.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-17.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 2
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-18.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-19.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-20.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-21.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 2
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-22.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-23.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-24.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-25.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 2
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-26.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-27.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-28.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 5
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-29.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 2
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-30.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-31.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 4
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-32.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-33.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 3
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-34.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 2
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-35.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 2
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-36.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 1
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-37.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 1
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-38.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 1
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-39.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 1
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-40.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 1
+    },
+    {
+      "imageUrl": "/images/projects/project-3/results/activity-41.webp",
+      "caption": "Різдвяний проєкт подарункових пакетів для сиріт Дніпра 2025",
+      "date": "2024-12-25",
+      "priority": 1
     }
   ]
 }

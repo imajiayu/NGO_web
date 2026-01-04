@@ -33,9 +33,27 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
   const [isRedirecting, setIsRedirecting] = useState(false)
   const scriptLoadedRef = useRef(false)
   const scriptLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const widgetInitTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const hasRedirectedRef = useRef(false)
+  const widgetInteractedRef = useRef(false)
 
   useEffect(() => {
+    // Listen for iframe load errors (403, network errors, etc.)
+    const handleWindowError = (event: ErrorEvent) => {
+      // Check if error is related to WayForPay
+      if (event.message && event.message.includes('wayforpay')) {
+        console.error('[WIDGET] Window error detected:', event.message)
+        if (!widgetInteractedRef.current && !hasRedirectedRef.current) {
+          setError(t('errors.paymentLoadFailed'))
+          setIsLoading(false)
+          setIsRedirecting(false)
+          markDonationWidgetFailed(paymentParams.orderReference)
+            .catch(err => console.error('[WIDGET] Failed to mark as widget_load_failed:', err))
+        }
+      }
+    }
+
+    window.addEventListener('error', handleWindowError, true)
 
     // Load WayForPay widget script
     const loadWayForPayScript = () => {
@@ -100,14 +118,39 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
       try {
         const wayforpay = new window.Wayforpay()
 
+        // Clear widget interaction flag
+        widgetInteractedRef.current = false
+
+        // Set timeout for widget initialization (30 seconds)
+        // If no callback is triggered within this time, assume widget failed to load
+        widgetInitTimeoutRef.current = setTimeout(() => {
+          if (!widgetInteractedRef.current && !hasRedirectedRef.current) {
+            console.error('[WIDGET] Widget initialization timeout - no user interaction detected')
+            setError(t('errors.paymentLoadFailed'))
+            setIsLoading(false)
+            setIsRedirecting(false)
+            // Mark donation as widget_load_failed
+            markDonationWidgetFailed(paymentParams.orderReference)
+              .catch(err => console.error('[WIDGET] Failed to mark as widget_load_failed:', err))
+          }
+        }, 30000)
+
         wayforpay.run(
           paymentParams,
           // Success callback
           function (response: any) {
+            widgetInteractedRef.current = true
+            if (widgetInitTimeoutRef.current) {
+              clearTimeout(widgetInitTimeoutRef.current)
+            }
             // Redirect is handled by returnUrl in paymentParams
           },
           // Failed callback
           function (response: any) {
+            widgetInteractedRef.current = true
+            if (widgetInitTimeoutRef.current) {
+              clearTimeout(widgetInitTimeoutRef.current)
+            }
             hasRedirectedRef.current = true
             setError(response.reason || t('errors.paymentFailed'))
             setIsLoading(false)
@@ -115,6 +158,10 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
           },
           // Pending callback
           function (response: any) {
+            widgetInteractedRef.current = true
+            if (widgetInitTimeoutRef.current) {
+              clearTimeout(widgetInitTimeoutRef.current)
+            }
             if (response && response.orderReference) {
               // User completed payment action, redirect to success page
               hasRedirectedRef.current = true
@@ -153,11 +200,15 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
 
     // Cleanup
     return () => {
+      window.removeEventListener('error', handleWindowError, true)
       if (scriptLoadTimeoutRef.current) {
         clearTimeout(scriptLoadTimeoutRef.current)
       }
+      if (widgetInitTimeoutRef.current) {
+        clearTimeout(widgetInitTimeoutRef.current)
+      }
     }
-  }, [paymentParams, t])
+  }, [paymentParams, t, tWidget])
 
   return (
     <div className="p-6 space-y-6">

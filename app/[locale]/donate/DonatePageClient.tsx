@@ -8,6 +8,7 @@ import ProjectsGallery from '@/components/projects/ProjectsGallery'
 import ProjectDetailContent from '@/components/projects/ProjectDetailContent'
 import ProjectSuppliesInfo from '@/components/projects/ProjectSuppliesInfo'
 import ProjectProgressCard from '@/components/projects/ProjectProgressCard'
+import ProjectResultsSection from '@/components/projects/ProjectResultsSection'
 import DonationFormCard from '@/components/donate/DonationFormCard'
 import DonationStatusFlow from '@/components/donation/DonationStatusFlow'
 import ProjectDonationList from '@/components/donation/ProjectDonationList'
@@ -63,11 +64,11 @@ export default function DonatePageClient({
       />
 
       {/* Main Content Area */}
-      <div id="donation-content" className="max-w-7xl mx-auto px-6 py-12">
+      <div id="donation-content" className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
         {selectedProject && selectedProjectId !== null ? (
           <>
             {/* Mobile Only: Scroll to Donation Form Button - At the top */}
-            <div className="lg:hidden mb-6">
+            <div className="lg:hidden mb-4">
               <button
                 onClick={() => {
                   const formElement = document.getElementById('donation-form')
@@ -87,9 +88,9 @@ export default function DonatePageClient({
               </button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-6">
             {/* Left Side: Three sections stacked vertically (60%) */}
-            <div className="lg:col-span-3 space-y-6">
+            <div className="lg:col-span-3 space-y-3 md:space-y-4">
               {/* Section 1: Project Details */}
               <ProjectDetailContent
                 key={`detail-${selectedProjectId}`}
@@ -113,6 +114,13 @@ export default function DonatePageClient({
               <ProjectProgressCard
                 key={`progress-${selectedProjectId}`}
                 project={selectedProject}
+                locale={locale}
+              />
+
+              {/* Section 4: Project Results Gallery */}
+              <ProjectResultsSection
+                key={`results-${selectedProjectId}`}
+                projectId={selectedProjectId}
                 locale={locale}
               />
             </div>
