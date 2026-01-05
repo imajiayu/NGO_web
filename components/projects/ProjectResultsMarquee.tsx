@@ -9,14 +9,19 @@ import GlobalLoadingSpinner from '@/components/GlobalLoadingSpinner'
 interface ProjectResultsMarqueeProps {
   results: ProjectResult[]
   rowCount?: number // Number of rows (default: 3)
-  speed?: number // Animation duration in seconds (default: 30)
+  pixelsPerSecond?: number // Scroll speed in pixels per second (default: 50)
   className?: string
 }
+
+// Image dimensions for calculating animation duration
+const IMAGE_WIDTH_MOBILE = 280
+const IMAGE_WIDTH_DESKTOP = 350
+const GAP = 16 // gap-4 = 16px
 
 export default function ProjectResultsMarquee({
   results,
   rowCount = 3,
-  speed = 30,
+  pixelsPerSecond = 50, // Fixed scroll speed
   className = '',
 }: ProjectResultsMarqueeProps) {
   const router = useRouter()
@@ -44,6 +49,16 @@ export default function ProjectResultsMarquee({
     return rowArrays
   }, [results, rowCount])
 
+  // Calculate animation duration for each row based on fixed speed
+  // We use desktop width as the reference since it's the larger size
+  const getAnimationDuration = (itemCount: number) => {
+    if (itemCount === 0) return 0
+    // Total width of one set of items (we scroll through one set, then it repeats)
+    const rowWidth = itemCount * (IMAGE_WIDTH_DESKTOP + GAP)
+    // Duration = distance / speed
+    return rowWidth / pixelsPerSecond
+  }
+
   const handleImageClick = (projectId?: number) => {
     if (projectId) {
       setIsNavigating(true)
@@ -67,6 +82,9 @@ export default function ProjectResultsMarquee({
             const isReverse = rowIndex % 2 === 1
             const animationName = isReverse ? 'marquee-reverse' : 'marquee'
 
+            // Calculate duration based on row item count for consistent speed
+            const duration = getAnimationDuration(rowResults.length)
+
             // Duplicate items for seamless infinite scroll
             const duplicatedItems = [...rowResults, ...rowResults]
 
@@ -82,7 +100,7 @@ export default function ProjectResultsMarquee({
                 <div
                   className="flex gap-4 hover:pause-animation"
                   style={{
-                    animation: `${animationName} ${speed}s linear infinite`,
+                    animation: `${animationName} ${duration}s linear infinite`,
                     width: 'fit-content',
                   }}
                 >

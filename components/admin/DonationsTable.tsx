@@ -175,6 +175,22 @@ export default function DonationsTable({ initialDonations, statusHistory }: Prop
               Total: {filteredDonations.length}
             </span>
 
+            {/* 全局全选按钮 */}
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isAllSelected}
+                ref={(input) => {
+                  if (input) {
+                    input.indeterminate = isSomeSelected
+                  }
+                }}
+                onChange={(e) => handleSelectAll(e.target.checked)}
+                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <span className="text-sm text-gray-700">Select All</span>
+            </label>
+
             {selectedIds.size > 0 && (
               <span className="text-sm font-medium text-blue-600">
                 Selected: {selectedIds.size}

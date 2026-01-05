@@ -27,7 +27,7 @@ export default function ProjectResultsSection({ results, locale }: Props) {
           </p>
         </div>
       </div>
-      <ProjectResultsMarquee results={results} rowCount={3} speed={35} />
+      <ProjectResultsMarquee results={results} rowCount={3} pixelsPerSecond={50} />
     </section>
   )
 }
