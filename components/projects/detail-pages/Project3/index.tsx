@@ -12,6 +12,7 @@ import {
   FileText,
 } from 'lucide-react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import ImageLightbox, { type LightboxImage } from '@/components/ImageLightbox'
 import ProjectProgressSection from '@/components/projects/shared/ProjectProgressSection'
 import ProjectResultsMasonry from '@/components/projects/shared/ProjectResultsMasonry'
@@ -95,6 +96,8 @@ export default function Project3DetailContent({
   project,
   locale,
 }: Project3DetailContentProps) {
+  const t = useTranslations('projects')
+
   // State for content data
   const [content, setContent] = useState<ProjectContent | null>(null)
   const [suppliesData, setSuppliesData] = useState<SuppliesData | null>(null)
@@ -277,8 +280,7 @@ export default function Project3DetailContent({
                       <div className="flex items-center gap-1.5">
                         <Users className="w-3.5 h-3.5 md:w-4 md:h-4 text-purple-600 flex-shrink-0" />
                         <span className="font-semibold text-gray-900">
-                          {shelter.childrenCount}{' '}
-                          {locale === 'en' ? 'children' : locale === 'zh' ? '名儿童' : 'дітей'}
+                          {shelter.childrenCount} {t('children')}
                         </span>
                       </div>
                     </div>
@@ -303,7 +305,7 @@ export default function Project3DetailContent({
                     {content.statistics.totalChildren}
                   </div>
                   <div className="text-xs md:text-sm text-gray-600">
-                    {locale === 'en' ? 'Total Children' : locale === 'zh' ? '儿童总数' : 'Всього дітей'}
+                    {t('totalChildren')}
                   </div>
                 </div>
                 <div className="bg-white rounded-lg p-2 md:p-3 text-center shadow-sm">
@@ -311,7 +313,7 @@ export default function Project3DetailContent({
                     ${content.statistics.totalCost.usd}
                   </div>
                   <div className="text-xs md:text-sm text-gray-600">
-                    {locale === 'en' ? 'Total Cost' : locale === 'zh' ? '总花费' : 'Загальна вартість'}
+                    {t('totalCost')}
                     <div className="text-[10px] md:text-xs text-gray-500 mt-0.5">
                       ₴{content.statistics.totalCost.uah.toLocaleString()}
                     </div>
@@ -322,7 +324,7 @@ export default function Project3DetailContent({
                     ${content.statistics.averagePerChild}
                   </div>
                   <div className="text-xs md:text-sm text-gray-600">
-                    {locale === 'en' ? 'Per Child' : locale === 'zh' ? '平均每位儿童' : 'На дитину'}
+                    {t('perChild')}
                   </div>
                 </div>
               </div>
@@ -358,8 +360,7 @@ export default function Project3DetailContent({
                           {giftList.shelter}
                         </span>
                         <span className="text-xs md:text-sm text-gray-600">
-                          ({giftList.children.length}{' '}
-                          {locale === 'en' ? 'children' : locale === 'zh' ? '名儿童' : 'дітей'})
+                          ({giftList.children.length} {t('children')})
                         </span>
                       </div>
                       {expandedShelters.has(idx) ? (
@@ -405,7 +406,7 @@ export default function Project3DetailContent({
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
             <h1 className="text-3xl font-bold mb-2">Christmas Gift Program</h1>
             <p className="text-blue-100">
-              {locale === 'en' ? 'Project Details' : locale === 'zh' ? '项目详情' : 'Деталі проекту'}
+              {t('projectDetails')}
             </p>
           </div>
           <div className="p-8">
@@ -455,13 +456,13 @@ export default function Project3DetailContent({
                 {/* Table Header */}
                 <div className="bg-gradient-to-r from-green-100 to-teal-100 px-2 md:px-3 py-2 grid grid-cols-12 gap-2 md:gap-3 font-semibold text-xs md:text-sm text-gray-900 border-b border-gray-300">
                   <div className="col-span-5 md:col-span-6">
-                    {locale === 'en' ? 'Item' : locale === 'zh' ? '物品名称' : 'Назва'}
+                    {t('item')}
                   </div>
                   <div className="col-span-3 md:col-span-2 text-center">
-                    {locale === 'en' ? 'Qty' : locale === 'zh' ? '数量' : 'К-сть'}
+                    {t('quantity')}
                   </div>
                   <div className="col-span-4 text-right">
-                    {locale === 'en' ? 'Unit Price' : locale === 'zh' ? '单价' : 'Ціна'}
+                    {t('unitPrice')}
                   </div>
                 </div>
 
@@ -496,12 +497,11 @@ export default function Project3DetailContent({
                 <div className="bg-gradient-to-r from-green-50 to-teal-50 px-2 md:px-3 py-2 md:py-3 border-t-2 border-green-300">
                   <div className="grid grid-cols-12 gap-2 md:gap-3 items-center">
                     <div className="col-span-5 md:col-span-6 font-bold text-gray-900 text-sm md:text-base">
-                      {locale === 'en' ? 'Total' : locale === 'zh' ? '总计' : 'Всього'}
+                      {t('total')}
                     </div>
                     <div className="col-span-3 md:col-span-2 text-center">
                       <span className="inline-block px-2 py-0.5 bg-green-600 text-white rounded-full font-bold text-xs">
-                        {suppliesData.total.items}{' '}
-                        {locale === 'en' ? 'items' : locale === 'zh' ? '件' : 'шт'}
+                        {suppliesData.total.items} {t('items')}
                       </span>
                     </div>
                     <div className="col-span-4 text-right">

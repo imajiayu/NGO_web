@@ -32,27 +32,7 @@ export default async function DonateSuccessPage({
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto max-w-4xl px-4 py-12 lg:py-20">
-        {/* Success Header */}
-        <div className="text-center mb-12">
-          {/* Main Title */}
-          <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4">
-            {t('title')}
-          </h1>
-
-          {/* Subtitle */}
-          <p className="text-xl lg:text-2xl text-gray-600 max-w-2xl mx-auto">
-            {t('thankYou')}
-          </p>
-
-          {/* Decorative Line */}
-          <div className="mt-8 flex items-center justify-center space-x-2">
-            <div className="h-1 w-12 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-full"></div>
-            <div className="w-2 h-2 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full"></div>
-            <div className="h-1 w-12 bg-gradient-to-r from-transparent via-purple-500 to-transparent rounded-full"></div>
-          </div>
-        </div>
-
-        {/* Donation Details - Client Component with polling */}
+        {/* Donation Details - Client Component with dynamic header */}
         {orderReference && <DonationDetails orderReference={orderReference} locale={locale} />}
 
         {/* Action Buttons */}

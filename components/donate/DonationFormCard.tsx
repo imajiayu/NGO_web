@@ -371,28 +371,26 @@ export default function DonationFormCard({
         // Handle different error types
         if (result.error === 'quantity_exceeded') {
           const remainingUnits = result.remainingUnits || 0
-          const unitName = result.unitName || (locale === 'en' ? 'units' : '单位')
 
           // Set quantity to remaining units
           setQuantity(remainingUnits)
 
-          // Show localized error message
+          // Show localized error message (use project's translated unitName)
           setError(t('errors.quantityExceeded', { remaining: remainingUnits, unitName }))
         } else if (result.error === 'amount_limit_exceeded') {
           const maxQuantity = result.maxQuantity || 1
-          const unitName = result.unitName || (locale === 'en' ? 'units' : '单位')
 
           // For aggregated projects: maxQuantity represents remaining amount in USD
           // For non-aggregated projects: maxQuantity represents max units
           if (isAggregatedProject) {
             // Set donation amount to remaining amount
             setDonationAmount(maxQuantity)
-            // Show error message with amount
+            // Show error message with amount (use project's translated unitName)
             setError(t('errors.amountLimitExceeded', { max: maxQuantity, unitName }))
           } else {
             // Set quantity to maximum allowed quantity
             setQuantity(maxQuantity)
-            // Show localized error message
+            // Show localized error message (use project's translated unitName)
             setError(t('errors.amountLimitExceeded', { max: maxQuantity, unitName }))
           }
         } else if (result.error === 'project_not_found') {

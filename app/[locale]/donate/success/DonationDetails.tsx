@@ -2,16 +2,25 @@
 
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import CopyButton from '@/components/CopyButton'
-import { getProjectName, getLocation, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
+import PageHeader from './PageHeader'
+import StatusBanner from './StatusBanner'
+import DonationIdsList from './DonationIdsList'
+import InfoCard from './InfoCard'
+import LoadingState from './LoadingState'
+import EmptyState from './EmptyState'
 import type { I18nText } from '@/types'
+
+type DonationStatus =
+  | 'pending' | 'processing' | 'fraud_check'  // Processing group
+  | 'widget_load_failed' | 'expired' | 'declined' | 'failed'  // Failed group
+  | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refund_processing' | 'refunded'  // Success group
 
 type Donation = {
   id: number
   donation_public_id: string
   amount: number
   donor_email: string
-  donation_status: 'pending' | 'processing' | 'fraud_check' | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refund_processing' | 'refunded'
+  donation_status: DonationStatus
   projects: {
     id: number
     project_name: string
@@ -20,6 +29,7 @@ type Donation = {
     location_i18n: I18nText | null
     unit_name: string
     unit_name_i18n: I18nText | null
+    aggregate_donations: boolean | null
   }
 }
 
@@ -28,12 +38,27 @@ type Props = {
   locale: string
 }
 
+// Status group classification
+const STATUS_GROUPS = {
+  failed: ['widget_load_failed', 'expired', 'declined', 'failed'],
+  processing: ['pending', 'processing', 'fraud_check'],
+  success: ['paid', 'confirmed', 'delivering', 'completed', 'refunding', 'refund_processing', 'refunded'],
+} as const
+
+type StatusGroup = keyof typeof STATUS_GROUPS
+
+function getStatusGroup(status: DonationStatus): StatusGroup {
+  if ((STATUS_GROUPS.failed as readonly DonationStatus[]).includes(status)) return 'failed'
+  if ((STATUS_GROUPS.processing as readonly DonationStatus[]).includes(status)) return 'processing'
+  if ((STATUS_GROUPS.success as readonly DonationStatus[]).includes(status)) return 'success'
+  return 'processing' // fallback
+}
+
 export default function DonationDetails({ orderReference, locale }: Props) {
   const t = useTranslations('donateSuccess')
   const [donations, setDonations] = useState<Donation[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Fetch donations once on mount
   useEffect(() => {
     let isMounted = true
 
@@ -66,220 +91,138 @@ export default function DonationDetails({ orderReference, locale }: Props) {
 
   if (loading) {
     return (
-      <div className="text-center py-16">
-        <div className="inline-block relative">
-          <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full opacity-20 animate-pulse"></div>
-          </div>
-        </div>
-        <p className="mt-6 text-lg text-gray-600 font-medium">{t('loading')}</p>
-      </div>
+      <LoadingState
+        title={t('title')}
+        subtitle={t('thankYou')}
+        message={t('loading')}
+      />
     )
   }
 
   if (donations.length === 0) {
     return (
-      <div className="relative overflow-hidden bg-gradient-to-br from-yellow-50 to-orange-50 rounded-3xl p-8 shadow-lg border border-yellow-200/50">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="relative flex items-start space-x-4">
-          <div className="flex-shrink-0">
-            <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-              <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-              </svg>
-            </div>
-          </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-bold text-yellow-900 mb-2">{t('processing')}</h3>
-            <p className="text-yellow-800 leading-relaxed">
-              {t('processingDescription')}
-            </p>
-          </div>
-        </div>
-      </div>
+      <EmptyState
+        title={t('title')}
+        subtitle={t('thankYou')}
+        message={t('processing')}
+        description={t('processingDescription')}
+      />
     )
   }
 
-  const project = donations[0].projects
+  // Determine status group (all donations in same group)
+  const statusGroup = getStatusGroup(donations[0].donation_status)
   const totalAmount = donations.reduce((sum, d) => sum + Number(d.amount), 0)
-  const allDonationIds = donations.map((d) => d.donation_public_id).join('\n')
   const donorEmail = donations[0].donor_email
-  const isPending = donations.some((d) =>
-    ['pending', 'processing', 'fraud_check'].includes(d.donation_status)
+
+  // Status-specific rendering
+  if (statusGroup === 'failed') {
+    return (
+      <>
+        <PageHeader
+          title={t('status.failed.pageTitle')}
+          subtitle={t('status.failed.pageSubtitle')}
+          titleColor="text-red-600"
+        />
+
+        <div className="space-y-4">
+          <StatusBanner
+            type="failed"
+            title={t('status.failed.title')}
+            description={t('status.failed.description')}
+            amount={totalAmount}
+            amountLabel={t('status.failed.amount')}
+          />
+
+          <DonationIdsList donations={donations} locale={locale} t={t} />
+
+          <InfoCard
+            variant="blue"
+            title={t('status.failed.helpTitle')}
+            description={t('status.failed.helpText')}
+          />
+        </div>
+      </>
+    )
+  }
+
+  if (statusGroup === 'processing') {
+    const emailIcon = (
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+      </svg>
+    )
+
+    return (
+      <>
+        <PageHeader
+          title={t('status.processing.pageTitle')}
+          subtitle={t('status.processing.pageSubtitle')}
+        />
+
+        <div className="space-y-4">
+          <StatusBanner
+            type="processing"
+            title={t('status.processing.title')}
+            description={t('status.processing.description')}
+            amount={totalAmount}
+            amountLabel={t('status.processing.amount')}
+          />
+
+          <InfoCard
+            variant="blue"
+            title={t('emailReminderTitle')}
+            description={t('emailReminderDescription', { email: donorEmail })}
+            icon={emailIcon}
+          />
+
+          <DonationIdsList donations={donations} locale={locale} t={t} />
+        </div>
+      </>
+    )
+  }
+
+  // Success group
+  const emailIcon = (
+    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+    </svg>
   )
 
-  // Get translated project data
-  const projectName = getProjectName(project.project_name_i18n, project.project_name, locale as SupportedLocale)
-  const location = getLocation(project.location_i18n, project.location, locale as SupportedLocale)
-  const unitName = getUnitName(project.unit_name_i18n, project.unit_name, locale as SupportedLocale)
-
   return (
-    <div className="space-y-6">
-      {/* Payment Pending Warning (if applicable) */}
-      {isPending && (
-        <div className="relative overflow-hidden bg-gradient-to-br from-yellow-50 to-orange-50 rounded-3xl p-8 shadow-lg border border-yellow-200/50">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="relative flex items-start space-x-4">
-            <div className="flex-shrink-0">
-              <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                </svg>
-              </div>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-bold text-yellow-900 mb-2">
-                {t('paymentProcessingTitle')}
-              </h3>
-              <p className="text-yellow-800 leading-relaxed">
-                {t('paymentProcessingDescription')}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+    <>
+      <PageHeader
+        title={t('status.success.pageTitle')}
+        subtitle={t('status.success.pageSubtitle')}
+        titleColor="text-green-600"
+      />
 
-      {/* Email Reminder Card */}
-      <div className="relative overflow-hidden bg-white rounded-3xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-        <div className="p-8">
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {t('emailReminderTitle')}
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                {t('emailReminderDescription', { email: donorEmail })}
-              </p>
-            </div>
-          </div>
-        </div>
+      <div className="space-y-4">
+        <StatusBanner
+          type="success"
+          title={t('status.success.title')}
+          description={t('status.success.description')}
+          amount={totalAmount}
+          amountLabel={t('status.success.amount')}
+        />
+
+        <InfoCard
+          variant="blue"
+          title={t('status.success.emailSent')}
+          description={t('status.success.emailSentDescription', { email: donorEmail })}
+          icon={emailIcon}
+        />
+
+        <DonationIdsList donations={donations} locale={locale} t={t} />
+
+        <InfoCard
+          variant="purple"
+          title={t('status.success.nextSteps')}
+          description={t('status.success.trackInfo')}
+        />
       </div>
-
-      {/* Donation IDs Card - Prominent */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-3xl shadow-xl border border-blue-200/50">
-        {/* Decorative Elements */}
-        <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tr from-pink-400/20 to-purple-400/20 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div className="relative p-8 lg:p-10">
-          {/* Header */}
-          <div className="flex items-start space-x-4 mb-8">
-            <div className="flex-shrink-0">
-              <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3">
-                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                </svg>
-              </div>
-            </div>
-            <div className="flex-1">
-              <div className="inline-block px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold tracking-wider uppercase rounded-full mb-3 shadow-md">
-                {t('important')}
-              </div>
-              <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-                {t('saveIdsTitle')}
-              </h2>
-              <p className="text-gray-600 leading-relaxed">
-                {t('saveIdsDescription')}
-              </p>
-            </div>
-          </div>
-
-          {/* Donation IDs */}
-          <div className="space-y-3">
-            {donations.map((donation, index) => (
-              <div
-                key={donation.id}
-                className="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-5 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-blue-200"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md">
-                      #{index + 1}
-                    </div>
-                    <code className="text-xl font-mono font-bold text-gray-900 tracking-wide">
-                      {donation.donation_public_id}
-                    </code>
-                  </div>
-                  <CopyButton
-                    text={donation.donation_public_id}
-                    label={t('copy.copyId')}
-                    copiedLabel={t('copy.copied')}
-                    variant="secondary"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Copy All Button */}
-          {donations.length > 1 && (
-            <div className="mt-6">
-              <CopyButton
-                text={allDonationIds}
-                label={t('copy.copyAll')}
-                copiedLabel={t('copy.copied')}
-                variant="primary"
-                className="w-full py-4 text-base font-semibold shadow-lg hover:shadow-xl"
-              />
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Donation Summary Card */}
-      <div className="relative overflow-hidden bg-white rounded-3xl shadow-lg border border-gray-100">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
-
-        <div className="relative p-8">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900">{t('details.title')}</h3>
-          </div>
-
-          <div className="space-y-4">
-            {/* Project */}
-            <div className="flex items-start justify-between py-4 border-b border-gray-100">
-              <span className="text-gray-500 font-medium">{t('details.project')}</span>
-              <div className="text-right">
-                <p className="font-bold text-gray-900">{projectName}</p>
-                <p className="text-sm text-gray-500">{location}</p>
-              </div>
-            </div>
-
-            {/* Quantity */}
-            <div className="flex items-center justify-between py-4 border-b border-gray-100">
-              <span className="text-gray-500 font-medium">{t('details.quantity')}</span>
-              <span className="font-bold text-gray-900">
-                {t('details.units', { count: donations.length, unitName })}
-              </span>
-            </div>
-
-            {/* Total */}
-            <div className="flex items-center justify-between py-4">
-              <span className="text-gray-500 font-medium">{t('details.total')}</span>
-              <div className="text-right">
-                <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  ${totalAmount.toFixed(2)}
-                </div>
-                <div className="text-sm text-gray-500 mt-1">USD</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </>
   )
 }

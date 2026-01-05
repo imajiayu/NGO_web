@@ -29,7 +29,7 @@ export default function CopyButton({
     }
   }
 
-  const baseStyles = 'inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 transform active:scale-95'
+  const baseStyles = 'inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 transform active:scale-95 whitespace-nowrap'
 
   const variantStyles =
     variant === 'primary'

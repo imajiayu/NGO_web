@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import ImageLightbox, { type LightboxImage } from '@/components/ImageLightbox'
@@ -18,6 +19,7 @@ export default function EmployeeCarousel({
   className = '',
   locale = 'en',
 }: EmployeeCarouselProps) {
+  const t = useTranslations('projects')
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
@@ -118,7 +120,7 @@ export default function EmployeeCarousel({
       <div className="mt-3 text-center text-xs md:text-sm text-gray-500">
         <span className="hidden md:inline">← </span>
         <span className="md:hidden">👈 </span>
-        {locale === 'en' ? 'Scroll to view more' : locale === 'zh' ? '滑动查看更多' : 'Прокрутіть, щоб побачити більше'}
+        {t('scrollToViewMore')}
         <span className="hidden md:inline"> →</span>
         <span className="md:hidden"> 👉</span>
       </div>

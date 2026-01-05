@@ -23,18 +23,6 @@ export interface PublicProjectDonation {
   donated_at: string
 }
 
-// Extended types with computed properties
-export interface ProjectWithProgress extends Project {
-  progress_percentage: number
-  total_raised: number
-  donation_count: number
-  is_goal_reached: boolean
-}
-
-export interface DonationWithProject extends Donation {
-  project: Pick<Project, 'id' | 'project_name' | 'location' | 'unit_name'>
-}
-
 // Form types for creating/updating
 export interface CreateProjectInput {
   project_name: string
@@ -70,16 +58,6 @@ export interface CreateDonationInput {
 }
 
 // WayForPay-specific types
-export interface WayForPayCheckoutMetadata {
-  project_id: string
-  order_reference: string
-  donor_name: string
-  donor_email: string
-  amount: string
-  currency: string
-  quantity: number
-}
-
 export interface DonationFormData {
   project_id: number
   donor_name: string
@@ -87,22 +65,6 @@ export interface DonationFormData {
   donor_phone?: string
   amount: number
   currency: string
-}
-
-// API Response types
-export interface ApiResponse<T = unknown> {
-  success: boolean
-  data?: T
-  error?: string
-  message?: string
-}
-
-export interface PaginatedResponse<T> {
-  data: T[]
-  page: number
-  page_size: number
-  total_count: number
-  total_pages: number
 }
 
 // Filter and search types
@@ -120,17 +82,6 @@ export interface DonationFilters {
   date_from?: string
   date_to?: string
   locale?: 'en' | 'zh' | 'ua'
-}
-
-// Email notification types
-export interface DonationConfirmationEmail {
-  donor_name: string
-  donor_email: string
-  donation_public_id: string
-  project_name: string
-  amount: number
-  currency: string
-  donated_at: string
 }
 
 // Constants
@@ -191,8 +142,6 @@ export const DONATION_STATUSES = [
 ] as const
 
 export const DONATION_LOCALES = ['en', 'zh', 'ua'] as const
-export const CURRENCIES = ['USD', 'UAH', 'EUR'] as const
-export const PAYMENT_METHODS = ['WayForPay', 'Bank Transfer'] as const
 
 // Type aliases for better type safety
 export type DonationStatus = typeof DONATION_STATUSES[number]
@@ -206,13 +155,6 @@ export interface ProjectResult {
   date?: string // ISO 8601 format: YYYY-MM-DD
   priority?: number // Higher priority = displayed first (default: 5)
   projectId?: number // Optional: link to source project
-}
-
-// Home Marquee Data - for homepage scrolling gallery
-export interface HomeMarqueeData {
-  title: string
-  subtitle: string
-  results: ProjectResult[]
 }
 
 // Extended project content type (for JSON files in /public/content/projects/)

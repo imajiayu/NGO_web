@@ -27,12 +27,6 @@
     }
   },
   "home": {
-    "title": "支持我们的项目",
-    "subtitle": "通过有意义的项目赋能社区",
-    "noProjects": "当前暂无活跃项目，请稍后再来查看。",
-    "trackDonation": {
-      "button": "查询捐赠"
-    },
     "hero": {
       "mission": {
         "label": "我们的使命",
@@ -116,6 +110,11 @@
           "accounting": "会计政策",
           "info": "登记信息摘录"
         }
+      },
+      "results": {
+        "label": "项目成果",
+        "title": "我们的行动成果",
+        "description": "看看您的捐赠如何真正改变人们的生活"
       }
     }
   },
@@ -136,6 +135,22 @@
     "currentUnits": "当前募集",
     "donations": "次捐赠",
     "perUnit": "每{unitName}",
+    "anyAmount": "任意金额",
+    "projectProgress": "项目进度",
+    "projectResults": "项目成果",
+    "projectResultsDescription": "通过照片和更新查看您捐赠的直接影响",
+    "scrollToViewMore": "滑动查看更多",
+    "rehabilitationCenter": "康复中心",
+    "children": "名儿童",
+    "totalChildren": "儿童总数",
+    "totalCost": "总花费",
+    "perChild": "平均每位儿童",
+    "item": "物品名称",
+    "quantity": "数量",
+    "total": "总计",
+    "items": "件",
+    "projectDetails": "项目详情",
+    "rehabilitationCenter": "康复中心",
     "status": {
       "active": "进行中",
       "completed": "已完成",
@@ -273,8 +288,7 @@
     },
     "securePayment": {
       "title": "安全支付",
-      "description": "您的支付将通过 WayForPay 安全处理",
-      "poweredBy": "由 WayForPay 提供支持"
+      "description": "您的支付将通过 WayForPay 安全处理"
     },
     "paymentError": {
       "title": "支付错误",
@@ -341,7 +355,8 @@
       "quantity": "数量",
       "units": "{count} {unitName}",
       "total": "总金额",
-      "donationIds": "您的捐赠编号"
+      "donationIds": "您的捐赠编号",
+      "donations": "捐赠记录"
     },
     "copy": {
       "copyId": "复制",
@@ -351,6 +366,35 @@
     "actions": {
       "trackDonation": "查询我的捐赠",
       "backHome": "返回首页"
+    },
+    "status": {
+      "failed": {
+        "pageTitle": "支付失败",
+        "pageSubtitle": "您的支付无法完成",
+        "title": "支付失败",
+        "description": "很抱歉，您的支付无法完成。您的账户未被扣款。",
+        "amount": "尝试金额：",
+        "helpTitle": "需要帮助？",
+        "helpText": "如果您想重试或需要帮助，请使用上述捐赠编号联系我们的客服团队。"
+      },
+      "processing": {
+        "pageTitle": "正在处理您的捐赠",
+        "pageSubtitle": "我们正在确认您的支付",
+        "title": "支付处理中",
+        "description": "您的支付正在由银行确认中，通常需要 2-5 分钟。确认后我们会向您发送邮件。",
+        "amount": "处理金额："
+      },
+      "success": {
+        "pageTitle": "支付成功！",
+        "pageSubtitle": "感谢您的慷慨捐赠",
+        "title": "支付成功！",
+        "description": "感谢您的慷慨捐赠！您的支付已成功处理。",
+        "amount": "捐赠金额：",
+        "emailSent": "确认邮件已发送",
+        "emailSentDescription": "我们已向 {email} 发送确认邮件，请查收您的邮箱。",
+        "nextSteps": "下一步是什么？",
+        "trackInfo": "您可以随时使用上述捐赠编号查询捐赠进度。我们会通过邮件向您更新捐赠执行情况。"
+      }
     }
   },
   "trackDonation": {

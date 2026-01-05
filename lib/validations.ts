@@ -58,37 +58,8 @@ export const donationFormSchema = z.object({
   locale: z.enum(['en', 'zh', 'ua']),
 })
 
-export const updateDonationStatusSchema = z.object({
-  donation_status: z.enum(['pending', 'confirmed', 'delivering', 'completed']),
-})
-
-// Filter validation schemas
-export const projectFiltersSchema = z.object({
-  status: z.enum(['planned', 'active', 'completed', 'paused']).optional(),
-  location: z.string().optional(),
-  is_long_term: z.boolean().optional(),
-  search: z.string().optional(),
-})
-
-export const donationFiltersSchema = z.object({
-  project_id: z.number().int().min(0).optional(), // Allow 0 for rehabilitation center support
-  status: z.enum(['pending', 'confirmed', 'delivering', 'completed']).optional(),
-  donor_email: z.string().email().optional(),
-  date_from: z.string().optional(),
-  date_to: z.string().optional(),
-})
-
-// Pagination schema
-export const paginationSchema = z.object({
-  page: z.number().int().positive().default(1),
-  page_size: z.number().int().min(1).max(100).default(10),
-})
-
 // Export types inferred from schemas
 export type CreateProjectInput = z.infer<typeof createProjectSchema>
 export type UpdateProjectInput = z.infer<typeof updateProjectSchema>
 export type CreateDonationInput = z.infer<typeof createDonationSchema>
 export type DonationFormInput = z.infer<typeof donationFormSchema>
-export type ProjectFilters = z.infer<typeof projectFiltersSchema>
-export type DonationFilters = z.infer<typeof donationFiltersSchema>
-export type PaginationParams = z.infer<typeof paginationSchema>

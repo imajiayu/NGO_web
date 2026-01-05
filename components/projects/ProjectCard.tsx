@@ -148,7 +148,7 @@ export default function ProjectCard({
                 </svg>
                 {project.aggregate_donations ? (
                   <span className="text-sm font-semibold text-purple-700 text-left">
-                    {locale === 'en' ? 'Any Amount' : locale === 'zh' ? '任意金额' : 'Будь-яка сума'}
+                    {t('anyAmount')}
                   </span>
                 ) : (
                   <span className="text-sm text-gray-700 text-left">
@@ -273,7 +273,7 @@ export default function ProjectCard({
             </svg>
             {project.aggregate_donations ? (
               <span className="text-sm font-semibold text-purple-700">
-                {locale === 'en' ? 'Any Amount' : locale === 'zh' ? '任意金额' : 'Будь-яка сума'}
+                {t('anyAmount')}
               </span>
             ) : (
               <span className="text-sm text-gray-700">

@@ -27,12 +27,6 @@
     }
   },
   "home": {
-    "title": "Support Our Projects",
-    "subtitle": "Empowering communities through meaningful projects",
-    "noProjects": "No active projects at the moment. Please check back later.",
-    "trackDonation": {
-      "button": "Track Your Donation"
-    },
     "hero": {
       "mission": {
         "label": "OUR MISSION",
@@ -116,6 +110,11 @@
           "accounting": "Accounting Policy",
           "info": "Registration Information Extract"
         }
+      },
+      "results": {
+        "label": "PROJECT RESULTS",
+        "title": "Our Impact in Action",
+        "description": "See how your donations make a real difference in people's lives"
       }
     }
   },
@@ -136,6 +135,22 @@
     "currentUnits": "Collected",
     "donations": "donations",
     "perUnit": "per {unitName}",
+    "anyAmount": "Any Amount",
+    "projectProgress": "Project Progress",
+    "projectResults": "Project Results",
+    "projectResultsDescription": "See the direct impact of your donation through photos and updates",
+    "scrollToViewMore": "Scroll to view more",
+    "rehabilitationCenter": "Rehabilitation Center",
+    "children": "children",
+    "totalChildren": "Total Children",
+    "totalCost": "Total Cost",
+    "perChild": "Per Child",
+    "item": "Item",
+    "quantity": "Qty",
+    "total": "Total",
+    "items": "items",
+    "projectDetails": "Project Details",
+    "rehabilitationCenter": "Rehabilitation Center",
     "status": {
       "active": "Active",
       "completed": "Completed",
@@ -265,17 +280,6 @@
       "emailInvalid": "Please enter a valid email address",
       "messageMax": "Message must be less than {max} characters"
     },
-    "errors": {
-      "invalidQuantity": "Please enter a valid quantity (minimum 1)",
-      "invalidAmount": "Please enter a valid amount (minimum $0.10, maximum $10,000)",
-      "projectNotFound": "Project not found",
-      "projectNotActive": "This project is not currently accepting donations",
-      "quantityExceeded": "Only {remaining} {unitName} remaining",
-      "amountLimitExceeded": "Single payment limit exceeded. Maximum {max} {unitName} allowed ($10,000 limit)",
-      "serverError": "An error occurred. Please try again.",
-      "invalidEmail": "Please enter a valid email address",
-      "validationError": "Please check your input and try again"
-    },
     "processing": {
       "title": "Processing Your Donation",
       "wait": "Please wait while we prepare your payment...",
@@ -284,8 +288,7 @@
     },
     "securePayment": {
       "title": "Secure Payment",
-      "description": "Your payment will be processed securely through WayForPay",
-      "poweredBy": "Powered by WayForPay"
+      "description": "Your payment will be processed securely through WayForPay"
     },
     "paymentError": {
       "title": "Payment Error",
@@ -351,7 +354,8 @@
       "quantity": "Quantity",
       "units": "{count} {unitName}",
       "total": "Total Amount",
-      "donationIds": "Your Donation IDs"
+      "donationIds": "Your Donation IDs",
+      "donations": "Donations"
     },
     "copy": {
       "copyId": "Copy",
@@ -361,6 +365,35 @@
     "actions": {
       "trackDonation": "Track Your Donations",
       "backHome": "Back to Home"
+    },
+    "status": {
+      "failed": {
+        "pageTitle": "Payment Failed",
+        "pageSubtitle": "Your payment could not be completed",
+        "title": "Payment Failed",
+        "description": "Unfortunately, your payment could not be completed. No charges were made to your account.",
+        "amount": "Attempted amount:",
+        "helpTitle": "Need Help?",
+        "helpText": "If you'd like to try again or need assistance, please contact our support team with your donation IDs above."
+      },
+      "processing": {
+        "pageTitle": "Processing Your Donation",
+        "pageSubtitle": "We are confirming your payment",
+        "title": "Payment Processing",
+        "description": "Your payment is being confirmed by the bank. This usually takes 2-5 minutes. We'll send you an email once it's confirmed.",
+        "amount": "Processing amount:"
+      },
+      "success": {
+        "pageTitle": "Payment Successful!",
+        "pageSubtitle": "Thank you for your generous donation",
+        "title": "Payment Successful!",
+        "description": "Thank you for your generous donation! Your payment has been successfully processed.",
+        "amount": "Donation amount:",
+        "emailSent": "Confirmation Email Sent",
+        "emailSentDescription": "We have sent a confirmation email to {email}. Please check your inbox.",
+        "nextSteps": "What's Next?",
+        "trackInfo": "You can track your donation progress anytime using the donation IDs above. We'll keep you updated via email as we fulfill your donation."
+      }
     }
   },
   "trackDonation": {

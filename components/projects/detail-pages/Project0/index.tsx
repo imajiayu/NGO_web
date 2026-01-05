@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import { MapPin, Users, Activity, Heart, Building2, Church } from 'lucide-react'
 import EmployeeCarousel from './EmployeeCarousel'
 import CollapsibleGallery from './CollapsibleGallery'
@@ -132,6 +133,7 @@ interface Project0Content {
 }
 
 export default function Project0DetailContent({ project, locale }: Project0DetailContentProps) {
+  const t = useTranslations('projects')
   const [content, setContent] = useState<Project0Content | null>(null)
   const [loading, setLoading] = useState(true)
   const [employerImages, setEmployerImages] = useState<string[]>([])
@@ -218,7 +220,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
           <h1 className="text-3xl font-bold mb-2">Way to Health</h1>
           <p className="text-blue-100">
-            {locale === 'en' ? 'Rehabilitation Center' : locale === 'zh' ? '康复中心' : 'Реабілітаційний центр'}
+            {t('rehabilitationCenter')}
           </p>
         </div>
         <div className="p-8">

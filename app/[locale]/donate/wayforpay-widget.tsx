@@ -39,8 +39,25 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
   const widgetOpenedRef = useRef(false)
   const widgetEverDetectedRef = useRef(false) // Track if widget was ever detected in DOM
   const widgetCheckCompletedRef = useRef(false) // Prevent duplicate checks from multiple useEffect runs
+  const markedAsFailedRef = useRef(false) // Prevent duplicate widget_load_failed calls
 
   useEffect(() => {
+    // Helper function to mark donation as failed (with duplicate prevention)
+    const markAsFailed = async (reason: string) => {
+      if (markedAsFailedRef.current) {
+        console.log('[WIDGET] Already marked as widget_load_failed, skipping duplicate call')
+        return
+      }
+      markedAsFailedRef.current = true
+      console.log(`[WIDGET] Marking as widget_load_failed - Reason: ${reason}`)
+
+      try {
+        await markDonationWidgetFailed(paymentParams.orderReference)
+      } catch (err) {
+        console.error('[WIDGET] Failed to mark as widget_load_failed:', err)
+      }
+    }
+
     // Listen for iframe load errors (403, network errors, etc.)
     const handleWindowError = (event: ErrorEvent) => {
       // Check if error is related to WayForPay
@@ -51,8 +68,7 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
           setError(t('errors.paymentLoadFailed'))
           setIsLoading(false)
           setIsRedirecting(false)
-          markDonationWidgetFailed(paymentParams.orderReference)
-            .catch(err => console.error('[WIDGET] Failed to mark as widget_load_failed:', err))
+          markAsFailed('Window error detected')
         }
       }
     }
@@ -85,6 +101,7 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
         const offlineError = tWidget('networkError')
         setError(offlineError)
         setIsLoading(false)
+        markAsFailed('User is offline')
         return
       }
 
@@ -99,8 +116,7 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
           setError(t('errors.paymentLoadFailed'))
           setIsLoading(false)
           // Mark donation as widget_load_failed
-          markDonationWidgetFailed(paymentParams.orderReference)
-            .catch(err => console.error('[WIDGET] Failed to mark as widget_load_failed:', err))
+          markAsFailed('Script load timeout (15s)')
         }
       }, 15000)
 
@@ -119,8 +135,7 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
         setError(t('errors.paymentLoadFailed'))
         setIsLoading(false)
         // Mark donation as widget_load_failed
-        markDonationWidgetFailed(paymentParams.orderReference)
-          .catch(err => console.error('[WIDGET] Failed to mark as widget_load_failed:', err))
+        markAsFailed('Script load error')
       }
 
       document.body.appendChild(script)
@@ -130,6 +145,7 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
       if (!window.Wayforpay) {
         setError(t('errors.paymentLoadFailed'))
         setIsLoading(false)
+        markAsFailed('Wayforpay object not found after script load')
         return
       }
 
@@ -242,8 +258,7 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
               setIsLoading(false)
               setIsRedirecting(false)
               // Mark donation as widget_load_failed
-              markDonationWidgetFailed(paymentParams.orderReference)
-                .catch(err => console.error('[WIDGET] Failed to mark as widget_load_failed:', err))
+              markAsFailed('Widget not detected in DOM after 5s')
             }
           }
         }, 5000)
@@ -258,15 +273,22 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
             if (!hasRedirectedRef.current && !error) {
               setIsRedirecting(false)
               setError(tWidget('popupBlocked'))
+              // Mark as failed if widget never opened (popup likely blocked)
+              if (!widgetOpenedRef.current && !widgetEverDetectedRef.current) {
+                markAsFailed('iOS redirect timeout - popup likely blocked')
+              }
             }
           }, 10000)
         } else {
           setIsLoading(false)
         }
       } catch (err) {
+        console.error('[WIDGET] Widget initialization error:', err)
         setError(t('errors.serverError'))
         setIsLoading(false)
         setIsRedirecting(false)
+        // Mark as failed - widget initialization threw an error
+        markAsFailed(`Widget initialization error: ${err instanceof Error ? err.message : 'Unknown error'}`)
       }
     }
 

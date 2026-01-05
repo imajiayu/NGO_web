@@ -212,6 +212,7 @@ export type Database = {
     Views: {
       order_donations_secure: {
         Row: {
+          aggregate_donations: boolean | null
           amount: number | null
           donation_public_id: string | null
           donation_status: string | null

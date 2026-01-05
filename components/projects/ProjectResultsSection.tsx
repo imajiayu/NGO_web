@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import ProjectResultsMasonry from './shared/ProjectResultsMasonry'
 import type { ProjectContent, ProjectResult } from '@/types'
 
@@ -13,6 +14,7 @@ export default function ProjectResultsSection({
   projectId,
   locale
 }: ProjectResultsSectionProps) {
+  const t = useTranslations('projects')
   const [results, setResults] = useState<ProjectResult[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -62,14 +64,10 @@ export default function ProjectResultsSection({
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 md:p-6 text-white">
         <h2 className="text-2xl md:text-3xl font-bold">
-          {locale === 'en' ? 'Project Results' : locale === 'zh' ? '项目成果' : 'Результати проєкту'}
+          {t('projectResults')}
         </h2>
         <p className="text-blue-100 text-sm md:text-base mt-2">
-          {locale === 'en'
-            ? 'View photos documenting our project activities and impact'
-            : locale === 'zh'
-            ? '查看记录我们项目活动和影响的照片'
-            : 'Перегляньте фотографії, що документують нашу діяльність та вплив'}
+          {t('projectResultsDescription')}
         </p>
       </div>
 

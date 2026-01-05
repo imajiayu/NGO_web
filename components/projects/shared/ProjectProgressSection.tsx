@@ -31,7 +31,7 @@ export default function ProjectProgressSection({ project, locale }: ProjectProgr
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-3 md:px-4 py-2 md:py-3 text-white">
         <h2 className="text-lg md:text-xl font-bold">
-          {locale === 'en' ? 'Project Progress' : locale === 'zh' ? '项目进度' : 'Прогрес проекту'}
+          {t('projectProgress')}
         </h2>
       </div>
 
