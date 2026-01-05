@@ -15,7 +15,7 @@ export default async function ComplianceSection() {
   ]
 
   return (
-    <section id="compliance-section" className="relative bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 py-12 md:py-16">
+    <section id="compliance-section" className="relative py-12 md:py-16">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">

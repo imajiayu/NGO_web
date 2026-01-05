@@ -88,6 +88,10 @@ export default function DonatePageClient({
   // Handle project selection
   const handleProjectSelect = (id: number) => {
     setSelectedProjectId(id)
+    // 同步更新 URL，这样语言切换时能保留项目选择
+    const url = new URL(window.location.href)
+    url.searchParams.set('project', id.toString())
+    window.history.replaceState({}, '', url.toString())
   }
 
   return (

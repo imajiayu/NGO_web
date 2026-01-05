@@ -10,7 +10,7 @@ export default function ProjectResultsSection({ results, locale }: Props) {
   if (results.length === 0) return null
 
   return (
-    <section className="relative bg-white py-12 md:py-16">
+    <section className="relative pt-12 md:pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-8 md:mb-10">
         <div className="text-center">
           <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full mb-3">

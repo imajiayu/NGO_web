@@ -979,16 +979,19 @@ export default function DonationFormCard({
           <button
             type="submit"
             disabled={processingState === 'creating' || project.status !== 'active'}
-            className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 shadow-md ${
+            className={`group relative w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 shadow-md overflow-hidden ${
               project.status !== 'active'
                 ? 'bg-gradient-to-r from-gray-400 to-gray-500 text-white cursor-not-allowed'
                 : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 hover:shadow-xl disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed'
             }`}
           >
-            {project.status !== 'active'
-              ? t('formCard.projectEnded')
-              : t('submit')
-            }
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            <span className="relative z-10">
+              {project.status !== 'active'
+                ? t('formCard.projectEnded')
+                : t('submit')
+              }
+            </span>
           </button>
 
           {/* Network Access Notice */}

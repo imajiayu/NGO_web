@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
+import { useSearchParams } from 'next/navigation'
 import { trackDonations, requestRefund } from '@/app/actions/track-donation'
 import { Link } from '@/i18n/navigation'
 import { Search, Mail, Hash, ArrowRight, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react'
@@ -36,14 +37,53 @@ type Props = {
 
 export default function TrackDonationForm({ locale }: Props) {
   const t = useTranslations('trackDonation')
-  const [email, setEmail] = useState('')
-  const [donationId, setDonationId] = useState('')
+  const searchParams = useSearchParams()
+
+  // 从 URL 参数初始化表单值
+  const [email, setEmail] = useState(searchParams.get('email') || '')
+  const [donationId, setDonationId] = useState(searchParams.get('id') || '')
   const [donations, setDonations] = useState<Donation[] | null>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [refundingDonationId, setRefundingDonationId] = useState<string | null>(null)
   const [confirmRefundId, setConfirmRefundId] = useState<string | null>(null)
   const [viewResultDonationId, setViewResultDonationId] = useState<string | null>(null)
+
+  // 用于追踪是否已经自动查询过
+  const hasAutoQueried = useRef(false)
+
+  // 如果 URL 有参数，自动触发查询（仅首次）
+  useEffect(() => {
+    const urlEmail = searchParams.get('email')
+    const urlId = searchParams.get('id')
+    if (urlEmail && urlId && !hasAutoQueried.current) {
+      hasAutoQueried.current = true
+      // 延迟执行查询，确保组件已完全挂载
+      setTimeout(() => {
+        handleAutoQuery(urlEmail, urlId)
+      }, 100)
+    }
+  }, [searchParams])
+
+  // 自动查询函数
+  async function handleAutoQuery(queryEmail: string, queryId: string) {
+    setError('')
+    setDonations(null)
+    setLoading(true)
+
+    try {
+      const result = await trackDonations({ email: queryEmail, donationId: queryId })
+      if (result.error) {
+        setError(t(`errors.${result.error}`))
+      } else if (result.donations) {
+        setDonations(result.donations as Donation[])
+      }
+    } catch (err) {
+      setError(t('errors.serverError'))
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Lock body scroll when confirmation dialog is open
   useEffect(() => {
@@ -82,6 +122,11 @@ export default function TrackDonationForm({ locale }: Props) {
         setError(t(`errors.${result.error}`))
       } else if (result.donations) {
         setDonations(result.donations as Donation[])
+        // 查询成功后更新 URL，这样切换语言时能保留查询参数
+        const url = new URL(window.location.href)
+        url.searchParams.set('email', email)
+        url.searchParams.set('id', donationId)
+        window.history.replaceState({}, '', url.toString())
       }
     } catch (err) {
       setError(t('errors.serverError'))
@@ -178,17 +223,18 @@ export default function TrackDonationForm({ locale }: Props) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            className="group relative w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 overflow-hidden"
           >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
             {loading ? (
               <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                {t('form.searching')}
+                <div className="relative z-10 w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span className="relative z-10">{t('form.searching')}</span>
               </>
             ) : (
               <>
-                <Search className="w-5 h-5" />
-                {t('form.submit')}
+                <Search className="relative z-10 w-5 h-5" />
+                <span className="relative z-10">{t('form.submit')}</span>
               </>
             )}
           </button>

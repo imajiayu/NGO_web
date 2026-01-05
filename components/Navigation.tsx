@@ -40,7 +40,10 @@ export default function Navigation() {
   const handleLocaleChange = (newLocale: string) => {
     setTargetLocale(newLocale)
     startTransition(() => {
-      router.replace(pathname, { locale: newLocale })
+      // 保留当前的查询参数（如 ?order=xxx, ?project=xxx）
+      const searchParams = typeof window !== 'undefined' ? window.location.search : ''
+      const newPath = searchParams ? `${pathname}${searchParams}` : pathname
+      router.replace(newPath, { locale: newLocale })
     })
     setIsDropdownOpen(false)
   }
@@ -106,9 +109,10 @@ export default function Navigation() {
               </button>
               <button
                 onClick={handleDonateClick}
-                className="px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                className="group relative px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg overflow-hidden"
               >
-                {t('donate')}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                <span className="relative z-10">{t('donate')}</span>
               </button>
             </div>
 
@@ -206,9 +210,10 @@ export default function Navigation() {
           </button>
           <button
             onClick={handleDonateClick}
-            className="flex-1 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 active:from-blue-700 active:to-purple-700 rounded-lg transition-all duration-200 shadow-md"
+            className="group relative flex-1 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 active:from-blue-700 active:to-purple-700 rounded-lg transition-all duration-200 shadow-md overflow-hidden"
           >
-            {t('donate')}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            <span className="relative z-10">{t('donate')}</span>
           </button>
         </div>
       </div>

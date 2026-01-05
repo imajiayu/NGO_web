@@ -25,7 +25,7 @@ export default function DonationJourneySection() {
   return (
     <>
       <GlobalLoadingSpinner isLoading={isNavigating} />
-      <section className="relative bg-gradient-to-b from-gray-50 to-white py-12 md:py-16">
+      <section className="relative py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center mb-8 md:mb-10">
@@ -43,9 +43,10 @@ export default function DonationJourneySection() {
             <div className="flex justify-center">
               <button
                 onClick={handleTrackClick}
-                className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm"
+                className="group relative px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg overflow-hidden"
               >
-                {useTranslations('donationStatusFlow')('trackButton')}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                <span className="relative z-10">{useTranslations('donationStatusFlow')('trackButton')}</span>
               </button>
             </div>
           </div>

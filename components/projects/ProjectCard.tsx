@@ -341,9 +341,10 @@ export default function ProjectCard({
         <div className="p-5 pt-0 mt-auto">
           <button
             onClick={handleDonateClick}
-            className="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-xl"
+            className="group/btn relative block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 hover:shadow-xl transition-all duration-300 shadow-md overflow-hidden"
           >
-            {t('viewDetails')}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000"></div>
+            <span className="relative z-10">{t('viewDetails')}</span>
           </button>
         </div>
       </div>

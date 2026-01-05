@@ -55,32 +55,35 @@ export default async function Home({ params }: Props) {
       {/* Section 3: Impact */}
       <ImpactSection />
 
-      {/* Section 4: Projects */}
-      <section id="projects-section" className="relative flex items-center justify-center bg-gradient-to-b from-gray-50 to-white py-12 md:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          {/* Header */}
-          <div className="text-center mb-8 md:mb-10">
-            <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full mb-3">
-              {t('label')}
-            </span>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
-              {t('title')}
-            </h2>
+      {/* Wrapper for Projects, Results, Journey, Compliance sections */}
+      <div className="bg-gradient-to-b from-white from-80% to-blue-50">
+        {/* Section 4: Projects */}
+        <section id="projects-section" className="relative flex items-center justify-center pt-12 md:pt-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            {/* Header */}
+            <div className="text-center mb-8 md:mb-10">
+              <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full mb-3">
+                {t('label')}
+              </span>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
+                {t('title')}
+              </h2>
+            </div>
+
+            {/* Projects Grid */}
+            <ProjectsGrid />
           </div>
+        </section>
 
-          {/* Projects Grid */}
-          <ProjectsGrid />
-        </div>
-      </section>
+        {/* Section 5: Project Results */}
+        <ProjectResultsSection results={projectResults} locale={locale} />
 
-      {/* Section 5: Project Results */}
-      <ProjectResultsSection results={projectResults} locale={locale} />
+        {/* Section 6: Donation Journey */}
+        <DonationJourneySection />
 
-      {/* Section 6: Donation Journey */}
-      <DonationJourneySection />
-
-      {/* Section 7: Legal Compliance */}
-      <ComplianceSection />
+        {/* Section 7: Legal Compliance */}
+        <ComplianceSection />
+      </div>
     </main>
   )
 }

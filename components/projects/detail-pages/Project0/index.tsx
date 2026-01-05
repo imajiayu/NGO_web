@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { MapPin, Users, Activity } from 'lucide-react'
+import { MapPin, Users, Activity, Heart, Building2, Church } from 'lucide-react'
 import EmployeeCarousel from './EmployeeCarousel'
 import CollapsibleGallery from './CollapsibleGallery'
 import ImageLightbox, { type LightboxImage } from '@/components/ImageLightbox'
@@ -271,22 +271,61 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
             ))}
           </div>
 
-          {/* Funding Sources - 3 Cards */}
-          <div className="flex gap-2 md:gap-3">
-            {[
-              { en: 'Charitable Organizations', zh: '慈善机构', ua: 'Благодійні організації' },
-              { en: 'Corporations', zh: '企业', ua: 'Корпорації' },
-              { en: 'Churches', zh: '教会', ua: 'Церкви' },
-            ].map((source, idx) => (
-              <div
-                key={idx}
-                className="flex-1 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg px-3 py-2 md:px-4 md:py-3 text-center border border-amber-200/50"
-              >
-                <span className="text-xs md:text-sm text-gray-700 font-medium">
-                  {locale === 'en' ? source.en : locale === 'zh' ? source.zh : source.ua}
-                </span>
-              </div>
-            ))}
+          {/* Funding Sources Section */}
+          <div className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 rounded-xl p-4 md:p-6 border border-slate-200/60">
+            <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-3 md:mb-4 text-center">
+              {locale === 'en'
+                ? 'Our funding sources'
+                : locale === 'zh'
+                  ? '我们的资金来源'
+                  : 'Наші джерела фінансування'}
+            </h3>
+            <div className="grid grid-cols-3 gap-2 md:gap-4">
+              {[
+                {
+                  en: 'Charitable Organizations',
+                  zh: '慈善机构',
+                  ua: 'Благодійні організації',
+                  icon: Heart,
+                  gradient: 'from-rose-500 to-pink-500',
+                  bg: 'from-rose-50 to-pink-50',
+                  border: 'border-rose-200/50'
+                },
+                {
+                  en: 'Corporations',
+                  zh: '企业',
+                  ua: 'Корпорації',
+                  icon: Building2,
+                  gradient: 'from-blue-500 to-indigo-500',
+                  bg: 'from-blue-50 to-indigo-50',
+                  border: 'border-blue-200/50'
+                },
+                {
+                  en: 'Churches',
+                  zh: '教会',
+                  ua: 'Церкви',
+                  icon: Church,
+                  gradient: 'from-amber-500 to-orange-500',
+                  bg: 'from-amber-50 to-orange-50',
+                  border: 'border-amber-200/50'
+                },
+              ].map((source, idx) => {
+                const Icon = source.icon
+                return (
+                  <div
+                    key={idx}
+                    className={`flex flex-col items-center bg-gradient-to-br ${source.bg} rounded-xl p-3 md:p-4 border ${source.border} shadow-sm hover:shadow-md transition-shadow`}
+                  >
+                    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br ${source.gradient} flex items-center justify-center mb-2 md:mb-3 shadow-md`}>
+                      <Icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                    </div>
+                    <span className="text-[10px] md:text-sm text-gray-700 font-medium text-center leading-tight">
+                      {locale === 'en' ? source.en : locale === 'zh' ? source.zh : source.ua}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
           </div>
 
           {/* Event Images Grid - No Title */}

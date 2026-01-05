@@ -30,20 +30,8 @@ export default async function DonateSuccessPage({
   const orderReference = searchParams.order
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, rgb(59, 130, 246) 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }}></div>
-      </div>
-
-      {/* Decorative Blobs */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-tl from-pink-400/20 to-purple-400/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
-
-      <div className="relative container mx-auto max-w-4xl px-4 py-12 lg:py-20">
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto max-w-4xl px-4 py-12 lg:py-20">
         {/* Success Header */}
         <div className="text-center mb-12">
           {/* Main Title */}
