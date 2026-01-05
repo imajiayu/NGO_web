@@ -201,6 +201,7 @@ export interface WayForPayRefundParams {
   amount: number
   currency: 'UAH' | 'USD' | 'EUR'
   comment: string
+  apiVersion: number
   merchantSignature: string
 }
 
@@ -249,6 +250,7 @@ export function createWayForPayRefund({
     amount,
     currency,
     comment,
+    apiVersion: 1,
     merchantSignature,
   }
 }
@@ -305,6 +307,7 @@ export async function processWayForPayRefund({
     comment: refundParams.comment,
     merchantAccount: refundParams.merchantAccount,
     transactionType: refundParams.transactionType,
+    apiVersion: refundParams.apiVersion,
     signature: refundParams.merchantSignature ? `${refundParams.merchantSignature.substring(0, 8)}...` : 'none',
   })
 
