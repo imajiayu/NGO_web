@@ -10,12 +10,14 @@ import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
 type Donation = Database['public']['Tables']['donations']['Row'] & {
   projects: { project_name: string; project_name_i18n: any }
 }
+type StatusHistory = Database['public']['Tables']['donation_status_history']['Row']
 
 interface Props {
   initialDonations: Donation[]
+  statusHistory: StatusHistory[]
 }
 
-export default function DonationsTable({ initialDonations }: Props) {
+export default function DonationsTable({ initialDonations, statusHistory }: Props) {
   const [donations, setDonations] = useState(initialDonations)
   const [editingDonation, setEditingDonation] = useState<Donation | null>(null)
   const [statusFilter, setStatusFilter] = useState<string>('all')
@@ -74,6 +76,25 @@ export default function DonationsTable({ initialDonations }: Props) {
     const matchesProject = projectFilter === 'all' || d.project_id === Number(projectFilter)
     return matchesStatus && matchesProject
   })
+
+  // 按 order_reference 分组
+  const donationGroups = useMemo(() => {
+    const groups = new Map<string, Donation[]>()
+
+    filteredDonations.forEach((donation) => {
+      const key = donation.order_reference || `no-order-${donation.id}`
+      if (!groups.has(key)) {
+        groups.set(key, [])
+      }
+      groups.get(key)!.push(donation)
+    })
+
+    return Array.from(groups.entries()).map(([orderRef, donations]) => ({
+      orderReference: orderRef.startsWith('no-order-') ? null : orderRef,
+      donations,
+      totalAmount: donations.reduce((sum, d) => sum + d.amount, 0)
+    }))
+  }, [filteredDonations])
 
   // 判断全选状态
   const isAllSelected = filteredDonations.length > 0 &&
@@ -189,110 +210,142 @@ export default function DonationsTable({ initialDonations }: Props) {
           )}
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-3 py-3 text-left">
-                  <input
-                    type="checkbox"
-                    checked={isAllSelected}
-                    ref={(input) => {
-                      if (input) {
-                        input.indeterminate = isSomeSelected
-                      }
-                    }}
-                    onChange={(e) => handleSelectAll(e.target.checked)}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  />
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  ID
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Donor / Email
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Project
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Amount
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Status
-                </th>
-                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                  Date
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredDonations.map((donation) => (
-                <tr
-                  key={donation.id}
-                  className={`hover:bg-gray-50 ${selectedIds.has(donation.id) ? 'bg-blue-50' : ''}`}
-                >
-                  <td className="px-3 py-3" onClick={(e) => e.stopPropagation()}>
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.has(donation.id)}
-                      onChange={(e) => handleSelectOne(donation.id, e.target.checked)}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                  </td>
-                  <td
-                    className="px-3 py-3 text-sm text-gray-900 cursor-pointer"
-                    onClick={() => handleEdit(donation)}
-                  >
-                    <div className="font-medium">#{donation.id}</div>
-                    <div className="text-xs text-gray-500">{donation.donation_public_id}</div>
-                  </td>
-                  <td
-                    className="px-3 py-3 text-sm cursor-pointer"
-                    onClick={() => handleEdit(donation)}
-                  >
-                    <div className="font-medium text-gray-900">{donation.donor_name}</div>
-                    <div className="text-xs text-gray-500 truncate max-w-[150px]">
-                      {donation.donor_email}
+        <div className="overflow-x-auto space-y-6">
+          {donationGroups.map((group) => (
+            <div key={group.orderReference || 'no-order'} className="border-2 border-gray-300 rounded-lg p-4 bg-gray-50">
+              {/* 订单头部信息 */}
+              {group.orderReference && (
+                <div className="mb-3 pb-3 border-b border-gray-300">
+                  <div className="flex items-center justify-between">
+                    <div className="font-semibold text-gray-900">
+                      Order: {group.orderReference}
                     </div>
-                  </td>
-                  <td
-                    className="px-3 py-3 text-sm text-gray-500 max-w-[150px] cursor-pointer"
-                    onClick={() => handleEdit(donation)}
-                  >
-                    <div className="truncate">{donation.projects.project_name}</div>
-                  </td>
-                  <td
-                    className="px-3 py-3 whitespace-nowrap text-sm text-gray-900 cursor-pointer"
-                    onClick={() => handleEdit(donation)}
-                  >
-                    {donation.amount} {donation.currency || 'UAH'}
-                  </td>
-                  <td
-                    className="px-3 py-3 whitespace-nowrap cursor-pointer"
-                    onClick={() => handleEdit(donation)}
-                  >
-                    <DonationStatusBadge status={donation.donation_status as DonationStatus} />
-                  </td>
-                  <td
-                    className="px-3 py-3 text-sm text-gray-500 cursor-pointer"
-                    onClick={() => handleEdit(donation)}
-                  >
-                    <div>{new Date(donation.donated_at).toLocaleDateString()}</div>
-                    <div className="text-xs text-gray-400">
-                      {new Date(donation.donated_at).toLocaleTimeString()}
+                    <div className="text-sm text-gray-600">
+                      {group.donations.length} donation(s) | Total: ₴{group.totalAmount.toFixed(2)}
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+              )}
+
+              {/* 捐赠记录表格 */}
+              <table className="min-w-full divide-y divide-gray-200 bg-white rounded-md overflow-hidden">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-3 py-3 text-left">
+                      <input
+                        type="checkbox"
+                        checked={group.donations.every(d => selectedIds.has(d.id))}
+                        ref={(input) => {
+                          if (input) {
+                            const allSelected = group.donations.every(d => selectedIds.has(d.id))
+                            const someSelected = group.donations.some(d => selectedIds.has(d.id)) && !allSelected
+                            input.indeterminate = someSelected
+                          }
+                        }}
+                        onChange={(e) => {
+                          const newSelected = new Set(selectedIds)
+                          group.donations.forEach(d => {
+                            if (e.target.checked) {
+                              newSelected.add(d.id)
+                            } else {
+                              newSelected.delete(d.id)
+                            }
+                          })
+                          setSelectedIds(newSelected)
+                        }}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                    </th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      ID
+                    </th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Donor / Email
+                    </th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Project
+                    </th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Amount
+                    </th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Status
+                    </th>
+                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Date
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {group.donations.map((donation) => (
+                    <tr
+                      key={donation.id}
+                      className={`hover:bg-gray-50 ${selectedIds.has(donation.id) ? 'bg-blue-50' : ''}`}
+                    >
+                      <td className="px-3 py-3" onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.has(donation.id)}
+                          onChange={(e) => handleSelectOne(donation.id, e.target.checked)}
+                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                      </td>
+                      <td
+                        className="px-3 py-3 text-sm text-gray-900 cursor-pointer"
+                        onClick={() => handleEdit(donation)}
+                      >
+                        <div className="font-medium">#{donation.id}</div>
+                        <div className="text-xs text-gray-500">{donation.donation_public_id}</div>
+                      </td>
+                      <td
+                        className="px-3 py-3 text-sm cursor-pointer"
+                        onClick={() => handleEdit(donation)}
+                      >
+                        <div className="font-medium text-gray-900">{donation.donor_name}</div>
+                        <div className="text-xs text-gray-500 truncate max-w-[150px]">
+                          {donation.donor_email}
+                        </div>
+                      </td>
+                      <td
+                        className="px-3 py-3 text-sm text-gray-500 max-w-[150px] cursor-pointer"
+                        onClick={() => handleEdit(donation)}
+                      >
+                        <div className="truncate">{donation.projects.project_name}</div>
+                      </td>
+                      <td
+                        className="px-3 py-3 whitespace-nowrap text-sm text-gray-900 cursor-pointer"
+                        onClick={() => handleEdit(donation)}
+                      >
+                        {donation.amount} {donation.currency || 'UAH'}
+                      </td>
+                      <td
+                        className="px-3 py-3 whitespace-nowrap cursor-pointer"
+                        onClick={() => handleEdit(donation)}
+                      >
+                        <DonationStatusBadge status={donation.donation_status as DonationStatus} />
+                      </td>
+                      <td
+                        className="px-3 py-3 text-sm text-gray-500 cursor-pointer"
+                        onClick={() => handleEdit(donation)}
+                      >
+                        <div>{new Date(donation.donated_at).toLocaleDateString()}</div>
+                        <div className="text-xs text-gray-400">
+                          {new Date(donation.donated_at).toLocaleTimeString()}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))}
         </div>
       </div>
 
       {editingDonation && (
         <DonationEditModal
           donation={editingDonation}
+          statusHistory={statusHistory.filter(h => h.donation_id === editingDonation.id)}
           onClose={() => setEditingDonation(null)}
           onSaved={handleSaved}
         />

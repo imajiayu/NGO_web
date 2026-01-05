@@ -39,6 +39,52 @@ export type Database = {
   }
   public: {
     Tables: {
+      donation_status_history: {
+        Row: {
+          changed_at: string
+          donation_id: number
+          from_status: string | null
+          id: number
+          to_status: string
+        }
+        Insert: {
+          changed_at?: string
+          donation_id: number
+          from_status?: string | null
+          id?: number
+          to_status: string
+        }
+        Update: {
+          changed_at?: string
+          donation_id?: number
+          from_status?: string | null
+          id?: number
+          to_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donation_status_history_donation_id_fkey"
+            columns: ["donation_id"]
+            isOneToOne: false
+            referencedRelation: "donations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "donation_status_history_donation_id_fkey"
+            columns: ["donation_id"]
+            isOneToOne: false
+            referencedRelation: "order_donations_secure"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "donation_status_history_donation_id_fkey"
+            columns: ["donation_id"]
+            isOneToOne: false
+            referencedRelation: "public_project_donations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       donations: {
         Row: {
           amount: number

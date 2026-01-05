@@ -245,88 +245,220 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
               </div>
             </div>
 
-            {/* i18n Fields (JSON) */}
+            {/* i18n Fields */}
             <div className="border-b pb-4">
-              <h3 className="text-lg font-semibold mb-3">Internationalization (JSON)</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Project Name i18n
-                  </label>
-                  <textarea
-                    value={formData.project_name_i18n ? JSON.stringify(formData.project_name_i18n, null, 2) : ''}
-                    onChange={(e) => {
-                      try {
-                        const parsed = e.target.value ? JSON.parse(e.target.value) : null
-                        updateField('project_name_i18n', parsed)
-                      } catch {
-                        // Invalid JSON, ignore
-                      }
-                    }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md font-mono text-sm"
-                    rows={3}
-                    placeholder='{"en": "Project Name", "zh": "项目名称", "ua": "Назва проекту"}'
-                  />
+              <h3 className="text-lg font-semibold mb-3">Internationalization (Optional)</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Provide translations for different languages. Leave empty to use the basic information above.
+              </p>
+
+              <div className="space-y-6">
+                {/* Project Name i18n */}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3">Project Name Translations</h4>
+                  <div className="grid grid-cols-1 gap-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        English (en)
+                      </label>
+                      <input
+                        type="text"
+                        value={(formData.project_name_i18n as any)?.en || ''}
+                        onChange={(e) => {
+                          const current = (formData.project_name_i18n as any) || {}
+                          updateField('project_name_i18n', { ...current, en: e.target.value || undefined })
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                        placeholder="Project Name"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        Chinese (zh)
+                      </label>
+                      <input
+                        type="text"
+                        value={(formData.project_name_i18n as any)?.zh || ''}
+                        onChange={(e) => {
+                          const current = (formData.project_name_i18n as any) || {}
+                          updateField('project_name_i18n', { ...current, zh: e.target.value || undefined })
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                        placeholder="项目名称"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        Ukrainian (ua)
+                      </label>
+                      <input
+                        type="text"
+                        value={(formData.project_name_i18n as any)?.ua || ''}
+                        onChange={(e) => {
+                          const current = (formData.project_name_i18n as any) || {}
+                          updateField('project_name_i18n', { ...current, ua: e.target.value || undefined })
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                        placeholder="Назва проекту"
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Location i18n
-                  </label>
-                  <textarea
-                    value={formData.location_i18n ? JSON.stringify(formData.location_i18n, null, 2) : ''}
-                    onChange={(e) => {
-                      try {
-                        const parsed = e.target.value ? JSON.parse(e.target.value) : null
-                        updateField('location_i18n', parsed)
-                      } catch {
-                        // Invalid JSON, ignore
-                      }
-                    }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md font-mono text-sm"
-                    rows={3}
-                    placeholder='{"en": "Location", "zh": "位置", "ua": "Розташування"}'
-                  />
+                {/* Location i18n */}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3">Location Translations</h4>
+                  <div className="grid grid-cols-1 gap-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        English (en)
+                      </label>
+                      <input
+                        type="text"
+                        value={(formData.location_i18n as any)?.en || ''}
+                        onChange={(e) => {
+                          const current = (formData.location_i18n as any) || {}
+                          updateField('location_i18n', { ...current, en: e.target.value || undefined })
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                        placeholder="Location"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        Chinese (zh)
+                      </label>
+                      <input
+                        type="text"
+                        value={(formData.location_i18n as any)?.zh || ''}
+                        onChange={(e) => {
+                          const current = (formData.location_i18n as any) || {}
+                          updateField('location_i18n', { ...current, zh: e.target.value || undefined })
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                        placeholder="位置"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        Ukrainian (ua)
+                      </label>
+                      <input
+                        type="text"
+                        value={(formData.location_i18n as any)?.ua || ''}
+                        onChange={(e) => {
+                          const current = (formData.location_i18n as any) || {}
+                          updateField('location_i18n', { ...current, ua: e.target.value || undefined })
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                        placeholder="Розташування"
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Unit Name i18n
-                  </label>
-                  <textarea
-                    value={formData.unit_name_i18n ? JSON.stringify(formData.unit_name_i18n, null, 2) : ''}
-                    onChange={(e) => {
-                      try {
-                        const parsed = e.target.value ? JSON.parse(e.target.value) : null
-                        updateField('unit_name_i18n', parsed)
-                      } catch {
-                        // Invalid JSON, ignore
-                      }
-                    }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md font-mono text-sm"
-                    rows={3}
-                    placeholder='{"en": "unit", "zh": "单位", "ua": "одиниця"}'
-                  />
+                {/* Unit Name i18n */}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3">Unit Name Translations</h4>
+                  <div className="grid grid-cols-1 gap-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        English (en)
+                      </label>
+                      <input
+                        type="text"
+                        value={(formData.unit_name_i18n as any)?.en || ''}
+                        onChange={(e) => {
+                          const current = (formData.unit_name_i18n as any) || {}
+                          updateField('unit_name_i18n', { ...current, en: e.target.value || undefined })
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                        placeholder="unit"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        Chinese (zh)
+                      </label>
+                      <input
+                        type="text"
+                        value={(formData.unit_name_i18n as any)?.zh || ''}
+                        onChange={(e) => {
+                          const current = (formData.unit_name_i18n as any) || {}
+                          updateField('unit_name_i18n', { ...current, zh: e.target.value || undefined })
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                        placeholder="单位"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        Ukrainian (ua)
+                      </label>
+                      <input
+                        type="text"
+                        value={(formData.unit_name_i18n as any)?.ua || ''}
+                        onChange={(e) => {
+                          const current = (formData.unit_name_i18n as any) || {}
+                          updateField('unit_name_i18n', { ...current, ua: e.target.value || undefined })
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                        placeholder="одиниця"
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description i18n
-                  </label>
-                  <textarea
-                    value={formData.description_i18n ? JSON.stringify(formData.description_i18n, null, 2) : ''}
-                    onChange={(e) => {
-                      try {
-                        const parsed = e.target.value ? JSON.parse(e.target.value) : null
-                        updateField('description_i18n', parsed)
-                      } catch {
-                        // Invalid JSON, ignore
-                      }
-                    }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md font-mono text-sm"
-                    rows={5}
-                    placeholder='{"en": "Description", "zh": "描述", "ua": "Опис"}'
-                  />
+                {/* Description i18n */}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3">Description Translations</h4>
+                  <div className="grid grid-cols-1 gap-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        English (en)
+                      </label>
+                      <textarea
+                        value={(formData.description_i18n as any)?.en || ''}
+                        onChange={(e) => {
+                          const current = (formData.description_i18n as any) || {}
+                          updateField('description_i18n', { ...current, en: e.target.value || undefined })
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                        rows={3}
+                        placeholder="Description"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        Chinese (zh)
+                      </label>
+                      <textarea
+                        value={(formData.description_i18n as any)?.zh || ''}
+                        onChange={(e) => {
+                          const current = (formData.description_i18n as any) || {}
+                          updateField('description_i18n', { ...current, zh: e.target.value || undefined })
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                        rows={3}
+                        placeholder="描述"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">
+                        Ukrainian (ua)
+                      </label>
+                      <textarea
+                        value={(formData.description_i18n as any)?.ua || ''}
+                        onChange={(e) => {
+                          const current = (formData.description_i18n as any) || {}
+                          updateField('description_i18n', { ...current, ua: e.target.value || undefined })
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                        rows={3}
+                        placeholder="Опис"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

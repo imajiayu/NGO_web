@@ -103,11 +103,13 @@ export async function updateProject(id: number, updates: ProjectUpdate) {
  * 排序规则：
  * 1. failed 状态排在最后
  * 2. 其他状态按 donated_at 降序排序
+ * 返回捐赠记录和状态历史
  */
 export async function getAdminDonations() {
   await requireAdmin()
   const supabase = await createAuthClient()
 
+  // 获取所有捐赠
   const { data, error } = await supabase
     .from('donations')
     .select(`
@@ -119,6 +121,14 @@ export async function getAdminDonations() {
     `)
 
   if (error) throw error
+
+  // 获取所有状态历史
+  const { data: history, error: historyError } = await supabase
+    .from('donation_status_history')
+    .select('*')
+    .order('changed_at', { ascending: true })
+
+  if (historyError) throw historyError
 
   // 自定义排序：failed 状态排在最后，其他按 donated_at 降序
   const sorted = (data || []).sort((a, b) => {
@@ -132,7 +142,10 @@ export async function getAdminDonations() {
     return dateB - dateA
   })
 
-  return sorted as (Donation & { projects: { project_name: string; project_name_i18n: any } })[]
+  return {
+    donations: sorted as (Donation & { projects: { project_name: string; project_name_i18n: any } })[],
+    history: history as Database['public']['Tables']['donation_status_history']['Row'][]
+  }
 }
 
 /**
@@ -667,5 +680,49 @@ export async function batchUpdateDonationStatus(
 
   revalidatePath('/admin/donations')
   return data as Donation[]
+}
+
+/**
+ * 获取所有捐赠及其状态历史（管理员视图）
+ * 用于状态历史审计追踪
+ */
+export async function getDonationsWithStatusHistory() {
+  await requireAdmin()
+  const supabase = await createAuthClient()
+
+  // 获取所有捐赠
+  const { data: donations, error: donationsError } = await supabase
+    .from('donations')
+    .select(`
+      id,
+      donation_public_id,
+      order_reference,
+      donor_name,
+      donor_email,
+      amount,
+      donation_status,
+      donated_at,
+      project_id,
+      projects (
+        project_name,
+        project_name_i18n
+      )
+    `)
+    .order('donated_at', { ascending: false })
+
+  if (donationsError) throw donationsError
+
+  // 获取所有状态历史
+  const { data: history, error: historyError } = await supabase
+    .from('donation_status_history')
+    .select('*')
+    .order('changed_at', { ascending: true })
+
+  if (historyError) throw historyError
+
+  return {
+    donations: donations as (Donation & { projects: { project_name: string; project_name_i18n: any } })[],
+    history: history as Database['public']['Tables']['donation_status_history']['Row'][]
+  }
 }
 

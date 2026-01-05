@@ -13,9 +13,11 @@ import DonationStatusProgress from './DonationStatusProgress'
 import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
 
 type Donation = Database['public']['Tables']['donations']['Row']
+type StatusHistory = Database['public']['Tables']['donation_status_history']['Row']
 
 interface Props {
   donation: Donation
+  statusHistory: StatusHistory[]
   onClose: () => void
   onSaved: (donation: Donation) => void
 }
@@ -38,7 +40,7 @@ const STATUS_TRANSITIONS: Record<string, string[]> = {
   delivering: ['completed'],
 }
 
-export default function DonationEditModal({ donation, onClose, onSaved }: Props) {
+export default function DonationEditModal({ donation, statusHistory, onClose, onSaved }: Props) {
   const [newStatus, setNewStatus] = useState<string>('')
   const [filesToUpload, setFilesToUpload] = useState<File[]>([])
   const [uploading, setUploading] = useState(false)
@@ -649,6 +651,41 @@ export default function DonationEditModal({ donation, onClose, onSaved }: Props)
                 </div>
               </div>
             </div>
+
+            {/* Status History */}
+            {statusHistory.length > 0 && (
+              <div className="p-4 bg-purple-50 rounded-lg">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">Status Change History</h3>
+                <div className="space-y-2">
+                  {statusHistory.map((history) => (
+                    <div key={history.id} className="flex items-center gap-2 text-sm text-gray-700 bg-white p-2 rounded">
+                      <span className="text-xs text-gray-500 font-mono">
+                        {new Date(history.changed_at).toLocaleString('zh-CN', {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit',
+                        })}
+                      </span>
+                      <span className="text-gray-400">→</span>
+                      {history.from_status && (
+                        <>
+                          <span className="px-2 py-0.5 rounded text-xs font-medium bg-gray-200 text-gray-700">
+                            {history.from_status}
+                          </span>
+                          <span className="text-gray-400">→</span>
+                        </>
+                      )}
+                      <span className="px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-700">
+                        {history.to_status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </form>
       </div>

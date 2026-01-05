@@ -9,14 +9,14 @@ export default async function AdminDonationsPage() {
     redirect('/admin/login')
   }
 
-  const donations = await getAdminDonations()
+  const { donations, history } = await getAdminDonations()
 
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Donations</h1>
       </div>
-      <DonationsTable initialDonations={donations} />
+      <DonationsTable initialDonations={donations} statusHistory={history} />
     </div>
   )
 }
