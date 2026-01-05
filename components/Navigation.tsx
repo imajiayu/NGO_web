@@ -58,6 +58,10 @@ export default function Navigation() {
   }
 
   const handleTrackDonation = () => {
+    // 如果当前已经在 /track-donation 页面，不执行任何操作
+    if (pathname === '/track-donation') {
+      return
+    }
     setIsNavigating(true)
     router.push('/track-donation')
   }

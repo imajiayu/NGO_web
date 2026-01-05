@@ -48,21 +48,34 @@ export default function TrackDonationForm({ locale }: Props) {
   const [confirmRefundId, setConfirmRefundId] = useState<string | null>(null)
   const [viewResultDonationId, setViewResultDonationId] = useState<string | null>(null)
 
-  // 用于追踪是否已经自动查询过
-  const hasAutoQueried = useRef(false)
+  // 用于追踪上次自动查询的参数，避免重复查询
+  const lastAutoQueryParams = useRef<{ email: string; id: string } | null>(null)
 
-  // 如果 URL 有参数，自动触发查询（仅首次）
+  // 如果 URL 有参数，自动触发查询（仅在参数改变或首次加载时）
   useEffect(() => {
     const urlEmail = searchParams.get('email')
     const urlId = searchParams.get('id')
-    if (urlEmail && urlId && !hasAutoQueried.current) {
-      hasAutoQueried.current = true
-      // 延迟执行查询，确保组件已完全挂载
-      setTimeout(() => {
-        handleAutoQuery(urlEmail, urlId)
-      }, 100)
+
+    // 如果 URL 没有参数，跳过
+    if (!urlEmail || !urlId) return
+
+    // 如果已经有查询结果且参数未变，跳过（防止切换语言时重复查询）
+    if (
+      donations &&
+      lastAutoQueryParams.current?.email === urlEmail &&
+      lastAutoQueryParams.current?.id === urlId
+    ) {
+      return
     }
-  }, [searchParams])
+
+    // 记录本次查询参数
+    lastAutoQueryParams.current = { email: urlEmail, id: urlId }
+
+    // 延迟执行查询，确保组件已完全挂载
+    setTimeout(() => {
+      handleAutoQuery(urlEmail, urlId)
+    }, 100)
+  }, [searchParams, donations])
 
   // 自动查询函数
   async function handleAutoQuery(queryEmail: string, queryId: string) {
@@ -126,6 +139,8 @@ export default function TrackDonationForm({ locale }: Props) {
         url.searchParams.set('email', email)
         url.searchParams.set('id', donationId)
         window.history.replaceState({}, '', url.toString())
+        // 同时更新 lastAutoQueryParams，防止 useEffect 重复查询
+        lastAutoQueryParams.current = { email, id: donationId }
       }
     } catch (err) {
       setError(t('errors.serverError'))
