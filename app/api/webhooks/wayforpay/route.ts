@@ -203,7 +203,7 @@ export async function POST(req: Request) {
 
           if (project) {
             // Calculate total refund amount from updated donations
-            const refundAmount = updatedDonations.reduce((sum, d) => sum + parseFloat(d.amount), 0)
+            const refundAmount = updatedDonations.reduce((sum, d) => sum + Number(d.amount), 0)
 
             await sendRefundSuccessEmail({
               to: firstDonation.donor_email,
