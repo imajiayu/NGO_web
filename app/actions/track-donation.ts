@@ -182,8 +182,18 @@ export async function requestRefund(data: {
       return { error: 'alreadyRefunding' }
     }
 
-    // Calculate total order amount (sum of all donations in this order)
-    const totalOrderAmount = orderDonations.reduce((sum, d) => sum + Number(d.amount), 0)
+    // Filter donations that can be refunded (exclude completed donations)
+    const refundableDonations = orderDonations.filter(d =>
+      d.donation_status && ['paid', 'confirmed', 'delivering'].includes(d.donation_status)
+    )
+
+    // Check if there are any refundable donations
+    if (refundableDonations.length === 0) {
+      return { error: 'cannotRefundCompleted' }
+    }
+
+    // Calculate refundable amount (only paid/confirmed/delivering donations)
+    const totalOrderAmount = refundableDonations.reduce((sum, d) => sum + Number(d.amount), 0)
 
     // 5. Call WayForPay refund API for the ENTIRE order
     try {
@@ -213,9 +223,9 @@ export async function requestRefund(data: {
           newStatus = 'refund_processing'
       }
 
-      // 7. Update ALL donations in this order to the same status
-      // This is important because WayForPay refunds the entire order, not individual donations
-      const donationIds = orderDonations.map(d => d.id)
+      // 7. Update ONLY refundable donations (paid/confirmed/delivering) to the new status
+      // Completed donations are excluded from refund
+      const donationIds = refundableDonations.map(d => d.id)
 
       const { error: updateError } = await serviceSupabase
         .from('donations')
@@ -233,7 +243,7 @@ export async function requestRefund(data: {
       return {
         success: true,
         status: newStatus,
-        affectedDonations: orderDonations.length,  // Return how many donations were refunded
+        affectedDonations: refundableDonations.length,  // Return how many donations were refunded
         totalAmount: totalOrderAmount
       }
 

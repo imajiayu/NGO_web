@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { verifyWayForPaySignature, generateWebhookResponseSignature, WAYFORPAY_STATUS } from '@/lib/wayforpay/server'
 import { createServiceClient } from '@/lib/supabase/server'
-import { sendPaymentSuccessEmail } from '@/lib/email'
+import { sendPaymentSuccessEmail, sendRefundSuccessEmail } from '@/lib/email'
 import type { DonationStatus } from '@/types'
 
 /**
@@ -187,6 +187,39 @@ export async function POST(req: Request) {
           }
         } catch (emailError) {
           console.error('[WEBHOOK] Email failed:', emailError)
+          // Don't throw - email failure shouldn't fail the webhook
+        }
+      }
+
+      // Send refund success email when status becomes refunded
+      if (newStatus === 'refunded' && updatedDonations && updatedDonations.length > 0) {
+        try {
+          const firstDonation = updatedDonations[0]
+          const { data: project } = await supabase
+            .from('projects')
+            .select('project_name_i18n')
+            .eq('id', firstDonation.project_id)
+            .single()
+
+          if (project) {
+            // Calculate total refund amount from updated donations
+            const refundAmount = updatedDonations.reduce((sum, d) => sum + parseFloat(d.amount), 0)
+
+            await sendRefundSuccessEmail({
+              to: firstDonation.donor_email,
+              donorName: firstDonation.donor_name,
+              projectNameI18n: project.project_name_i18n as { en: string; zh: string; ua: string },
+              donationIds: updatedDonations.map(d => d.donation_public_id),
+              refundAmount,
+              currency: body.currency || 'USD',
+              locale: firstDonation.locale as 'en' | 'zh' | 'ua',
+              refundReason: body.reason || undefined,
+            })
+
+            console.log('[WEBHOOK] Refund success email sent to', firstDonation.donor_email)
+          }
+        } catch (emailError) {
+          console.error('[WEBHOOK] Refund email failed:', emailError)
           // Don't throw - email failure shouldn't fail the webhook
         }
       }
