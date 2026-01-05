@@ -167,7 +167,7 @@ export default function DonationStatusFlow({
       </div>
 
       {/* Descriptions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-24 sm:mt-28 md:mt-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 sm:mt-14 md:mt-12">
         {/* Main flow descriptions */}
         {mainFlow.map((status) => (
           <div

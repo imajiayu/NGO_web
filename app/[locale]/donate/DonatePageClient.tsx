@@ -12,6 +12,7 @@ import {
 import DonationFormCard from '@/components/donate/DonationFormCard'
 import DonationStatusFlow from '@/components/donation/DonationStatusFlow'
 import ProjectDonationList from '@/components/donation/ProjectDonationList'
+import BottomSheet from '@/components/BottomSheet'
 import { getProjectName, type SupportedLocale } from '@/lib/i18n-utils'
 
 /**
@@ -68,6 +69,8 @@ export default function DonatePageClient({
     initialProjectId
   )
   const [isFlowExpanded, setIsFlowExpanded] = useState(false)
+  const [isSheetOpen, setIsSheetOpen] = useState(true) // Default open on mobile
+  const [hideSheetAtBottom, setHideSheetAtBottom] = useState(false)
 
   // Shared form fields state (preserved across project switches)
   // Only preserve donor personal information, NOT project-specific fields
@@ -77,6 +80,11 @@ export default function DonatePageClient({
   const [contactTelegram, setContactTelegram] = useState('')
   const [contactWhatsapp, setContactWhatsapp] = useState('')
   const [subscribeToNewsletter, setSubscribeToNewsletter] = useState(true)
+
+  // Constants
+  const FOOTER_SAFE_ZONE = 150 // px from bottom to hide sheet
+  const MOBILE_BREAKPOINT = 1024 // lg breakpoint
+  const SCROLL_DEBOUNCE_MS = 100
 
   const selectedProject = projects.find(p => p.id === selectedProjectId) || null
 
@@ -94,6 +102,54 @@ export default function DonatePageClient({
     window.history.replaceState({}, '', url.toString())
   }
 
+  // Detect scroll to bottom and hide minimized sheet (debounced)
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout
+
+    const handleScroll = () => {
+      // Debounce: only execute after SCROLL_DEBOUNCE_MS of no scrolling
+      clearTimeout(timeoutId)
+      timeoutId = setTimeout(() => {
+        const windowHeight = window.innerHeight
+        const documentHeight = document.documentElement.scrollHeight
+        const scrollTop = window.scrollY || document.documentElement.scrollTop
+
+        // Calculate distance from bottom
+        const distanceFromBottom = documentHeight - (scrollTop + windowHeight)
+
+        // Hide sheet when near bottom (within FOOTER_SAFE_ZONE px of footer)
+        setHideSheetAtBottom(distanceFromBottom < FOOTER_SAFE_ZONE)
+      }, SCROLL_DEBOUNCE_MS)
+    }
+
+    const checkMobileAndAddListener = () => {
+      // Remove existing listener if any
+      window.removeEventListener('scroll', handleScroll)
+
+      // Add scroll listener on mobile only
+      if (window.innerWidth < MOBILE_BREAKPOINT) {
+        window.addEventListener('scroll', handleScroll, { passive: true })
+        // Check initial scroll position
+        handleScroll()
+      } else {
+        // Reset state on desktop
+        setHideSheetAtBottom(false)
+      }
+    }
+
+    // Initial check
+    checkMobileAndAddListener()
+
+    // Listen for window resize
+    window.addEventListener('resize', checkMobileAndAddListener)
+
+    return () => {
+      clearTimeout(timeoutId)
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', checkMobileAndAddListener)
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Project Selection Gallery */}
@@ -109,63 +165,73 @@ export default function DonatePageClient({
       <div id="donation-content" className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
         {selectedProject && selectedProjectId !== null ? (
           <>
-            {/* Mobile Only: Scroll to Donation Form Button - At the top */}
-            <div className="lg:hidden mb-4">
-              <button
-                onClick={() => {
-                  const formElement = document.getElementById('donation-form')
-                  if (formElement) {
-                    formElement.scrollIntoView({
-                      behavior: 'smooth',
-                      block: 'start'
-                    })
-                  }
-                }}
-                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3 group"
-              >
-                <span>{t('donateNowButton')}</span>
-                <svg className="w-6 h-6 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-              </button>
-            </div>
-
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-6">
-            {/* Left Side: Project Detail Content (60%) */}
-            <div className="lg:col-span-3 space-y-3 md:space-y-4">
-              {/* Render project-specific detail component */}
-              {renderProjectDetail(selectedProjectId, selectedProject, locale)}
+              {/* Left Side: Project Detail Content (60%) */}
+              <div className="lg:col-span-3 space-y-3 md:space-y-4">
+                {/* Render project-specific detail component */}
+                {renderProjectDetail(selectedProjectId, selectedProject, locale)}
+              </div>
+
+              {/* Right Side: Donation Form (40%) - Desktop Only */}
+              <div className="hidden lg:block lg:col-span-2" id="donation-form">
+                <DonationFormCard
+                  project={selectedProject}
+                  locale={locale}
+                  onProjectsUpdate={handleProjectsUpdate}
+                  donorName={donorName}
+                  setDonorName={setDonorName}
+                  donorEmail={donorEmail}
+                  setDonorEmail={setDonorEmail}
+                  donorMessage={donorMessage}
+                  setDonorMessage={setDonorMessage}
+                  contactTelegram={contactTelegram}
+                  setContactTelegram={setContactTelegram}
+                  contactWhatsapp={contactWhatsapp}
+                  setContactWhatsapp={setContactWhatsapp}
+                  subscribeToNewsletter={subscribeToNewsletter}
+                  setSubscribeToNewsletter={setSubscribeToNewsletter}
+                />
+              </div>
             </div>
 
-            {/* Right Side: Donation Form (40%) */}
-            <div className="lg:col-span-2" id="donation-form">
-              <DonationFormCard
-                project={selectedProject}
-                locale={locale}
-                onProjectsUpdate={handleProjectsUpdate}
-                donorName={donorName}
-                setDonorName={setDonorName}
-                donorEmail={donorEmail}
-                setDonorEmail={setDonorEmail}
-                donorMessage={donorMessage}
-                setDonorMessage={setDonorMessage}
-                contactTelegram={contactTelegram}
-                setContactTelegram={setContactTelegram}
-                contactWhatsapp={contactWhatsapp}
-                setContactWhatsapp={setContactWhatsapp}
-                subscribeToNewsletter={subscribeToNewsletter}
-                setSubscribeToNewsletter={setSubscribeToNewsletter}
-              />
+            {/* Mobile Only: Bottom Sheet with Donation Form */}
+            <div className="lg:hidden">
+              <BottomSheet
+                isOpen={isSheetOpen}
+                onClose={() => setIsSheetOpen(false)}
+                snapPoints={[0.15, 1]} // Minimized (15%) and Full (100% - nav)
+                minimizedHint={t('donateNowButton')}
+                hideWhenMinimized={hideSheetAtBottom}
+              >
+              <div className="p-4">
+                <DonationFormCard
+                  project={selectedProject}
+                  locale={locale}
+                  onProjectsUpdate={handleProjectsUpdate}
+                  donorName={donorName}
+                  setDonorName={setDonorName}
+                  donorEmail={donorEmail}
+                  setDonorEmail={setDonorEmail}
+                  donorMessage={donorMessage}
+                  setDonorMessage={setDonorMessage}
+                  contactTelegram={contactTelegram}
+                  setContactTelegram={setContactTelegram}
+                  contactWhatsapp={contactWhatsapp}
+                  setContactWhatsapp={setContactWhatsapp}
+                  subscribeToNewsletter={subscribeToNewsletter}
+                  setSubscribeToNewsletter={setSubscribeToNewsletter}
+                />
+              </div>
+              </BottomSheet>
             </div>
-          </div>
           </>
         ) : (
           <EmptyState locale={locale} />
         )}
 
         {/* Full Width: Donation Process Flow */}
-        <div className="mt-16 pt-16 border-t-2 border-gray-200">
-          <div className="text-center mb-8">
+        <div className="mt-8 pt-8 md:mt-16 md:pt-16 border-t-2 border-gray-200">
+          <div className="text-center mb-6 md:mb-8">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
               {t('trackDonationTitle')}
             </h2>
@@ -202,7 +268,7 @@ export default function DonatePageClient({
 
         {/* Project Donations List */}
         {selectedProjectId !== null && selectedProject && (
-          <div className="mt-16">
+          <div className="mt-8 md:mt-12">
             <ProjectDonationList
               key={`donations-${selectedProjectId}`}
               projectId={selectedProjectId}
