@@ -120,7 +120,7 @@ export async function POST(req: Request) {
 
     // Determine which statuses can be updated based on webhook type
     // Payment webhooks can only update from initial payment states
-    // Refund webhooks can update from paid/confirmed/delivering/refund_processing states
+    // Refund webhooks can update from paid/confirmed/delivering/refunding/refund_processing states
     const isRefundWebhook = [
       WAYFORPAY_STATUS.REFUNDED,
       WAYFORPAY_STATUS.REFUND_IN_PROCESSING,
@@ -128,7 +128,7 @@ export async function POST(req: Request) {
     ].includes(transactionStatus)
 
     const transitionableStatuses: DonationStatus[] = isRefundWebhook
-      ? ['paid', 'confirmed', 'delivering', 'refund_processing'] // Refund webhooks
+      ? ['paid', 'confirmed', 'delivering', 'refunding', 'refund_processing'] // Refund webhooks - include 'refunding' for failed API cases
       : ['pending', 'processing', 'fraud_check', 'widget_load_failed']  // Payment webhooks - include widget_load_failed to handle script errors
 
     // Check if any donations are in a transitionable state

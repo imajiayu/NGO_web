@@ -295,6 +295,19 @@ export async function processWayForPayRefund({
     comment,
   })
 
+  // Log request (hide signature for security)
+  console.log('[WAYFORPAY REFUND] API Request:', {
+    url: 'https://api.wayforpay.com/api',
+    method: 'POST',
+    orderReference: refundParams.orderReference,
+    amount: refundParams.amount,
+    currency: refundParams.currency,
+    comment: refundParams.comment,
+    merchantAccount: refundParams.merchantAccount,
+    transactionType: refundParams.transactionType,
+    signature: refundParams.merchantSignature ? `${refundParams.merchantSignature.substring(0, 8)}...` : 'none',
+  })
+
   const response = await fetch('https://api.wayforpay.com/api', {
     method: 'POST',
     headers: {
@@ -304,17 +317,37 @@ export async function processWayForPayRefund({
   })
 
   if (!response.ok) {
+    console.error('[WAYFORPAY REFUND] HTTP Error:', {
+      status: response.status,
+      statusText: response.statusText,
+      orderReference,
+    })
     throw new Error(`WayForPay API error: ${response.status} ${response.statusText}`)
   }
 
   const data = await response.json() as WayForPayRefundResponse
 
+  // Log response (hide signature for security)
+  console.log('[WAYFORPAY REFUND] API Response:', {
+    orderReference: data.orderReference,
+    merchantAccount: data.merchantAccount,
+    transactionStatus: data.transactionStatus,
+    reason: data.reason,
+    reasonCode: data.reasonCode,
+    signature: data.merchantSignature ? `${data.merchantSignature.substring(0, 8)}...` : 'none',
+  })
+
   // Verify response signature if provided
   if (data.merchantSignature) {
     const isValid = verifyRefundResponseSignature(data, data.merchantSignature)
     if (!isValid) {
+      console.error('[WAYFORPAY REFUND] Invalid signature:', {
+        orderReference: data.orderReference,
+        transactionStatus: data.transactionStatus,
+      })
       throw new Error('Invalid refund response signature')
     }
+    console.log('[WAYFORPAY REFUND] Signature verified successfully')
   }
 
   return data

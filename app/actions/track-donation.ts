@@ -220,7 +220,9 @@ export async function requestRefund(data: {
         case 'Declined':
           return { error: 'refundDeclined', message: wayforpayResponse.reason }
         default:
-          newStatus = 'refund_processing'
+          // Unknown status from WayForPay - mark as refunding so admin knows user wants refund
+          console.warn('Unknown WayForPay refund status:', wayforpayResponse.transactionStatus)
+          newStatus = 'refunding'
       }
 
       // 7. Update ONLY refundable donations (paid/confirmed/delivering) to the new status
@@ -249,6 +251,25 @@ export async function requestRefund(data: {
 
     } catch (wayforpayError: any) {
       console.error('WayForPay refund API error:', wayforpayError)
+
+      // Update status to 'refunding' so admin knows user attempted refund
+      // This ensures the refund request is tracked even if API call failed
+      const donationIds = refundableDonations.map(d => d.id)
+
+      try {
+        await serviceSupabase
+          .from('donations')
+          .update({
+            donation_status: 'refunding',
+            updated_at: new Date().toISOString()
+          })
+          .in('id', donationIds)
+
+        console.log(`[REFUND] Updated ${donationIds.length} donations to 'refunding' after API error`)
+      } catch (updateError) {
+        console.error('[REFUND] Failed to update status to refunding:', updateError)
+      }
+
       return {
         error: 'refundApiError',
         message: wayforpayError.message || 'Failed to process refund with payment provider'

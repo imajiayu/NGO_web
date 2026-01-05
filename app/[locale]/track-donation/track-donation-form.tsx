@@ -45,7 +45,6 @@ export default function TrackDonationForm({ locale }: Props) {
   const [donations, setDonations] = useState<Donation[] | null>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [refundingDonationId, setRefundingDonationId] = useState<string | null>(null)
   const [confirmRefundId, setConfirmRefundId] = useState<string | null>(null)
   const [viewResultDonationId, setViewResultDonationId] = useState<string | null>(null)
 
@@ -135,27 +134,43 @@ export default function TrackDonationForm({ locale }: Props) {
     }
   }
 
-  async function handleRequestRefund(orderReference: string) {
-    setRefundingDonationId(orderReference)
+  function handleRequestRefund(orderReference: string) {
+    // Get any donation ID from this order for verification
+    const donation = donations?.find(d => d.order_reference === orderReference)
+    if (!donation) {
+      setError(t('errors.donationNotFound'))
+      return
+    }
+
+    // 立即关闭确认窗口
+    setConfirmRefundId(null)
     setError('')
 
-    try {
-      // Get any donation ID from this order for verification
-      const donation = donations?.find(d => d.order_reference === orderReference)
-      if (!donation) {
-        setError(t('errors.donationNotFound'))
-        return
-      }
+    // 立即更新UI为"refunding"状态（乐观更新）
+    setDonations(prev =>
+      prev ? prev.map(d =>
+        d.order_reference === orderReference
+          ? { ...d, donation_status: 'refunding' as DonationStatus }
+          : d
+      ) : null
+    )
 
-      const result = await requestRefund({
-        donationPublicId: donation.donation_public_id,
-        email,
-      })
-
+    // 异步发送退款请求（不阻塞UI）
+    requestRefund({
+      donationPublicId: donation.donation_public_id,
+      email,
+    }).then(result => {
       if (result.error) {
+        // 退款失败，显示错误并恢复原状态
         setError(t(`errors.${result.error}`))
+        // 重新查询获取正确的状态
+        trackDonations({ email, donationId: donation.donation_public_id }).then(trackResult => {
+          if (trackResult.donations) {
+            setDonations(trackResult.donations)
+          }
+        })
       } else if (result.success) {
-        // Update all donations in this order to the new status
+        // 退款成功，更新为实际状态
         const newStatus = (result as any).status || 'refund_processing'
         setDonations(prev =>
           prev ? prev.map(d =>
@@ -164,13 +179,17 @@ export default function TrackDonationForm({ locale }: Props) {
               : d
           ) : null
         )
-        setConfirmRefundId(null)
       }
-    } catch (err) {
+    }).catch(err => {
+      console.error('Refund request failed:', err)
       setError(t('errors.serverError'))
-    } finally {
-      setRefundingDonationId(null)
-    }
+      // 重新查询获取正确的状态
+      trackDonations({ email, donationId: donation.donation_public_id }).then(trackResult => {
+        if (trackResult.donations) {
+          setDonations(trackResult.donations)
+        }
+      })
+    })
   }
 
 
@@ -303,6 +322,11 @@ export default function TrackDonationForm({ locale }: Props) {
 
                 // Check if any donation in this order belongs to an aggregate project
                 const hasAggregateProject = orderDonations.some(d => d.projects.aggregate_donations === true)
+
+                // Check if order is currently being refunded
+                const isRefunding = orderDonations.some(d =>
+                  ['refunding', 'refund_processing'].includes(d.donation_status)
+                )
 
                 return (
                   <div
@@ -452,9 +476,9 @@ export default function TrackDonationForm({ locale }: Props) {
                           <button
                             className="flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 border border-orange-200 rounded-lg hover:bg-orange-200 transition-colors font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={() => setConfirmRefundId(orderReference)}
-                            disabled={refundingDonationId === orderReference}
+                            disabled={isRefunding}
                           >
-                            {refundingDonationId === orderReference ? (
+                            {isRefunding ? (
                               <>
                                 <div className="w-4 h-4 border-2 border-orange-700 border-t-transparent rounded-full animate-spin"></div>
                                 {t('form.processing')}
