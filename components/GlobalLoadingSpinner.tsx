@@ -1,7 +1,8 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 interface GlobalLoadingSpinnerProps {
   isLoading: boolean
@@ -9,6 +10,8 @@ interface GlobalLoadingSpinnerProps {
 }
 
 export default function GlobalLoadingSpinner({ isLoading, loadingText }: GlobalLoadingSpinnerProps) {
+  const [mounted, setMounted] = useState(false)
+
   // Try to use translations if available, otherwise use custom text or default fallback
   let displayText = loadingText || 'Loading...'
 
@@ -18,6 +21,11 @@ export default function GlobalLoadingSpinner({ isLoading, loadingText }: GlobalL
   } catch {
     // If translations are not available (e.g., in admin pages), use the fallback
   }
+
+  // Mount check for portal
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Prevent body scroll when loading spinner is visible
   useEffect(() => {
@@ -44,9 +52,9 @@ export default function GlobalLoadingSpinner({ isLoading, loadingText }: GlobalL
     }
   }, [isLoading])
 
-  if (!isLoading) return null
+  if (!isLoading || !mounted) return null
 
-  return (
+  const spinnerContent = (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm">
       {/* Spinning loader */}
       <div className="relative w-16 h-16 mb-4">
@@ -60,4 +68,7 @@ export default function GlobalLoadingSpinner({ isLoading, loadingText }: GlobalL
       </p>
     </div>
   )
+
+  // Use portal to render at body level, escaping any transform containers
+  return createPortal(spinnerContent, document.body)
 }
