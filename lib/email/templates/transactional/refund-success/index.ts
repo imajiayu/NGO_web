@@ -25,8 +25,7 @@ export function generateRefundSuccessEmail(params: RefundSuccessEmailParams): Em
     projectNameI18n,
     donationIds,
     refundAmount,
-    currency,
-    refundReason
+    currency
   } = params
 
   const t = refundSuccessContent[locale]
@@ -42,7 +41,6 @@ export function generateRefundSuccessEmail(params: RefundSuccessEmailParams): Em
 
     ${createDetailBox(`
       ${createDetailRow(t.refundAmountLabel, `<strong>${formatCurrency(refundAmount, currency)}</strong>`)}
-      ${refundReason ? createDetailRow(t.reasonLabel, escapeHtml(refundReason)) : ''}
     `)}
 
     ${createDetailBox(`
@@ -79,7 +77,6 @@ ${t.confirmation}
 ${t.processed}
 
 ${t.refundAmountLabel} ${formatCurrency(refundAmount, currency)}
-${refundReason ? `${t.reasonLabel} ${refundReason}` : ''}
 
 ${t.donationIdsLabel}
 ${donationIds.map(id => `- ${id}`).join('\n')}

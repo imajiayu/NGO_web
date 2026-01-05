@@ -18,11 +18,17 @@ declare global {
   }
 }
 
-// Helper function to detect iOS
-const isIOS = () => {
+// Helper function to detect mobile devices (iOS, Android, etc.)
+const isMobile = () => {
   if (typeof navigator === 'undefined') return false
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  // Detect iOS devices
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+  // Detect Android and other mobile devices
+  const isAndroid = /Android/.test(navigator.userAgent)
+  const isMobileUA = /Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+
+  return isIOS || isAndroid || isMobileUA
 }
 
 export default function WayForPayWidget({ paymentParams, amount, locale, onBack }: Props) {
@@ -68,7 +74,7 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
           setError(t('errors.paymentLoadFailed'))
           setIsLoading(false)
           setIsRedirecting(false)
-          markAsFailed('Window error detected')
+          markAsFailed(`WayForPay iframe/script error: ${event.message}`)
         }
       }
     }
@@ -226,45 +232,48 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
           }
         }, 2000)
 
-        // Check if widget opened successfully after a short delay (5 seconds)
+        // Check if widget opened successfully after a delay (10 seconds)
         // This gives WayForPay time to create its DOM elements
-        widgetOpenCheckTimeoutRef.current = setTimeout(() => {
-          if (earlyDetectionIntervalRef.current) {
-            clearInterval(earlyDetectionIntervalRef.current)
-            earlyDetectionIntervalRef.current = null
-          }
-
-          // Skip if check already completed (prevents duplicate runs from React Strict Mode or re-renders)
-          if (widgetCheckCompletedRef.current) {
-            console.log('[WIDGET] Widget check already completed, skipping')
-            return
-          }
-          widgetCheckCompletedRef.current = true
-
-          if (!widgetOpenedRef.current && !hasRedirectedRef.current) {
-            // First check if widget was ever detected (user may have closed it)
-            if (widgetEverDetectedRef.current) {
-              console.log('[WIDGET] Widget was previously detected - user may have closed it')
-              widgetOpenedRef.current = true
-              // Don't mark as failed - donation stays pending, WayForPay will handle expiration
-            } else if (checkWidgetOpened()) {
-              // Check DOM for WayForPay elements
-              console.log('[WIDGET] Widget detected in DOM - marking as opened')
-              widgetOpenedRef.current = true
-            } else {
-              // Widget never appeared - true load failure
-              console.error('[WIDGET] Widget failed to open - no WayForPay elements detected')
-              setError(t('errors.paymentLoadFailed'))
-              setIsLoading(false)
-              setIsRedirecting(false)
-              // Mark donation as widget_load_failed
-              markAsFailed('Widget not detected in DOM after 5s')
+        // IMPORTANT: Skip this check on mobile devices - they use redirect mode and won't have DOM elements
+        if (!isMobile()) {
+          widgetOpenCheckTimeoutRef.current = setTimeout(() => {
+            if (earlyDetectionIntervalRef.current) {
+              clearInterval(earlyDetectionIntervalRef.current)
+              earlyDetectionIntervalRef.current = null
             }
-          }
-        }, 5000)
+
+            // Skip if check already completed (prevents duplicate runs from React Strict Mode or re-renders)
+            if (widgetCheckCompletedRef.current) {
+              console.log('[WIDGET] Widget check already completed, skipping')
+              return
+            }
+            widgetCheckCompletedRef.current = true
+
+            if (!widgetOpenedRef.current && !hasRedirectedRef.current) {
+              // First check if widget was ever detected (user may have closed it)
+              if (widgetEverDetectedRef.current) {
+                console.log('[WIDGET] Widget was previously detected - user may have closed it')
+                widgetOpenedRef.current = true
+                // Don't mark as failed - donation stays pending, WayForPay will handle expiration
+              } else if (checkWidgetOpened()) {
+                // Check DOM for WayForPay elements
+                console.log('[WIDGET] Widget detected in DOM - marking as opened')
+                widgetOpenedRef.current = true
+              } else {
+                // Widget never appeared - true load failure
+                console.error('[WIDGET] Widget failed to open - no WayForPay elements detected')
+                setError(t('errors.paymentLoadFailed'))
+                setIsLoading(false)
+                setIsRedirecting(false)
+                // Mark donation as widget_load_failed
+                markAsFailed('Desktop: Widget not detected in DOM after 10s timeout')
+              }
+            }
+          }, 10000)
+        }
 
         // On mobile devices, show redirecting message
-        if (isIOS()) {
+        if (isMobile()) {
           setIsRedirecting(true)
           setIsLoading(false)
 
@@ -275,7 +284,8 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
               setError(tWidget('popupBlocked'))
               // Mark as failed if widget never opened (popup likely blocked)
               if (!widgetOpenedRef.current && !widgetEverDetectedRef.current) {
-                markAsFailed('iOS redirect timeout - popup likely blocked')
+                const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown'
+                markAsFailed(`Mobile: Redirect timeout after 10s - popup likely blocked (UA: ${userAgent.substring(0, 50)})`)
               }
             }
           }, 10000)
