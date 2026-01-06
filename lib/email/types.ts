@@ -16,15 +16,20 @@ export interface BaseEmailParams {
   locale: Locale
 }
 
-// Payment success email parameters
-export interface PaymentSuccessEmailParams extends BaseEmailParams {
-  donorName: string
+// Single donation item for email display
+export interface DonationItem {
+  donationPublicId: string
   projectNameI18n: I18nText
   locationI18n: I18nText
   unitNameI18n: I18nText
-  donationIds: string[]
-  quantity: number
-  unitPrice: number
+  amount: number
+  isAggregate: boolean  // true for aggregate mode (no unit_name), false for unit mode
+}
+
+// Payment success email parameters
+export interface PaymentSuccessEmailParams extends BaseEmailParams {
+  donorName: string
+  donations: DonationItem[]  // Multiple donations in an order
   totalAmount: number
   currency: string
 }

@@ -162,22 +162,37 @@ export async function POST(req: Request) {
       if (shouldSendEmail && updatedDonations && updatedDonations.length > 0) {
         try {
           const firstDonation = updatedDonations[0]
-          const { data: project } = await supabase
-            .from('projects')
-            .select('project_name_i18n, location_i18n, unit_name_i18n, unit_price')
-            .eq('id', firstDonation.project_id)
-            .single()
 
-          if (project) {
+          // Get unique project IDs from all donations
+          const projectIds = [...new Set(updatedDonations.map(d => d.project_id))]
+
+          // Fetch all projects in one query
+          const { data: projects } = await supabase
+            .from('projects')
+            .select('id, project_name_i18n, location_i18n, unit_name_i18n, aggregate_donations')
+            .in('id', projectIds)
+
+          if (projects && projects.length > 0) {
+            // Create a map for quick project lookup
+            const projectMap = new Map(projects.map(p => [p.id, p]))
+
+            // Build donation items array
+            const donationItems = updatedDonations.map(donation => {
+              const project = projectMap.get(donation.project_id)
+              return {
+                donationPublicId: donation.donation_public_id,
+                projectNameI18n: (project?.project_name_i18n || { en: '', zh: '', ua: '' }) as { en: string; zh: string; ua: string },
+                locationI18n: (project?.location_i18n || { en: '', zh: '', ua: '' }) as { en: string; zh: string; ua: string },
+                unitNameI18n: (project?.unit_name_i18n || { en: '', zh: '', ua: '' }) as { en: string; zh: string; ua: string },
+                amount: Number(donation.amount),
+                isAggregate: project?.aggregate_donations === true
+              }
+            })
+
             await sendPaymentSuccessEmail({
               to: firstDonation.donor_email,
               donorName: firstDonation.donor_name,
-              projectNameI18n: project.project_name_i18n as { en: string; zh: string; ua: string },
-              locationI18n: project.location_i18n as { en: string; zh: string; ua: string },
-              unitNameI18n: project.unit_name_i18n as { en: string; zh: string; ua: string },
-              donationIds: updatedDonations.map(d => d.donation_public_id),
-              quantity: updatedDonations.length,
-              unitPrice: project.unit_price,
+              donations: donationItems,
               totalAmount: parseFloat(body.amount),
               currency: body.currency,
               locale: firstDonation.locale as 'en' | 'zh' | 'ua',

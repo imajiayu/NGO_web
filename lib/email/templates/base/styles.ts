@@ -185,6 +185,103 @@ export const baseStyles = `
     margin: 20px 0;
   }
 
+  .donation-items-container {
+    margin: 20px 0;
+  }
+
+  .donation-item-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 10px 0;
+  }
+
+  .donation-item-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .donation-item-index {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    background: #fef3c7;
+    color: #b45309;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .donation-item-id {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #374151;
+    background: #f3f4f6;
+    padding: 2px 8px;
+    border-radius: 4px;
+    flex: 1;
+    word-break: break-all;
+  }
+
+  .donation-item-amount {
+    font-weight: 700;
+    font-size: 16px;
+    color: #059669;
+    flex-shrink: 0;
+  }
+
+  .donation-item-details {
+    padding-left: 34px;
+  }
+
+  .donation-item-project {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 15px;
+  }
+
+  .donation-item-location {
+    color: #6b7280;
+    font-size: 14px;
+    margin-top: 2px;
+  }
+
+  .donation-item-quantity {
+    color: #4b5563;
+    font-size: 13px;
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  .order-total {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border: 2px solid #10b981;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .order-total-label {
+    font-weight: 600;
+    color: #065f46;
+    font-size: 16px;
+  }
+
+  .order-total-amount {
+    font-weight: 700;
+    color: #047857;
+    font-size: 22px;
+  }
+
   @media only screen and (max-width: 600px) {
     body {
       padding: 10px;

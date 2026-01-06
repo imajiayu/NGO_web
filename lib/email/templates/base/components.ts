@@ -169,3 +169,36 @@ export function createImage(src: string, alt: string): string {
     </div>
   `
 }
+
+/**
+ * Donation item card for multi-donation orders
+ * @param index - 1-based index for display
+ * @param donationId - Donation public ID
+ * @param projectName - Localized project name
+ * @param location - Localized location
+ * @param quantity - Quantity text (e.g., "1 unit" or empty for aggregate mode)
+ * @param amount - Formatted amount string (e.g., "$10.00")
+ */
+export function createDonationItemCard(
+  index: number,
+  donationId: string,
+  projectName: string,
+  location: string,
+  quantity: string,
+  amount: string
+): string {
+  return `
+    <div class="donation-item-card">
+      <div class="donation-item-header">
+        <span class="donation-item-index">${index}</span>
+        <code class="donation-item-id">${donationId}</code>
+        <span class="donation-item-amount">${amount}</span>
+      </div>
+      <div class="donation-item-details">
+        <div class="donation-item-project">${projectName}</div>
+        <div class="donation-item-location">${location}</div>
+        ${quantity ? `<div class="donation-item-quantity">${quantity}</div>` : ''}
+      </div>
+    </div>
+  `
+}

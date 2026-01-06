@@ -6,13 +6,11 @@ import { PaymentSuccessEmailParams, EmailContent } from '../../../types'
 import { getLocalizedText, formatCurrency, getTrackingUrl } from '../../../utils'
 import { createEmailLayout } from '../../base/layout'
 import {
-  createDetailBox,
-  createDetailRow,
-  createDonationIdsList,
   createInfoBox,
   createActionBox,
   createButton,
-  createSignature
+  createSignature,
+  createDonationItemCard
 } from '../../base/components'
 import { paymentSuccessContent } from './content'
 import { escapeHtml } from '../../../utils'
@@ -24,21 +22,32 @@ export function generatePaymentSuccessEmail(params: PaymentSuccessEmailParams): 
   const {
     locale,
     donorName,
-    projectNameI18n,
-    locationI18n,
-    unitNameI18n,
-    donationIds,
-    quantity,
-    unitPrice,
+    donations,
     totalAmount,
     currency
   } = params
 
   const t = paymentSuccessContent[locale]
-  const projectName = getLocalizedText(projectNameI18n, locale)
-  const location = getLocalizedText(locationI18n, locale)
-  const unitName = getLocalizedText(unitNameI18n, locale)
   const trackingUrl = getTrackingUrl(locale)
+
+  // Build donation items HTML
+  const donationItemsHTML = donations.map((donation, index) => {
+    const projectName = getLocalizedText(donation.projectNameI18n, locale)
+    const location = getLocalizedText(donation.locationI18n, locale)
+    const unitName = getLocalizedText(donation.unitNameI18n, locale)
+
+    // For unit mode: show "1 unit_name", for aggregate mode: empty string
+    const quantityText = donation.isAggregate ? '' : t.quantityUnit(escapeHtml(unitName))
+
+    return createDonationItemCard(
+      index + 1,
+      donation.donationPublicId,
+      escapeHtml(projectName),
+      escapeHtml(location),
+      quantityText,
+      formatCurrency(donation.amount, currency)
+    )
+  }).join('')
 
   // Build email content
   const contentHTML = `
@@ -46,20 +55,18 @@ export function generatePaymentSuccessEmail(params: PaymentSuccessEmailParams): 
     <p><strong>${t.thankYou}</strong></p>
     <p>${t.confirmation}</p>
 
-    ${createDetailBox(`
-      ${createDetailRow(t.projectLabel, escapeHtml(projectName))}
-      ${createDetailRow(t.locationLabel, escapeHtml(location))}
-      ${createDetailRow(t.quantityLabel, `${quantity} ${escapeHtml(unitName)}`)}
-      ${createDetailRow(t.unitPriceLabel, formatCurrency(unitPrice, currency))}
-      ${createDetailRow(t.totalAmountLabel, `<strong>${formatCurrency(totalAmount, currency)}</strong>`)}
-    `)}
-
-    ${createDetailBox(`
+    <div class="detail-box">
       <div class="detail-row">
-        <span class="label">${t.donationIdsLabel}</span>
+        <span class="label">${t.orderDetailsLabel}</span>
       </div>
-      ${createDonationIdsList(donationIds)}
-    `)}
+      <div class="donation-items-container">
+        ${donationItemsHTML}
+      </div>
+      <div class="order-total">
+        <span class="order-total-label">${t.totalAmountLabel}</span>
+        <span class="order-total-amount">${formatCurrency(totalAmount, currency)}</span>
+      </div>
+    </div>
 
     ${createInfoBox(t.donationIdsNote)}
 
@@ -83,6 +90,18 @@ export function generatePaymentSuccessEmail(params: PaymentSuccessEmailParams): 
   })
 
   // Plain text version
+  const donationItemsText = donations.map((donation, index) => {
+    const projectName = getLocalizedText(donation.projectNameI18n, locale)
+    const location = getLocalizedText(donation.locationI18n, locale)
+    const unitName = getLocalizedText(donation.unitNameI18n, locale)
+    const quantityText = donation.isAggregate ? '' : ` (${t.quantityUnit(unitName)})`
+
+    return `${index + 1}. ${donation.donationPublicId}
+   ${projectName}
+   ${location}${quantityText}
+   ${t.amountLabel} ${formatCurrency(donation.amount, currency)}`
+  }).join('\n\n')
+
   const text = `
 ${t.greeting(donorName)}
 
@@ -90,14 +109,10 @@ ${t.thankYou}
 
 ${t.confirmation}
 
-${t.projectLabel} ${projectName}
-${t.locationLabel} ${location}
-${t.quantityLabel} ${quantity} ${unitName}
-${t.unitPriceLabel} ${formatCurrency(unitPrice, currency)}
-${t.totalAmountLabel} ${formatCurrency(totalAmount, currency)}
+${t.orderDetailsLabel}
+${donationItemsText}
 
-${t.donationIdsLabel}
-${donationIds.map(id => `- ${id}`).join('\n')}
+${t.totalAmountLabel} ${formatCurrency(totalAmount, currency)}
 
 ${t.donationIdsNote}
 

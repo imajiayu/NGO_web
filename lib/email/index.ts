@@ -13,6 +13,7 @@ export type {
   Locale,
   I18nText,
   BaseEmailParams,
+  DonationItem,
   PaymentSuccessEmailParams,
   DonationCompletedEmailParams,
   RefundSuccessEmailParams,

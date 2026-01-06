@@ -10,10 +10,11 @@ export interface PaymentSuccessContent {
   greeting: (name: string) => string
   thankYou: string
   confirmation: string
+  orderDetailsLabel: string
   projectLabel: string
   locationLabel: string
-  quantityLabel: string
-  unitPriceLabel: string
+  amountLabel: string
+  quantityUnit: (unitName: string) => string  // For unit mode: "1 {unitName}"
   totalAmountLabel: string
   donationIdsLabel: string
   donationIdsNote: string
@@ -32,10 +33,11 @@ export const paymentSuccessContent: Record<Locale, PaymentSuccessContent> = {
     greeting: (name: string) => `Dear ${name},`,
     thankYou: 'Thank you for your generous donation!',
     confirmation: 'Your payment has been successfully processed. Here are your donation details:',
+    orderDetailsLabel: 'Order Details',
     projectLabel: 'Project:',
     locationLabel: 'Location:',
-    quantityLabel: 'Quantity:',
-    unitPriceLabel: 'Unit Price:',
+    amountLabel: 'Amount:',
+    quantityUnit: (unitName: string) => `1 ${unitName}`,
     totalAmountLabel: 'Total Amount:',
     donationIdsLabel: 'Your Donation IDs:',
     donationIdsNote: '⚠️ Please save these IDs for your records. You can use them to track your donation status at any time.',
@@ -52,10 +54,11 @@ export const paymentSuccessContent: Record<Locale, PaymentSuccessContent> = {
     greeting: (name: string) => `尊敬的 ${name}：`,
     thankYou: '感谢您的慷慨捐赠！',
     confirmation: '您的支付已成功处理。以下是您的捐赠详情：',
+    orderDetailsLabel: '订单详情',
     projectLabel: '项目：',
     locationLabel: '地点：',
-    quantityLabel: '数量：',
-    unitPriceLabel: '单价：',
+    amountLabel: '金额：',
+    quantityUnit: (unitName: string) => `1 ${unitName}`,
     totalAmountLabel: '总金额：',
     donationIdsLabel: '您的捐赠编号：',
     donationIdsNote: '⚠️ 请保存这些编号以便查询。您可以随时使用这些编号追踪您的捐赠状态。',
@@ -72,10 +75,11 @@ export const paymentSuccessContent: Record<Locale, PaymentSuccessContent> = {
     greeting: (name: string) => `Шановний(а) ${name},`,
     thankYou: 'Дякуємо за ваше щедре пожертвування!',
     confirmation: 'Ваш платіж успішно оброблено. Ось деталі вашого пожертвування:',
+    orderDetailsLabel: 'Деталі замовлення',
     projectLabel: 'Проект:',
     locationLabel: 'Місцезнаходження:',
-    quantityLabel: 'Кількість:',
-    unitPriceLabel: 'Ціна за одиницю:',
+    amountLabel: 'Сума:',
+    quantityUnit: (unitName: string) => `1 ${unitName}`,
     totalAmountLabel: 'Загальна сума:',
     donationIdsLabel: 'Ваші ID пожертвувань:',
     donationIdsNote: '⚠️ Будь ласка, збережіть ці ідентифікатори для ваших записів. Ви можете використовувати їх для відстеження статусу вашого пожертвування в будь-який час.',
