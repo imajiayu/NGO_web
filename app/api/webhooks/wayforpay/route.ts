@@ -152,8 +152,12 @@ export async function POST(req: Request) {
         .select()
 
       if (updateError) {
-        console.error('[WEBHOOK] Update failed:', updateError.message)
-        throw updateError
+        // Log error but still return accept to stop WayForPay retries
+        // The payment/refund has already been processed by WayForPay
+        // Database inconsistency should be fixed manually or by recalculation
+        console.error('[WEBHOOK] Update failed:', updateError.message, updateError.details)
+        console.error('[WEBHOOK] Manual intervention may be required for order:', orderReference)
+        return respondWithAccept(orderReference)
       }
 
       console.log(`[WEBHOOK] Updated ${updatedDonations?.length || 0} donations: ${updatableDonations.map(d => d.donation_status).join(', ')} → ${newStatus}`)
