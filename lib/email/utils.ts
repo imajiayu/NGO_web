@@ -7,8 +7,9 @@ import { I18nText, Locale } from './types'
 /**
  * Get localized text from i18n object
  */
-export function getLocalizedText(i18nText: I18nText, locale: Locale): string {
-  return i18nText[locale] || i18nText.en
+export function getLocalizedText(i18nText: I18nText | null | undefined, locale: Locale): string {
+  if (!i18nText) return ''
+  return i18nText[locale] || i18nText.en || ''
 }
 
 /**
@@ -35,7 +36,8 @@ export function formatDonationIdsText(donationIds: string[]): string {
 /**
  * Escape HTML special characters
  */
-export function escapeHtml(text: string): string {
+export function escapeHtml(text: string | null | undefined): string {
+  if (!text) return ''
   const map: Record<string, string> = {
     '&': '&amp;',
     '<': '&lt;',
