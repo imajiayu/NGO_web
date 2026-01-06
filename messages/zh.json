@@ -448,6 +448,9 @@
     "refundDialog": {
       "title": "申请退款",
       "description": "您确定要对此订单申请退款吗？退款将自动处理。",
+      "refundableRecords": "可退款记录",
+      "totalRefundAmount": "退款总金额",
+      "nonRefundableNotice": "有 {count} 条记录已完成，无法退款。",
       "confirm": "确认退款",
       "cancel": "取消"
     },

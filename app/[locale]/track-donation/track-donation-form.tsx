@@ -150,10 +150,14 @@ export default function TrackDonationForm({ locale }: Props) {
   }
 
   function handleRequestRefund(orderReference: string) {
-    // Get any donation ID from this order for verification
-    const donation = donations?.find(d => d.order_reference === orderReference)
-    if (!donation) {
-      setError(t('errors.donationNotFound'))
+    // Get a REFUNDABLE donation ID from this order for verification
+    // Must be paid/confirmed/delivering status, NOT completed
+    const refundableDonation = donations?.find(d =>
+      d.order_reference === orderReference &&
+      ['paid', 'confirmed', 'delivering'].includes(d.donation_status)
+    )
+    if (!refundableDonation) {
+      setError(t('errors.cannotRefundCompleted'))
       return
     }
 
@@ -161,10 +165,11 @@ export default function TrackDonationForm({ locale }: Props) {
     setConfirmRefundId(null)
     setError('')
 
-    // 立即更新UI为"refunding"状态（乐观更新）
+    // 立即更新UI为"refunding"状态（乐观更新）- 只更新可退款的记录
     setDonations(prev =>
       prev ? prev.map(d =>
-        d.order_reference === orderReference
+        d.order_reference === orderReference &&
+        ['paid', 'confirmed', 'delivering'].includes(d.donation_status)
           ? { ...d, donation_status: 'refunding' as DonationStatus }
           : d
       ) : null
@@ -172,24 +177,25 @@ export default function TrackDonationForm({ locale }: Props) {
 
     // 异步发送退款请求（不阻塞UI）
     requestRefund({
-      donationPublicId: donation.donation_public_id,
+      donationPublicId: refundableDonation.donation_public_id,
       email,
     }).then(result => {
       if (result.error) {
         // 退款失败，显示错误并恢复原状态
         setError(t(`errors.${result.error}`))
         // 重新查询获取正确的状态
-        trackDonations({ email, donationId: donation.donation_public_id }).then(trackResult => {
+        trackDonations({ email, donationId: refundableDonation.donation_public_id }).then(trackResult => {
           if (trackResult.donations) {
             setDonations(trackResult.donations)
           }
         })
       } else if (result.success) {
-        // 退款成功，更新为实际状态
+        // 退款成功，只更新可退款的记录为实际状态
         const newStatus = (result as any).status || 'refund_processing'
         setDonations(prev =>
           prev ? prev.map(d =>
-            d.order_reference === orderReference
+            d.order_reference === orderReference &&
+            ['paid', 'confirmed', 'delivering', 'refunding'].includes(d.donation_status)
               ? { ...d, donation_status: newStatus as DonationStatus }
               : d
           ) : null
@@ -199,7 +205,7 @@ export default function TrackDonationForm({ locale }: Props) {
       console.error('Refund request failed:', err)
       setError(t('errors.serverError'))
       // 重新查询获取正确的状态
-      trackDonations({ email, donationId: donation.donation_public_id }).then(trackResult => {
+      trackDonations({ email, donationId: refundableDonation.donation_public_id }).then(trackResult => {
         if (trackResult.donations) {
           setDonations(trackResult.donations)
         }
@@ -528,43 +534,100 @@ export default function TrackDonationForm({ locale }: Props) {
       )}
 
       {/* Confirmation Dialog */}
-      {confirmRefundId && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
-            <div className="flex items-start gap-4 mb-4">
-              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
-                <AlertTriangle className="w-6 h-6 text-orange-600" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">
-                  {t('refundDialog.title')}
-                </h3>
-                <p className="text-sm text-gray-600 mb-1">
-                  {t('refundDialog.description')}
-                </p>
-                <code className="text-xs font-mono bg-gray-100 px-2 py-1 rounded inline-block mt-2 text-gray-800">
-                  {confirmRefundId}
-                </code>
-              </div>
-            </div>
+      {confirmRefundId && (() => {
+        // Get donations for this order
+        const orderDonations = donations?.filter(d => d.order_reference === confirmRefundId) || []
+        // Filter refundable donations (paid/confirmed/delivering)
+        const refundableDonations = orderDonations.filter(d =>
+          ['paid', 'confirmed', 'delivering'].includes(d.donation_status)
+        )
+        // Calculate total refundable amount
+        const totalRefundAmount = refundableDonations.reduce((sum, d) => sum + Number(d.amount), 0)
+        const currency = refundableDonations[0]?.currency || 'UAH'
 
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => setConfirmRefundId(null)}
-                className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
-              >
-                {t('refundDialog.cancel')}
-              </button>
-              <button
-                onClick={() => handleRequestRefund(confirmRefundId)}
-                className="flex-1 px-4 py-2.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium text-sm"
-              >
-                {t('refundDialog.confirm')}
-              </button>
+        return (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
+                  <AlertTriangle className="w-6 h-6 text-orange-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    {t('refundDialog.title')}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-1">
+                    {t('refundDialog.description')}
+                  </p>
+                </div>
+              </div>
+
+              {/* Refundable Records */}
+              <div className="mb-4">
+                <div className="text-xs text-gray-500 font-medium mb-2">{t('refundDialog.refundableRecords')}</div>
+                <div className="space-y-2 max-h-40 overflow-y-auto">
+                  {refundableDonations.map((donation) => {
+                    const donationProjectName = getProjectName(
+                      donation.projects.project_name_i18n,
+                      donation.projects.project_name,
+                      locale as SupportedLocale
+                    )
+                    return (
+                      <div key={donation.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg text-sm">
+                        <div className="flex-1 min-w-0">
+                          <code className="text-xs font-mono bg-orange-50 text-orange-800 px-1.5 py-0.5 rounded">
+                            {donation.donation_public_id}
+                          </code>
+                          <div className="text-xs text-gray-500 truncate mt-0.5">{donationProjectName}</div>
+                        </div>
+                        <div className="font-semibold text-gray-900 ml-2">
+                          {donation.currency} {Number(donation.amount).toFixed(2)}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Non-refundable notice */}
+              {orderDonations.length > refundableDonations.length && (
+                <div className="mb-4 p-2 bg-gray-100 rounded-lg">
+                  <p className="text-xs text-gray-600">
+                    {t('refundDialog.nonRefundableNotice', {
+                      count: orderDonations.length - refundableDonations.length
+                    })}
+                  </p>
+                </div>
+              )}
+
+              {/* Total Refund Amount */}
+              <div className="mb-4 p-3 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">{t('refundDialog.totalRefundAmount')}</span>
+                  <span className="text-lg font-bold text-orange-700">
+                    {currency} {totalRefundAmount.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setConfirmRefundId(null)}
+                  className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
+                >
+                  {t('refundDialog.cancel')}
+                </button>
+                <button
+                  onClick={() => handleRequestRefund(confirmRefundId)}
+                  className="flex-1 px-4 py-2.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium text-sm"
+                >
+                  {t('refundDialog.confirm')}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* Result Viewer Modal */}
       {viewResultDonationId && (

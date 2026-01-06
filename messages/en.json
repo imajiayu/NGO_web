@@ -447,6 +447,9 @@
     "refundDialog": {
       "title": "Request Refund",
       "description": "Are you sure you want to request a refund for this order? The refund will be processed automatically.",
+      "refundableRecords": "Refundable Records",
+      "totalRefundAmount": "Total Refund Amount",
+      "nonRefundableNotice": "{count, plural, one {# record is completed and cannot be refunded.} other {# records are completed and cannot be refunded.}}",
       "confirm": "Confirm Refund",
       "cancel": "Cancel"
     },
