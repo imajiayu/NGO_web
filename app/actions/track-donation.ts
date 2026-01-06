@@ -3,6 +3,7 @@
 import { z } from 'zod'
 import { createAnonClient, createServiceClient } from '@/lib/supabase/server'
 import { processWayForPayRefund } from '@/lib/wayforpay/server'
+import { sendRefundSuccessEmail } from '@/lib/email'
 
 const trackDonationSchema = z.object({
   email: z.string().email('Invalid email format'),
@@ -163,9 +164,10 @@ export async function requestRefund(data: {
     }
 
     // Get ALL donations in this order (an order may contain multiple units/donations)
+    // Include fields needed for refund email
     const { data: orderDonations, error: orderError } = await serviceSupabase
       .from('donations')
-      .select('id, donation_public_id, amount, donation_status')
+      .select('id, donation_public_id, amount, donation_status, donor_name, donor_email, locale, project_id')
       .eq('order_reference', donationData.order_reference)
 
     if (orderError || !orderDonations || orderDonations.length === 0) {
@@ -240,6 +242,35 @@ export async function requestRefund(data: {
       if (updateError) {
         console.error('Error updating donation status:', updateError)
         return { error: 'serverError' }
+      }
+
+      // Send refund success email when API directly returns refunded status
+      // (For refund_processing, email will be sent when webhook confirms refund)
+      if (newStatus === 'refunded') {
+        try {
+          const firstDonation = refundableDonations[0]
+          const { data: project } = await serviceSupabase
+            .from('projects')
+            .select('project_name_i18n')
+            .eq('id', firstDonation.project_id)
+            .single()
+
+          if (project && firstDonation.donor_email) {
+            await sendRefundSuccessEmail({
+              to: firstDonation.donor_email,
+              donorName: firstDonation.donor_name || '',
+              projectNameI18n: project.project_name_i18n as { en: string; zh: string; ua: string },
+              donationIds: refundableDonations.map(d => d.donation_public_id),
+              refundAmount: totalOrderAmount,
+              currency: (donationData.currency as string) || 'USD',
+              locale: (firstDonation.locale as 'en' | 'zh' | 'ua') || 'en',
+            })
+            console.log('[REFUND] Refund success email sent to', firstDonation.donor_email)
+          }
+        } catch (emailError) {
+          console.error('[REFUND] Failed to send refund email:', emailError)
+          // Don't fail the refund operation if email fails
+        }
       }
 
       return {
