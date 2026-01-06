@@ -1,10 +1,14 @@
 'use client'
 
 import { useRef, useState, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import ImageLightbox, { type LightboxImage } from '@/components/ImageLightbox'
+import { ChevronLeftIcon, ChevronRightIcon } from '@/components/icons'
+import type { LightboxImage } from '@/components/ImageLightbox'
+
+// P2 优化: 动态加载灯箱组件
+const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), { ssr: false })
 
 interface EmployeeCarouselProps {
   images: string[]
@@ -101,7 +105,7 @@ export default function EmployeeCarousel({
               className="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 md:p-3 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
               aria-label="Scroll left"
             >
-              <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+              <ChevronLeftIcon className="w-5 h-5 md:w-6 md:h-6" />
             </button>
 
             {/* Next Button */}
@@ -110,7 +114,7 @@ export default function EmployeeCarousel({
               className="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 md:p-3 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
               aria-label="Scroll right"
             >
-              <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+              <ChevronRightIcon className="w-5 h-5 md:w-6 md:h-6" />
             </button>
           </>
         )}
@@ -125,13 +129,15 @@ export default function EmployeeCarousel({
         <span className="md:hidden"> 👉</span>
       </div>
 
-      {/* Lightbox */}
-      <ImageLightbox
-        images={lightboxImages}
-        initialIndex={lightboxIndex}
-        isOpen={lightboxOpen}
-        onClose={() => setLightboxOpen(false)}
-      />
+      {/* Lightbox - 仅在打开时渲染，配合动态导入减少初始加载 */}
+      {lightboxOpen && (
+        <ImageLightbox
+          images={lightboxImages}
+          initialIndex={lightboxIndex}
+          isOpen={lightboxOpen}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
     </div>
   )
 }

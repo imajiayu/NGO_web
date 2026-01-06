@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { CheckCircle2, Circle, Clock } from 'lucide-react'
+import { CheckCircle2Icon, CircleIcon, ClockIcon } from '@/components/icons'
 
 type DonationStatus = 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
 
@@ -27,22 +27,22 @@ export default function DonationStatusFlow({
     // If no current status, show process flow with colored checkmarks
     if (!currentStatus) {
       if (flowType === 'main') {
-        return <CheckCircle2 className="w-6 h-6 text-green-600" />
+        return <CheckCircle2Icon className="w-6 h-6 text-green-600" />
       } else {
-        return <CheckCircle2 className="w-6 h-6 text-red-500" />
+        return <CheckCircle2Icon className="w-6 h-6 text-red-500" />
       }
     }
 
     // With current status, show actual progress
     if (currentStatus === status) {
-      return <Clock className="w-6 h-6 text-blue-600 animate-pulse" />
+      return <ClockIcon className="w-6 h-6 text-blue-600 animate-pulse" />
     }
 
     // For main flow
     if (mainFlow.includes(status)) {
       const statusIndex = getMainFlowIndex(status)
       if (currentMainIndex >= 0 && statusIndex < currentMainIndex) {
-        return <CheckCircle2 className="w-6 h-6 text-green-600" />
+        return <CheckCircle2Icon className="w-6 h-6 text-green-600" />
       }
     }
 
@@ -51,11 +51,11 @@ export default function DonationStatusFlow({
       const refundIndex = refundFlow.indexOf(status)
       const currentRefundIndex = refundFlow.indexOf(currentStatus)
       if (refundIndex < currentRefundIndex) {
-        return <CheckCircle2 className="w-6 h-6 text-green-600" />
+        return <CheckCircle2Icon className="w-6 h-6 text-green-600" />
       }
     }
 
-    return <Circle className="w-6 h-6 text-gray-300" />
+    return <CircleIcon className="w-6 h-6 text-gray-300" />
   }
 
   const getStatusColor = (status: DonationStatus) => {

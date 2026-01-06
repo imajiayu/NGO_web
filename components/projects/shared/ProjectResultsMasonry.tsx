@@ -1,9 +1,13 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import type { ProjectResult } from '@/types'
-import ImageLightbox, { type LightboxImage } from '@/components/ImageLightbox'
+import type { LightboxImage } from '@/components/ImageLightbox'
+
+// P2 优化: 动态加载灯箱组件，减少初始 bundle
+const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), { ssr: false })
 
 interface ProjectResultsMasonryProps {
   results: ProjectResult[]
@@ -101,13 +105,15 @@ export default function ProjectResultsMasonry({
         </div>
       </div>
 
-      {/* Lightbox */}
-      <ImageLightbox
-        images={lightboxImages}
-        initialIndex={lightboxIndex}
-        isOpen={lightboxOpen}
-        onClose={() => setLightboxOpen(false)}
-      />
+      {/* Lightbox - 仅在打开时渲染，配合动态导入减少初始加载 */}
+      {lightboxOpen && (
+        <ImageLightbox
+          images={lightboxImages}
+          initialIndex={lightboxIndex}
+          isOpen={lightboxOpen}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
     </>
   )
 }

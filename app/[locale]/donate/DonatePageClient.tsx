@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDownIcon, ChevronUpIcon } from '@/components/icons'
 import type { ProjectStats } from '@/types'
 import ProjectsGallery from '@/components/projects/ProjectsGallery'
 import {
@@ -12,8 +13,14 @@ import {
 import DonationFormCard from '@/components/donate/DonationFormCard'
 import DonationStatusFlow from '@/components/donation/DonationStatusFlow'
 import ProjectDonationList from '@/components/donation/ProjectDonationList'
-import BottomSheet from '@/components/BottomSheet'
+
 import { getProjectName, type SupportedLocale } from '@/lib/i18n-utils'
+
+// P2 优化: 动态加载 BottomSheet 组件（仅移动端使用）
+const BottomSheet = dynamic(() => import('@/components/BottomSheet'), {
+  ssr: false,
+  loading: () => null, // 加载时不显示占位符
+})
 
 /**
  * Project Detail Component Registry
@@ -247,12 +254,12 @@ export default function DonatePageClient({
               {isFlowExpanded ? (
                 <>
                   {t('hideDetails')}
-                  <ChevronUp className="w-5 h-5" />
+                  <ChevronUpIcon className="w-5 h-5" />
                 </>
               ) : (
                 <>
                   {t('showDetails')}
-                  <ChevronDown className="w-5 h-5" />
+                  <ChevronDownIcon className="w-5 h-5" />
                 </>
               )}
             </button>

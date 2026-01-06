@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ChevronUp, ChevronDown } from 'lucide-react'
+import { ChevronUpIcon, ChevronDownIcon } from '@/components/icons'
 
 interface BottomSheetProps {
   isOpen: boolean
@@ -178,11 +178,11 @@ export default function BottomSheet({
           {/* Minimized State */}
           {isMinimized && (
             <div className="flex items-center justify-center gap-3 py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-2xl shadow-lg h-16">
-              <ChevronUp className="w-6 h-6 text-white" />
+              <ChevronUpIcon className="w-6 h-6 text-white" />
               <span className="text-white font-bold text-lg">
                 {minimizedHint || 'Donate Now'}
               </span>
-              <ChevronUp className="w-6 h-6 text-white" />
+              <ChevronUpIcon className="w-6 h-6 text-white" />
             </div>
           )}
 
@@ -190,7 +190,7 @@ export default function BottomSheet({
           {isExpanded && (
             <div className="py-2 border-b border-gray-200 bg-white rounded-t-2xl">
               <div className="flex items-center justify-center">
-                <ChevronDown className="w-6 h-6 text-blue-600 stroke-[2]" />
+                <ChevronDownIcon className="w-6 h-6 text-blue-600 stroke-[2]" />
               </div>
             </div>
           )}

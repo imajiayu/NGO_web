@@ -30,9 +30,10 @@ export async function POST(req: Request) {
     const supabase = createServiceClient()
 
     // Query all donations with this order_reference
+    // P1 优化: 只选择状态检查所需字段
     const { data: donations, error: fetchError } = await supabase
       .from('donations')
-      .select('*')
+      .select('donation_status')
       .eq('order_reference', orderReference)
 
     if (fetchError) {
@@ -144,12 +145,13 @@ export async function POST(req: Request) {
 
     // Update donations to new status
     if (newStatus) {
+      // P1 优化: 只选择邮件所需字段
       const { data: updatedDonations, error: updateError } = await supabase
         .from('donations')
         .update({ donation_status: newStatus })
         .eq('order_reference', orderReference)
         .in('donation_status', transitionableStatuses)
-        .select()
+        .select('project_id, donation_public_id, donor_email, donor_name, locale, amount')
 
       if (updateError) {
         // Log error but still return accept to stop WayForPay retries

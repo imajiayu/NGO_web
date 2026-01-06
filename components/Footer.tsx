@@ -1,11 +1,10 @@
-'use client'
-
-import { useTranslations } from 'next-intl'
+// P1 优化: 转换为服务端组件，减少客户端 JS
+import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 
-export default function Footer() {
-  const t = useTranslations('footer')
+export default async function Footer() {
+  const t = await getTranslations('footer')
 
   const socialLinks = [
     {

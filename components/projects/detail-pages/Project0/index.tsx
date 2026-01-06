@@ -1,13 +1,17 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
-import { MapPin, Users, Activity, Heart, Building2, Church } from 'lucide-react'
+import { MapPinIcon, UsersIcon, ActivityIcon, HeartIcon, Building2Icon, ChurchIcon } from '@/components/icons'
 import EmployeeCarousel from './EmployeeCarousel'
 import CollapsibleGallery from './CollapsibleGallery'
-import ImageLightbox, { type LightboxImage } from '@/components/ImageLightbox'
+import type { LightboxImage } from '@/components/ImageLightbox'
 import ProjectProgressSection from '@/components/projects/shared/ProjectProgressSection'
 import type { ProjectStats, ProjectResult } from '@/types'
+
+// P2 优化: 动态加载灯箱组件
+const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), { ssr: false })
 
 interface Project0DetailContentProps {
   project: ProjectStats  // Included for interface consistency, may not be used
@@ -246,7 +250,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
         <h1 className="text-2xl md:text-4xl font-bold mb-2 whitespace-pre-line">{content.title}</h1>
         <p className="text-blue-100 text-sm md:text-lg mb-3">{content.subtitle}</p>
         <div className="flex items-center gap-2 text-white/90 text-sm md:text-base">
-          <MapPin className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
+          <MapPinIcon className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
           <span>
             {locale === 'en'
               ? 'Dnipro, Naberezhna Peremohy 44/4'
@@ -288,7 +292,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                   en: 'Charitable Organizations',
                   zh: '慈善机构',
                   ua: 'Благодійні організації',
-                  icon: Heart,
+                  icon: HeartIcon,
                   gradient: 'from-rose-500 to-pink-500',
                   bg: 'from-rose-50 to-pink-50',
                   border: 'border-rose-200/50'
@@ -297,7 +301,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                   en: 'Corporations',
                   zh: '企业',
                   ua: 'Корпорації',
-                  icon: Building2,
+                  icon: Building2Icon,
                   gradient: 'from-blue-500 to-indigo-500',
                   bg: 'from-blue-50 to-indigo-50',
                   border: 'border-blue-200/50'
@@ -306,7 +310,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                   en: 'Churches',
                   zh: '教会',
                   ua: 'Церкви',
-                  icon: Church,
+                  icon: ChurchIcon,
                   gradient: 'from-amber-500 to-orange-500',
                   bg: 'from-amber-50 to-orange-50',
                   border: 'border-amber-200/50'
@@ -409,7 +413,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
           <section>
             {/* Header */}
             <div className="flex items-center gap-2 mb-3">
-              <Users className="w-5 h-5 text-purple-600 flex-shrink-0" />
+              <UsersIcon className="w-5 h-5 text-purple-600 flex-shrink-0" />
               <h2 className="text-lg md:text-xl font-bold text-gray-900">
                 {content.team.title}
               </h2>
@@ -446,7 +450,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
         {/* Treatment Programs */}
         <section>
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <Activity className="w-6 h-6 text-green-600" />
+            <ActivityIcon className="w-6 h-6 text-green-600" />
             {content.treatmentPrograms.title}
           </h2>
           <p className="text-sm md:text-base text-gray-600 mb-4">
@@ -585,7 +589,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                       {locale === 'en' ? 'Year' : locale === 'zh' ? '年份' : 'Рік'}
                     </th>
                     <th className="text-center p-2 md:p-3 font-bold text-gray-700">
-                      <Users className="w-3 h-3 md:w-4 md:h-4 inline mr-1" />
+                      <UsersIcon className="w-3 h-3 md:w-4 md:h-4 inline mr-1" />
                       {locale === 'en' ? 'Staff' : locale === 'zh' ? '员工' : 'Персонал'}
                     </th>
                     <th className="text-right p-2 md:p-3 font-bold text-red-600">
@@ -730,29 +734,35 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
         )}
       </div>
 
-      {/* Lightbox for Event Images */}
-      <ImageLightbox
-        images={eventLightboxImages}
-        initialIndex={eventLightboxIndex}
-        isOpen={eventLightboxOpen}
-        onClose={() => setEventLightboxOpen(false)}
-      />
+      {/* Lightbox for Event Images - 仅在打开时渲染 */}
+      {eventLightboxOpen && (
+        <ImageLightbox
+          images={eventLightboxImages}
+          initialIndex={eventLightboxIndex}
+          isOpen={eventLightboxOpen}
+          onClose={() => setEventLightboxOpen(false)}
+        />
+      )}
 
-      {/* Lightbox for Success Stories */}
-      <ImageLightbox
-        images={successLightboxImages}
-        initialIndex={successLightboxIndex}
-        isOpen={successLightboxOpen}
-        onClose={() => setSuccessLightboxOpen(false)}
-      />
+      {/* Lightbox for Success Stories - 仅在打开时渲染 */}
+      {successLightboxOpen && (
+        <ImageLightbox
+          images={successLightboxImages}
+          initialIndex={successLightboxIndex}
+          isOpen={successLightboxOpen}
+          onClose={() => setSuccessLightboxOpen(false)}
+        />
+      )}
 
-      {/* Lightbox for Financial Reports */}
-      <ImageLightbox
-        images={reportLightboxImages}
-        initialIndex={reportLightboxIndex}
-        isOpen={reportLightboxOpen}
-        onClose={() => setReportLightboxOpen(false)}
-      />
+      {/* Lightbox for Financial Reports - 仅在打开时渲染 */}
+      {reportLightboxOpen && (
+        <ImageLightbox
+          images={reportLightboxImages}
+          initialIndex={reportLightboxIndex}
+          isOpen={reportLightboxOpen}
+          onClose={() => setReportLightboxOpen(false)}
+        />
+      )}
     </article>
 
     {/* Project Progress Section */}

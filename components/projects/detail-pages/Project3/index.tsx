@@ -1,22 +1,26 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import {
-  ChevronDown,
-  ChevronUp,
-  MapPin,
-  Users,
-  DollarSign,
-  Package,
-  Receipt,
-  FileText,
-} from 'lucide-react'
+  ChevronDownIcon,
+  ChevronUpIcon,
+  MapPinIcon,
+  UsersIcon,
+  DollarSignIcon,
+  PackageIcon,
+  ReceiptIcon,
+  FileTextIcon,
+} from '@/components/icons'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import ImageLightbox, { type LightboxImage } from '@/components/ImageLightbox'
+import type { LightboxImage } from '@/components/ImageLightbox'
 import ProjectProgressSection from '@/components/projects/shared/ProjectProgressSection'
 import ProjectResultsMasonry from '@/components/projects/shared/ProjectResultsMasonry'
 import type { ProjectStats, ProjectResult } from '@/types'
+
+// P2 优化: 动态加载灯箱组件
+const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), { ssr: false })
 
 interface Project3DetailContentProps {
   project: ProjectStats
@@ -255,7 +259,7 @@ export default function Project3DetailContent({
             {/* Shelters */}
             <div className="space-y-3">
               <h2 className="text-lg md:text-xl font-bold text-gray-900 flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-blue-600" />
+                <MapPinIcon className="w-5 h-5 text-blue-600" />
                 {locale === 'en'
                   ? 'Visited Facilities'
                   : locale === 'zh'
@@ -274,11 +278,11 @@ export default function Project3DetailContent({
                     <p className="text-xs text-gray-600 italic mb-2">{shelter.nameOriginal}</p>
                     <div className="space-y-1.5 text-xs md:text-sm">
                       <div className="flex items-start gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <MapPinIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                         <span className="text-gray-700 leading-tight">{shelter.address}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <Users className="w-3.5 h-3.5 md:w-4 md:h-4 text-purple-600 flex-shrink-0" />
+                        <UsersIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-purple-600 flex-shrink-0" />
                         <span className="font-semibold text-gray-900">
                           {shelter.childrenCount} {t('children')}
                         </span>
@@ -292,7 +296,7 @@ export default function Project3DetailContent({
             {/* Statistics */}
             <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-lg p-3 md:p-4 border border-green-200">
               <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3 flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-green-600" />
+                <DollarSignIcon className="w-5 h-5 text-green-600" />
                 {locale === 'en'
                   ? 'Program Statistics'
                   : locale === 'zh'
@@ -355,7 +359,7 @@ export default function Project3DetailContent({
                       className="w-full px-3 md:px-4 py-2 md:py-3 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 transition-colors flex items-center justify-between"
                     >
                       <div className="flex items-center gap-2 md:gap-3">
-                        <Users className="w-4 h-4 md:w-5 md:h-5 text-blue-600 flex-shrink-0" />
+                        <UsersIcon className="w-4 h-4 md:w-5 md:h-5 text-blue-600 flex-shrink-0" />
                         <span className="font-semibold text-sm md:text-base text-gray-900">
                           {giftList.shelter}
                         </span>
@@ -364,9 +368,9 @@ export default function Project3DetailContent({
                         </span>
                       </div>
                       {expandedShelters.has(idx) ? (
-                        <ChevronUp className="w-4 h-4 md:w-5 md:h-5 text-gray-600 flex-shrink-0" />
+                        <ChevronUpIcon className="w-4 h-4 md:w-5 md:h-5 text-gray-600 flex-shrink-0" />
                       ) : (
-                        <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-600 flex-shrink-0" />
+                        <ChevronDownIcon className="w-4 h-4 md:w-5 md:h-5 text-gray-600 flex-shrink-0" />
                       )}
                     </button>
 
@@ -431,7 +435,7 @@ export default function Project3DetailContent({
           {/* Header */}
           <div className="bg-gradient-to-r from-green-600 to-teal-600 p-3 md:p-4 text-white">
             <h2 className="text-lg md:text-xl font-bold flex items-center gap-2">
-              <Package className="w-5 h-5" />
+              <PackageIcon className="w-5 h-5" />
               {locale === 'en'
                 ? 'Supplies & Expenses'
                 : locale === 'zh'
@@ -444,7 +448,7 @@ export default function Project3DetailContent({
             {/* Supplies List Section */}
             <section>
               <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 md:mb-3 flex items-center gap-2">
-                <FileText className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
+                <FileTextIcon className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
                 {locale === 'en'
                   ? 'Supply List & Unit Prices'
                   : locale === 'zh'
@@ -518,7 +522,7 @@ export default function Project3DetailContent({
 
               {/* Exchange Rate Note */}
               <div className="mt-2 flex items-center gap-1.5 text-xs md:text-sm text-gray-600">
-                <DollarSign className="w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0" />
+                <DollarSignIcon className="w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0" />
                 <span className="italic">{suppliesData.exchangeRateNote}</span>
               </div>
             </section>
@@ -526,7 +530,7 @@ export default function Project3DetailContent({
             {/* Expense Receipts Section */}
             <section className="border-t border-gray-200 pt-3 md:pt-4">
               <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 md:mb-3 flex items-center gap-2">
-                <Receipt className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
+                <ReceiptIcon className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
                 {locale === 'en'
                   ? 'Expense Receipts'
                   : locale === 'zh'
@@ -558,7 +562,7 @@ export default function Project3DetailContent({
                 </div>
               ) : (
                 <div className="bg-gray-50 rounded-lg p-4 md:p-6 border border-dashed border-gray-300 text-center">
-                  <Receipt className="w-8 h-8 md:w-10 md:h-10 text-gray-400 mx-auto mb-2" />
+                  <ReceiptIcon className="w-8 h-8 md:w-10 md:h-10 text-gray-400 mx-auto mb-2" />
                   <p className="text-xs md:text-sm text-gray-600 font-medium mb-1">
                     {suppliesData.receipts.description}
                   </p>
@@ -605,20 +609,24 @@ export default function Project3DetailContent({
       )}
 
       {/* ================================================================== */}
-      {/* Lightboxes */}
+      {/* Lightboxes - 仅在打开时渲染，配合动态导入减少初始加载 */}
       {/* ================================================================== */}
-      <ImageLightbox
-        images={detailLightboxImages}
-        initialIndex={detailLightboxIndex}
-        isOpen={detailLightboxOpen}
-        onClose={() => setDetailLightboxOpen(false)}
-      />
-      <ImageLightbox
-        images={receiptLightboxImages}
-        initialIndex={receiptLightboxIndex}
-        isOpen={receiptLightboxOpen}
-        onClose={() => setReceiptLightboxOpen(false)}
-      />
+      {detailLightboxOpen && (
+        <ImageLightbox
+          images={detailLightboxImages}
+          initialIndex={detailLightboxIndex}
+          isOpen={detailLightboxOpen}
+          onClose={() => setDetailLightboxOpen(false)}
+        />
+      )}
+      {receiptLightboxOpen && (
+        <ImageLightbox
+          images={receiptLightboxImages}
+          initialIndex={receiptLightboxIndex}
+          isOpen={receiptLightboxOpen}
+          onClose={() => setReceiptLightboxOpen(false)}
+        />
+      )}
     </div>
   )
 }

@@ -1,11 +1,15 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
-import { X, ImageIcon, Loader2, Download, PlayCircle } from 'lucide-react'
+import { XIcon, ImageIcon, Loader2Icon, DownloadIcon, PlayCircleIcon } from '@/components/icons'
 import { getAllDonationResultFiles } from '@/app/actions/donation-result'
-import ImageLightbox, { type LightboxImage } from '@/components/ImageLightbox'
+import type { LightboxImage } from '@/components/ImageLightbox'
 import JSZip from 'jszip'
+
+// P2 优化: 动态加载灯箱组件
+const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), { ssr: false })
 
 interface DonationResultViewerProps {
   donationPublicId: string
@@ -176,7 +180,7 @@ export default function DonationResultViewer({
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               aria-label="Close"
             >
-              <X className="w-6 h-6 text-gray-600" />
+              <XIcon className="w-6 h-6 text-gray-600" />
             </button>
           </div>
 
@@ -184,7 +188,7 @@ export default function DonationResultViewer({
           <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
             {loading && (
               <div className="flex flex-col items-center justify-center py-20">
-                <Loader2 className="w-12 h-12 text-blue-600 animate-spin mb-4" />
+                <Loader2Icon className="w-12 h-12 text-blue-600 animate-spin mb-4" />
                 <p className="text-gray-600">{t('loading')}</p>
               </div>
             )}
@@ -229,7 +233,7 @@ export default function DonationResultViewer({
                       )}
                       {file.isVideo && (
                         <div className="w-full h-full flex items-center justify-center bg-gray-900">
-                          <PlayCircle className="w-16 h-16 text-white opacity-80 group-hover:opacity-100 transition-opacity" />
+                          <PlayCircleIcon className="w-16 h-16 text-white opacity-80 group-hover:opacity-100 transition-opacity" />
                         </div>
                       )}
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-2">
@@ -248,12 +252,12 @@ export default function DonationResultViewer({
                   >
                     {downloading ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <Loader2Icon className="w-4 h-4 animate-spin" />
                         {t('downloading')}
                       </>
                     ) : (
                       <>
-                        <Download className="w-4 h-4" />
+                        <DownloadIcon className="w-4 h-4" />
                         {files.length === 1 ? t('download') : `${t('downloadAll')} (${files.length})`}
                       </>
                     )}
@@ -265,13 +269,15 @@ export default function DonationResultViewer({
         </div>
       </div>
 
-      {/* Lightbox */}
-      <ImageLightbox
-        images={lightboxImages}
-        initialIndex={lightboxIndex}
-        isOpen={lightboxOpen}
-        onClose={() => setLightboxOpen(false)}
-      />
+      {/* Lightbox - 仅在打开时渲染 */}
+      {lightboxOpen && (
+        <ImageLightbox
+          images={lightboxImages}
+          initialIndex={lightboxIndex}
+          isOpen={lightboxOpen}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
     </>
   )
 }

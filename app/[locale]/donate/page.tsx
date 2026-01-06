@@ -2,6 +2,9 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import { getAllProjectsWithStats } from '@/lib/supabase/queries'
 import DonatePageClient from './DonatePageClient'
 
+// P0 优化: 添加页面缓存，与 ProjectsGrid 保持一致
+export const revalidate = 60
+
 type Props = {
   params: { locale: string }
   searchParams: { project?: string }

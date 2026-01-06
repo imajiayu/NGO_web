@@ -2,7 +2,7 @@
 
 import { useEffect, useCallback, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { X, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
+import { XIcon, ChevronLeftIcon, ChevronRightIcon, Loader2Icon } from '@/components/icons'
 import Image from 'next/image'
 
 export interface LightboxImage {
@@ -126,7 +126,7 @@ export default function ImageLightbox({
         className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
         aria-label="Close lightbox"
       >
-        <X className="w-6 h-6" />
+        <XIcon className="w-6 h-6" />
       </button>
 
       {/* Previous Button */}
@@ -139,7 +139,7 @@ export default function ImageLightbox({
           className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
           aria-label="Previous image"
         >
-          <ChevronLeft className="w-8 h-8" />
+          <ChevronLeftIcon className="w-8 h-8" />
         </button>
       )}
 
@@ -153,7 +153,7 @@ export default function ImageLightbox({
           className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
           aria-label="Next image"
         >
-          <ChevronRight className="w-8 h-8" />
+          <ChevronRightIcon className="w-8 h-8" />
         </button>
       )}
 
@@ -193,7 +193,7 @@ export default function ImageLightbox({
             {/* Loading spinner - shown while loading */}
             {!imageLoaded && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <Loader2 className="w-8 h-8 text-white animate-spin" />
+                <Loader2Icon className="w-8 h-8 text-white animate-spin" />
               </div>
             )}
           </>

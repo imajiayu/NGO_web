@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDownIcon, ChevronUpIcon } from '@/components/icons'
 import ProjectResultsMasonry from '@/components/projects/shared/ProjectResultsMasonry'
 import type { ProjectResult } from '@/types'
 
@@ -58,9 +58,9 @@ export default function CollapsibleGallery({
           >
             <span className="font-medium text-sm md:text-base">{buttonText}</span>
             {isExpanded ? (
-              <ChevronUp className="w-5 h-5" />
+              <ChevronUpIcon className="w-5 h-5" />
             ) : (
-              <ChevronDown className="w-5 h-5" />
+              <ChevronDownIcon className="w-5 h-5" />
             )}
           </button>
         </div>
