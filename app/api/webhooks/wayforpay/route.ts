@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { verifyWayForPaySignature, generateWebhookResponseSignature, WAYFORPAY_STATUS } from '@/lib/wayforpay/server'
+import { verifyWayForPaySignature, generateWebhookResponseSignature, WAYFORPAY_STATUS } from '@/lib/payment/wayforpay/server'
 import { createServiceClient } from '@/lib/supabase/server'
 import { sendPaymentSuccessEmail, sendRefundSuccessEmail } from '@/lib/email'
 import type { DonationStatus } from '@/types'

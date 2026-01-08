@@ -312,9 +312,53 @@
       "quantityExceeded": "所需数量超过可用单位。最大可用：{remaining} {unitName}",
       "amountLimitExceeded": "超出单次支付限额。最多可购买 {max} {unitName}（限额 $10,000）",
       "projectNotFound": "项目未找到",
-      "projectNotActive": "项目未激活"
+      "projectNotActive": "项目未激活",
+      "amountTooSmall": "加密货币支付的捐赠金额过小。由于网络手续费，最低金额为 ${min} 美元。"
     },
-    "networkNotice": "如果您身处中国大陆等地区，支付过程需要接入国际互联网环境以完成交易"
+    "networkNotice": "如果您身处中国大陆等地区，支付过程需要接入国际互联网环境以完成交易",
+    "paymentMethod": {
+      "title": "选择支付方式",
+      "subtitle": "请选择您的支付方式",
+      "card": {
+        "title": "银行卡 / Apple Pay / Google Pay",
+        "description": "信用卡/借记卡、Apple Pay、Google Pay"
+      },
+      "wechat": {
+        "title": "微信支付",
+        "description": "使用微信支付"
+      },
+      "alipay": {
+        "title": "支付宝",
+        "description": "使用支付宝支付"
+      },
+      "crypto": {
+        "title": "加密货币",
+        "description": "支持 USDT、USDC、BTC、ETH 等"
+      },
+      "comingSoon": "即将推出",
+      "back": "返回编辑"
+    },
+    "cryptoSelector": {
+      "title": "选择加密货币",
+      "subtitle": "请选择您要使用的加密货币",
+      "continue": "继续支付",
+      "creating": "正在创建支付...",
+      "back": "返回",
+      "loading": "正在加载可用货币...",
+      "searchPlaceholder": "搜索货币...",
+      "loadingMinimum": "正在加载最低金额...",
+      "minimumAmount": "{currency} 最低金额：约 ${amount} USD",
+      "amountBelowMinimum": "您的金额 (${current}) 低于 {currency} 的最低要求 (${minimum})。请返回增加捐赠金额。",
+      "filter": {
+        "all": "全部",
+        "popular": "热门",
+        "stablecoins": "稳定币"
+      },
+      "notice": {
+        "title": "重要提示",
+        "description": "请确保发送准确的金额到正确的网络。交易一旦完成不可撤销。"
+      }
+    }
   },
   "wayforpayWidget": {
     "networkError": "无网络连接。请检查您的网络后重试。",
@@ -334,6 +378,46 @@
     "securePayment": {
       "title": "安全支付",
       "description": "您的支付将通过 WayForPay 安全处理"
+    }
+  },
+  "nowpaymentsWidget": {
+    "title": "加密货币支付",
+    "subtitle": "发送加密货币完成您的捐赠",
+    "sendExactAmount": "请发送以下精确金额：",
+    "toAddress": "收款地址：",
+    "copyAddress": "复制地址",
+    "addressCopied": "地址已复制！",
+    "scanQrCode": "或扫描二维码：",
+    "waitingForPayment": "等待支付中...",
+    "paymentDetected": "已检测到支付！正在区块链上确认...",
+    "confirmations": "确认数",
+    "estimatedTime": "预计时间：5-30分钟",
+    "expiresIn": "支付将在以下时间后过期",
+    "expired": "支付已过期",
+    "expiredMessage": "此支付请求已过期。请返回并重新创建。",
+    "processing": {
+      "title": "正在处理支付",
+      "blockchain": "正在区块链上确认...",
+      "sending": "正在转入钱包..."
+    },
+    "status": {
+      "waiting": "等待支付",
+      "confirming": "区块链确认中",
+      "confirmed": "区块链已确认",
+      "sending": "正在处理",
+      "finished": "支付完成"
+    },
+    "warning": {
+      "title": "重要提示",
+      "exactAmount": "请发送上面显示的精确金额",
+      "singleTransaction": "请在单笔交易中发送",
+      "correctNetwork": "请使用正确的区块链网络",
+      "noRefund": "金额不正确可能无法退款"
+    },
+    "backToEdit": "返回编辑捐赠",
+    "securePayment": {
+      "title": "安全加密支付",
+      "description": "您的支付将通过 NOWPayments 安全处理"
     }
   },
   "donateSuccess": {

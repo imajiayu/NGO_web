@@ -2,7 +2,7 @@
 
 import { z } from 'zod'
 import { createAnonClient, createServiceClient } from '@/lib/supabase/server'
-import { processWayForPayRefund } from '@/lib/wayforpay/server'
+import { processWayForPayRefund } from '@/lib/payment/wayforpay/server'
 import { sendRefundSuccessEmail } from '@/lib/email'
 
 const trackDonationSchema = z.object({
@@ -151,10 +151,10 @@ export async function requestRefund(data: {
     // 4. Get order reference and all donations in this order
     const serviceSupabase = createServiceClient()
 
-    // First, get the order_reference for this donation
+    // First, get the order_reference and payment_method for this donation
     const { data: donationData, error: fetchError } = await serviceSupabase
       .from('donations')
-      .select('order_reference, currency')
+      .select('order_reference, currency, payment_method')
       .eq('donation_public_id', validated.donationPublicId)
       .single()
 
@@ -197,7 +197,39 @@ export async function requestRefund(data: {
     // Calculate refundable amount (only paid/confirmed/delivering donations)
     const totalOrderAmount = refundableDonations.reduce((sum, d) => sum + Number(d.amount), 0)
 
-    // 5. Call WayForPay refund API for the ENTIRE order
+    // 5. Handle refund based on payment method
+    const paymentMethod = donationData.payment_method
+
+    // For NOWPayments (crypto): Mark as refunding for manual processing
+    // Crypto refunds require manual handling by admin
+    if (paymentMethod === 'NOWPayments') {
+      const donationIds = refundableDonations.map(d => d.id)
+
+      const { error: updateError } = await serviceSupabase
+        .from('donations')
+        .update({
+          donation_status: 'refunding',
+          updated_at: new Date().toISOString()
+        })
+        .in('id', donationIds)
+
+      if (updateError) {
+        console.error('[REFUND] Error updating NOWPayments donation status:', updateError)
+        return { error: 'serverError' }
+      }
+
+      console.log(`[REFUND] NOWPayments: Marked ${donationIds.length} donations as 'refunding' for manual processing`)
+
+      return {
+        success: true,
+        status: 'refunding',
+        affectedDonations: refundableDonations.length,
+        totalAmount: totalOrderAmount,
+        message: 'Crypto refund request submitted for manual processing'
+      }
+    }
+
+    // For WayForPay (card): Call refund API
     try {
       const wayforpayResponse = await processWayForPayRefund({
         orderReference: donationData.order_reference,

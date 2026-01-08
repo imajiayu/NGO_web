@@ -3,9 +3,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import type { ProjectStats } from '@/types'
-import { createWayForPayDonation } from '@/app/actions/donation'
+import { createWayForPayDonation, createNowPaymentsDonation } from '@/app/actions/donation'
 import { createEmailSubscription } from '@/app/actions/subscription'
-import WayForPayWidget from '@/app/[locale]/donate/wayforpay-widget'
+import WayForPayWidget from '@/components/donate/widgets/WayForPayWidget'
+import NowPaymentsWidget from '@/components/donate/widgets/NowPaymentsWidget'
+import PaymentMethodSelector, { type PaymentMethod } from './PaymentMethodSelector'
+import CryptoSelector from './CryptoSelector'
+import type { CreatePaymentResponse } from '@/lib/payment/nowpayments/types'
 import { getProjectName, getLocation, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
 
 interface DonationFormCardProps {
@@ -29,7 +33,7 @@ interface DonationFormCardProps {
 }
 
 interface PaymentWidgetContainerProps {
-  processingState: 'idle' | 'creating' | 'ready' | 'error'
+  processingState: 'idle' | 'selecting_method' | 'selecting_crypto' | 'creating' | 'ready' | 'crypto_ready' | 'error'
   paymentParams: any | null
   amount: number
   locale: string
@@ -216,8 +220,11 @@ export default function DonationFormCard({
 
   // UI state
   const [paymentParams, setPaymentParams] = useState<any | null>(null)
+  const [cryptoPaymentData, setCryptoPaymentData] = useState<CreatePaymentResponse | null>(null)
   const [showWidget, setShowWidget] = useState(false)
-  const [processingState, setProcessingState] = useState<'idle' | 'creating' | 'ready' | 'error'>('idle')
+  const [processingState, setProcessingState] = useState<'idle' | 'selecting_method' | 'selecting_crypto' | 'creating' | 'ready' | 'crypto_ready' | 'error'>('idle')
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null)
+  const [isCryptoLoading, setIsCryptoLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const widgetContainerRef = useRef<HTMLDivElement>(null)
   const formContainerRef = useRef<HTMLDivElement>(null)
@@ -235,7 +242,10 @@ export default function DonationFormCard({
     setError(null)
     setShowWidget(false)
     setPaymentParams(null)
+    setCryptoPaymentData(null)
     setProcessingState('idle')
+    setSelectedPaymentMethod(null)
+    setIsCryptoLoading(false)
   }, [project?.id])
 
   // Calculate project amount based on project type
@@ -333,14 +343,33 @@ export default function DonationFormCard({
     if (!project || project.id === null || project.id === undefined) return
 
     // Prevent duplicate submissions
-    if (processingState === 'creating') return
+    if (processingState === 'creating' || processingState === 'selecting_method') return
 
     setError(null)
 
-    // IMMEDIATELY show widget and scroll to it
+    // Show payment method selection first
     setShowWidget(true)
-    setProcessingState('creating')
+    setProcessingState('selecting_method')
     scrollToFormArea()
+  }
+
+  // Handle payment method selection
+  const handlePaymentMethodSelect = async (method: PaymentMethod) => {
+    if (!project || project.id === null || project.id === undefined) return
+
+    setSelectedPaymentMethod(method)
+    setError(null)
+
+    // Handle crypto: show crypto selector
+    if (method === 'crypto') {
+      setProcessingState('selecting_crypto')
+      return
+    }
+
+    // Handle card payment
+    if (method !== 'card') return
+
+    setProcessingState('creating')
 
     try {
       // For aggregated projects: pass amount directly with quantity=1
@@ -434,27 +463,156 @@ export default function DonationFormCard({
     }
   }
 
+  // Handle cryptocurrency selection
+  const handleCryptoSelect = async (cryptoCurrency: string) => {
+    if (!project || project.id === null || project.id === undefined) return
+
+    setError(null)
+    setIsCryptoLoading(true)
+
+    try {
+      // For aggregated projects: pass amount directly with quantity=1
+      // For non-aggregated projects: pass quantity only
+      const submitQuantity = isAggregatedProject ? 1 : quantity
+      const submitAmount = isAggregatedProject ? donationAmount : undefined
+
+      const result = await createNowPaymentsDonation({
+        project_id: project.id,
+        quantity: submitQuantity,
+        amount: submitAmount,
+        donor_name: donorName.trim(),
+        donor_email: donorEmail.trim(),
+        donor_message: donorMessage || undefined,
+        contact_telegram: contactTelegram ? contactTelegram.trim() : undefined,
+        contact_whatsapp: contactWhatsapp ? contactWhatsapp.trim() : undefined,
+        tip_amount: tipAmount > 0 ? tipAmount : undefined,
+        locale: locale as 'en' | 'zh' | 'ua',
+        pay_currency: cryptoCurrency,
+      })
+
+      // Update projects stats if available
+      if (result.allProjectsStats && onProjectsUpdate) {
+        onProjectsUpdate(result.allProjectsStats)
+      }
+
+      // Check if the result is successful
+      if (!result.success) {
+        // Handle different error types
+        if (result.error === 'quantity_exceeded') {
+          const remainingUnits = result.remainingUnits || 0
+          setQuantity(remainingUnits)
+          setError(t('errors.quantityExceeded', { remaining: remainingUnits, unitName }))
+        } else if (result.error === 'amount_limit_exceeded') {
+          const maxQuantity = result.maxQuantity || 1
+          if (isAggregatedProject) {
+            setDonationAmount(maxQuantity)
+            setError(t('errors.amountLimitExceeded', { max: maxQuantity, unitName }))
+          } else {
+            setQuantity(maxQuantity)
+            setError(t('errors.amountLimitExceeded', { max: maxQuantity, unitName }))
+          }
+        } else if (result.error === 'api_error') {
+          // Show the actual error message from NOWPayments API
+          setError(result.message || t('errors.serverError'))
+        } else if (result.error === 'project_not_found') {
+          setError(t('errors.projectNotFound'))
+        } else if (result.error === 'project_not_active') {
+          setError(t('errors.projectNotActive'))
+        } else {
+          setError(t('errors.serverError'))
+        }
+        setProcessingState('error')
+        setIsCryptoLoading(false)
+        return
+      }
+
+      // Success - set crypto payment data and mark as ready
+      setCryptoPaymentData(result.paymentData!)
+      setProcessingState('crypto_ready')
+      setIsCryptoLoading(false)
+
+      // Handle newsletter subscription if checked
+      if (subscribeToNewsletter && donorEmail) {
+        try {
+          await createEmailSubscription(
+            donorEmail.trim(),
+            locale as 'en' | 'zh' | 'ua'
+          )
+        } catch (subscriptionError) {
+          console.error('Failed to create email subscription:', subscriptionError)
+        }
+      }
+    } catch (err) {
+      console.error('Error creating crypto payment:', err)
+      if (err instanceof Error && err.message.includes('email')) {
+        setError(t('errors.invalidEmail'))
+      } else if (err instanceof Error && err.message.includes('validation')) {
+        setError(t('errors.validationError'))
+      } else {
+        setError(t('errors.serverError'))
+      }
+      setProcessingState('error')
+      setIsCryptoLoading(false)
+    }
+  }
+
   // Handler to go back to edit form
   const handleBack = () => {
     setShowWidget(false)
     setPaymentParams(null)
+    setCryptoPaymentData(null)
     setProcessingState('idle')
+    setSelectedPaymentMethod(null)
+    setIsCryptoLoading(false)
+    setError(null)
+  }
+
+  // Handler to go back to payment method selection
+  const handleBackToMethodSelect = () => {
+    setProcessingState('selecting_method')
+    setCryptoPaymentData(null)
+    setIsCryptoLoading(false)
     setError(null)
   }
 
   // Show widget if user clicked submit
   if (showWidget && project) {
     return (
-      <div ref={widgetContainerRef} className="lg:sticky lg:top-24">
+      <div ref={widgetContainerRef}>
         <div className="bg-white rounded-xl border-2 border-gray-200 shadow-lg overflow-hidden">
-          <PaymentWidgetContainer
-            processingState={processingState}
-            paymentParams={paymentParams}
-            amount={totalAmount}
-            locale={locale}
-            error={error}
-            onBack={handleBack}
-          />
+          {processingState === 'selecting_method' && (
+            <PaymentMethodSelector
+              amount={totalAmount}
+              onSelectMethod={handlePaymentMethodSelect}
+              onBack={handleBack}
+            />
+          )}
+          {processingState === 'selecting_crypto' && (
+            <CryptoSelector
+              amount={totalAmount}
+              onSelectCrypto={handleCryptoSelect}
+              onBack={handleBackToMethodSelect}
+              isLoading={isCryptoLoading}
+            />
+          )}
+          {processingState === 'crypto_ready' && cryptoPaymentData && (
+            <NowPaymentsWidget
+              paymentData={cryptoPaymentData}
+              amount={totalAmount}
+              locale={locale}
+              onBack={handleBack}
+            />
+          )}
+          {(processingState === 'creating' || processingState === 'ready' || processingState === 'error') && (
+            <PaymentWidgetContainer
+              processingState={processingState}
+              paymentParams={paymentParams}
+              amount={totalAmount}
+              locale={locale}
+              error={error}
+              onBack={handleBack}
+            />
+          )}
         </div>
       </div>
     )
@@ -463,7 +621,7 @@ export default function DonationFormCard({
   // Show empty state if no project selected
   if (!project) {
     return (
-      <div className="lg:sticky lg:top-24">
+      <div>
         <div className="bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 p-8 text-center">
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
             <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -483,7 +641,7 @@ export default function DonationFormCard({
 
   // Show donation form
   return (
-    <div ref={formContainerRef} className="lg:sticky lg:top-24">
+    <div ref={formContainerRef}>
       <div className="bg-white rounded-xl border-2 border-gray-200 shadow-lg overflow-hidden relative">
         {/* Project Summary */}
         <div className="bg-gradient-to-br from-blue-50 to-white p-6 border-b border-gray-200">

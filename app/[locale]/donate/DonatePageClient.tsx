@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import { ChevronDownIcon, ChevronUpIcon } from '@/components/icons'
@@ -92,8 +92,96 @@ export default function DonatePageClient({
   const FOOTER_SAFE_ZONE = 150 // px from bottom to hide sheet
   const MOBILE_BREAKPOINT = 1024 // lg breakpoint
   const SCROLL_DEBOUNCE_MS = 100
+  const NAV_HEIGHT = 96 // top-24 = 6rem = 96px
+  const BOTTOM_PADDING = 40 // padding from viewport bottom
 
   const selectedProject = projects.find(p => p.id === selectedProjectId) || null
+
+  // Refs for bidirectional sticky sidebar
+  const sidebarRef = useRef<HTMLDivElement>(null)
+  const sidebarInnerRef = useRef<HTMLDivElement>(null)
+  const [stickyTop, setStickyTop] = useState(NAV_HEIGHT)
+
+  // Bidirectional sticky sidebar effect
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    let lastScrollY = window.scrollY
+    let currentTop = NAV_HEIGHT
+    let ticking = false
+    let lastSidebarHeight = 0
+
+    const updatePosition = () => {
+      const sidebarInner = sidebarInnerRef.current
+      if (!sidebarInner || window.innerWidth < MOBILE_BREAKPOINT) {
+        setStickyTop(NAV_HEIGHT)
+        ticking = false
+        return
+      }
+
+      const scrollY = window.scrollY
+      const scrollDelta = scrollY - lastScrollY
+      const viewportHeight = window.innerHeight
+      const sidebarHeight = sidebarInner.offsetHeight
+
+      // Reset position if sidebar height changed significantly (form state changed)
+      if (Math.abs(sidebarHeight - lastSidebarHeight) > 50) {
+        currentTop = NAV_HEIGHT
+        lastSidebarHeight = sidebarHeight
+      }
+
+      // If sidebar is shorter than available viewport, just stick to top
+      if (sidebarHeight <= viewportHeight - NAV_HEIGHT - BOTTOM_PADDING) {
+        setStickyTop(NAV_HEIGHT)
+        lastScrollY = scrollY
+        ticking = false
+        return
+      }
+
+      // Sidebar is taller than viewport - bidirectional sticky
+      const minTop = viewportHeight - sidebarHeight - BOTTOM_PADDING // bottom-aligned (negative)
+      const maxTop = NAV_HEIGHT // top-aligned
+
+      // Update currentTop based on scroll delta
+      currentTop = currentTop - scrollDelta
+
+      // Clamp to valid range
+      currentTop = Math.max(minTop, Math.min(maxTop, currentTop))
+
+      setStickyTop(currentTop)
+
+      lastScrollY = scrollY
+      ticking = false
+    }
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(updatePosition)
+        ticking = true
+      }
+    }
+
+    // Initialize
+    lastSidebarHeight = sidebarInnerRef.current?.offsetHeight || 0
+    updatePosition()
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', updatePosition)
+
+    // Observe sidebar height changes (for form state changes)
+    const resizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(updatePosition)
+    })
+    if (sidebarInnerRef.current) {
+      resizeObserver.observe(sidebarInnerRef.current)
+    }
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', updatePosition)
+      resizeObserver.disconnect()
+    }
+  }, [selectedProjectId]) // Recalculate when project changes
 
   // Callback to update all projects stats
   const handleProjectsUpdate = (updatedProjects: ProjectStats[]) => {
@@ -180,7 +268,12 @@ export default function DonatePageClient({
               </div>
 
               {/* Right Side: Donation Form (40%) - Desktop Only */}
-              <div className="hidden lg:block lg:col-span-2" id="donation-form">
+              <div ref={sidebarRef} className="hidden lg:block lg:col-span-2" id="donation-form">
+                <div
+                  ref={sidebarInnerRef}
+                  className="lg:sticky"
+                  style={{ top: stickyTop }}
+                >
                 <DonationFormCard
                   project={selectedProject}
                   locale={locale}
@@ -198,6 +291,7 @@ export default function DonatePageClient({
                   subscribeToNewsletter={subscribeToNewsletter}
                   setSubscribeToNewsletter={setSubscribeToNewsletter}
                 />
+                </div>
               </div>
             </div>
 

@@ -1,6 +1,13 @@
 'use server'
 
-import { createWayForPayPayment } from '@/lib/wayforpay/server'
+import { createWayForPayPayment } from '@/lib/payment/wayforpay/server'
+import {
+  createNowPaymentsPayment,
+  fetchAvailableCurrencies,
+  getMinimumPaymentAmountInUsd,
+  type CreatePaymentResponse,
+  type FullCurrencyInfo
+} from '@/lib/payment/nowpayments/server'
 import { getProjectStats } from '@/lib/supabase/queries'
 import { donationFormSchema } from '@/lib/validations'
 import { createAnonClient } from '@/lib/supabase/server'
@@ -11,6 +18,13 @@ type WayForPayPaymentResult =
   | { success: true; paymentParams: any; amount: number; orderReference: string; allProjectsStats: any[] }
   | { success: false; error: 'quantity_exceeded'; remainingUnits: number; unitName: string; allProjectsStats: any[] }
   | { success: false; error: 'amount_limit_exceeded'; maxQuantity: number; unitName: string; allProjectsStats: any[] }
+  | { success: false; error: 'project_not_found' | 'project_not_active' | 'server_error'; allProjectsStats?: any[] }
+
+type NowPaymentsResult =
+  | { success: true; paymentData: CreatePaymentResponse; amount: number; orderReference: string; allProjectsStats: any[] }
+  | { success: false; error: 'quantity_exceeded'; remainingUnits: number; unitName: string; allProjectsStats: any[] }
+  | { success: false; error: 'amount_limit_exceeded'; maxQuantity: number; unitName: string; allProjectsStats: any[] }
+  | { success: false; error: 'api_error'; message: string; allProjectsStats: any[] }
   | { success: false; error: 'project_not_found' | 'project_not_active' | 'server_error'; allProjectsStats?: any[] }
 
 /**
@@ -409,6 +423,360 @@ export async function markDonationWidgetFailed(
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'
+    }
+  }
+}
+
+/**
+ * Create NOWPayments cryptocurrency donation
+ */
+export async function createNowPaymentsDonation(data: {
+  project_id: number
+  quantity: number
+  amount?: number // For aggregated projects: direct donation amount
+  donor_name: string
+  donor_email: string
+  donor_message?: string
+  contact_telegram?: string
+  contact_whatsapp?: string
+  tip_amount?: number
+  locale: 'en' | 'zh' | 'ua'
+  pay_currency: string // Cryptocurrency to pay with (e.g., 'usdttrc20', 'btc', 'eth')
+}): Promise<NowPaymentsResult> {
+  try {
+    // Validate input
+    const validated = donationFormSchema.parse(data)
+
+    // Get project details with stats
+    const project = await getProjectStats(validated.project_id) as any
+
+    // Get all projects stats for updating the entire page
+    const allProjectsStats = await getProjectStats() as any[]
+
+    if (!project) {
+      return {
+        success: false,
+        error: 'project_not_found',
+        allProjectsStats,
+      }
+    }
+
+    if (project.status !== 'active') {
+      return {
+        success: false,
+        error: 'project_not_active',
+        allProjectsStats,
+      }
+    }
+
+    // Get localized unit name for error messages
+    const unitName = getUnitName(
+      project.unit_name_i18n,
+      project.unit_name,
+      validated.locale as SupportedLocale
+    )
+
+    // Calculate project amount based on project type
+    const unitPrice = project.unit_price
+    let projectAmount: number
+
+    if (project.aggregate_donations) {
+      if (!validated.amount || validated.amount <= 0) {
+        return {
+          success: false,
+          error: 'server_error',
+        }
+      }
+      projectAmount = validated.amount
+    } else {
+      projectAmount = unitPrice * validated.quantity
+    }
+
+    // Check limits for non-long-term projects
+    if (!project.is_long_term) {
+      if (project.aggregate_donations) {
+        const targetAmount = project.target_units || 0
+        const currentAmount = project.total_raised || 0
+        const remainingAmount = targetAmount - currentAmount
+
+        if (projectAmount > remainingAmount) {
+          return {
+            success: false,
+            error: 'amount_limit_exceeded',
+            maxQuantity: Math.floor(remainingAmount),
+            unitName: 'USD',
+            allProjectsStats,
+          }
+        }
+      } else {
+        const remainingUnits = (project.target_units || 0) - (project.current_units || 0)
+        if (validated.quantity > remainingUnits) {
+          return {
+            success: false,
+            error: 'quantity_exceeded',
+            remainingUnits,
+            unitName,
+            allProjectsStats,
+          }
+        }
+      }
+    }
+
+    const totalAmount = projectAmount + (validated.tip_amount || 0)
+
+    // Note: Minimum amount check removed - let NOWPayments API handle it
+    // The API will return specific error messages for amounts that are too small
+
+    // Check total amount limit ($10,000 max)
+    if (totalAmount > 10000) {
+      if (project.aggregate_donations) {
+        return {
+          success: false,
+          error: 'amount_limit_exceeded',
+          maxQuantity: 10000,
+          unitName: 'USD',
+          allProjectsStats,
+        }
+      } else {
+        const maxQuantity = Math.floor(10000 / unitPrice)
+        return {
+          success: false,
+          error: 'amount_limit_exceeded',
+          maxQuantity,
+          unitName,
+          allProjectsStats,
+        }
+      }
+    }
+
+    // Generate unique order reference
+    const timestamp = Date.now()
+    const randomSuffix = Math.random().toString(36).substring(2, 8).toUpperCase()
+    const orderReference = `DONATE-${project.id}-${timestamp}-${randomSuffix}`
+
+    // Get localized project name
+    const projectName = getProjectName(
+      project.project_name_i18n,
+      project.project_name,
+      validated.locale as SupportedLocale
+    )
+
+    // Create NOWPayments payment
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const ipnCallbackUrl = `${baseUrl}/api/webhooks/nowpayments`
+    const successUrl = `${baseUrl}/${validated.locale}/donate/success?order=${orderReference}`
+
+    let paymentData: CreatePaymentResponse
+    try {
+      paymentData = await createNowPaymentsPayment({
+        price_amount: totalAmount,
+        price_currency: 'usd',
+        pay_currency: data.pay_currency,
+        ipn_callback_url: ipnCallbackUrl,
+        order_id: orderReference,
+        order_description: `Donation to ${projectName}`,
+        success_url: successUrl,
+      })
+    } catch (error) {
+      console.error('[DONATION] NOWPayments API error:', error)
+      // Extract the actual error message from the API response
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      // Remove the "NOWPayments API error: " prefix if present
+      const cleanMessage = errorMessage.replace('NOWPayments API error: ', '')
+      return {
+        success: false,
+        error: 'api_error',
+        message: cleanMessage,
+        allProjectsStats,
+      }
+    }
+
+    // Create pending donation records
+    const supabase = createAnonClient()
+    const donationRecords = []
+
+    if (project.aggregate_donations) {
+      const { data: donationPublicId, error: idError } = await supabase.rpc(
+        'generate_donation_public_id',
+        { project_id_input: validated.project_id }
+      )
+
+      if (idError || !donationPublicId) {
+        console.error(`Error generating donation ID:`, idError)
+        throw idError || new Error('Failed to generate donation ID')
+      }
+
+      donationRecords.push({
+        donation_public_id: donationPublicId,
+        order_reference: orderReference,
+        project_id: validated.project_id,
+        donor_name: validated.donor_name,
+        donor_email: validated.donor_email,
+        donor_message: validated.donor_message || null,
+        contact_telegram: validated.contact_telegram || null,
+        contact_whatsapp: validated.contact_whatsapp || null,
+        amount: projectAmount,
+        currency: 'USD',
+        payment_method: 'NOWPayments',
+        donation_status: 'pending' as DonationStatus,
+        locale: validated.locale,
+      })
+    } else {
+      for (let i = 0; i < validated.quantity; i++) {
+        const { data: donationPublicId, error: idError } = await supabase.rpc(
+          'generate_donation_public_id',
+          { project_id_input: validated.project_id }
+        )
+
+        if (idError || !donationPublicId) {
+          console.error(`Error generating donation ID:`, idError)
+          throw idError || new Error('Failed to generate donation ID')
+        }
+
+        donationRecords.push({
+          donation_public_id: donationPublicId,
+          order_reference: orderReference,
+          project_id: validated.project_id,
+          donor_name: validated.donor_name,
+          donor_email: validated.donor_email,
+          donor_message: validated.donor_message || null,
+          contact_telegram: validated.contact_telegram || null,
+          contact_whatsapp: validated.contact_whatsapp || null,
+          amount: unitPrice,
+          currency: 'USD',
+          payment_method: 'NOWPayments',
+          donation_status: 'pending' as DonationStatus,
+          locale: validated.locale,
+        })
+      }
+    }
+
+    // Tip donation for project 0 (if provided)
+    if (validated.tip_amount && validated.tip_amount > 0) {
+      const { data: tipDonationId, error: tipIdError } = await supabase.rpc(
+        'generate_donation_public_id',
+        { project_id_input: 0 }
+      )
+
+      if (tipIdError || !tipDonationId) {
+        console.error(`Error generating tip donation ID:`, tipIdError)
+        throw tipIdError || new Error('Failed to generate tip donation ID')
+      }
+
+      donationRecords.push({
+        donation_public_id: tipDonationId,
+        order_reference: orderReference,
+        project_id: 0,
+        donor_name: validated.donor_name,
+        donor_email: validated.donor_email,
+        donor_message: validated.donor_message || null,
+        contact_telegram: validated.contact_telegram || null,
+        contact_whatsapp: validated.contact_whatsapp || null,
+        amount: validated.tip_amount,
+        currency: 'USD',
+        payment_method: 'NOWPayments',
+        donation_status: 'pending' as DonationStatus,
+        locale: validated.locale,
+      })
+    }
+
+    // Insert pending donation records
+    const { data: insertedData, error: dbError } = await supabase
+      .from('donations')
+      .insert(donationRecords)
+      .select()
+
+    if (dbError) {
+      console.error('[DONATION] Failed to create pending donations:', dbError.message)
+      throw new Error(`Failed to create pending donations: ${dbError.message}`)
+    }
+
+    if (!insertedData || insertedData.length === 0) {
+      throw new Error('Failed to create pending donations: No data returned')
+    }
+
+    console.log(`[DONATION] Created ${insertedData.length} pending records (NOWPayments): ${orderReference}`)
+
+    return {
+      success: true,
+      paymentData,
+      amount: totalAmount,
+      orderReference,
+      allProjectsStats,
+    }
+  } catch (error) {
+    console.error('Error creating NOWPayments donation:', error)
+    return {
+      success: false,
+      error: 'server_error',
+    }
+  }
+}
+
+/**
+ * Currency info for frontend display
+ */
+export interface CurrencyInfo {
+  code: string
+  name: string
+  logoUrl: string
+  network: string
+  isPopular: boolean
+  isStable: boolean
+}
+
+/**
+ * Get available cryptocurrencies from NOWPayments with full info
+ */
+export async function getNowPaymentsCurrencies(): Promise<{
+  success: boolean
+  currencies?: CurrencyInfo[]
+  error?: string
+}> {
+  try {
+    const fullCurrencies = await fetchAvailableCurrencies()
+
+    // Transform to frontend-friendly format
+    const currencies: CurrencyInfo[] = fullCurrencies.map((c: FullCurrencyInfo) => ({
+      code: c.code.toLowerCase(),
+      name: c.name,
+      logoUrl: `https://nowpayments.io${c.logo_url}`,
+      network: c.network,
+      isPopular: c.is_popular,
+      isStable: c.is_stable,
+    }))
+
+    return { success: true, currencies }
+  } catch (error) {
+    console.error('[DONATION] Failed to fetch currencies:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to fetch currencies'
+    }
+  }
+}
+
+/**
+ * Get minimum payment amount in USD for a specific pay currency
+ * Queries the real minimum based on crypto -> outcome wallet conversion
+ */
+export async function getNowPaymentsMinimum(
+  payCurrency: string
+): Promise<{
+  success: boolean
+  minAmount?: number
+  error?: string
+}> {
+  try {
+    // Get minimum in USD for the selected pay currency
+    // This queries payCurrency -> usdttrc20 minimum, then converts to USD
+    const minAmount = await getMinimumPaymentAmountInUsd(payCurrency)
+    return { success: true, minAmount }
+  } catch (error) {
+    console.error('[DONATION] Failed to fetch minimum amount:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to fetch minimum amount'
     }
   }
 }

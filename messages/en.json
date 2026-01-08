@@ -311,9 +311,53 @@
       "invalidAmount": "Please enter a valid amount (minimum $0.10)",
       "quantityExceeded": "The requested quantity exceeds available units. Maximum available: {remaining} {unitName}",
       "projectNotFound": "Project not found",
-      "projectNotActive": "Project is not active"
+      "projectNotActive": "Project is not active",
+      "amountTooSmall": "The donation amount is too small for cryptocurrency payment. Minimum amount is ${min} USD (due to network fees)."
     },
-    "networkNotice": "If you are in mainland China or similar regions, international internet access is required to complete the payment process"
+    "networkNotice": "If you are in mainland China or similar regions, international internet access is required to complete the payment process",
+    "paymentMethod": {
+      "title": "Select Payment Method",
+      "subtitle": "Choose how you'd like to pay",
+      "card": {
+        "title": "Card / Apple Pay / Google Pay",
+        "description": "Credit/Debit card, Apple Pay, Google Pay"
+      },
+      "wechat": {
+        "title": "WeChat Pay",
+        "description": "Pay with WeChat"
+      },
+      "alipay": {
+        "title": "Alipay",
+        "description": "Pay with Alipay"
+      },
+      "crypto": {
+        "title": "Cryptocurrency",
+        "description": "Pay with USDT, USDC, BTC, ETH and more"
+      },
+      "comingSoon": "Coming Soon",
+      "back": "Back to Edit"
+    },
+    "cryptoSelector": {
+      "title": "Select Cryptocurrency",
+      "subtitle": "Choose which cryptocurrency you'd like to pay with",
+      "continue": "Continue to Payment",
+      "creating": "Creating payment...",
+      "back": "Back",
+      "loading": "Loading available currencies...",
+      "searchPlaceholder": "Search currencies...",
+      "loadingMinimum": "Loading minimum amount...",
+      "minimumAmount": "Minimum for {currency}: ~${amount} USD",
+      "amountBelowMinimum": "Your amount (${current}) is below the minimum (${minimum}) for {currency}. Please go back and increase your donation amount.",
+      "filter": {
+        "all": "All",
+        "popular": "Popular",
+        "stablecoins": "Stablecoins"
+      },
+      "notice": {
+        "title": "Important",
+        "description": "Please ensure you send the exact amount to the correct network. Transactions are irreversible."
+      }
+    }
   },
   "wayforpayWidget": {
     "networkError": "No internet connection. Please check your network and try again.",
@@ -333,6 +377,46 @@
     "securePayment": {
       "title": "Secure Payment",
       "description": "Your payment is processed securely through WayForPay"
+    }
+  },
+  "nowpaymentsWidget": {
+    "title": "Crypto Payment",
+    "subtitle": "Send cryptocurrency to complete your donation",
+    "sendExactAmount": "Send exactly this amount:",
+    "toAddress": "To this address:",
+    "copyAddress": "Copy Address",
+    "addressCopied": "Address copied!",
+    "scanQrCode": "Or scan QR code:",
+    "waitingForPayment": "Waiting for payment...",
+    "paymentDetected": "Payment detected! Confirming on blockchain...",
+    "confirmations": "Confirmations",
+    "estimatedTime": "Estimated time: 5-30 minutes",
+    "expiresIn": "Payment expires in",
+    "expired": "Payment Expired",
+    "expiredMessage": "This payment request has expired. Please go back and create a new one.",
+    "processing": {
+      "title": "Processing Payment",
+      "blockchain": "Confirming on blockchain...",
+      "sending": "Sending to wallet..."
+    },
+    "status": {
+      "waiting": "Waiting for payment",
+      "confirming": "Confirming on blockchain",
+      "confirmed": "Blockchain confirmed",
+      "sending": "Processing payment",
+      "finished": "Payment completed"
+    },
+    "warning": {
+      "title": "Important",
+      "exactAmount": "Send the exact amount shown above",
+      "singleTransaction": "Send in a single transaction",
+      "correctNetwork": "Use the correct blockchain network",
+      "noRefund": "Incorrect amounts may not be refundable"
+    },
+    "backToEdit": "Back to Edit Donation",
+    "securePayment": {
+      "title": "Secure Crypto Payment",
+      "description": "Your payment is processed securely through NOWPayments"
     }
   },
   "donateSuccess": {
