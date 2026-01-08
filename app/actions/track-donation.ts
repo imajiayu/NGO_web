@@ -261,7 +261,40 @@ export async function requestRefund(data: {
 
       // 7. Update ONLY refundable donations (paid/confirmed/delivering) to the new status
       // Completed donations are excluded from refund
+      // Also skip if already refunded (prevent race condition with webhook)
       const donationIds = refundableDonations.map(d => d.id)
+
+      // Check if any donation is already refunded (webhook may have processed first)
+      const { data: currentDonations } = await serviceSupabase
+        .from('donations')
+        .select('id, donation_status')
+        .in('id', donationIds)
+
+      const alreadyRefunded = currentDonations?.every(d => d.donation_status === 'refunded')
+      if (alreadyRefunded) {
+        console.log('[REFUND] All donations already refunded (webhook processed first) - skipping update and email')
+        return {
+          success: true,
+          status: 'refunded',
+          affectedDonations: refundableDonations.length,
+          totalAmount: totalOrderAmount
+        }
+      }
+
+      // Filter out already refunded donations
+      const idsToUpdate = currentDonations
+        ?.filter(d => d.donation_status !== 'refunded')
+        .map(d => d.id) || []
+
+      if (idsToUpdate.length === 0) {
+        console.log('[REFUND] No donations to update - all already refunded')
+        return {
+          success: true,
+          status: 'refunded',
+          affectedDonations: refundableDonations.length,
+          totalAmount: totalOrderAmount
+        }
+      }
 
       const { error: updateError } = await serviceSupabase
         .from('donations')
@@ -269,7 +302,7 @@ export async function requestRefund(data: {
           donation_status: newStatus,
           updated_at: new Date().toISOString()
         })
-        .in('id', donationIds)
+        .in('id', idsToUpdate)
 
       if (updateError) {
         console.error('Error updating donation status:', updateError)
