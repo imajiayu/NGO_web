@@ -4,6 +4,17 @@
 
 ---
 
+## 重要提示：数据库相关事项
+
+**在处理任何数据库相关任务前，请先阅读以下文件：**
+
+1. **`docs/DATABASE_SCHEMA.md`** - 数据库架构概览文档
+2. **`supabase/migrations/20260109000000_baseline.sql`** - 完整的数据库 schema 定义（包含所有表、函数、触发器、RLS 策略、索引、存储桶）
+
+这两个文件包含了数据库的完整定义，是理解和修改数据库结构的权威来源。
+
+---
+
 ## 项目概述
 
 **当前版本**: 2.3.0
@@ -20,7 +31,7 @@
 - 管理员后台（项目/捐赠/订阅管理）
 - Cloudinary 图像处理 + 人脸隐私保护
 - 物资捐赠（按单位拆分）和金额捐赠（聚合模式）
-- 15 个捐赠状态，完整支付和退款流程
+- 14 个捐赠状态，完整支付和退款流程
 - 邮件订阅系统
 - 捐赠状态审计追踪
 
@@ -38,7 +49,8 @@
 
 ## 数据库架构
 
-详细文档：[docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)
+> **完整定义**: `supabase/migrations/20260109000000_baseline.sql`
+> **文档概览**: [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)
 
 ### 核心表
 
@@ -49,7 +61,7 @@
 | `email_subscriptions` | 邮件订阅 |
 | `donation_status_history` | 状态转换历史 |
 
-### 捐赠状态 (15个)
+### 捐赠状态 (14个)
 
 | 分类 | 状态 |
 |------|------|
@@ -138,8 +150,8 @@ NGO_web/
 ├── messages/                     # 翻译文件 (en/zh/ua)
 ├── public/content/projects/      # 项目内容 JSON
 ├── types/                        # TypeScript 类型
-├── supabase/migrations/          # 44 个迁移文件
-└── docs/DATABASE_SCHEMA.md       # 数据库文档
+├── supabase/migrations/          # 1 个 baseline 迁移文件 (20260109000000_baseline.sql)
+└── docs/DATABASE_SCHEMA.md       # 数据库架构文档
 ```
 
 ---
@@ -334,7 +346,7 @@ supabase gen types typescript --linked > types/database.ts
 
 ## 安全机制
 
-- RLS 策略保护所有表 (15个策略)
+- RLS 策略保护所有表 (10个策略)
 - Service Role 用于 Webhook 和管理员操作
 - 触发器保护不可变字段
 - 状态转换数据库级验证
@@ -384,5 +396,5 @@ getTranslatedText(project.project_name_i18n, locale, fallback)
 
 ---
 
-**文档版本**: 2.3.0
-**最后更新**: 2026-01-06
+**文档版本**: 2.4.0
+**最后更新**: 2026-01-09
