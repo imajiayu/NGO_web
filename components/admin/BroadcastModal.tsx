@@ -286,16 +286,9 @@ export default function BroadcastModal({
               <div className="flex gap-3">
                 <button
                   onClick={handleBackFromPreview}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Back
-                </button>
-                <button
-                  onClick={handleSend}
-                  disabled={isSending || selectedEmails.size === 0}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
-                >
-                  {isSending ? 'Sending...' : `Send to ${selectedEmails.size} recipient${selectedEmails.size !== 1 ? 's' : ''}`}
                 </button>
               </div>
             </div>
