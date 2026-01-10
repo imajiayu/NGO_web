@@ -150,43 +150,6 @@ export async function getDonations(filters?: DonationFilters) {
   return data
 }
 
-export async function getDonationByPublicId(publicId: string) {
-  const supabase = await createServerClient()
-  const { data, error } = await supabase
-    .from('donations')
-    .select('*, projects(id, project_name, project_name_i18n, location, location_i18n, unit_name, unit_name_i18n)')
-    .eq('donation_public_id', publicId)
-    .single()
-
-  if (error) throw error
-  return data
-}
-
-export async function getDonationsByEmail(email: string) {
-  const supabase = await createServerClient()
-  const { data, error } = await supabase
-    .from('donations')
-    .select('*, projects(id, project_name, project_name_i18n, location, location_i18n, unit_name, unit_name_i18n)')
-    .eq('donor_email', email)
-    .order('donated_at', { ascending: false })
-
-  if (error) throw error
-  return data
-}
-
-export async function getProjectDonations(projectId: number, limit = 50) {
-  const supabase = await createServerClient()
-  const { data, error } = await supabase
-    .from('public_project_donations')
-    .select('*')
-    .eq('project_id', projectId)
-    .order('donated_at', { ascending: false })
-    .limit(limit)
-
-  if (error) throw error
-  return data
-}
-
 // ============= CREATE OPERATIONS =============
 
 export async function createProject(projectData: {
@@ -268,14 +231,3 @@ export async function updateDonationStatus(
   return data as Donation
 }
 
-// ============= HELPER FUNCTIONS =============
-
-export async function generateDonationPublicId(projectId: number) {
-  const supabase = await createServerClient()
-  const { data, error } = await supabase.rpc('generate_donation_public_id', {
-    project_id_input: projectId,
-  } as any)
-
-  if (error) throw error
-  return data as string
-}

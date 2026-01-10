@@ -111,21 +111,6 @@ export const CheckCircle2Icon = ({ className }: IconProps) => (
   </svg>
 )
 
-// 空心圆圈
-export const CircleIcon = ({ className }: IconProps) => (
-  <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="10" />
-  </svg>
-)
-
-// 时钟
-export const ClockIcon = ({ className }: IconProps) => (
-  <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="10" />
-    <polyline points="12 6 12 12 16 14" />
-  </svg>
-)
-
 // 地点
 export const MapPinIcon = ({ className }: IconProps) => (
   <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">

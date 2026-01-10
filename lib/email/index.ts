@@ -31,8 +31,6 @@ export { NGO_BRANDING, EMAIL_COLORS } from './config'
 export {
   getLocalizedText,
   formatCurrency,
-  formatDonationIdsHTML,
-  formatDonationIdsText,
   escapeHtml,
   getTrackingUrl
 } from './utils'

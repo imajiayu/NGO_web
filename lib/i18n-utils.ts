@@ -78,23 +78,10 @@ export function getUnitName(
 }
 
 /**
- * Helper to get description in current locale
- */
-export function getDescription(
-  descriptionI18n: I18nText | undefined | null,
-  fallbackDescription: string | null = '',
-  locale: SupportedLocale = 'en'
-): string {
-  return getTranslatedText(descriptionI18n, fallbackDescription, locale)
-}
-
-/**
  * Map application locale to JavaScript Intl API locale
- *
- * @param locale - Application locale (en, zh, ua)
- * @returns JavaScript locale code for Intl API
+ * (Internal function for formatDate)
  */
-export function getJsLocale(locale: SupportedLocale): string {
+function getJsLocale(locale: SupportedLocale): string {
   const localeMap: Record<SupportedLocale, string> = {
     en: 'en-US',
     zh: 'zh-CN',

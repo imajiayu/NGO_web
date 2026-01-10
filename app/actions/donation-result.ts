@@ -101,34 +101,6 @@ export async function getDonationResultUrl(donationPublicId: string) {
 }
 
 /**
- * Check if a donation has a result image
- */
-export async function hasDonationResult(donationPublicId: string): Promise<boolean> {
-  try {
-    // Use service role client to bypass RLS
-    const supabase = createClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: { persistSession: false }
-      }
-    )
-
-    const { data: files } = await supabase
-      .storage
-      .from('donation-results')
-      .list(donationPublicId, {
-        limit: 1
-      })
-
-    return (files && files.length > 0) || false
-  } catch (error) {
-    console.error('Error checking donation result:', error)
-    return false
-  }
-}
-
-/**
  * Get all donation result files with their thumbnails
  * Returns array of files with original and thumbnail URLs
  */

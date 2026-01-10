@@ -256,19 +256,3 @@ export function isCloudinaryConfigured(): boolean {
     process.env.CLOUDINARY_API_SECRET
   )
 }
-
-/**
- * 批量处理图片
- */
-export async function processMultipleImages(
-  images: ProcessImageOptions[]
-): Promise<ProcessedImage[]> {
-  const results: ProcessedImage[] = []
-
-  for (const imageOptions of images) {
-    const processed = await processImageWithCloudinary(imageOptions)
-    results.push(processed)
-  }
-
-  return results
-}

@@ -20,20 +20,6 @@ export function formatCurrency(amount: number, currency: string): string {
 }
 
 /**
- * Format donation IDs as HTML list
- */
-export function formatDonationIdsHTML(donationIds: string[]): string {
-  return donationIds.map(id => `<li><strong>${id}</strong></li>`).join('')
-}
-
-/**
- * Format donation IDs as plain text list
- */
-export function formatDonationIdsText(donationIds: string[]): string {
-  return donationIds.map(id => `- ${id}`).join('\n')
-}
-
-/**
  * Escape HTML special characters
  */
 export function escapeHtml(text: string | null | undefined): string {

@@ -136,7 +136,6 @@ export default function NowPaymentsWidget({
   onStatusChange,
 }: Props) {
   const t = useTranslations('nowpaymentsWidget')
-  const tDonate = useTranslations('donate')
 
   const [currentStatus, setCurrentStatus] = useState(paymentData.payment_status)
   const [countdown, setCountdown] = useState<number | null>(null)
@@ -173,24 +172,6 @@ export default function NowPaymentsWidget({
 
     return () => clearInterval(timer)
   }, [countdown])
-
-  // Poll for status updates
-  useEffect(() => {
-    if (isExpired || currentStatus === 'finished' || currentStatus === 'failed') return
-
-    const pollStatus = async () => {
-      try {
-        // In production, you would call an API to get the current status
-        // For now, we rely on webhooks to update the database
-        // This is just a placeholder for future enhancement
-      } catch (err) {
-        console.error('Failed to poll status:', err)
-      }
-    }
-
-    const interval = setInterval(pollStatus, 30000) // Poll every 30 seconds
-    return () => clearInterval(interval)
-  }, [paymentData.payment_id, isExpired, currentStatus])
 
   // Notify parent of status changes
   useEffect(() => {

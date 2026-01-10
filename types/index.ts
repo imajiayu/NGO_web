@@ -1,5 +1,5 @@
 import type { Tables, Json } from './database'
-import { DONATION_STATUSES, SUCCESS_STATUSES, type DonationStatus } from '@/lib/donation-status'
+import { DONATION_STATUSES, type DonationStatus } from '@/lib/donation-status'
 
 // Re-export database types
 export * from './database'
@@ -15,61 +15,8 @@ export type Project = Tables<'projects'>
 export type Donation = Tables<'donations'>
 export type ProjectStats = Tables<'project_stats'>
 
-// Public donation view with obfuscated email (security-enhanced)
-export interface PublicProjectDonation {
-  id: number
-  donation_public_id: string
-  project_id: number
-  donor_email_obfuscated: string | null
-  amount: number
-  currency: string
-  donation_status: (typeof SUCCESS_STATUSES)[number]
-  donated_at: string
-}
-
-// Form types for creating/updating
-export interface CreateProjectInput {
-  project_name: string
-  location: string
-  start_date: string
-  end_date?: string | null
-  is_long_term?: boolean
-  target_units: number
-  unit_name?: string
-  status?: 'planned' | 'active'
-}
-
-export interface UpdateProjectInput {
-  project_name?: string
-  location?: string
-  start_date?: string
-  end_date?: string | null
-  is_long_term?: boolean
-  target_units?: number
-  current_units?: number
-  unit_name?: string
-  status?: 'planned' | 'active' | 'completed' | 'paused'
-}
-
-export interface CreateDonationInput {
-  project_id: number
-  donor_name: string
-  donor_email: string
-  donor_phone?: string
-  amount: number
-  currency?: string
-  payment_method?: string
-}
-
-// WayForPay-specific types
-export interface DonationFormData {
-  project_id: number
-  donor_name: string
-  donor_email: string
-  donor_phone?: string
-  amount: number
-  currency: string
-}
+// Note: Form types (CreateProjectInput, UpdateProjectInput, CreateDonationInput)
+// are defined in lib/validations.ts via Zod schema inference
 
 // Filter and search types
 export interface ProjectFilters {
@@ -88,8 +35,8 @@ export interface DonationFilters {
   locale?: 'en' | 'zh' | 'ua'
 }
 
-// Constants
-export const PROJECT_STATUSES = ['planned', 'active', 'completed', 'paused'] as const
+// Constants (internal, used for type derivation)
+const PROJECT_STATUSES = ['planned', 'active', 'completed', 'paused'] as const
 
 /**
  * Donation Status Values
@@ -126,7 +73,7 @@ export const PROJECT_STATUSES = ['planned', 'active', 'completed', 'paused'] as 
  */
 // Note: DONATION_STATUSES and DonationStatus are re-exported at the top of this file
 
-export const DONATION_LOCALES = ['en', 'zh', 'ua'] as const
+const DONATION_LOCALES = ['en', 'zh', 'ua'] as const
 
 // Type aliases for better type safety
 export type DonationLocale = typeof DONATION_LOCALES[number]
@@ -139,35 +86,4 @@ export interface ProjectResult {
   date?: string // ISO 8601 format: YYYY-MM-DD
   priority?: number // Higher priority = displayed first (default: 5)
   projectId?: number // Optional: link to source project
-}
-
-// Extended project content type (for JSON files in /public/content/projects/)
-export interface ProjectContent {
-  title: string
-  subtitle: string
-  images?: string[]
-  introduction?: string[]
-  shelters?: Array<{
-    name: string
-    nameOriginal: string
-    address: string
-    childrenCount: number
-  }>
-  statistics?: {
-    totalChildren: number
-    totalCost: {
-      uah: number
-      usd: number
-    }
-    averagePerChild: number
-    currency: string
-  }
-  giftsList?: Array<{
-    shelter: string
-    children: Array<{
-      name: string
-      gift: string
-    }>
-  }>
-  results?: ProjectResult[] // Project outcome images with captions
 }

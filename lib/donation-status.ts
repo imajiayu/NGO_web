@@ -150,16 +150,6 @@ export function isPrePaymentStatus(status: DonationStatus): boolean {
   return PRE_PAYMENT_STATUSES.includes(status)
 }
 
-/** 是否为处理中状态 */
-export function isProcessingStatus(status: DonationStatus): boolean {
-  return PROCESSING_STATUSES.includes(status)
-}
-
-/** 是否为成功状态（已支付） */
-export function isSuccessStatus(status: DonationStatus): boolean {
-  return SUCCESS_STATUSES.includes(status)
-}
-
 /** 是否为失败状态 */
 export function isFailedStatus(status: DonationStatus): boolean {
   return FAILED_STATUSES.includes(status)
@@ -168,11 +158,6 @@ export function isFailedStatus(status: DonationStatus): boolean {
 /** 是否为退款相关状态 */
 export function isRefundStatus(status: DonationStatus): boolean {
   return REFUND_STATUSES.includes(status)
-}
-
-/** 是否为被计数状态（计入项目进度） */
-export function isCountedStatus(status: DonationStatus): boolean {
-  return COUNTED_STATUSES.includes(status)
 }
 
 /** 是否可以申请退款 */

@@ -38,16 +38,3 @@ export function createEmailLayout({ title, content, locale }: EmailLayoutParams)
 </html>
   `.trim()
 }
-
-/**
- * Create plain text version of email
- */
-export function createTextLayout(content: string): string {
-  // Remove HTML tags and format for plain text
-  return content
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<\/p>/gi, '\n\n')
-    .replace(/<[^>]+>/g, '')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim()
-}

@@ -2,8 +2,6 @@ import crypto from 'crypto'
 import type {
   CreatePaymentRequest,
   CreatePaymentResponse,
-  GetPaymentStatusResponse,
-  NowPaymentsWebhookBody,
   NowPaymentsError,
 } from './types'
 
@@ -124,62 +122,6 @@ export async function createNowPaymentsPayment(
 }
 
 /**
- * Get payment status by payment_id
- * @see https://documenter.getpostman.com/view/7907941/2s93JusNJt#get-payment-status
- */
-export async function getNowPaymentsStatus(
-  paymentId: string | number
-): Promise<GetPaymentStatusResponse> {
-  if (!NOWPAYMENTS_API_KEY) {
-    throw new Error('NOWPAYMENTS_API_KEY is not configured')
-  }
-
-  const response = await fetch(`${NOWPAYMENTS_API_BASE}/payment/${paymentId}`, {
-    method: 'GET',
-    headers: {
-      'x-api-key': NOWPAYMENTS_API_KEY,
-    },
-  })
-
-  if (!response.ok) {
-    const errorData = await response.json() as NowPaymentsError
-    throw new Error(`NOWPayments API error: ${errorData.message || response.statusText}`)
-  }
-
-  return await response.json() as GetPaymentStatusResponse
-}
-
-/**
- * Get minimum payment amount for a currency pair
- * @see https://documenter.getpostman.com/view/7907941/2s93JusNJt#get-minimum-payment-amount
- */
-export async function getMinimumPaymentAmount(
-  currencyFrom: string,
-  currencyTo: string
-): Promise<number> {
-  if (!NOWPAYMENTS_API_KEY) {
-    throw new Error('NOWPAYMENTS_API_KEY is not configured')
-  }
-
-  const response = await fetch(
-    `${NOWPAYMENTS_API_BASE}/min-amount?currency_from=${currencyFrom}&currency_to=${currencyTo}`,
-    {
-      method: 'GET',
-      headers: {
-        'x-api-key': NOWPAYMENTS_API_KEY,
-      },
-    }
-  )
-
-  if (!response.ok) {
-    throw new Error(`Failed to get minimum amount: ${response.statusText}`)
-  }
-
-  const data = await response.json()
-  return data.min_amount
-}
-
-/**
  * Get minimum payment amount in USD for a specific pay currency
  * This queries the real minimum based on the crypto -> outcome wallet conversion
  * then converts it to USD for display
@@ -269,61 +211,6 @@ async function getFallbackMinimum(payCurrency: string): Promise<number> {
 }
 
 /**
- * Get estimated price for currency conversion
- * @see https://documenter.getpostman.com/view/7907941/2s93JusNJt#get-estimated-price
- */
-export async function getEstimatedPrice(
-  amount: number,
-  currencyFrom: string,
-  currencyTo: string
-): Promise<number> {
-  if (!NOWPAYMENTS_API_KEY) {
-    throw new Error('NOWPAYMENTS_API_KEY is not configured')
-  }
-
-  const response = await fetch(
-    `${NOWPAYMENTS_API_BASE}/estimate?amount=${amount}&currency_from=${currencyFrom}&currency_to=${currencyTo}`,
-    {
-      method: 'GET',
-      headers: {
-        'x-api-key': NOWPAYMENTS_API_KEY,
-      },
-    }
-  )
-
-  if (!response.ok) {
-    throw new Error(`Failed to get estimate: ${response.statusText}`)
-  }
-
-  const data = await response.json()
-  return data.estimated_amount
-}
-
-/**
- * Get available currencies (simple list)
- * @see https://documenter.getpostman.com/view/7907941/2s93JusNJt#get-available-currencies
- */
-export async function getAvailableCurrencies(): Promise<string[]> {
-  if (!NOWPAYMENTS_API_KEY) {
-    throw new Error('NOWPAYMENTS_API_KEY is not configured')
-  }
-
-  const response = await fetch(`${NOWPAYMENTS_API_BASE}/currencies`, {
-    method: 'GET',
-    headers: {
-      'x-api-key': NOWPAYMENTS_API_KEY,
-    },
-  })
-
-  if (!response.ok) {
-    throw new Error(`Failed to get currencies: ${response.statusText}`)
-  }
-
-  const data = await response.json()
-  return data.currencies
-}
-
-/**
  * Full currency info returned from /full-currencies endpoint
  */
 export interface FullCurrencyInfo {
@@ -362,27 +249,6 @@ export async function fetchAvailableCurrencies(): Promise<FullCurrencyInfo[]> {
 
   // Filter to only show currencies available for payment
   return data.currencies.filter((c: FullCurrencyInfo) => c.available_for_payment)
-}
-
-/**
- * Check API status
- * @see https://documenter.getpostman.com/view/7907941/2s93JusNJt#api-status
- */
-export async function checkApiStatus(): Promise<boolean> {
-  try {
-    const response = await fetch(`${NOWPAYMENTS_API_BASE}/status`, {
-      method: 'GET',
-    })
-
-    if (!response.ok) {
-      return false
-    }
-
-    const data = await response.json()
-    return data.message === 'OK'
-  } catch {
-    return false
-  }
 }
 
 // Re-export types for convenience

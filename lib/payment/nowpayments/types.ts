@@ -115,35 +115,6 @@ export interface NowPaymentsWebhookBody {
   }
 }
 
-/**
- * Get Payment Status Response
- * GET https://api.nowpayments.io/v1/payment/{payment_id}
- */
-export interface GetPaymentStatusResponse {
-  payment_id: number
-  payment_status: NowPaymentsStatus
-  pay_address: string
-  price_amount: number
-  price_currency: string
-  pay_amount: number
-  actually_paid: number
-  pay_currency: string
-  order_id: string
-  order_description: string
-  purchase_id: string
-  created_at: string
-  updated_at: string
-  outcome_amount?: number
-  outcome_currency?: string
-}
-
-/**
- * Available Currencies Response
- * GET https://api.nowpayments.io/v1/currencies
- */
-export interface AvailableCurrenciesResponse {
-  currencies: string[]
-}
 
 /**
  * Full Currency Info
@@ -171,27 +142,6 @@ export interface FullCurrenciesResponse {
   currencies: FullCurrencyInfo[]
 }
 
-/**
- * Minimum Payment Amount Response
- * GET https://api.nowpayments.io/v1/min-amount
- */
-export interface MinAmountResponse {
-  currency_from: string
-  currency_to: string
-  min_amount: number
-  fiat_equivalent?: number
-}
-
-/**
- * Estimate Price Response
- * GET https://api.nowpayments.io/v1/estimate
- */
-export interface EstimatePriceResponse {
-  currency_from: string
-  amount_from: number
-  currency_to: string
-  estimated_amount: number
-}
 
 /**
  * API Error Response
