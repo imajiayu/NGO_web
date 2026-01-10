@@ -207,6 +207,7 @@ console.log(`Success: ${result.successCount}, Failed: ${result.failureCount}`)
        zh: '紧急：现在需要帮助',
        ua: 'Терміново: Потрібна допомога',
      },
+     projectId: '0', // 可选：关联的项目 ID
    }
 
    export default template
@@ -222,9 +223,41 @@ console.log(`Success: ${result.successCount}, Failed: ${result.failureCount}`)
    # - content/urgent-appeal/ua.html
    ```
 
-4. **在管理员页面使用**:
+4. **在 `index.ts` 中注册模板** (重要！):
 
-   模板会自动出现在管理员的模板选择下拉菜单中。
+   由于 Vercel serverless 环境不支持文件系统扫描，必须手动注册模板：
+
+   ```typescript
+   // lib/email/templates/index.ts
+
+   // 1. 导入模板定义
+   import urgentAppeal from './broadcast/urgent-appeal'
+
+   // 2. 导入 HTML 内容
+   import urgentAppealEn from './content/urgent-appeal/en.html'
+   import urgentAppealZh from './content/urgent-appeal/zh.html'
+   import urgentAppealUa from './content/urgent-appeal/ua.html'
+
+   // 3. 添加到 REGISTERED_TEMPLATES 数组
+   const REGISTERED_TEMPLATES: EmailTemplate[] = [
+     // ... 其他模板
+     urgentAppeal,
+   ]
+
+   // 4. 添加到 TEMPLATE_CONTENTS 映射
+   const TEMPLATE_CONTENTS: Record<string, TemplateContent> = {
+     // ... 其他模板内容
+     'urgent-appeal': {
+       en: urgentAppealEn,
+       zh: urgentAppealZh,
+       ua: urgentAppealUa,
+     },
+   }
+   ```
+
+5. **在管理员页面使用**:
+
+   注册后，模板会自动出现在管理员的模板选择下拉菜单中。
 
 ---
 

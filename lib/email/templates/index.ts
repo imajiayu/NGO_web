@@ -1,6 +1,3 @@
-import fs from 'fs'
-import path from 'path'
-
 export interface EmailTemplate {
   name: string // 模板名称（用于显示）
   fileName: string // 文件名（不含扩展名）
@@ -18,70 +15,88 @@ export interface TemplateContent {
   ua: string
 }
 
+// ==================== 静态模板注册表 ====================
+// 在 Vercel serverless 环境中，fs 模块无法正常工作
+// 因此需要静态注册所有可用的模板和内容
+//
+// 添加新模板步骤：
+// 1. 在 broadcast/{template-name}/index.ts 创建模板定义
+// 2. 在 content/{template-name}/ 创建 en.html, zh.html, ua.html
+// 3. 在下方导入模板定义和 HTML 内容
+// 4. 将模板添加到 REGISTERED_TEMPLATES 数组
+// 5. 将内容添加到 TEMPLATE_CONTENTS 映射
+
+// 模板定义
+import project0Ongoing from './broadcast/project0-ongoing'
+import project3Completed from './broadcast/project3-completed'
+
+// HTML 内容（通过 webpack asset/source 导入）
+import project0OngoingEn from './content/project0-ongoing/en.html'
+import project0OngoingZh from './content/project0-ongoing/zh.html'
+import project0OngoingUa from './content/project0-ongoing/ua.html'
+import project3CompletedEn from './content/project3-completed/en.html'
+import project3CompletedZh from './content/project3-completed/zh.html'
+import project3CompletedUa from './content/project3-completed/ua.html'
+
+const REGISTERED_TEMPLATES: EmailTemplate[] = [
+  project0Ongoing,
+  project3Completed,
+]
+
+// 静态内容映射
+const TEMPLATE_CONTENTS: Record<string, TemplateContent> = {
+  'project0-ongoing': {
+    en: project0OngoingEn,
+    zh: project0OngoingZh,
+    ua: project0OngoingUa,
+  },
+  'project3-completed': {
+    en: project3CompletedEn,
+    zh: project3CompletedZh,
+    ua: project3CompletedUa,
+  },
+}
+
 /**
  * 获取所有可用的邮件模板
- * 扫描 broadcast/ 目录下的子文件夹
+ * 使用静态注册表（兼容 Vercel serverless）
  * @returns 模板列表（name + fileName）
  */
 export function getAvailableTemplates(): { name: string; fileName: string }[] {
-  const templatesDir = path.join(process.cwd(), 'lib/email/templates/broadcast')
-
-  try {
-    const entries = fs.readdirSync(templatesDir, { withFileTypes: true })
-    const templates = entries
-      .filter((entry) => entry.isDirectory())
-      .map((entry) => {
-        const fileName = entry.name
-        // 将文件名转换为显示名称（如 new-project -> New Project）
-        const name = fileName
-          .split('-')
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ')
-        return { name, fileName }
-      })
-
-    return templates
-  } catch (err) {
-    console.error('Failed to read templates directory:', err)
-    return []
-  }
+  return REGISTERED_TEMPLATES.map((t) => ({
+    name: t.name,
+    fileName: t.fileName,
+  }))
 }
 
 /**
  * 加载指定的邮件模板定义
+ * 使用静态注册表查找
  * @param fileName - 模板文件夹名称
  * @returns 模板定义或 null
  */
 export function getEmailTemplate(fileName: string): EmailTemplate | null {
-  try {
-    // 从子文件夹加载模板定义
-    const template = require(`./broadcast/${fileName}`).default as EmailTemplate
-    return template
-  } catch (err) {
-    console.error(`Failed to load template: ${fileName}`, err)
+  const template = REGISTERED_TEMPLATES.find((t) => t.fileName === fileName)
+  if (!template) {
+    console.error(`Template not found: ${fileName}`)
     return null
   }
+  return template
 }
 
 /**
  * 加载模板的 HTML 内容（三种语言）
- * 从 content/{templateName}/ 目录加载 {locale}.html 文件
+ * 使用静态导入的内容（兼容 Vercel serverless）
  * @param templateName - 模板名称
  * @returns 三种语言的内容
  */
 export function loadTemplateContent(templateName: string): TemplateContent | null {
-  const contentDir = path.join(process.cwd(), 'lib/email/templates/content', templateName)
-
-  try {
-    const en = fs.readFileSync(path.join(contentDir, 'en.html'), 'utf-8')
-    const zh = fs.readFileSync(path.join(contentDir, 'zh.html'), 'utf-8')
-    const ua = fs.readFileSync(path.join(contentDir, 'ua.html'), 'utf-8')
-
-    return { en, zh, ua }
-  } catch (err) {
-    console.error(`Failed to load template content: ${templateName}`, err)
+  const content = TEMPLATE_CONTENTS[templateName]
+  if (!content) {
+    console.error(`Template content not found: ${templateName}`)
     return null
   }
+  return content
 }
 
 /**

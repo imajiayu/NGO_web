@@ -3,6 +3,14 @@ const withNextIntl = require('next-intl/plugin')('./i18n.ts')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  webpack: (config) => {
+    // 添加 HTML 文件作为字符串导入的支持
+    config.module.rules.push({
+      test: /\.html$/,
+      type: 'asset/source',
+    })
+    return config
+  },
   images: {
     remotePatterns: [
       {
