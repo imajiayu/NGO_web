@@ -1,5 +1,5 @@
 /**
- * Donation Completed Email Template
+ * Donation Completed Email Template - Website UI Style
  */
 
 import { DonationCompletedEmailParams, EmailContent } from '../../../types'
@@ -40,48 +40,71 @@ export function generateDonationCompletedEmail(params: DonationCompletedEmailPar
   const unitName = getLocalizedText(unitNameI18n, locale)
   const trackingUrl = getTrackingUrl(locale)
 
+  // Badge text for header
+  const badgeText = {
+    en: 'Mission Complete',
+    zh: '使命达成',
+    ua: 'Місію виконано'
+  }[locale]
+
   // Build email content
   const contentHTML = `
-    <p class="greeting">${t.greeting(escapeHtml(donorName))}</p>
+    <p style="color: rgba(255,255,255,0.9); font-size: 16px; line-height: 1.7; margin: 0 0 20px;">
+      ${t.greeting(escapeHtml(donorName))}
+    </p>
 
     ${createSuccessBox(t.congratulations, t.completed)}
 
-    <p>${t.impact}</p>
+    <p style="color: rgba(255,255,255,0.75); font-size: 16px; line-height: 1.7; margin: 0 0 28px;">
+      ${t.impact}
+    </p>
 
+    <!-- Donation Details -->
     ${createDetailBox(`
-      ${createDetailRow(t.projectLabel, escapeHtml(projectName))}
+      ${createDetailRow(t.projectLabel, `<strong style="color: #60a5fa;">${escapeHtml(projectName)}</strong>`)}
       ${createDetailRow(t.locationLabel, escapeHtml(location))}
-      ${createDetailRow(t.quantityLabel, `${quantity} ${escapeHtml(unitName)}`)}
-      ${createDetailRow(t.totalAmountLabel, `<strong>${formatCurrency(totalAmount, currency)}</strong>`)}
+      ${createDetailRow(t.quantityLabel, `<strong style="color: #34d399;">${quantity} ${escapeHtml(unitName)}</strong>`)}
+      ${createDetailRow(t.totalAmountLabel, `<strong style="color: #34d399;">${formatCurrency(totalAmount, currency)}</strong>`)}
     `)}
 
+    <!-- Donation IDs -->
     ${createDetailBox(`
-      <div class="detail-row">
-        <span class="label">${t.donationIdsLabel}</span>
-      </div>
+      <p style="color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 600; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 1px;">${t.donationIdsLabel}</p>
       ${createDonationIdsList(donationIds)}
     `)}
 
     ${resultImageUrl ? `
-      <div class="section">
-        <h3>${t.resultTitle}</h3>
-        <p>${t.resultDescription}</p>
-        ${createImage(resultImageUrl, 'Donation delivery confirmation')}
-      </div>
+      <!-- Result Image -->
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin: 28px 0;">
+        <tr>
+          <td>
+            <p style="color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 600; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 1px;">${t.resultTitle}</p>
+            <p style="color: rgba(255,255,255,0.75); font-size: 15px; margin: 0 0 16px;">${t.resultDescription}</p>
+            ${createImage(resultImageUrl, 'Donation delivery confirmation')}
+          </td>
+        </tr>
+      </table>
     ` : ''}
 
-    <div class="section" style="text-align: center; margin: 30px 0;">
-      ${createButton(t.trackingButton, trackingUrl)}
-      <p style="margin-top: 10px; font-size: 14px; color: #6b7280;">${t.trackingHint}</p>
-    </div>
+    <!-- CTA Button -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin: 28px 0;">
+      <tr>
+        <td align="center">
+          ${createButton(t.trackingButton, trackingUrl, 'green')}
+          <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin: 12px 0 0;">${t.trackingHint}</p>
+        </td>
+      </tr>
+    </table>
 
-    <div class="section">
-      <p><strong>${t.gratitude}</strong></p>
-    </div>
+    <p style="color: rgba(255,255,255,0.75); font-size: 16px; line-height: 1.7; margin: 0 0 20px;">
+      <strong style="color: #ffffff;">${t.gratitude}</strong>
+    </p>
 
     ${createSuccessBox(t.shareTitle, t.shareContent)}
 
-    <p>${t.contact}</p>
+    <p style="color: rgba(255,255,255,0.75); font-size: 16px; line-height: 1.7; margin: 28px 0 0;">
+      ${t.contact}
+    </p>
 
     ${createSignature(locale)}
   `
@@ -89,7 +112,8 @@ export function generateDonationCompletedEmail(params: DonationCompletedEmailPar
   const html = createEmailLayout({
     title: t.title,
     content: contentHTML,
-    locale
+    locale,
+    badge: badgeText
   })
 
   // Plain text version

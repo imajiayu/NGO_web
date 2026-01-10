@@ -28,19 +28,26 @@ export async function sendBroadcastEmail(
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
-  // 加载邮件内容
-  const content = loadTemplateContent(template.contentFile)
+  // 加载邮件内容（使用 fileName 作为文件夹名）
+  const content = loadTemplateContent(template.fileName)
   if (!content) {
-    throw new Error(`Failed to load template content: ${template.contentFile}`)
+    throw new Error(`Failed to load template content: ${template.fileName}`)
   }
 
   // 获取对应语言的主题和内容
   const subject = template.subject[locale]
   let htmlContent = content[locale]
 
+  // 构建 project_url（如果提供了 projectId）
+  const projectId = template.projectId
+  const projectUrl = projectId
+    ? `${appUrl}/${locale}/donate?project=${projectId}`
+    : `${appUrl}/${locale}/donate`
+
   // 默认变量（如果未提供）
   const defaultVariables: Record<string, string> = {
     donate_url: `${appUrl}/${locale}/donate`,
+    project_url: projectUrl,
     app_url: appUrl,
     ...variables,
   }

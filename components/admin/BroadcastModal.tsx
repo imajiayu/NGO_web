@@ -1,22 +1,29 @@
 /**
  * Broadcast Email Modal Component
- * Modal for sending newsletter broadcasts to subscribers with preview support
+ * Modal for sending newsletter broadcasts to selected subscribers with preview support
  */
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import {
   sendEmailBroadcast,
   getAvailableBroadcastTemplates,
-  previewEmailTemplate
+  previewEmailTemplate,
+  BroadcastRecipient
 } from '@/app/actions/email-broadcast'
 import type { DonationLocale } from '@/types'
+
+export interface Subscriber {
+  email: string
+  locale: DonationLocale
+  is_subscribed: boolean
+}
 
 interface BroadcastModalProps {
   isOpen: boolean
   onClose: () => void
-  subscriberCount: number
+  subscribers: Subscriber[]
 }
 
 type PreviewLocale = DonationLocale
@@ -30,10 +37,16 @@ const LOCALE_LABELS: Record<PreviewLocale, string> = {
 export default function BroadcastModal({
   isOpen,
   onClose,
-  subscriberCount
+  subscribers
 }: BroadcastModalProps) {
+  // Filter to only active subscribers
+  const activeSubscribers = useMemo(
+    () => subscribers.filter((s) => s.is_subscribed),
+    [subscribers]
+  )
+
   // State
-  const [templates, setTemplates] = useState<Array<{ name: string; fileName: string }>>([])
+  const [templates, setTemplates] = useState<Array<{ name: string; fileName: string; projectId?: string }>>([])
   const [selectedTemplate, setSelectedTemplate] = useState<string>('new-project')
   const [previewLocale, setPreviewLocale] = useState<PreviewLocale>('en')
   const [previewHtml, setPreviewHtml] = useState<string | null>(null)
@@ -41,7 +54,6 @@ export default function BroadcastModal({
   const [isLoadingTemplates, setIsLoadingTemplates] = useState(false)
   const [isLoadingPreview, setIsLoadingPreview] = useState(false)
   const [isSending, setIsSending] = useState(false)
-  const [testMode, setTestMode] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [result, setResult] = useState<{
     success: boolean
@@ -49,6 +61,16 @@ export default function BroadcastModal({
     failed: number
   } | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  // Selected recipients (emails)
+  const [selectedEmails, setSelectedEmails] = useState<Set<string>>(new Set())
+
+  // Initialize with all subscribers selected when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedEmails(new Set(activeSubscribers.map((s) => s.email)))
+    }
+  }, [isOpen, activeSubscribers])
 
   // Load available templates on mount
   useEffect(() => {
@@ -74,14 +96,60 @@ export default function BroadcastModal({
     }
   }
 
+  // Selection handlers
+  const handleSelectAll = () => {
+    setSelectedEmails(new Set(activeSubscribers.map((s) => s.email)))
+  }
+
+  const handleDeselectAll = () => {
+    setSelectedEmails(new Set())
+  }
+
+  const handleToggleEmail = (email: string) => {
+    const newSelected = new Set(selectedEmails)
+    if (newSelected.has(email)) {
+      newSelected.delete(email)
+    } else {
+      newSelected.add(email)
+    }
+    setSelectedEmails(newSelected)
+  }
+
+  const isAllSelected = selectedEmails.size === activeSubscribers.length
+  const isNoneSelected = selectedEmails.size === 0
+
+  // Get selected recipients with locale info
+  const getSelectedRecipients = (): BroadcastRecipient[] => {
+    return activeSubscribers
+      .filter((s) => selectedEmails.has(s.email))
+      .map((s) => ({ email: s.email, locale: s.locale }))
+  }
+
+  // Get current template's projectId
+  const getProjectId = (): string | undefined => {
+    const template = templates.find((t) => t.fileName === selectedTemplate)
+    return template?.projectId
+  }
+
+  // Build project URL based on template's projectId
+  const buildProjectUrl = (locale: string): string => {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const projectId = getProjectId()
+    if (projectId) {
+      return `${baseUrl}/${locale}/donate?project=${projectId}`
+    }
+    return `${baseUrl}/${locale}/donate`
+  }
+
   const handlePreview = async () => {
     setIsLoadingPreview(true)
     setError(null)
 
     try {
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
       const response = await previewEmailTemplate(selectedTemplate, previewLocale, {
-        donate_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/${previewLocale}/donate`,
-        unsubscribe_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/unsubscribe?token=PREVIEW_TOKEN`
+        project_url: buildProjectUrl(previewLocale),
+        unsubscribe_url: `${baseUrl}/api/unsubscribe?token=PREVIEW_TOKEN`
       })
 
       if (response.error) {
@@ -99,6 +167,12 @@ export default function BroadcastModal({
   }
 
   const handleSend = async () => {
+    const recipients = getSelectedRecipients()
+    if (recipients.length === 0) {
+      setError('Please select at least one recipient')
+      return
+    }
+
     setIsSending(true)
     setError(null)
     setResult(null)
@@ -106,10 +180,8 @@ export default function BroadcastModal({
     try {
       const response = await sendEmailBroadcast({
         templateName: selectedTemplate,
-        testMode,
-        variables: {
-          donate_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/en/donate`
-        }
+        recipients
+        // project_url is automatically built from template.projectId in broadcast.ts
       })
 
       if (response.error) {
@@ -132,7 +204,6 @@ export default function BroadcastModal({
     if (!isSending) {
       setResult(null)
       setError(null)
-      setTestMode(false)
       setShowPreview(false)
       setPreviewHtml(null)
       setPreviewSubject(null)
@@ -159,7 +230,7 @@ export default function BroadcastModal({
 
         {/* Modal */}
         <div
-          className={`relative bg-white rounded-lg shadow-xl ${showPreview ? 'max-w-4xl' : 'max-w-md'} w-full p-6 space-y-4 transition-all duration-300`}
+          className={`relative bg-white rounded-lg shadow-xl ${showPreview ? 'max-w-4xl' : 'max-w-lg'} w-full p-6 space-y-4 transition-all duration-300 max-h-[90vh] overflow-y-auto`}
         >
           {/* Header */}
           <div className="flex items-center justify-between">
@@ -221,10 +292,10 @@ export default function BroadcastModal({
                 </button>
                 <button
                   onClick={handleSend}
-                  disabled={isSending || subscriberCount === 0}
+                  disabled={isSending || selectedEmails.size === 0}
                   className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
                 >
-                  {isSending ? 'Sending...' : 'Send Broadcast'}
+                  {isSending ? 'Sending...' : `Send to ${selectedEmails.size} recipient${selectedEmails.size !== 1 ? 's' : ''}`}
                 </button>
               </div>
             </div>
@@ -257,8 +328,8 @@ export default function BroadcastModal({
                         : 'Broadcast Completed with Errors'}
                     </h3>
                     <div className="mt-2 text-sm text-gray-700">
-                      <p>✓ Successfully sent: {result.sent}</p>
-                      {result.failed > 0 && <p>✗ Failed: {result.failed}</p>}
+                      <p>Successfully sent: {result.sent}</p>
+                      {result.failed > 0 && <p>Failed: {result.failed}</p>}
                     </div>
                   </div>
                 </div>
@@ -349,33 +420,60 @@ export default function BroadcastModal({
                   </button>
                 </div>
 
-                {/* Recipient Count */}
+                {/* Recipients Selector */}
                 <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Recipients</span>
-                    <span className="text-lg font-bold text-gray-900">
-                      {testMode ? 1 : subscriberCount}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Test Mode Toggle */}
-                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <label className="flex items-start gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={testMode}
-                      onChange={(e) => setTestMode(e.target.checked)}
-                      disabled={isSending}
-                      className="mt-1 w-4 h-4 text-yellow-600 bg-gray-100 border-gray-300 rounded focus:ring-yellow-500"
-                    />
-                    <div>
-                      <span className="block text-sm font-medium text-yellow-900">Test Mode</span>
-                      <span className="block text-xs text-yellow-700 mt-1">
-                        Send to only the first subscriber for testing
-                      </span>
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-sm font-medium text-gray-700">
+                      Recipients ({selectedEmails.size} of {activeSubscribers.length} selected)
+                    </label>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleSelectAll}
+                        disabled={isAllSelected}
+                        className="text-xs px-2 py-1 text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed"
+                      >
+                        Select All
+                      </button>
+                      <span className="text-gray-300">|</span>
+                      <button
+                        onClick={handleDeselectAll}
+                        disabled={isNoneSelected}
+                        className="text-xs px-2 py-1 text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed"
+                      >
+                        Deselect All
+                      </button>
                     </div>
-                  </label>
+                  </div>
+
+                  {/* Subscriber List */}
+                  <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-lg bg-white">
+                    {activeSubscribers.length === 0 ? (
+                      <div className="p-4 text-sm text-gray-500 text-center">
+                        No active subscribers
+                      </div>
+                    ) : (
+                      <ul className="divide-y divide-gray-100">
+                        {activeSubscribers.map((subscriber) => (
+                          <li key={subscriber.email}>
+                            <label className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={selectedEmails.has(subscriber.email)}
+                                onChange={() => handleToggleEmail(subscriber.email)}
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                              />
+                              <span className="flex-1 text-sm text-gray-900 truncate">
+                                {subscriber.email}
+                              </span>
+                              <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">
+                                {LOCALE_LABELS[subscriber.locale]}
+                              </span>
+                            </label>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
 
                 {/* Error Message */}
@@ -397,7 +495,7 @@ export default function BroadcastModal({
                 </button>
                 <button
                   onClick={handleSend}
-                  disabled={isSending || subscriberCount === 0 || !selectedTemplate}
+                  disabled={isSending || selectedEmails.size === 0 || !selectedTemplate}
                   className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
                 >
                   {isSending ? (
@@ -420,7 +518,7 @@ export default function BroadcastModal({
                       Sending...
                     </span>
                   ) : (
-                    'Send Broadcast'
+                    `Send to ${selectedEmails.size} recipient${selectedEmails.size !== 1 ? 's' : ''}`
                   )}
                 </button>
               </div>

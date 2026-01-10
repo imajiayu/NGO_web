@@ -24,7 +24,6 @@ export interface SendBroadcastParams {
   templateName: string
   recipients?: BroadcastRecipient[] // If not provided, sends to all subscribed users
   variables?: Record<string, string> // Template variables (e.g., project_name, donate_url)
-  testMode?: boolean // If true, only sends to first recipient for testing
 }
 
 export interface BroadcastResult {
@@ -38,8 +37,7 @@ export interface BroadcastResult {
 
 const sendBroadcastSchema = z.object({
   templateName: z.string().min(1, 'Template name is required'),
-  variables: z.record(z.string()).optional(),
-  testMode: z.boolean().optional()
+  variables: z.record(z.string()).optional()
 })
 
 // ==================== Helper Functions ====================
@@ -126,12 +124,6 @@ export async function sendEmailBroadcast(
       }
     }
 
-    // Test mode: only send to first recipient
-    if (params.testMode) {
-      recipients = recipients.slice(0, 1)
-      console.log('Test mode: sending to', recipients[0].email)
-    }
-
     // Group recipients by locale for batch sending
     const recipientsByLocale = recipients.reduce(
       (acc, recipient) => {
@@ -181,8 +173,7 @@ export async function sendEmailBroadcast(
     console.log('Broadcast complete:', {
       template: validated.templateName,
       sent: results.sent,
-      failed: results.failed,
-      testMode: params.testMode
+      failed: results.failed
     })
 
     return { data: results }
@@ -204,14 +195,24 @@ export async function sendEmailBroadcast(
  * Admin only
  */
 export async function getAvailableBroadcastTemplates(): Promise<{
-  data: Array<{ name: string; fileName: string }> | null
+  data: Array<{ name: string; fileName: string; projectId?: string }> | null
   error?: string
 }> {
   try {
     // Verify admin permission
     await requireAdmin()
 
-    const templates = getAvailableTemplates()
+    const templateList = getAvailableTemplates()
+
+    // Load full template definitions to get projectId
+    const templates = templateList.map((t) => {
+      const template = getEmailTemplate(t.fileName)
+      return {
+        name: template?.name || t.name,
+        fileName: t.fileName,
+        projectId: template?.projectId
+      }
+    })
 
     return { data: templates }
   } catch (error) {

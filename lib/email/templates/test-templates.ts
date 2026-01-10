@@ -23,7 +23,7 @@ async function testTemplateSystem() {
 
   // 2. 测试加载完整模板
   console.log('2️⃣ Testing getCompleteEmailTemplate()...')
-  const templateData = getCompleteEmailTemplate('new-project')
+  const templateData = getCompleteEmailTemplate('project3-completed')
 
   if (!templateData) {
     console.error('   ❌ Failed to load template')

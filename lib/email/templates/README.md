@@ -4,7 +4,7 @@
 
 ---
 
-## 📁 目录结构
+## 目录结构
 
 ```
 lib/email/templates/
@@ -20,12 +20,14 @@ lib/email/templates/
 │       └── index.ts
 │
 ├── broadcast/                  # 群发邮件模板定义
-│   └── new-project.ts          # 新项目通知模板定义
+│   └── new-project/
+│       └── index.ts            # 模板定义（名称、主题）
 │
-├── content/                    # 群发邮件 HTML 内容
-│   ├── new-project.en.html     # 新项目通知 - 英文
-│   ├── new-project.zh.html     # 新项目通知 - 中文
-│   └── new-project.ua.html     # 新项目通知 - 乌克兰语
+├── content/                    # 群发邮件 HTML 内容（独立目录）
+│   └── new-project/
+│       ├── en.html             # 英文版
+│       ├── zh.html             # 中文版
+│       └── ua.html             # 乌克兰语版
 │
 ├── base/                       # 共享组件和样式
 │   ├── components.ts           # 可复用的邮件组件
@@ -38,15 +40,15 @@ lib/email/templates/
 
 ---
 
-## 📧 邮件类型
+## 邮件类型
 
 ### 1. 事务性邮件（Transactional Emails）
 
 **特点**:
-- ✅ 系统自动触发（支付、捐赠送达、退款）
-- ✅ 内容根据数据自动填充
-- ✅ 使用 React Email 组件（TypeScript）
-- ✅ 强制发送（不受订阅状态影响）
+- 系统自动触发（支付、捐赠送达、退款）
+- 内容根据数据自动填充
+- 使用 React Email 组件（TypeScript）
+- 强制发送（不受订阅状态影响）
 
 **现有模板**:
 
@@ -75,37 +77,49 @@ await sendPaymentSuccessEmail({
 ### 2. 群发邮件（Broadcast Emails）
 
 **特点**:
-- ✅ 管理员手动触发
-- ✅ 内容存储在 HTML 文件中（可编辑）
-- ✅ 支持模板变量替换（如 `{{donate_url}}`）
-- ✅ 根据用户语言偏好发送
-- ✅ 包含取消订阅链接
+- 管理员手动触发
+- 每个模板是一个独立的文件夹
+- 支持模板变量替换（如 `{{donate_url}}`）
+- 根据用户语言偏好发送
+- 包含取消订阅链接
 
-**模板定义** (`broadcast/*.ts`):
+**模板结构**:
+
+```
+broadcast/
+└── {template-name}/
+    └── index.ts            # 模板定义
+
+content/
+└── {template-name}/
+    ├── en.html             # 英文内容
+    ├── zh.html             # 中文内容
+    └── ua.html             # 乌克兰语内容
+```
+
+**模板定义示例** (`index.ts`):
 
 ```typescript
-// lib/email/templates/broadcast/new-project.ts
-import { EmailTemplate } from '../index'
+import { EmailTemplate } from '../../index'
 
 const template: EmailTemplate = {
   name: 'New Project Announcement',      // 显示名称
-  fileName: 'new-project',                // 文件名（唯一标识）
+  fileName: 'new-project',                // 文件夹名（唯一标识）
   subject: {                              // 邮件主题（多语言）
     en: 'New Project Available',
     zh: '新项目上线',
     ua: 'Новий проект доступний',
   },
-  contentFile: 'new-project',             // 内容文件名（指向 content/ 目录）
 }
 
 export default template
 ```
 
-**HTML 内容** (`content/*.{locale}.html`):
+**HTML 内容**:
 
 - 支持完整的 HTML/CSS（内联样式）
 - 使用 `{{variable_name}}` 语法插入变量
-- 每个模板有 3 个语言版本（.en.html, .zh.html, .ua.html）
+- 每个模板有 3 个语言版本
 
 **可用变量**:
 
@@ -115,20 +129,9 @@ export default template
 | `{{unsubscribe_url}}` | 取消订阅链接（唯一） | `https://example.com/api/unsubscribe?email=...` |
 | `{{app_url}}` | 应用主页链接 | `https://example.com` |
 
-**使用示例**:
-
-```typescript
-import { sendEmailBroadcast } from '@/app/actions/email-broadcast'
-
-await sendEmailBroadcast('new-project', [
-  'user1@example.com',
-  'user2@example.com',
-])
-```
-
 ---
 
-## 🔧 核心 API
+## 核心 API
 
 ### 模板加载器 (`index.ts`)
 
@@ -139,7 +142,7 @@ import {
   replaceTemplateVariables,
 } from '@/lib/email/templates'
 
-// 1. 获取所有可用的群发模板
+// 1. 获取所有可用的群发模板（自动扫描 broadcast/ 下的文件夹）
 const templates = getAvailableTemplates()
 // 返回: [{ name: "New Project", fileName: "new-project" }]
 
@@ -174,7 +177,7 @@ console.log(`Success: ${result.successCount}, Failed: ${result.failureCount}`)
 
 ---
 
-## ➕ 添加新模板
+## 添加新模板
 
 ### 事务性邮件
 
@@ -185,14 +188,16 @@ console.log(`Success: ${result.successCount}, Failed: ${result.failureCount}`)
 
 ### 群发邮件
 
-1. **创建模板定义**:
+1. **创建模板定义文件夹**:
 
    ```bash
-   # 创建: lib/email/templates/broadcast/urgent-appeal.ts
+   mkdir lib/email/templates/broadcast/urgent-appeal
    ```
 
+2. **创建模板定义** (`broadcast/urgent-appeal/index.ts`):
+
    ```typescript
-   import { EmailTemplate } from '../index'
+   import { EmailTemplate } from '../../index'
 
    const template: EmailTemplate = {
      name: 'Urgent Appeal',
@@ -202,28 +207,28 @@ console.log(`Success: ${result.successCount}, Failed: ${result.failureCount}`)
        zh: '紧急：现在需要帮助',
        ua: 'Терміново: Потрібна допомога',
      },
-     contentFile: 'urgent-appeal',
    }
 
    export default template
    ```
 
-2. **创建 HTML 内容**（3 个文件）:
+3. **创建 HTML 内容文件夹和文件**:
 
    ```bash
-   lib/email/templates/content/
-   ├── urgent-appeal.en.html
-   ├── urgent-appeal.zh.html
-   └── urgent-appeal.ua.html
+   mkdir lib/email/templates/content/urgent-appeal
+   # 然后创建:
+   # - content/urgent-appeal/en.html
+   # - content/urgent-appeal/zh.html
+   # - content/urgent-appeal/ua.html
    ```
 
-3. **在管理员页面使用**:
+4. **在管理员页面使用**:
 
    模板会自动出现在管理员的模板选择下拉菜单中。
 
 ---
 
-## 🧪 测试
+## 测试
 
 ### 测试模板加载
 
@@ -243,7 +248,7 @@ await sendTestEmail('new-project', 'your-email@example.com', 'en')
 
 ---
 
-## 📝 最佳实践
+## 最佳实践
 
 ### HTML 内容编写
 
@@ -267,13 +272,12 @@ await sendTestEmail('new-project', 'your-email@example.com', 'en')
 
 ---
 
-## 🔗 相关文档
+## 相关文档
 
 - [Resend 官方文档](https://resend.com/docs)
 - [React Email 文档](https://react.email/docs)
 - [CAN-SPAM 法规](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business)
-- [邮件订阅功能设计文档](../../../docs/EMAIL_SUBSCRIPTION_DESIGN.md)
 
 ---
 
-**最后更新**: 2026-01-04
+**最后更新**: 2026-01-10

@@ -8,7 +8,8 @@
 import { useState } from 'react'
 import { EmailSubscription } from '@/app/actions/subscription'
 import SubscriptionsTable from '@/components/admin/SubscriptionsTable'
-import BroadcastModal from '@/components/admin/BroadcastModal'
+import BroadcastModal, { Subscriber } from '@/components/admin/BroadcastModal'
+import type { DonationLocale } from '@/types'
 
 interface SubscriptionsPageClientProps {
   initialSubscriptions: EmailSubscription[]
@@ -19,8 +20,12 @@ export default function SubscriptionsPageClient({
 }: SubscriptionsPageClientProps) {
   const [isBroadcastModalOpen, setIsBroadcastModalOpen] = useState(false)
 
-  // Calculate active subscriber count
-  const activeSubscribers = initialSubscriptions.filter((s) => s.is_subscribed).length
+  // Convert to Subscriber format for BroadcastModal
+  const subscribers: Subscriber[] = initialSubscriptions.map((s) => ({
+    email: s.email,
+    locale: s.locale as DonationLocale,
+    is_subscribed: s.is_subscribed
+  }))
 
   const handleSendBroadcast = () => {
     setIsBroadcastModalOpen(true)
@@ -46,7 +51,7 @@ export default function SubscriptionsPageClient({
       <BroadcastModal
         isOpen={isBroadcastModalOpen}
         onClose={() => setIsBroadcastModalOpen(false)}
-        subscriberCount={activeSubscribers}
+        subscribers={subscribers}
       />
     </div>
   )

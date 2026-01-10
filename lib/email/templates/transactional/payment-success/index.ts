@@ -1,5 +1,5 @@
 /**
- * Payment Success Email Template
+ * Payment Success Email Template - Website UI Style
  */
 
 import { PaymentSuccessEmailParams, EmailContent } from '../../../types'
@@ -10,7 +10,8 @@ import {
   createActionBox,
   createButton,
   createSignature,
-  createDonationItemCard
+  createDonationItemCard,
+  createOrderTotal
 } from '../../base/components'
 import { paymentSuccessContent } from './content'
 import { escapeHtml } from '../../../utils'
@@ -29,6 +30,13 @@ export function generatePaymentSuccessEmail(params: PaymentSuccessEmailParams): 
 
   const t = paymentSuccessContent[locale]
   const trackingUrl = getTrackingUrl(locale)
+
+  // Badge text for header
+  const badgeText = {
+    en: 'Payment Confirmed',
+    zh: '支付已确认',
+    ua: 'Платіж підтверджено'
+  }[locale]
 
   // Build donation items HTML
   const donationItemsHTML = donations.map((donation, index) => {
@@ -51,34 +59,40 @@ export function generatePaymentSuccessEmail(params: PaymentSuccessEmailParams): 
 
   // Build email content
   const contentHTML = `
-    <p class="greeting">${t.greeting(escapeHtml(donorName))}</p>
-    <p><strong>${t.thankYou}</strong></p>
-    <p>${t.confirmation}</p>
+    <p style="color: rgba(255,255,255,0.9); font-size: 16px; line-height: 1.7; margin: 0 0 20px;">
+      ${t.greeting(escapeHtml(donorName))}
+    </p>
 
-    <div class="detail-box">
-      <div class="detail-row">
-        <span class="label">${t.orderDetailsLabel}</span>
-      </div>
-      <div class="donation-items-container">
-        ${donationItemsHTML}
-      </div>
-      <div class="order-total">
-        <span class="order-total-label">${t.totalAmountLabel}</span>
-        <span class="order-total-amount">${formatCurrency(totalAmount, currency)}</span>
-      </div>
-    </div>
+    <p style="color: rgba(255,255,255,0.75); font-size: 16px; line-height: 1.7; margin: 0 0 28px;">
+      <strong style="color: #34d399;">${t.thankYou}</strong> ${t.confirmation}
+    </p>
+
+    <!-- Order Details Card -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; margin: 20px 0;">
+      <tr>
+        <td style="padding: 20px;">
+          <p style="color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 600; margin: 0 0 16px; text-transform: uppercase; letter-spacing: 1px;">${t.orderDetailsLabel}</p>
+          ${donationItemsHTML}
+        </td>
+      </tr>
+    </table>
+
+    ${createOrderTotal(t.totalAmountLabel, formatCurrency(totalAmount, currency))}
 
     ${createInfoBox(t.donationIdsNote)}
 
     ${createActionBox(t.trackingTitle, `
-      ${t.trackingContent}
-      <br><br>
-      ${createButton(t.trackingButton, trackingUrl)}
+      <p style="margin: 0 0 16px;">${t.trackingContent}</p>
+      <div style="text-align: center;">
+        ${createButton(t.trackingButton, trackingUrl)}
+      </div>
     `)}
 
-    ${createActionBox(t.nextStepsTitle, t.nextStepsContent)}
+    ${createActionBox(t.nextStepsTitle, `<p style="margin: 0;">${t.nextStepsContent}</p>`)}
 
-    <p>${t.contact}</p>
+    <p style="color: rgba(255,255,255,0.75); font-size: 16px; line-height: 1.7; margin: 28px 0 0;">
+      ${t.contact}
+    </p>
 
     ${createSignature(locale)}
   `
@@ -86,7 +100,8 @@ export function generatePaymentSuccessEmail(params: PaymentSuccessEmailParams): 
   const html = createEmailLayout({
     title: t.title,
     content: contentHTML,
-    locale
+    locale,
+    badge: badgeText
   })
 
   // Plain text version

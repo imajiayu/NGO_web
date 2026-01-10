@@ -9,7 +9,7 @@ export interface EmailTemplate {
     zh: string
     ua: string
   }
-  contentFile: string // 内容文件路径（相对于 content/ 目录，不含扩展名）
+  projectId?: string // 关联的项目 ID（用于生成 project_url）
 }
 
 export interface TemplateContent {
@@ -20,17 +20,18 @@ export interface TemplateContent {
 
 /**
  * 获取所有可用的邮件模板
+ * 扫描 broadcast/ 目录下的子文件夹
  * @returns 模板列表（name + fileName）
  */
 export function getAvailableTemplates(): { name: string; fileName: string }[] {
   const templatesDir = path.join(process.cwd(), 'lib/email/templates/broadcast')
 
   try {
-    const files = fs.readdirSync(templatesDir)
-    const templates = files
-      .filter((file) => file.endsWith('.ts') && !file.startsWith('index'))
-      .map((file) => {
-        const fileName = file.replace('.ts', '')
+    const entries = fs.readdirSync(templatesDir, { withFileTypes: true })
+    const templates = entries
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => {
+        const fileName = entry.name
         // 将文件名转换为显示名称（如 new-project -> New Project）
         const name = fileName
           .split('-')
@@ -48,12 +49,12 @@ export function getAvailableTemplates(): { name: string; fileName: string }[] {
 
 /**
  * 加载指定的邮件模板定义
- * @param fileName - 模板文件名（不含扩展名）
+ * @param fileName - 模板文件夹名称
  * @returns 模板定义或 null
  */
 export function getEmailTemplate(fileName: string): EmailTemplate | null {
   try {
-    // 动态导入模板文件
+    // 从子文件夹加载模板定义
     const template = require(`./broadcast/${fileName}`).default as EmailTemplate
     return template
   } catch (err) {
@@ -64,20 +65,21 @@ export function getEmailTemplate(fileName: string): EmailTemplate | null {
 
 /**
  * 加载模板的 HTML 内容（三种语言）
- * @param contentFile - 内容文件名（不含扩展名和语言后缀）
+ * 从 content/{templateName}/ 目录加载 {locale}.html 文件
+ * @param templateName - 模板名称
  * @returns 三种语言的内容
  */
-export function loadTemplateContent(contentFile: string): TemplateContent | null {
-  const contentDir = path.join(process.cwd(), 'lib/email/templates/content')
+export function loadTemplateContent(templateName: string): TemplateContent | null {
+  const contentDir = path.join(process.cwd(), 'lib/email/templates/content', templateName)
 
   try {
-    const en = fs.readFileSync(path.join(contentDir, `${contentFile}.en.html`), 'utf-8')
-    const zh = fs.readFileSync(path.join(contentDir, `${contentFile}.zh.html`), 'utf-8')
-    const ua = fs.readFileSync(path.join(contentDir, `${contentFile}.ua.html`), 'utf-8')
+    const en = fs.readFileSync(path.join(contentDir, 'en.html'), 'utf-8')
+    const zh = fs.readFileSync(path.join(contentDir, 'zh.html'), 'utf-8')
+    const ua = fs.readFileSync(path.join(contentDir, 'ua.html'), 'utf-8')
 
     return { en, zh, ua }
   } catch (err) {
-    console.error(`Failed to load template content: ${contentFile}`, err)
+    console.error(`Failed to load template content: ${templateName}`, err)
     return null
   }
 }
@@ -105,7 +107,7 @@ export function replaceTemplateVariables(
 
 /**
  * 获取完整的邮件模板（定义 + 内容）
- * @param fileName - 模板文件名
+ * @param fileName - 模板文件夹名称
  * @returns 模板定义和内容，或 null
  */
 export function getCompleteEmailTemplate(fileName: string): {
@@ -115,7 +117,8 @@ export function getCompleteEmailTemplate(fileName: string): {
   const template = getEmailTemplate(fileName)
   if (!template) return null
 
-  const content = loadTemplateContent(template.contentFile)
+  // 直接使用 fileName 作为文件夹名加载内容
+  const content = loadTemplateContent(fileName)
   if (!content) return null
 
   return { template, content }
