@@ -17,14 +17,15 @@
 
 ## 项目概述
 
-**当前版本**: 2.3.0
-**最后提交**: e797c780e8e416ec6041827fc2956738fef3bdf9
+**当前版本**: 2.4.1
+**最后提交**: 384be2c155f39ae6cf0caced7ba70b0f84621fe2
 **开发状态**: 生产就绪
 
 ### 主要特性
 
 - 多语言支持 (en/zh/ua)
-- WayForPay 支付网关集成
+- WayForPay 支付网关集成（法币）
+- NOWPayments 加密货币支付集成
 - Supabase 实时数据同步
 - Resend 多语言邮件通知
 - 捐赠追踪与订单分组
@@ -33,6 +34,7 @@
 - 物资捐赠（按单位拆分）和金额捐赠（聚合模式）
 - 14 个捐赠状态，完整支付和退款流程
 - 邮件订阅系统
+- 邮件转发功能（入站邮件自动转发）
 - 捐赠状态审计追踪
 
 ---
@@ -42,7 +44,7 @@
 | 类型 | 技术 |
 |------|------|
 | 前端 | Next.js 14 (App Router), TypeScript, Tailwind CSS, next-intl |
-| 后端 | Supabase (PostgreSQL + Auth), WayForPay, Resend, Cloudinary |
+| 后端 | Supabase (PostgreSQL + Auth), WayForPay, NOWPayments, Resend, Cloudinary |
 | 部署 | Vercel, Supabase Cloud |
 
 ---
@@ -125,8 +127,9 @@ NGO_web/
 │   │   ├── subscription.ts       # 订阅操作
 │   │   └── email-broadcast.ts    # 群发邮件
 │   └── api/
-│       ├── webhooks/wayforpay/   # 支付回调
-│       ├── webhooks/resend-inbound/ # 邮件回调
+│       ├── webhooks/wayforpay/   # WayForPay 支付回调
+│       ├── webhooks/nowpayments/ # NOWPayments 加密货币回调
+│       ├── webhooks/resend-inbound/ # 入站邮件转发
 │       ├── donations/            # 捐赠 API
 │       ├── donate/success-redirect/ # 重定向
 │       └── unsubscribe/          # 取消订阅
@@ -140,7 +143,8 @@ NGO_web/
 │   └── donation/                 # 捐赠展示
 ├── lib/
 │   ├── supabase/                 # 数据库集成
-│   ├── wayforpay/                # 支付集成
+│   ├── wayforpay/                # WayForPay 支付集成
+│   ├── payment/nowpayments/      # NOWPayments 加密货币集成
 │   ├── email/                    # 邮件服务
 │   │   ├── templates/            # 邮件模板
 │   │   └── senders/              # 发送器
@@ -174,7 +178,9 @@ NGO_web/
 
 | 端点 | 方法 | 用途 |
 |------|------|------|
-| `/api/webhooks/wayforpay` | POST | 支付回调 |
+| `/api/webhooks/wayforpay` | POST | WayForPay 支付回调 |
+| `/api/webhooks/nowpayments` | POST | NOWPayments 加密货币回调 |
+| `/api/webhooks/resend-inbound` | POST | 入站邮件转发 |
 | `/api/donations/order/[orderReference]` | GET | 订单捐赠查询 |
 | `/api/donations/project-public/[projectId]` | GET | 项目公开捐赠 |
 | `/api/donate/success-redirect` | GET/POST | 重定向处理 |
@@ -309,6 +315,10 @@ WAYFORPAY_SECRET_KEY=
 RESEND_API_KEY=
 RESEND_FROM_EMAIL=
 
+# NOWPayments (加密货币)
+NOWPAYMENTS_API_KEY=
+NOWPAYMENTS_IPN_SECRET=
+
 # Cloudinary (可选)
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
@@ -379,7 +389,9 @@ getTranslatedText(project.project_name_i18n, locale, fallback)
 ### 部署后配置
 
 - WayForPay Webhook: `https://domain.com/api/webhooks/wayforpay`
+- NOWPayments IPN: `https://domain.com/api/webhooks/nowpayments`
 - Resend 域名验证 (SPF, DKIM, DMARC)
+- Resend Inbound Webhook: `https://domain.com/api/webhooks/resend-inbound`
 - Cloudinary 配置 (可选)
 
 ---
@@ -393,5 +405,5 @@ getTranslatedText(project.project_name_i18n, locale, fallback)
 
 ---
 
-**文档版本**: 2.4.0
-**最后更新**: 2026-01-09
+**文档版本**: 2.4.1
+**最后更新**: 2026-01-10
