@@ -2,7 +2,12 @@ import { NextResponse } from 'next/server'
 import { verifyWayForPaySignature, generateWebhookResponseSignature, WAYFORPAY_STATUS } from '@/lib/payment/wayforpay/server'
 import { createServiceClient } from '@/lib/supabase/server'
 import { sendPaymentSuccessEmail, sendRefundSuccessEmail } from '@/lib/email'
-import type { DonationStatus } from '@/types'
+import {
+  isRefundWebhook,
+  getWebhookSourceStatuses,
+  REFUND_DECLINED_CHECK_STATUSES,
+  type DonationStatus
+} from '@/lib/donation-status'
 
 /**
  * WayForPay Webhook Handler
@@ -77,9 +82,9 @@ export async function POST(req: Request) {
       case WAYFORPAY_STATUS.DECLINED:
         // CRITICAL: Distinguish between payment declined and refund declined
         // Check current donation statuses to determine context
-        const currentStatuses = donations.map(d => d.donation_status)
+        const currentStatuses = donations.map(d => d.donation_status as DonationStatus)
         const isRefundDeclined = currentStatuses.some(s =>
-          ['paid', 'confirmed', 'delivering', 'refund_processing'].includes(s as string)
+          REFUND_DECLINED_CHECK_STATUSES.includes(s)
         )
 
         if (isRefundDeclined) {
@@ -122,15 +127,8 @@ export async function POST(req: Request) {
     // Determine which statuses can be updated based on webhook type
     // Payment webhooks can only update from initial payment states
     // Refund webhooks can update from paid/confirmed/delivering/refunding/refund_processing states
-    const isRefundWebhook = [
-      WAYFORPAY_STATUS.REFUNDED,
-      WAYFORPAY_STATUS.REFUND_IN_PROCESSING,
-      WAYFORPAY_STATUS.VOIDED
-    ].includes(transactionStatus)
-
-    const transitionableStatuses: DonationStatus[] = isRefundWebhook
-      ? ['paid', 'confirmed', 'delivering', 'refunding', 'refund_processing'] // Refund webhooks - include 'refunding' for failed API cases
-      : ['pending', 'processing', 'fraud_check', 'widget_load_failed']  // Payment webhooks - include widget_load_failed to handle script errors
+    const isRefund = isRefundWebhook(transactionStatus)
+    const transitionableStatuses = getWebhookSourceStatuses(isRefund)
 
     // Check if any donations are in a transitionable state
     const updatableDonations = donations.filter(d =>

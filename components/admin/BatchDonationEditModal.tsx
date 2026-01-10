@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import type { Database } from '@/types/database'
-import type { DonationStatus } from '@/types'
 import { batchUpdateDonationStatus } from '@/app/actions/admin'
 import DonationStatusProgress from './DonationStatusProgress'
 import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
+import { getNextAllowedStatuses, type DonationStatus } from '@/lib/donation-status'
 
 type Donation = Database['public']['Tables']['donations']['Row']
 
@@ -13,13 +13,6 @@ interface Props {
   donations: Donation[]
   onClose: () => void
   onSaved: (donations: Donation[]) => void
-}
-
-// 管理员只能修改正常业务流程的状态
-const STATUS_TRANSITIONS: Record<string, string[]> = {
-  paid: ['confirmed'],
-  confirmed: ['delivering'],
-  delivering: ['completed'],
 }
 
 export default function BatchDonationEditModal({ donations, onClose, onSaved }: Props) {
@@ -54,8 +47,8 @@ export default function BatchDonationEditModal({ donations, onClose, onSaved }: 
     return null
   }
 
-  const currentStatus = donations[0].donation_status || ''
-  const allowedStatuses = STATUS_TRANSITIONS[currentStatus] || []
+  const currentStatus = (donations[0].donation_status || '') as DonationStatus
+  const allowedStatuses = getNextAllowedStatuses(currentStatus)
   const canUpdate = allowedStatuses.length > 0
 
   const handleSubmit = async (e: React.FormEvent) => {

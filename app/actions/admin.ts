@@ -5,6 +5,12 @@ import { revalidatePath } from 'next/cache'
 import type { Database } from '@/types/database'
 import sharp from 'sharp'
 import { processImageWithCloudinary, isCloudinaryConfigured } from '@/lib/cloudinary'
+import {
+  isValidAdminTransition,
+  needsFileUpload,
+  isFailedStatus,
+  type DonationStatus
+} from '@/lib/donation-status'
 
 type Project = Database['public']['Tables']['projects']['Row']
 type ProjectUpdate = Database['public']['Tables']['projects']['Update']
@@ -133,8 +139,10 @@ export async function getAdminDonations() {
   // 自定义排序：failed 状态排在最后，其他按 donated_at 降序
   const sorted = (data || []).sort((a, b) => {
     // 首先按状态排序：failed 排在最后
-    if (a.donation_status === 'failed' && b.donation_status !== 'failed') return 1
-    if (a.donation_status !== 'failed' && b.donation_status === 'failed') return -1
+    const aFailed = isFailedStatus(a.donation_status as DonationStatus)
+    const bFailed = isFailedStatus(b.donation_status as DonationStatus)
+    if (aFailed && !bFailed) return 1
+    if (!aFailed && bFailed) return -1
 
     // 如果状态相同（都是 failed 或都不是 failed），按 donated_at 降序排序
     const dateA = new Date(a.donated_at).getTime()
@@ -170,16 +178,9 @@ export async function updateDonationStatus(
   // 验证状态转换
   // 管理员只能修改正常业务流程的状态，不能修改退款相关状态
   // 退款状态由 WayForPay API 自动处理
-  const validTransitions: Record<string, string[]> = {
-    paid: ['confirmed'],
-    confirmed: ['delivering'],
-    delivering: ['completed'],
-  }
+  const currentStatus = (current.donation_status || '') as DonationStatus
 
-  const currentStatus = current.donation_status || ''
-  const allowedNext = validTransitions[currentStatus] || []
-
-  if (!allowedNext.includes(newStatus)) {
+  if (!isValidAdminTransition(currentStatus, newStatus as DonationStatus)) {
     throw new Error(
       `Invalid status transition: ${currentStatus} → ${newStatus}. Admin can only modify: paid→confirmed, confirmed→delivering, delivering→completed. Refund statuses are handled automatically.`
     )
@@ -187,7 +188,7 @@ export async function updateDonationStatus(
 
   // 如果是 delivering → completed，尝试获取结果图片（非强制）
   let resultImageUrl: string | undefined
-  if (currentStatus === 'delivering' && newStatus === 'completed') {
+  if (needsFileUpload(currentStatus, newStatus as DonationStatus)) {
     try {
       const { data: files, error: listError } = await supabase.storage
         .from('donation-results')
@@ -243,7 +244,7 @@ export async function updateDonationStatus(
   if (error) throw error
 
   // 如果是 delivering → completed，发送完成邮件
-  if (currentStatus === 'delivering' && newStatus === 'completed') {
+  if (needsFileUpload(currentStatus, newStatus as DonationStatus)) {
     try {
       // 获取项目的多语言信息
       const { data: project } = await supabase
@@ -647,23 +648,15 @@ export async function batchUpdateDonationStatus(
     throw new Error('All selected donations must have the same status')
   }
 
-  const currentStatus = donations[0].donation_status || ''
+  const currentStatus = (donations[0].donation_status || '') as DonationStatus
 
   // delivering → completed 不支持批量更新（需要上传文件）
-  if (currentStatus === 'delivering' && newStatus === 'completed') {
+  if (needsFileUpload(currentStatus, newStatus as DonationStatus)) {
     throw new Error('Batch update from delivering to completed is not supported. Please update donations individually to upload result files.')
   }
 
   // 验证状态转换
-  const validTransitions: Record<string, string[]> = {
-    paid: ['confirmed'],
-    confirmed: ['delivering'],
-    delivering: ['completed'],
-  }
-
-  const allowedNext = validTransitions[currentStatus] || []
-
-  if (!allowedNext.includes(newStatus)) {
+  if (!isValidAdminTransition(currentStatus, newStatus as DonationStatus)) {
     throw new Error(
       `Invalid status transition: ${currentStatus} → ${newStatus}. Admin can only modify: paid→confirmed, confirmed→delivering, delivering→completed. Refund statuses are handled automatically.`
     )

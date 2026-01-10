@@ -3,7 +3,11 @@ import { verifyNowPaymentsSignature, NOWPAYMENTS_STATUS } from '@/lib/payment/no
 import type { NowPaymentsWebhookBody } from '@/lib/payment/nowpayments/types'
 import { createServiceClient } from '@/lib/supabase/server'
 import { sendPaymentSuccessEmail, sendRefundSuccessEmail } from '@/lib/email'
-import type { DonationStatus } from '@/types'
+import {
+  PAYMENT_WEBHOOK_SOURCE_STATUSES,
+  REFUND_WEBHOOK_SOURCE_STATUSES,
+  type DonationStatus
+} from '@/lib/donation-status'
 
 /**
  * NOWPayments Webhook Handler (IPN - Instant Payment Notification)
@@ -133,16 +137,10 @@ export async function POST(req: Request) {
 
     // Determine which statuses can be updated
     // NOWPayments payments can only be updated from certain states
-    const transitionableStatuses: DonationStatus[] = [
-      'pending',
-      'processing',
-      'widget_load_failed',
-    ]
-
-    // For refund webhooks, also allow transition from paid states
-    if (paymentStatus === NOWPAYMENTS_STATUS.REFUNDED) {
-      transitionableStatuses.push('paid', 'confirmed', 'delivering', 'refunding', 'refund_processing')
-    }
+    const isRefund = paymentStatus === NOWPAYMENTS_STATUS.REFUNDED
+    const transitionableStatuses: readonly DonationStatus[] = isRefund
+      ? REFUND_WEBHOOK_SOURCE_STATUSES
+      : PAYMENT_WEBHOOK_SOURCE_STATUSES
 
     // Check if any donations are in a transitionable state
     const updatableDonations = donations.filter(d =>

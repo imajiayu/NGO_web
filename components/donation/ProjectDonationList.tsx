@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import DonationResultViewer from './DonationResultViewer'
 import DonationStatusBadge from './DonationStatusBadge'
 import { formatDate, type SupportedLocale } from '@/lib/i18n-utils'
-import type { DonationStatus } from '@/types'
+import { canViewResult, type DonationStatus } from '@/lib/donation-status'
 
 type Donation = {
   id: number
@@ -163,7 +163,7 @@ export default function ProjectDonationList({
                       <DonationStatusBadge status={donation.donation_status} namespace="projectDonationList" />
                     </td>
                     <td className="py-4 px-4">
-                      {donation.donation_status === 'completed' && (
+                      {canViewResult(donation.donation_status) && (
                         <button
                           className="text-sm text-blue-600 hover:text-blue-800 font-medium hover:underline"
                           onClick={() => setViewResultDonationId(donation.donation_public_id)}
@@ -254,7 +254,7 @@ export default function ProjectDonationList({
                   </div>
 
                   {/* Action Button (compact) */}
-                  {donation.donation_status === 'completed' && (
+                  {canViewResult(donation.donation_status) && (
                     <button
                       className="w-full mt-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded text-xs transition-colors"
                       onClick={() => setViewResultDonationId(donation.donation_public_id)}

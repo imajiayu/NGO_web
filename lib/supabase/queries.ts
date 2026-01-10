@@ -5,6 +5,7 @@ import type {
   ProjectStats,
   ProjectFilters,
   DonationFilters,
+  DonationStatus,
 } from '@/types'
 
 // ============= PROJECT QUERIES =============
@@ -219,7 +220,7 @@ export async function createDonation(donationData: {
   amount: number
   currency?: string
   payment_method?: string
-  donation_status?: 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
+  donation_status?: DonationStatus
   locale?: 'en' | 'zh' | 'ua'
 }) {
   const supabase = await createServerClient()
@@ -253,7 +254,7 @@ export async function updateProject(
 
 export async function updateDonationStatus(
   donationId: number,
-  status: 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refunded'
+  status: DonationStatus
 ) {
   const supabase = await createServerClient()
   const { data, error } = await supabase

@@ -213,9 +213,7 @@ MissionSection, ApproachSection, ImpactSection, DonationJourneySection, Complian
 |------|------|
 | ProjectsGrid | 项目网格 |
 | ProjectCard | 项目卡片 |
-| ProjectProgressCard | 进度卡片 |
 | ProjectsGallery | 项目选择 |
-| ProjectResultsSection | 成果展示 |
 | ProjectResultsMarquee | 成果滚动 |
 | ProjectStatusBadge | 状态徽章 |
 
@@ -232,7 +230,6 @@ MissionSection, ApproachSection, ImpactSection, DonationJourneySection, Complian
 | DonationStatusBadge | 状态徽章 |
 | ProjectDonationList | 捐赠列表 |
 | DonationResultViewer | 结果查看 |
-| ProjectSelector | 项目选择 |
 
 ### 管理员组件 (`components/admin/`)
 

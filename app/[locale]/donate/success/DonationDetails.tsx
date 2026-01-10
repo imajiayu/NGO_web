@@ -9,11 +9,7 @@ import InfoCard from './InfoCard'
 import LoadingState from './LoadingState'
 import EmptyState from './EmptyState'
 import type { I18nText } from '@/types'
-
-type DonationStatus =
-  | 'pending' | 'processing' | 'fraud_check'  // Processing group
-  | 'widget_load_failed' | 'expired' | 'declined' | 'failed'  // Failed group
-  | 'paid' | 'confirmed' | 'delivering' | 'completed' | 'refunding' | 'refund_processing' | 'refunded'  // Success group
+import { getStatusGroup, type DonationStatus, type StatusGroup } from '@/lib/donation-status'
 
 type Donation = {
   id: number
@@ -36,22 +32,6 @@ type Donation = {
 type Props = {
   orderReference: string
   locale: string
-}
-
-// Status group classification
-const STATUS_GROUPS = {
-  failed: ['widget_load_failed', 'expired', 'declined', 'failed'],
-  processing: ['pending', 'processing', 'fraud_check'],
-  success: ['paid', 'confirmed', 'delivering', 'completed', 'refunding', 'refund_processing', 'refunded'],
-} as const
-
-type StatusGroup = keyof typeof STATUS_GROUPS
-
-function getStatusGroup(status: DonationStatus): StatusGroup {
-  if ((STATUS_GROUPS.failed as readonly DonationStatus[]).includes(status)) return 'failed'
-  if ((STATUS_GROUPS.processing as readonly DonationStatus[]).includes(status)) return 'processing'
-  if ((STATUS_GROUPS.success as readonly DonationStatus[]).includes(status)) return 'success'
-  return 'processing' // fallback
 }
 
 export default function DonationDetails({ orderReference, locale }: Props) {

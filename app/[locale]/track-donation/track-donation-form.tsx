@@ -9,7 +9,13 @@ import { SearchIcon, MailIcon, HashIcon, ArrowRightIcon, ExternalLinkIcon, Check
 import DonationResultViewer from '@/components/donation/DonationResultViewer'
 import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
 import { getProjectName, getUnitName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
-import type { I18nText, DonationStatus } from '@/types'
+import type { I18nText } from '@/types'
+import {
+  canViewResult,
+  canRequestRefund,
+  isRefundPending,
+  type DonationStatus
+} from '@/lib/donation-status'
 
 type Donation = {
   id: number
@@ -154,7 +160,7 @@ export default function TrackDonationForm({ locale }: Props) {
     // Must be paid/confirmed/delivering status, NOT completed
     const refundableDonation = donations?.find(d =>
       d.order_reference === orderReference &&
-      ['paid', 'confirmed', 'delivering'].includes(d.donation_status)
+      canRequestRefund(d.donation_status)
     )
     if (!refundableDonation) {
       setError(t('errors.cannotRefundCompleted'))
@@ -169,7 +175,7 @@ export default function TrackDonationForm({ locale }: Props) {
     setDonations(prev =>
       prev ? prev.map(d =>
         d.order_reference === orderReference &&
-        ['paid', 'confirmed', 'delivering'].includes(d.donation_status)
+        canRequestRefund(d.donation_status)
           ? { ...d, donation_status: 'refunding' as DonationStatus }
           : d
       ) : null
@@ -195,7 +201,7 @@ export default function TrackDonationForm({ locale }: Props) {
         setDonations(prev =>
           prev ? prev.map(d =>
             d.order_reference === orderReference &&
-            ['paid', 'confirmed', 'delivering', 'refunding'].includes(d.donation_status)
+            (canRequestRefund(d.donation_status) || d.donation_status === 'refunding')
               ? { ...d, donation_status: newStatus as DonationStatus }
               : d
           ) : null
@@ -328,7 +334,7 @@ export default function TrackDonationForm({ locale }: Props) {
 
                 // Only count paid/confirmed/delivering for refundable amount (exclude completed)
                 const refundableAmount = orderDonations
-                  .filter(d => ['paid', 'confirmed', 'delivering'].includes(d.donation_status))
+                  .filter(d => canRequestRefund(d.donation_status))
                   .reduce((sum, d) => sum + Number(d.amount), 0)
 
                 // Get unique projects in this order
@@ -346,7 +352,7 @@ export default function TrackDonationForm({ locale }: Props) {
 
                 // Check if order is currently being refunded
                 const isRefunding = orderDonations.some(d =>
-                  ['refunding', 'refund_processing'].includes(d.donation_status)
+                  isRefundPending(d.donation_status)
                 )
 
                 return (
@@ -474,7 +480,7 @@ export default function TrackDonationForm({ locale }: Props) {
                                 </div>
 
                                 {/* View Result Button - shown only if this donation is completed */}
-                                {donation.donation_status === 'completed' && (
+                                {canViewResult(donation.donation_status) && (
                                   <button
                                     className="flex items-center justify-center gap-2 px-3 py-2 mt-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-xs"
                                     onClick={() => setViewResultDonationId(donation.donation_public_id)}
@@ -539,7 +545,7 @@ export default function TrackDonationForm({ locale }: Props) {
         const orderDonations = donations?.filter(d => d.order_reference === confirmRefundId) || []
         // Filter refundable donations (paid/confirmed/delivering)
         const refundableDonations = orderDonations.filter(d =>
-          ['paid', 'confirmed', 'delivering'].includes(d.donation_status)
+          canRequestRefund(d.donation_status)
         )
         // Calculate total refundable amount
         const totalRefundAmount = refundableDonations.reduce((sum, d) => sum + Number(d.amount), 0)

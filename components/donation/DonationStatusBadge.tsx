@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import type { DonationStatus } from '@/types'
+import { STATUS_COLORS, type DonationStatus } from '@/lib/donation-status'
 
 interface Props {
   status: DonationStatus
@@ -27,55 +27,8 @@ export default function DonationStatusBadge({ status, namespace = 'trackDonation
   // Get status color classes based on donation status
   const getStatusClasses = (status: DonationStatus): string => {
     const baseClasses = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium'
-
-    switch (status) {
-      // Pre-payment - Yellow
-      case 'pending':
-        return `${baseClasses} bg-yellow-100 text-yellow-800`
-
-      // Pre-payment - Gray (widget failed to load)
-      case 'widget_load_failed':
-        return `${baseClasses} bg-gray-100 text-gray-700`
-
-      // Processing - Blue
-      case 'processing':
-        return `${baseClasses} bg-blue-100 text-blue-800`
-
-      // Processing - Purple (security review)
-      case 'fraud_check':
-        return `${baseClasses} bg-purple-100 text-purple-800`
-
-      // Success - Green
-      case 'paid':
-      case 'confirmed':
-      case 'completed':
-        return `${baseClasses} bg-green-100 text-green-800`
-
-      // In Progress - Blue
-      case 'delivering':
-        return `${baseClasses} bg-blue-100 text-blue-700`
-
-      // Failed - Gray
-      case 'expired':
-        return `${baseClasses} bg-gray-100 text-gray-600`
-
-      // Failed - Red
-      case 'declined':
-      case 'failed':
-        return `${baseClasses} bg-red-100 text-red-800`
-
-      // Refund - Orange
-      case 'refunding':
-      case 'refund_processing':
-        return `${baseClasses} bg-orange-100 text-orange-800`
-
-      // Refunded - Gray
-      case 'refunded':
-        return `${baseClasses} bg-gray-100 text-gray-700`
-
-      default:
-        return `${baseClasses} bg-gray-100 text-gray-700`
-    }
+    const colors = STATUS_COLORS[status] || { bg: 'bg-gray-100', text: 'text-gray-700' }
+    return `${baseClasses} ${colors.bg} ${colors.text}`
   }
 
   return (

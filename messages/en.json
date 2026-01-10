@@ -575,12 +575,12 @@
         "description": "Your donation has been successfully delivered! You will receive an email with photos/videos showing the impact of your contribution.",
         "timeframe": "Within 7 business days"
       },
-      "refunding": {
+      "refund_pending": {
         "title": "Refund Request Received",
         "description": "Refunds can be requested at any time before donation completion.",
         "timeframe": "Any stage before completion"
       },
-      "refunded": {
+      "refund_done": {
         "title": "Refunded",
         "description": "Your refund has been completed. The funds have been returned to your original payment method.",
         "timeframe": "Within 7 business days"

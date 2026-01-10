@@ -85,7 +85,7 @@ export default function ProjectResultsMasonry({
     <>
       <div className={`w-full ${className}`}>
         {/* Masonry Grid */}
-        <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-6 auto-rows-[80px] md:auto-rows-[100px] gap-1.5 md:gap-3">
+        <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-6 auto-rows-[80px] md:auto-rows-[100px] gap-1.5 md:gap-3 grid-flow-dense">
           {masonryItems.map((item, index) => (
             <div
               key={index}

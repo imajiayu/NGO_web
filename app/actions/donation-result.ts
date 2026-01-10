@@ -2,6 +2,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
+import { canViewResult, type DonationStatus } from '@/lib/donation-status'
 
 /**
  * Get the public URL for a donation result image
@@ -41,7 +42,7 @@ export async function getDonationResultUrl(donationPublicId: string) {
       return { error: 'donationNotFound' }
     }
 
-    if (donation.donation_status !== 'completed') {
+    if (!canViewResult(donation.donation_status as DonationStatus)) {
       console.log('[getDonationResultUrl] Donation not completed, status:', donation.donation_status)
       return { error: 'notCompleted' }
     }
@@ -161,7 +162,7 @@ export async function getAllDonationResultFiles(donationPublicId: string) {
       return { error: 'donationNotFound', files: [] }
     }
 
-    if (donation.donation_status !== 'completed') {
+    if (!canViewResult(donation.donation_status as DonationStatus)) {
       console.log('[getAllDonationResultFiles] Donation not completed, status:', donation.donation_status)
       return { error: 'notCompleted', files: [] }
     }

@@ -4,6 +4,15 @@ import { z } from 'zod'
 import { createAnonClient, createServiceClient } from '@/lib/supabase/server'
 import { processWayForPayRefund } from '@/lib/payment/wayforpay/server'
 import { sendRefundSuccessEmail } from '@/lib/email'
+import {
+  canRequestRefund,
+  isRefundInProgress,
+  NON_REFUNDABLE_COMPLETED,
+  isPrePaymentStatus,
+  isFailedStatus,
+  REFUNDABLE_STATUSES,
+  type DonationStatus
+} from '@/lib/donation-status'
 
 const trackDonationSchema = z.object({
   email: z.string().email('Invalid email format'),
@@ -129,22 +138,22 @@ export async function requestRefund(data: {
     }
 
     // 3. Validate refund eligibility
-    const status = donation.donation_status as string
+    const status = donation.donation_status as DonationStatus
 
-    if (status === 'completed') {
+    if (status === NON_REFUNDABLE_COMPLETED) {
       return { error: 'cannotRefundCompleted' }
     }
 
-    if (status === 'refunding' || status === 'refund_processing' || status === 'refunded') {
+    if (isRefundInProgress(status)) {
       return { error: 'alreadyRefunding' }
     }
 
-    if (status === 'pending' || status === 'failed' || status === 'expired' || status === 'declined') {
+    if (isPrePaymentStatus(status) || isFailedStatus(status)) {
       return { error: 'cannotRefundPending' }
     }
 
     // Only paid, confirmed, and delivering donations can be refunded
-    if (!['paid', 'confirmed', 'delivering'].includes(status)) {
+    if (!canRequestRefund(status)) {
       return { error: 'invalidStatus' }
     }
 
@@ -177,7 +186,7 @@ export async function requestRefund(data: {
 
     // Check if any donation in this order is already refunded/refunding
     const hasRefundInProgress = orderDonations.some(d =>
-      d.donation_status && ['refunding', 'refund_processing', 'refunded'].includes(d.donation_status)
+      d.donation_status && isRefundInProgress(d.donation_status as DonationStatus)
     )
 
     if (hasRefundInProgress) {
@@ -186,7 +195,7 @@ export async function requestRefund(data: {
 
     // Filter donations that can be refunded (exclude completed donations)
     const refundableDonations = orderDonations.filter(d =>
-      d.donation_status && ['paid', 'confirmed', 'delivering'].includes(d.donation_status)
+      d.donation_status && canRequestRefund(d.donation_status as DonationStatus)
     )
 
     // Check if there are any refundable donations

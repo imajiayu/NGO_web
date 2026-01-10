@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import type { Database } from '@/types/database'
-import type { DonationStatus } from '@/types'
 import {
   updateDonationStatus,
   uploadDonationResultFile,
@@ -11,6 +10,13 @@ import {
 } from '@/app/actions/admin'
 import DonationStatusProgress from './DonationStatusProgress'
 import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
+import {
+  getNextAllowedStatuses,
+  needsFileUpload as checkNeedsFileUpload,
+  canManageFiles as checkCanManageFiles,
+  isRefundStatus,
+  type DonationStatus
+} from '@/lib/donation-status'
 
 type Donation = Database['public']['Tables']['donations']['Row']
 type StatusHistory = Database['public']['Tables']['donation_status_history']['Row']
@@ -32,14 +38,6 @@ interface DonationFile {
   updatedAt: string
 }
 
-// 管理员只能修改正常业务流程的状态
-// 退款状态由 WayForPay API 自动处理，管理员无权手动修改
-const STATUS_TRANSITIONS: Record<string, string[]> = {
-  paid: ['confirmed'],
-  confirmed: ['delivering'],
-  delivering: ['completed'],
-}
-
 export default function DonationEditModal({ donation, statusHistory, onClose, onSaved }: Props) {
   const [newStatus, setNewStatus] = useState<string>('')
   const [filesToUpload, setFilesToUpload] = useState<File[]>([])
@@ -53,15 +51,15 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
   const [loadingFiles, setLoadingFiles] = useState(true)
   const [deletingFile, setDeletingFile] = useState<string | null>(null)
 
-  const currentStatus = donation.donation_status || ''
-  const allowedStatuses = STATUS_TRANSITIONS[currentStatus] || []
+  const currentStatus = (donation.donation_status || '') as DonationStatus
+  const allowedStatuses = getNextAllowedStatuses(currentStatus)
   const canUpdate = allowedStatuses.length > 0
 
   // 检查是否需要上传文件（delivering → completed）
-  const needsFileUpload = currentStatus === 'delivering' && newStatus === 'completed'
+  const needsFileUpload = checkNeedsFileUpload(currentStatus, newStatus as DonationStatus)
 
   // 检查是否可以管理文件（只有 completed 状态才能独立管理文件）
-  const canManageFiles = currentStatus === 'completed'
+  const canManageFiles = checkCanManageFiles(currentStatus)
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -334,7 +332,7 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
                 <div className="mt-4 pt-4 border-t border-gray-300">
                   <div className="mb-3 p-3 bg-yellow-50 text-yellow-800 rounded text-sm">
                     This donation cannot be updated. Current status: <strong>{currentStatus}</strong>
-                    {['refunding', 'refund_processing', 'refunded'].includes(currentStatus) && (
+                    {isRefundStatus(currentStatus as DonationStatus) && (
                       <div className="mt-2 text-xs">
                         ℹ️ Refund statuses are managed automatically by WayForPay and cannot be modified manually.
                       </div>

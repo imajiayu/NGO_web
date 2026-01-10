@@ -576,12 +576,12 @@
         "description": "您的捐赠已成功送达！您将收到一封包含照片/视频的邮件，展示您的贡献所产生的影响。",
         "timeframe": "7个工作日内"
       },
-      "refunding": {
+      "refund_pending": {
         "title": "收到退款申请",
         "description": "捐赠完成前的任意时刻均可申请退款。",
         "timeframe": "完成前的任意阶段"
       },
-      "refunded": {
+      "refund_done": {
         "title": "已退款",
         "description": "您的退款已完成。款项已退回您的原支付方式。",
         "timeframe": "7个工作日内"

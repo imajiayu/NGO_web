@@ -1,26 +1,23 @@
 'use client'
 
+import {
+  DISPLAY_FLOW_STATUSES,
+  getNextAllowedStatuses,
+  isRefundStatus,
+  isRefundPending,
+  type DonationStatus
+} from '@/lib/donation-status'
+
 interface DonationStatusProgressProps {
   currentStatus: string
   onStatusSelect?: (status: string) => void
   selectedStatus?: string
 }
 
-const NORMAL_FLOW_STATUSES = [
-  { key: 'pending', label: 'Pending', color: 'gray' },
-  { key: 'paid', label: 'Paid', color: 'yellow' },
-  { key: 'confirmed', label: 'Confirmed', color: 'purple' },
-  { key: 'delivering', label: 'Delivering', color: 'blue' },
-  { key: 'completed', label: 'Completed', color: 'green' },
-] as const
-
-const STATUS_TRANSITIONS: Record<string, string[]> = {
-  pending: [],
-  paid: ['confirmed'],
-  confirmed: ['delivering'],
-  delivering: ['completed'],
-  completed: [],
-}
+const NORMAL_FLOW_STATUSES = DISPLAY_FLOW_STATUSES.map(status => ({
+  key: status,
+  label: status.charAt(0).toUpperCase() + status.slice(1),
+}))
 
 export default function DonationStatusProgress({
   currentStatus,
@@ -28,12 +25,12 @@ export default function DonationStatusProgress({
   selectedStatus,
 }: DonationStatusProgressProps) {
   const currentIndex = NORMAL_FLOW_STATUSES.findIndex((s) => s.key === currentStatus)
-  const allowedNextStatuses = STATUS_TRANSITIONS[currentStatus] || []
+  const allowedNextStatuses = getNextAllowedStatuses(currentStatus as DonationStatus)
 
   const getStatusState = (status: string, index: number): 'completed' | 'current' | 'next' | 'future' => {
     if (index < currentIndex) return 'completed'
     if (status === currentStatus) return 'current'
-    if (allowedNextStatuses.includes(status)) return 'next'
+    if (allowedNextStatuses.includes(status as DonationStatus)) return 'next'
     return 'future'
   }
 
@@ -134,15 +131,15 @@ export default function DonationStatusProgress({
         })}
       </div>
 
-      {/* Special Status Info */}
-      {(currentStatus === 'refunding' || currentStatus === 'refunded' || currentStatus === 'failed') && (
+      {/* Special Status Info - shown for refund statuses or failed */}
+      {(isRefundStatus(currentStatus as DonationStatus) || currentStatus === 'failed') && (
         <div className="mt-6 p-4 rounded-lg border-2 border-orange-300 bg-orange-50">
           <div className="flex items-center gap-2">
             <span
               className={`
               px-3 py-1 rounded-full text-sm font-semibold
               ${
-                currentStatus === 'refunding'
+                isRefundPending(currentStatus as DonationStatus)
                   ? 'bg-orange-100 text-orange-800 ring-2 ring-orange-400'
                   : currentStatus === 'refunded'
                     ? 'bg-slate-200 text-slate-700'
@@ -150,10 +147,10 @@ export default function DonationStatusProgress({
               }
             `}
             >
-              {currentStatus.toUpperCase()}
+              {currentStatus.toUpperCase().replace('_', ' ')}
             </span>
             <span className="text-sm text-gray-700">
-              {currentStatus === 'refunding' && 'This donation is being refunded'}
+              {isRefundPending(currentStatus as DonationStatus) && 'This donation is being refunded'}
               {currentStatus === 'refunded' && 'This donation has been refunded'}
               {currentStatus === 'failed' && 'Payment failed'}
             </span>

@@ -1,7 +1,11 @@
 import type { Tables, Json } from './database'
+import { DONATION_STATUSES, SUCCESS_STATUSES, type DonationStatus } from '@/lib/donation-status'
 
 // Re-export database types
 export * from './database'
+
+// Re-export donation status types from centralized library
+export { DONATION_STATUSES, type DonationStatus }
 
 // I18n text type (used for multilingual fields)
 export type I18nText = Json
@@ -19,7 +23,7 @@ export interface PublicProjectDonation {
   donor_email_obfuscated: string | null
   amount: number
   currency: string
-  donation_status: 'paid' | 'confirmed' | 'delivering' | 'completed'
+  donation_status: (typeof SUCCESS_STATUSES)[number]
   donated_at: string
 }
 
@@ -118,33 +122,13 @@ export const PROJECT_STATUSES = ['planned', 'active', 'completed', 'paused'] as 
  * will be marked as 'expired' by WayForPay's authoritative webhook.
  *
  * @see docs/PAYMENT_WORKFLOW.md
+ * @see lib/donation-status.ts for helper functions and status groups
  */
-export const DONATION_STATUSES = [
-  // Pre-payment
-  'pending',
-  'widget_load_failed',
-  // Processing
-  'processing',
-  'fraud_check',
-  // Payment complete
-  'paid',
-  'confirmed',
-  'delivering',
-  'completed',
-  // Payment failed
-  'expired',
-  'declined',
-  'failed',
-  // Refund
-  'refunding',
-  'refund_processing',
-  'refunded',
-] as const
+// Note: DONATION_STATUSES and DonationStatus are re-exported at the top of this file
 
 export const DONATION_LOCALES = ['en', 'zh', 'ua'] as const
 
 // Type aliases for better type safety
-export type DonationStatus = typeof DONATION_STATUSES[number]
 export type DonationLocale = typeof DONATION_LOCALES[number]
 export type ProjectStatus = typeof PROJECT_STATUSES[number]
 

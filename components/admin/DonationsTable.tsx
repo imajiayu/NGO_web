@@ -2,10 +2,10 @@
 
 import { useState, useMemo } from 'react'
 import type { Database } from '@/types/database'
-import type { DonationStatus } from '@/types'
 import DonationEditModal from './DonationEditModal'
 import BatchDonationEditModal from './BatchDonationEditModal'
 import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
+import { canBatchEdit, requiresFileUploadToTransition, type DonationStatus } from '@/lib/donation-status'
 
 type Donation = Database['public']['Tables']['donations']['Row'] & {
   projects: { project_name: string; project_name_i18n: any }
@@ -107,19 +107,17 @@ export default function DonationsTable({ initialDonations, statusHistory }: Prop
   }, [donations, selectedIds])
 
   // 判断是否可以批量操作
-  const canBatchEdit = useMemo(() => {
+  const canBatchEditSelected = useMemo(() => {
     if (selectedDonations.length === 0) return false
 
     // 检查所有选中的捐赠状态是否相同
     const statuses = new Set(selectedDonations.map(d => d.donation_status))
     if (statuses.size !== 1) return false
 
-    const commonStatus = selectedDonations[0].donation_status
+    const commonStatus = selectedDonations[0].donation_status as DonationStatus
 
-    // delivering 状态不支持批量修改（需要上传文件）
-    if (commonStatus === 'delivering') return false
-
-    return true
+    // 使用 canBatchEdit 辅助函数判断状态是否支持批量编辑
+    return canBatchEdit(commonStatus)
   }, [selectedDonations])
 
   // 获取选中捐赠的共同状态
@@ -200,18 +198,18 @@ export default function DonationsTable({ initialDonations, statusHistory }: Prop
 
           {selectedIds.size > 0 && (
             <div className="flex gap-2 items-center">
-              {!canBatchEdit && (
+              {!canBatchEditSelected && (
                 <span className="text-sm text-amber-600">
                   {selectedDonations.length > 0 && new Set(selectedDonations.map(d => d.donation_status)).size > 1
                     ? 'Selected donations have different statuses'
-                    : selectedCommonStatus === 'delivering'
-                      ? 'Delivering status cannot be batch edited'
+                    : requiresFileUploadToTransition(selectedCommonStatus as DonationStatus)
+                      ? 'This status requires file upload (cannot batch edit)'
                       : 'Cannot batch edit'}
                 </span>
               )}
               <button
                 onClick={() => setShowBatchEdit(true)}
-                disabled={!canBatchEdit}
+                disabled={!canBatchEditSelected}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Batch Edit ({selectedIds.size})
