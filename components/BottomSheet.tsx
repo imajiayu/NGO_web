@@ -145,20 +145,15 @@ export default function BottomSheet({
 
   const currentHeight = getSnapHeight(currentSnap)
 
+  // Spring-like cubic bezier for smooth, bouncy animation
+  const springTransition = 'cubic-bezier(0.32, 0.72, 0, 1)'
+
   return (
     <>
-      {/* Backdrop - only show when expanded */}
-      {isExpanded && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"
-          onClick={toggleSheet}
-        />
-      )}
-
-      {/* Bottom Sheet */}
+      {/* Bottom Sheet - No backdrop since sheet is nearly full screen */}
       <div
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 transition-all duration-300 ease-out"
+        className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-50"
         style={{
           height: isDragging
             ? `${Math.max(getSnapHeight(0), currentHeight - (currentY - startY))}px`
@@ -166,44 +161,75 @@ export default function BottomSheet({
           maxHeight: '95vh',
           transform: shouldHide ? 'translateY(100%)' : 'translateY(0)',
           opacity: shouldHide ? 0 : 1,
+          // Smooth spring animation for height changes, instant for dragging
+          transition: isDragging
+            ? 'none'
+            : `height 400ms ${springTransition}, transform 350ms ${springTransition}, opacity 250ms ease-out`,
+          // Elegant shadow that grows with expansion
+          boxShadow: isExpanded
+            ? '0 -8px 40px -12px rgba(0, 0, 0, 0.25), 0 -4px 16px -8px rgba(0, 0, 0, 0.1)'
+            : '0 -4px 20px -8px rgba(0, 0, 0, 0.15)',
         }}
       >
         {/* Drag Handle */}
         <div
-          className={`sticky top-0 z-10 cursor-pointer ${isMinimized ? '' : 'bg-white rounded-t-2xl'}`}
+          className="sticky top-0 z-10 cursor-pointer touch-none select-none"
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
           onClick={toggleSheet}
         >
-          {/* Minimized State */}
-          {isMinimized && (
-            <div className="flex items-center justify-center gap-3 py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-2xl shadow-lg h-16">
-              <ChevronUpIcon className="w-6 h-6 text-white" />
+          {/* Minimized State - CTA Button */}
+          <div
+            className="overflow-hidden rounded-t-3xl"
+            style={{
+              opacity: isMinimized ? 1 : 0,
+              height: isMinimized ? '64px' : '0px',
+              // 收起时：延迟出现，等内容先消失
+              transition: isMinimized
+                ? `opacity 200ms ease-out 200ms, height 300ms ${springTransition} 100ms`
+                : `opacity 150ms ease-out, height 200ms ${springTransition}`,
+            }}
+          >
+            <div className="flex items-center justify-center gap-3 py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 h-16">
+              <ChevronUpIcon className="w-6 h-6 text-white animate-bounce" style={{ animationDuration: '1.5s' }} />
               <span className="text-white font-bold text-lg">
                 {minimizedHint || 'Donate Now'}
               </span>
-              <ChevronUpIcon className="w-6 h-6 text-white" />
+              <ChevronUpIcon className="w-6 h-6 text-white animate-bounce" style={{ animationDuration: '1.5s' }} />
             </div>
-          )}
+          </div>
 
-          {/* Expanded State */}
-          {isExpanded && (
-            <div className="py-2 border-b border-gray-200 bg-white rounded-t-2xl">
-              <div className="flex items-center justify-center">
-                <ChevronDownIcon className="w-6 h-6 text-blue-600 stroke-[2]" />
-              </div>
+          {/* Expanded State - Down Arrow */}
+          <div
+            className="bg-white rounded-t-3xl"
+            style={{
+              opacity: isExpanded ? 1 : 0,
+              height: isExpanded ? 'auto' : '0px',
+              overflow: 'hidden',
+              // 收起时：快速消失；展开时：延迟出现
+              transition: isExpanded
+                ? `opacity 200ms ease-out 150ms, height 300ms ${springTransition}`
+                : `opacity 100ms ease-out, height 150ms ease-out`,
+            }}
+          >
+            <div className="pt-2 pb-1 flex items-center justify-center">
+              <ChevronDownIcon className="w-5 h-5 text-gray-400" />
             </div>
-          )}
+          </div>
         </div>
 
-        {/* Content - always render but hide when minimized */}
+        {/* Content with fade-in animation */}
         <div
           className="overflow-y-auto bg-white"
           style={{
-            height: isExpanded ? 'calc(100% - 40px)' : '0px',
+            height: isExpanded ? 'calc(100% - 32px)' : '0px',
             opacity: isExpanded ? 1 : 0,
             visibility: isExpanded ? 'visible' : 'hidden',
             pointerEvents: isExpanded ? 'auto' : 'none',
+            // Staggered content fade-in for polish
+            transition: isExpanded
+              ? `height 350ms ${springTransition}, opacity 300ms ease-out 100ms`
+              : `height 300ms ${springTransition}, opacity 150ms ease-out`,
           }}
         >
           {children}

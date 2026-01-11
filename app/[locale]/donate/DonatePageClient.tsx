@@ -304,7 +304,7 @@ export default function DonatePageClient({
                 minimizedHint={t('donateNowButton')}
                 hideWhenMinimized={hideSheetAtBottom}
               >
-              <div className="p-4">
+              <div className="px-4 pt-1 pb-4">
                 <DonationFormCard
                   project={selectedProject}
                   locale={locale}
