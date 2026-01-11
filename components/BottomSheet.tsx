@@ -191,11 +191,11 @@ export default function BottomSheet({
             }}
           >
             <div className="flex items-center justify-center gap-3 py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 h-16">
-              <ChevronUpIcon className="w-6 h-6 text-white animate-bounce" style={{ animationDuration: '1.5s' }} />
+              <ChevronUpIcon className="w-6 h-6 text-white" />
               <span className="text-white font-bold text-lg">
                 {minimizedHint || 'Donate Now'}
               </span>
-              <ChevronUpIcon className="w-6 h-6 text-white animate-bounce" style={{ animationDuration: '1.5s' }} />
+              <ChevronUpIcon className="w-6 h-6 text-white" />
             </div>
           </div>
 
