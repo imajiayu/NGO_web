@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react'
 import type { Database } from '@/types/database'
 import DonationEditModal from './DonationEditModal'
 import BatchDonationEditModal from './BatchDonationEditModal'
-import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
+import DonationStatusBadge from '@/components/donation-display/DonationStatusBadge'
 import { canBatchEdit, requiresFileUploadToTransition, type DonationStatus } from '@/lib/donation-status'
 
 type Donation = Database['public']['Tables']['donations']['Row'] & {

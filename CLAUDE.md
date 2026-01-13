@@ -134,13 +134,16 @@ NGO_web/
 │       ├── donate/success-redirect/ # 重定向
 │       └── unsubscribe/          # 取消订阅
 ├── components/
-│   ├── admin/                    # 管理员组件
+│   ├── common/                   # 通用 UI 组件 (BottomSheet, CopyButton, ImageLightbox)
+│   ├── layout/                   # 布局组件 (Navigation, Footer, GlobalLoadingSpinner)
+│   ├── icons/                    # 内联 SVG 图标
 │   ├── home/                     # 主页组件
 │   ├── projects/                 # 项目组件
 │   │   ├── detail-pages/         # 项目详情页
 │   │   └── shared/               # 共享组件
-│   ├── donate/                   # 捐赠表单
-│   └── donation/                 # 捐赠展示
+│   ├── donate-form/              # 捐赠表单 (DonationFormCard, 支付组件)
+│   ├── donation-display/         # 捐赠展示 (状态徽章、流程图、结果查看器)
+│   └── admin/                    # 管理员组件
 ├── lib/
 │   ├── supabase/                 # 数据库集成
 │   ├── wayforpay/                # WayForPay 支付集成
@@ -150,7 +153,8 @@ NGO_web/
 │   │   └── senders/              # 发送器
 │   ├── cloudinary.ts             # 图像处理
 │   ├── validations.ts            # Zod 验证
-│   └── i18n-utils.ts             # 国际化工具
+│   ├── i18n-utils.ts             # 国际化工具
+│   └── hooks/                    # 自定义 React Hooks
 ├── messages/                     # 翻译文件 (en/zh/ua)
 ├── public/content/projects/      # 项目内容 JSON
 ├── types/                        # TypeScript 类型
@@ -199,15 +203,21 @@ NGO_web/
 
 ## 组件
 
-### 布局组件
+### 布局组件 (`components/layout/`)
 
 | 组件 | 说明 |
 |------|------|
 | Navigation | 导航栏 |
 | Footer | 页脚 |
 | GlobalLoadingSpinner | 全局加载 |
-| BottomSheet | 底部弹出层 |
+
+### 通用 UI 组件 (`components/common/`)
+
+| 组件 | 说明 |
+|------|------|
+| BottomSheet | 底部弹出层（移动端） |
 | ImageLightbox | 图片灯箱 |
+| CopyButton | 复制按钮 |
 
 ### 主页组件 (`components/home/`)
 
@@ -222,20 +232,30 @@ MissionSection, ApproachSection, ImpactSection, DonationJourneySection, Complian
 | ProjectsGallery | 项目选择 |
 | ProjectResultsMarquee | 成果滚动 |
 | ProjectStatusBadge | 状态徽章 |
+| LongTermBadge | 长期项目标签 |
 
 **共享组件** (`shared/`): ProjectProgressBar, ProjectProgressSection, ProjectResultsMasonry
 
 **详情页** (`detail-pages/`): Project0, Project3
 
-### 捐赠组件 (`components/donation/`)
+### 捐赠表单组件 (`components/donate-form/`)
 
 | 组件 | 说明 |
 |------|------|
-| DonationFormCard | 捐赠表单 |
-| DonationStatusFlow | 状态流程 |
+| DonationFormCard | 捐赠表单卡片 |
+| PaymentMethodSelector | 支付方式选择 |
+| CryptoSelector | 加密货币选择 |
+| widgets/WayForPayWidget | WayForPay 支付组件 |
+| widgets/NowPaymentsWidget | NOWPayments 加密货币组件 |
+
+### 捐赠展示组件 (`components/donation-display/`)
+
+| 组件 | 说明 |
+|------|------|
 | DonationStatusBadge | 状态徽章 |
-| ProjectDonationList | 捐赠列表 |
-| DonationResultViewer | 结果查看 |
+| DonationStatusFlow | 状态流程图 |
+| DonationResultViewer | 捐赠结果查看器 |
+| ProjectDonationList | 项目捐赠列表 |
 
 ### 管理员组件 (`components/admin/`)
 
@@ -252,9 +272,9 @@ MissionSection, ApproachSection, ImpactSection, DonationJourneySection, Complian
 | SubscriptionsTable | 订阅表格 |
 | BroadcastModal | 群发邮件 |
 
-### 工具组件
+### 图标组件 (`components/icons/`)
 
-CopyButton
+内联 SVG 图标，替代 lucide-react 以减少 bundle 大小
 
 ---
 

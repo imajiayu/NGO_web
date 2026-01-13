@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import type { Database } from '@/types/database'
+import { useBodyScrollLock } from '@/lib/hooks/useBodyScrollLock'
 import {
   updateDonationStatus,
   uploadDonationResultFile,
@@ -10,7 +11,7 @@ import {
 } from '@/app/actions/admin'
 import { clientLogger } from '@/lib/logger-client'
 import DonationStatusProgress from './DonationStatusProgress'
-import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
+import DonationStatusBadge from '@/components/donation-display/DonationStatusBadge'
 import {
   getNextAllowedStatuses,
   needsFileUpload as checkNeedsFileUpload,
@@ -63,27 +64,7 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
   const canManageFiles = checkCanManageFiles(currentStatus)
 
   // Lock body scroll when modal is open
-  useEffect(() => {
-    // Save current scroll position
-    const scrollY = window.scrollY
-
-    // Prevent scrolling
-    document.body.style.overflow = 'hidden'
-    document.body.style.position = 'fixed'
-    document.body.style.top = `-${scrollY}px`
-    document.body.style.width = '100%'
-
-    return () => {
-      // Restore scrolling
-      document.body.style.overflow = ''
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
-
-      // Restore scroll position
-      window.scrollTo(0, scrollY)
-    }
-  }, [])
+  useBodyScrollLock()
 
   // 加载现有文件
   useEffect(() => {

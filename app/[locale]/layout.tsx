@@ -5,8 +5,8 @@ import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Analytics } from '@vercel/analytics/react'
 import { locales } from '@/i18n/config'
-import Navigation from '@/components/Navigation'
-import Footer from '@/components/Footer'
+import Navigation from '@/components/layout/Navigation'
+import Footer from '@/components/layout/Footer'
 import '../globals.css'
 
 // 标题字体 - Fraunces 可变字体 (温暖有机的衬线字体)

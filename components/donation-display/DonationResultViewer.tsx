@@ -5,12 +5,12 @@ import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import { XIcon, ImageIcon, Loader2Icon, DownloadIcon, PlayCircleIcon } from '@/components/icons'
 import { getAllDonationResultFiles } from '@/app/actions/donation-result'
-import type { LightboxImage } from '@/components/ImageLightbox'
+import type { LightboxImage } from '@/components/common/ImageLightbox'
 import JSZip from 'jszip'
 import { clientLogger } from '@/lib/logger-client'
 
 // P2 优化: 动态加载灯箱组件
-const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), { ssr: false })
+const ImageLightbox = dynamic(() => import('@/components/common/ImageLightbox'), { ssr: false })
 
 interface DonationResultViewerProps {
   donationPublicId: string

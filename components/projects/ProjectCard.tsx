@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 import type { ProjectStats } from '@/types'
 import { getProjectName, getLocation, getUnitName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
 import ProjectProgressBar from './shared/ProjectProgressBar'
-import GlobalLoadingSpinner from '@/components/GlobalLoadingSpinner'
+import GlobalLoadingSpinner from '@/components/layout/GlobalLoadingSpinner'
 import ProjectStatusBadge from './ProjectStatusBadge'
 import LongTermBadge from './LongTermBadge'
 

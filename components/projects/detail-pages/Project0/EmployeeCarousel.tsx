@@ -5,10 +5,10 @@ import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { ChevronLeftIcon, ChevronRightIcon } from '@/components/icons'
-import type { LightboxImage } from '@/components/ImageLightbox'
+import type { LightboxImage } from '@/components/common/ImageLightbox'
 
 // P2 优化: 动态加载灯箱组件
-const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), { ssr: false })
+const ImageLightbox = dynamic(() => import('@/components/common/ImageLightbox'), { ssr: false })
 
 interface EmployeeCarouselProps {
   images: string[]

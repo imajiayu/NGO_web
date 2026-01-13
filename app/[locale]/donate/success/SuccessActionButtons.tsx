@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
-import GlobalLoadingSpinner from '@/components/GlobalLoadingSpinner'
+import GlobalLoadingSpinner from '@/components/layout/GlobalLoadingSpinner'
 
 export default function SuccessActionButtons() {
   const t = useTranslations('donateSuccess')

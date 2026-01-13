@@ -15,13 +15,13 @@ import {
 import Image from 'next/image'
 import { clientLogger } from '@/lib/logger-client'
 import { useTranslations } from 'next-intl'
-import type { LightboxImage } from '@/components/ImageLightbox'
+import type { LightboxImage } from '@/components/common/ImageLightbox'
 import ProjectProgressSection from '@/components/projects/shared/ProjectProgressSection'
 import ProjectResultsMasonry from '@/components/projects/shared/ProjectResultsMasonry'
 import type { ProjectStats, ProjectResult } from '@/types'
 
 // P2 优化: 动态加载灯箱组件
-const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), { ssr: false })
+const ImageLightbox = dynamic(() => import('@/components/common/ImageLightbox'), { ssr: false })
 
 interface Project3DetailContentProps {
   project: ProjectStats

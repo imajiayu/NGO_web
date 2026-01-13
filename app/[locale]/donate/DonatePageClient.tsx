@@ -10,14 +10,14 @@ import {
   Project0DetailContent,
   Project3DetailContent,
 } from '@/components/projects/detail-pages'
-import DonationFormCard from '@/components/donate/DonationFormCard'
-import DonationStatusFlow from '@/components/donation/DonationStatusFlow'
-import ProjectDonationList from '@/components/donation/ProjectDonationList'
+import DonationFormCard from '@/components/donate-form/DonationFormCard'
+import DonationStatusFlow from '@/components/donation-display/DonationStatusFlow'
+import ProjectDonationList from '@/components/donation-display/ProjectDonationList'
 
 import { getProjectName, type SupportedLocale } from '@/lib/i18n-utils'
 
 // P2 优化: 动态加载 BottomSheet 组件（仅移动端使用）
-const BottomSheet = dynamic(() => import('@/components/BottomSheet'), {
+const BottomSheet = dynamic(() => import('@/components/common/BottomSheet'), {
   ssr: false,
   loading: () => null, // 加载时不显示占位符
 })

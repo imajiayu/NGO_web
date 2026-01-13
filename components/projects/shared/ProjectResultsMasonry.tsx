@@ -4,10 +4,10 @@ import { useState, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import type { ProjectResult } from '@/types'
-import type { LightboxImage } from '@/components/ImageLightbox'
+import type { LightboxImage } from '@/components/common/ImageLightbox'
 
 // P2 优化: 动态加载灯箱组件，减少初始 bundle
-const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), { ssr: false })
+const ImageLightbox = dynamic(() => import('@/components/common/ImageLightbox'), { ssr: false })
 
 interface ProjectResultsMasonryProps {
   results: ProjectResult[]

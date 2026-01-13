@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { adminLogout } from '@/app/actions/admin'
-import GlobalLoadingSpinner from '@/components/GlobalLoadingSpinner'
+import GlobalLoadingSpinner from '@/components/layout/GlobalLoadingSpinner'
 
 export default function AdminNav() {
   const pathname = usePathname()

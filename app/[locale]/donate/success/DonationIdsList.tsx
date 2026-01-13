@@ -1,6 +1,6 @@
 'use client'
 
-import CopyButton from '@/components/CopyButton'
+import CopyButton from '@/components/common/CopyButton'
 import { getProjectName, getLocation, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
 import type { I18nText } from '@/types'
 

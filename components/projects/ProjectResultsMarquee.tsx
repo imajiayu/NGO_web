@@ -4,7 +4,7 @@ import { useMemo, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter, usePathname } from 'next/navigation'
 import type { ProjectResult } from '@/types'
-import GlobalLoadingSpinner from '@/components/GlobalLoadingSpinner'
+import GlobalLoadingSpinner from '@/components/layout/GlobalLoadingSpinner'
 
 interface ProjectResultsMarqueeProps {
   results: ProjectResult[]

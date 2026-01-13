@@ -8,7 +8,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import GlobalLoadingSpinner from '@/components/GlobalLoadingSpinner'
+import GlobalLoadingSpinner from '@/components/layout/GlobalLoadingSpinner'
 
 interface UnsubscribedClientProps {
   locale: string

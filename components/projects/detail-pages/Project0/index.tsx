@@ -6,13 +6,13 @@ import { useTranslations } from 'next-intl'
 import { MapPinIcon, UsersIcon, ActivityIcon, HeartIcon, Building2Icon, ChurchIcon } from '@/components/icons'
 import EmployeeCarousel from './EmployeeCarousel'
 import CollapsibleGallery from './CollapsibleGallery'
-import type { LightboxImage } from '@/components/ImageLightbox'
+import type { LightboxImage } from '@/components/common/ImageLightbox'
 import ProjectProgressSection from '@/components/projects/shared/ProjectProgressSection'
 import type { ProjectStats, ProjectResult } from '@/types'
 import { clientLogger } from '@/lib/logger-client'
 
 // P2 优化: 动态加载灯箱组件
-const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), { ssr: false })
+const ImageLightbox = dynamic(() => import('@/components/common/ImageLightbox'), { ssr: false })
 
 interface Project0DetailContentProps {
   project: ProjectStats  // Included for interface consistency, may not be used

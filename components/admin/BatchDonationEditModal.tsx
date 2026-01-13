@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { Database } from '@/types/database'
+import { useBodyScrollLock } from '@/lib/hooks/useBodyScrollLock'
 import { batchUpdateDonationStatus } from '@/app/actions/admin'
 import DonationStatusProgress from './DonationStatusProgress'
-import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
+import DonationStatusBadge from '@/components/donation-display/DonationStatusBadge'
 import { getNextAllowedStatuses, type DonationStatus } from '@/lib/donation-status'
 
 type Donation = Database['public']['Tables']['donations']['Row']
@@ -21,27 +22,7 @@ export default function BatchDonationEditModal({ donations, onClose, onSaved }: 
   const [error, setError] = useState('')
 
   // Lock body scroll when modal is open
-  useEffect(() => {
-    // Save current scroll position
-    const scrollY = window.scrollY
-
-    // Prevent scrolling
-    document.body.style.overflow = 'hidden'
-    document.body.style.position = 'fixed'
-    document.body.style.top = `-${scrollY}px`
-    document.body.style.width = '100%'
-
-    return () => {
-      // Restore scrolling
-      document.body.style.overflow = ''
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
-
-      // Restore scroll position
-      window.scrollTo(0, scrollY)
-    }
-  }, [])
+  useBodyScrollLock()
 
   if (donations.length === 0) {
     return null

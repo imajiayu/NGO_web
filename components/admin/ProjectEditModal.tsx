@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { Database } from '@/types/database'
 import { updateProject } from '@/app/actions/admin'
+import { useBodyScrollLock } from '@/lib/hooks/useBodyScrollLock'
 
 type Project = Database['public']['Tables']['projects']['Row']
 
@@ -18,27 +19,7 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
   const [error, setError] = useState('')
 
   // Lock body scroll when modal is open
-  useEffect(() => {
-    // Save current scroll position
-    const scrollY = window.scrollY
-
-    // Prevent scrolling
-    document.body.style.overflow = 'hidden'
-    document.body.style.position = 'fixed'
-    document.body.style.top = `-${scrollY}px`
-    document.body.style.width = '100%'
-
-    return () => {
-      // Restore scrolling
-      document.body.style.overflow = ''
-      document.body.style.position = ''
-      document.body.style.top = ''
-      document.body.style.width = ''
-
-      // Restore scroll position
-      window.scrollTo(0, scrollY)
-    }
-  }, [])
+  useBodyScrollLock()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

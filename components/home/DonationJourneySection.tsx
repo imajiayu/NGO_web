@@ -3,8 +3,8 @@
 import { useTranslations } from 'next-intl'
 import { useRouter, usePathname } from '@/i18n/navigation'
 import { useState, useEffect } from 'react'
-import DonationStatusFlow from '@/components/donation/DonationStatusFlow'
-import GlobalLoadingSpinner from '@/components/GlobalLoadingSpinner'
+import DonationStatusFlow from '@/components/donation-display/DonationStatusFlow'
+import GlobalLoadingSpinner from '@/components/layout/GlobalLoadingSpinner'
 
 export default function DonationJourneySection() {
   const t = useTranslations('home.hero.donationJourney')
