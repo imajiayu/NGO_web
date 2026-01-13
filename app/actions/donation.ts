@@ -13,6 +13,7 @@ import { donationFormSchema } from '@/lib/validations'
 import { createAnonClient } from '@/lib/supabase/server'
 import type { DonationStatus } from '@/types'
 import { getProjectName, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
+import { logger } from '@/lib/logger'
 
 type WayForPayPaymentResult =
   | { success: true; paymentParams: any; amount: number; orderReference: string; allProjectsStats: any[] }
@@ -238,7 +239,7 @@ export async function createWayForPayDonation(data: {
       )
 
       if (idError || !donationPublicId) {
-        console.error(`Error generating donation ID:`, idError)
+        logger.error('DONATION', 'Failed to generate donation ID', { error: idError?.message })
         throw idError || new Error('Failed to generate donation ID')
       }
 
@@ -266,7 +267,7 @@ export async function createWayForPayDonation(data: {
         )
 
         if (idError || !donationPublicId) {
-          console.error(`Error generating donation ID:`, idError)
+          logger.error('DONATION', 'Failed to generate donation ID', { error: idError?.message })
           throw idError || new Error('Failed to generate donation ID')
         }
 
@@ -296,7 +297,7 @@ export async function createWayForPayDonation(data: {
       )
 
       if (tipIdError || !tipDonationId) {
-        console.error(`Error generating tip donation ID:`, tipIdError)
+        logger.error('DONATION', 'Failed to generate tip donation ID', { error: tipIdError?.message })
         throw tipIdError || new Error('Failed to generate tip donation ID')
       }
 
@@ -324,7 +325,7 @@ export async function createWayForPayDonation(data: {
       .select()
 
     if (dbError) {
-      console.error('[DONATION] Failed to create pending donations:', dbError.message)
+      logger.error('DONATION', 'Failed to create pending donations', { error: dbError.message })
       throw new Error(`Failed to create pending donations: ${dbError.message}`)
     }
 
@@ -332,7 +333,7 @@ export async function createWayForPayDonation(data: {
       throw new Error('Failed to create pending donations: No data returned')
     }
 
-    console.log(`[DONATION] Created ${insertedData.length} pending records: ${orderReference}`)
+    logger.info('DONATION', 'Pending records created', { count: insertedData.length, orderReference })
 
     // Return payment parameters to client
     return {
@@ -359,7 +360,7 @@ export async function createWayForPayDonation(data: {
       allProjectsStats,
     }
   } catch (error) {
-    console.error('Error creating WayForPay payment:', error)
+    logger.errorWithStack('DONATION', 'Failed to create WayForPay payment', error)
     return {
       success: false,
       error: 'server_error',
@@ -382,15 +383,9 @@ export async function createWayForPayDonation(data: {
 export async function markDonationWidgetFailed(
   orderReference: string
 ): Promise<{ success: boolean; error?: string }> {
-  console.log(`[DONATION] markDonationWidgetFailed called - Order: ${orderReference}`)
-
   try {
-    // SECURITY: Use anonymous client - RLS policy will enforce restrictions
     const supabase = createAnonClient()
 
-    console.log('[DONATION] Querying for pending donations...')
-
-    // Update all pending donations with this order_reference
     const { data, error } = await supabase
       .from('donations')
       .update({ donation_status: 'widget_load_failed' })
@@ -399,27 +394,27 @@ export async function markDonationWidgetFailed(
       .select()
 
     if (error) {
-      console.error('[DONATION] Failed to mark as widget_load_failed:', error)
-      console.error('[DONATION] Error details:', {
-        message: error.message,
+      logger.error('DONATION', 'Failed to mark as widget_load_failed', {
+        orderReference,
+        error: error.message,
         code: error.code,
-        hint: error.hint,
-        details: error.details
       })
       return { success: false, error: error.message }
     }
 
     if (!data || data.length === 0) {
-      console.warn(`[DONATION] No pending donations found for order: ${orderReference}`)
-      return { success: true } // Not an error, just already updated
+      logger.debug('DONATION', 'No pending donations to mark as widget_load_failed', { orderReference })
+      return { success: true }
     }
 
-    console.log(`[DONATION] Successfully marked ${data.length} donations as widget_load_failed: ${orderReference}`)
-    console.log('[DONATION] Updated donation IDs:', data.map(d => d.donation_public_id).join(', '))
+    logger.info('DONATION', 'Marked donations as widget_load_failed', {
+      orderReference,
+      count: data.length,
+    })
     return { success: true }
 
   } catch (error) {
-    console.error('[DONATION] Unexpected error:', error)
+    logger.errorWithStack('DONATION', 'markDonationWidgetFailed failed', error, { orderReference })
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error'
@@ -578,10 +573,10 @@ export async function createNowPaymentsDonation(data: {
         success_url: successUrl,
       })
     } catch (error) {
-      console.error('[DONATION] NOWPayments API error:', error)
-      // Extract the actual error message from the API response
+      logger.error('DONATION', 'NOWPayments API error', {
+        error: error instanceof Error ? error.message : String(error),
+      })
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      // Remove the "NOWPayments API error: " prefix if present
       const cleanMessage = errorMessage.replace('NOWPayments API error: ', '')
       return {
         success: false,
@@ -602,7 +597,7 @@ export async function createNowPaymentsDonation(data: {
       )
 
       if (idError || !donationPublicId) {
-        console.error(`Error generating donation ID:`, idError)
+        logger.error('DONATION', 'Failed to generate donation ID', { error: idError?.message })
         throw idError || new Error('Failed to generate donation ID')
       }
 
@@ -629,7 +624,7 @@ export async function createNowPaymentsDonation(data: {
         )
 
         if (idError || !donationPublicId) {
-          console.error(`Error generating donation ID:`, idError)
+          logger.error('DONATION', 'Failed to generate donation ID', { error: idError?.message })
           throw idError || new Error('Failed to generate donation ID')
         }
 
@@ -659,7 +654,7 @@ export async function createNowPaymentsDonation(data: {
       )
 
       if (tipIdError || !tipDonationId) {
-        console.error(`Error generating tip donation ID:`, tipIdError)
+        logger.error('DONATION', 'Failed to generate tip donation ID', { error: tipIdError?.message })
         throw tipIdError || new Error('Failed to generate tip donation ID')
       }
 
@@ -687,7 +682,7 @@ export async function createNowPaymentsDonation(data: {
       .select()
 
     if (dbError) {
-      console.error('[DONATION] Failed to create pending donations:', dbError.message)
+      logger.error('DONATION', 'Failed to create pending donations', { error: dbError.message })
       throw new Error(`Failed to create pending donations: ${dbError.message}`)
     }
 
@@ -695,7 +690,7 @@ export async function createNowPaymentsDonation(data: {
       throw new Error('Failed to create pending donations: No data returned')
     }
 
-    console.log(`[DONATION] Created ${insertedData.length} pending records (NOWPayments): ${orderReference}`)
+    logger.info('DONATION', 'Pending records created (NOWPayments)', { count: insertedData.length, orderReference })
 
     return {
       success: true,
@@ -705,7 +700,7 @@ export async function createNowPaymentsDonation(data: {
       allProjectsStats,
     }
   } catch (error) {
-    console.error('Error creating NOWPayments donation:', error)
+    logger.errorWithStack('DONATION', 'Failed to create NOWPayments donation', error)
     return {
       success: false,
       error: 'server_error',
@@ -748,7 +743,9 @@ export async function getNowPaymentsCurrencies(): Promise<{
 
     return { success: true, currencies }
   } catch (error) {
-    console.error('[DONATION] Failed to fetch currencies:', error)
+    logger.error('DONATION', 'Failed to fetch currencies', {
+      error: error instanceof Error ? error.message : String(error),
+    })
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to fetch currencies'
@@ -773,7 +770,10 @@ export async function getNowPaymentsMinimum(
     const minAmount = await getMinimumPaymentAmountInUsd(payCurrency)
     return { success: true, minAmount }
   } catch (error) {
-    console.error('[DONATION] Failed to fetch minimum amount:', error)
+    logger.error('DONATION', 'Failed to fetch minimum amount', {
+      payCurrency,
+      error: error instanceof Error ? error.message : String(error),
+    })
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to fetch minimum amount'

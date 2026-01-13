@@ -37,6 +37,7 @@ import project0OngoingUa from './content/project0-ongoing/ua.html'
 import project3CompletedEn from './content/project3-completed/en.html'
 import project3CompletedZh from './content/project3-completed/zh.html'
 import project3CompletedUa from './content/project3-completed/ua.html'
+import { logger } from '@/lib/logger'
 
 const REGISTERED_TEMPLATES: EmailTemplate[] = [
   project0Ongoing,
@@ -78,7 +79,7 @@ export function getAvailableTemplates(): { name: string; fileName: string }[] {
 export function getEmailTemplate(fileName: string): EmailTemplate | null {
   const template = REGISTERED_TEMPLATES.find((t) => t.fileName === fileName)
   if (!template) {
-    console.error(`Template not found: ${fileName}`)
+    logger.error('EMAIL', 'Template not found', { fileName })
     return null
   }
   return template
@@ -93,7 +94,7 @@ export function getEmailTemplate(fileName: string): EmailTemplate | null {
 export function loadTemplateContent(templateName: string): TemplateContent | null {
   const content = TEMPLATE_CONTENTS[templateName]
   if (!content) {
-    console.error(`Template content not found: ${templateName}`)
+    logger.error('EMAIL', 'Template content not found', { templateName })
     return null
   }
   return content

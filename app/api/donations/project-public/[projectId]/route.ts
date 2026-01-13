@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
+import { logger } from '@/lib/logger'
 
 /**
  * Secure Public API for Project Donations
@@ -37,13 +38,13 @@ export async function GET(
       .limit(50)
 
     if (error) {
-      console.error('Error fetching donations:', error)
+      logger.error('API', 'Error fetching project donations', { projectId: projectIdNum, error: error.message })
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
     return NextResponse.json(donations || [])
   } catch (error) {
-    console.error('Unexpected error:', error)
+    logger.errorWithStack('API', 'Unexpected error in project donations', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

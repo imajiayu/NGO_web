@@ -6,6 +6,7 @@ import DonationResultViewer from './DonationResultViewer'
 import DonationStatusBadge from './DonationStatusBadge'
 import { formatDate, type SupportedLocale } from '@/lib/i18n-utils'
 import { canViewResult, type DonationStatus } from '@/lib/donation-status'
+import { clientLogger } from '@/lib/logger-client'
 
 type Donation = {
   id: number
@@ -69,7 +70,7 @@ export default function ProjectDonationList({
           setDonations(data)
         }
       } catch (error) {
-        console.error('Error fetching donations:', error)
+        clientLogger.error('API', 'Error fetching project donations', { projectId, error: error instanceof Error ? error.message : String(error) })
       } finally {
         setLoading(false)
       }

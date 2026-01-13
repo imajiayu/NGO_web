@@ -7,6 +7,7 @@
 import { createServerClient } from '@/lib/supabase/server'
 import { z } from 'zod'
 import type { DonationLocale } from '@/types'
+import { logger } from '@/lib/logger'
 
 type Locale = DonationLocale
 
@@ -56,7 +57,7 @@ export async function createEmailSubscription(
     })
 
     if (error) {
-      console.error('Error creating subscription:', error)
+      logger.error('SUBSCRIPTION', 'Error creating subscription', { error: error.message })
       return { success: false, error: error.message }
     }
 
@@ -65,7 +66,7 @@ export async function createEmailSubscription(
     if (error instanceof z.ZodError) {
       return { success: false, error: error.errors[0].message }
     }
-    console.error('Unexpected error creating subscription:', error)
+    logger.errorWithStack('SUBSCRIPTION', 'Unexpected error creating subscription', error)
     return { success: false, error: 'Failed to create subscription' }
   }
 }
@@ -111,13 +112,13 @@ export async function getSubscriptions(
     const { data, error } = await query
 
     if (error) {
-      console.error('Error fetching subscriptions:', error)
+      logger.error('SUBSCRIPTION', 'Error fetching subscriptions', { error: error.message })
       return { data: null, error: error.message }
     }
 
     return { data: data as EmailSubscription[] }
   } catch (error) {
-    console.error('Unexpected error fetching subscriptions:', error)
+    logger.errorWithStack('SUBSCRIPTION', 'Unexpected error fetching subscriptions', error)
     return { data: null, error: 'Failed to fetch subscriptions' }
   }
 }

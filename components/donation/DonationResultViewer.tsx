@@ -7,6 +7,7 @@ import { XIcon, ImageIcon, Loader2Icon, DownloadIcon, PlayCircleIcon } from '@/c
 import { getAllDonationResultFiles } from '@/app/actions/donation-result'
 import type { LightboxImage } from '@/components/ImageLightbox'
 import JSZip from 'jszip'
+import { clientLogger } from '@/lib/logger-client'
 
 // P2 优化: 动态加载灯箱组件
 const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), { ssr: false })
@@ -105,7 +106,7 @@ export default function DonationResultViewer({
           const blob = await response.blob()
           zip.file(file.name, blob)
         } catch (err) {
-          console.error(`Failed to download ${file.name}:`, err)
+          clientLogger.error('DOWNLOAD', `Failed to download file`, { fileName: file.name, error: err instanceof Error ? err.message : String(err) })
         }
       }
 
@@ -119,7 +120,7 @@ export default function DonationResultViewer({
       document.body.removeChild(link)
       URL.revokeObjectURL(link.href)
     } catch (err) {
-      console.error('Failed to download:', err)
+      clientLogger.error('DOWNLOAD', 'Failed to download zip', { donationPublicId, error: err instanceof Error ? err.message : String(err) })
       alert(t('errors.downloadFailed'))
     } finally {
       setDownloading(false)

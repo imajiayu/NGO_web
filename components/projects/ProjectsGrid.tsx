@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { getAllProjectsWithStats } from '@/lib/supabase/queries'
 import ProjectCard from '@/components/projects/ProjectCard'
 import type { ProjectStats } from '@/types'
+import { logger } from '@/lib/logger'
 
 export const revalidate = 60 // Cache for 60 seconds
 
@@ -14,7 +15,7 @@ export default async function ProjectsGrid() {
   try {
     projects = await getAllProjectsWithStats()
   } catch (error) {
-    console.error('Failed to fetch projects:', error)
+    logger.errorWithStack('DB', 'Failed to fetch projects', error)
     projects = []
   }
 

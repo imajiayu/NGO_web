@@ -7,6 +7,7 @@ import DonationJourneySection from '@/components/home/DonationJourneySection'
 import ComplianceSection from '@/components/home/ComplianceSection'
 import ProjectResultsSection from '@/components/home/ProjectResultsSection'
 import type { ProjectResult } from '@/types'
+import { logger } from '@/lib/logger'
 
 type Props = {
   params: { locale: string }
@@ -41,7 +42,7 @@ export default async function Home({ params }: Props) {
       }
     }
   } catch (error) {
-    console.error('Error loading home marquee:', error)
+    logger.errorWithStack('DB', 'Error loading home marquee', error)
   }
 
   return (

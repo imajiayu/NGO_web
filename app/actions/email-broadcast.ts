@@ -10,6 +10,7 @@ import { sendBroadcastEmail } from '@/lib/email/broadcast'
 import { getAvailableTemplates, getEmailTemplate } from '@/lib/email/templates'
 import { z } from 'zod'
 import type { DonationLocale } from '@/types'
+import { logger } from '@/lib/logger'
 
 type Locale = DonationLocale
 
@@ -54,7 +55,7 @@ async function getSubscribedRecipients(): Promise<BroadcastRecipient[]> {
     .eq('is_subscribed', true)
 
   if (error) {
-    console.error('Error fetching recipients:', error)
+    logger.error('EMAIL', 'Error fetching broadcast recipients', { error: error.message })
     throw new Error('Failed to fetch recipients')
   }
 
@@ -157,7 +158,7 @@ export async function sendEmailBroadcast(
         results.failed += result.failureCount
         results.errors?.push(...result.errors)
       } catch (error) {
-        console.error(`Failed to send broadcast for locale ${locale}:`, error)
+        logger.errorWithStack('EMAIL', `Failed to send broadcast for locale ${locale}`, error)
         results.failed += emails.length
         emails.forEach((email) => {
           results.errors?.push({
@@ -170,7 +171,7 @@ export async function sendEmailBroadcast(
 
     results.success = results.failed === 0
 
-    console.log('Broadcast complete:', {
+    logger.info('EMAIL', 'Broadcast complete', {
       template: validated.templateName,
       sent: results.sent,
       failed: results.failed
@@ -182,7 +183,7 @@ export async function sendEmailBroadcast(
       return { data: null, error: error.errors[0].message }
     }
 
-    console.error('Broadcast error:', error)
+    logger.errorWithStack('EMAIL', 'Broadcast error', error)
     return {
       data: null,
       error: error instanceof Error ? error.message : 'Failed to send broadcast'
@@ -216,7 +217,7 @@ export async function getAvailableBroadcastTemplates(): Promise<{
 
     return { data: templates }
   } catch (error) {
-    console.error('Error fetching templates:', error)
+    logger.errorWithStack('EMAIL', 'Error fetching broadcast templates', error)
     return {
       data: null,
       error: error instanceof Error ? error.message : 'Failed to fetch templates'
@@ -268,7 +269,7 @@ export async function previewEmailTemplate(
       }
     }
   } catch (error) {
-    console.error('Preview error:', error)
+    logger.errorWithStack('EMAIL', 'Template preview error', error)
     return {
       data: null,
       error: error instanceof Error ? error.message : 'Failed to preview template'

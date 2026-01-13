@@ -9,6 +9,7 @@ import CollapsibleGallery from './CollapsibleGallery'
 import type { LightboxImage } from '@/components/ImageLightbox'
 import ProjectProgressSection from '@/components/projects/shared/ProjectProgressSection'
 import type { ProjectStats, ProjectResult } from '@/types'
+import { clientLogger } from '@/lib/logger-client'
 
 // P2 优化: 动态加载灯箱组件
 const ImageLightbox = dynamic(() => import('@/components/ImageLightbox'), { ssr: false })
@@ -159,10 +160,10 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
           const data = await response.json()
           setContent(data)
         } else {
-          console.warn(`No content found for project-0 in ${locale}`)
+          clientLogger.warn('UI', `No content found for project-0`, { locale })
         }
       } catch (error) {
-        console.error('Error loading project content:', error)
+        clientLogger.error('UI', 'Error loading project content', { project: 0, error: error instanceof Error ? error.message : String(error) })
       } finally {
         setLoading(false)
       }

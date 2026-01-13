@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
 import { z } from 'zod'
+import { logger } from '@/lib/logger'
 
 // ==================== Validation ====================
 
@@ -37,7 +38,7 @@ export async function GET(request: NextRequest) {
     })
 
     if (error) {
-      console.error('Error unsubscribing:', error)
+      logger.error('SUBSCRIPTION', 'Unsubscribe failed', { error: error.message })
       // Redirect to error page
       return NextResponse.redirect(
         new URL(`/${locale}/unsubscribed?error=true`, request.url)
@@ -47,7 +48,7 @@ export async function GET(request: NextRequest) {
     // Redirect to unsubscribed page
     return NextResponse.redirect(new URL(`/${locale}/unsubscribed`, request.url))
   } catch (error) {
-    console.error('Unsubscribe GET error:', error)
+    logger.errorWithStack('SUBSCRIPTION', 'Unsubscribe GET error', error)
     const locale = request.nextUrl.searchParams.get('locale') || 'en'
     return NextResponse.redirect(
       new URL(`/${locale}/unsubscribed?error=true`, request.url)
@@ -76,7 +77,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (error) {
-      console.error('Error unsubscribing:', error)
+      logger.error('SUBSCRIPTION', 'Unsubscribe failed', { error: error.message })
       return NextResponse.json(
         { success: false, error: error.message },
         { status: 500 }
@@ -92,7 +93,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.error('Unsubscribe POST error:', error)
+    logger.errorWithStack('SUBSCRIPTION', 'Unsubscribe POST error', error)
     return NextResponse.json(
       { success: false, error: 'Failed to unsubscribe' },
       { status: 500 }

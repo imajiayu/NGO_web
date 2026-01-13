@@ -6,6 +6,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import { clientLogger } from '@/lib/logger-client'
 import {
   sendEmailBroadcast,
   getAvailableBroadcastTemplates,
@@ -90,7 +91,7 @@ export default function BroadcastModal({
         }
       }
     } catch (err) {
-      console.error('Failed to load templates:', err)
+      clientLogger.error('API', 'Failed to load email templates', { error: err instanceof Error ? err.message : String(err) })
     } finally {
       setIsLoadingTemplates(false)
     }

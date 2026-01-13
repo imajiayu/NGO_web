@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { clientLogger } from '@/lib/logger-client'
 
 type CopyButtonProps = {
   text: string
@@ -25,7 +26,7 @@ export default function CopyButton({
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error('Failed to copy:', err)
+      clientLogger.error('CLIPBOARD', 'Failed to copy', { error: err instanceof Error ? err.message : String(err) })
     }
   }
 

@@ -11,6 +11,7 @@ import {
   isFailedStatus,
   type DonationStatus
 } from '@/lib/donation-status'
+import { logger } from '@/lib/logger'
 
 type Project = Database['public']['Tables']['projects']['Row']
 type ProjectUpdate = Database['public']['Tables']['projects']['Update']
@@ -195,7 +196,10 @@ export async function updateDonationStatus(
         .list(current.donation_public_id, { limit: 100 })
 
       if (listError) {
-        console.error('[ADMIN] Error listing files:', listError)
+        logger.error('ADMIN', 'Error listing result files', {
+          donationId: current.donation_public_id,
+          error: listError.message,
+        })
         // 继续执行，只是没有图片
       } else {
         // 过滤掉文件夹（.thumbnails）和隐藏文件，只保留实际的图片/视频文件
@@ -217,19 +221,26 @@ export async function updateDonationStatus(
               .from('donation-results')
               .getPublicUrl(`${current.donation_public_id}/${imageFile.name}`)
             resultImageUrl = publicUrl
-            console.log(`[ADMIN] Result image URL: ${resultImageUrl} (${imageFile.name})`)
+            logger.debug('ADMIN', 'Result image found', {
+              donationId: current.donation_public_id,
+              fileName: imageFile.name,
+            })
           } else {
-            console.warn(`[ADMIN] Only video files found for donation ${current.donation_public_id}, email will not show media (videos cannot be embedded in emails)`)
-            // 只有视频没有图片，邮件中不显示，用户需要去追踪页面查看
+            logger.warn('ADMIN', 'Only video files found - email will not show media', {
+              donationId: current.donation_public_id,
+            })
           }
         } else {
-          console.warn(`[ADMIN] No result files found for donation ${current.donation_public_id}`)
-          // 没有文件也继续，邮件中不显示图片
+          logger.warn('ADMIN', 'No result files found', {
+            donationId: current.donation_public_id,
+          })
         }
       }
     } catch (error) {
-      console.error('[ADMIN] Error getting result image:', error)
-      // 获取图片失败也不影响状态更新，只是邮件中没有图片
+      logger.error('ADMIN', 'Error getting result image', {
+        donationId: current.donation_public_id,
+        error: error instanceof Error ? error.message : String(error),
+      })
     }
   }
 
@@ -270,11 +281,16 @@ export async function updateDonationStatus(
           resultImageUrl
         })
 
-        console.log(`[ADMIN] Donation completed email sent to ${current.donor_email} for donation ${current.donation_public_id}`)
+        logger.info('ADMIN', 'Donation completed email sent', {
+          to: current.donor_email,
+          donationId: current.donation_public_id,
+        })
       }
     } catch (emailError) {
-      console.error('[ADMIN] Failed to send completion email:', emailError)
-      // Don't throw - email failure shouldn't fail the status update
+      logger.error('ADMIN', 'Failed to send completion email', {
+        donationId: current.donation_public_id,
+        error: emailError instanceof Error ? emailError.message : String(emailError),
+      })
     }
   }
 
@@ -342,7 +358,7 @@ export async function uploadDonationResultFile(formData: FormData) {
   // 如果是图片且 Cloudinary 已配置，使用 Cloudinary 处理（压缩 + 人脸打码）
   if (isImage && isCloudinaryConfigured()) {
     try {
-      console.log(`[Upload] Processing image with Cloudinary: ${file.name}`)
+      logger.info('ADMIN', 'Processing image with Cloudinary', { fileName: file.name })
 
       const processed = await processImageWithCloudinary({
         buffer,
@@ -360,11 +376,12 @@ export async function uploadDonationResultFile(formData: FormData) {
       // 更新 content type
       contentType = `image/${processed.format}`
 
-      console.log(
-        `[Upload] Cloudinary processed: ${file.name} ` +
-        `(${processed.originalSize} → ${processed.processedSize} bytes, ` +
-        `-${((1 - processed.processedSize / processed.originalSize) * 100).toFixed(1)}%)`
-      )
+      logger.info('ADMIN', 'Cloudinary processing complete', {
+        fileName: file.name,
+        originalBytes: processed.originalSize,
+        processedBytes: processed.processedSize,
+        reduction: `${((1 - processed.processedSize / processed.originalSize) * 100).toFixed(1)}%`,
+      })
 
       // 上传处理后的文件到 Supabase
       const { error: uploadError } = await supabase.storage
@@ -400,14 +417,18 @@ export async function uploadDonationResultFile(formData: FormData) {
             upsert: false,
           })
 
-        console.log(`[Upload] Thumbnail created: ${thumbnailFileName}`)
+        logger.debug('ADMIN', 'Thumbnail created', { fileName: thumbnailFileName })
       } catch (thumbnailError) {
-        console.error('[Upload] Failed to generate thumbnail:', thumbnailError)
+        logger.error('ADMIN', 'Failed to generate thumbnail', {
+          error: thumbnailError instanceof Error ? thumbnailError.message : String(thumbnailError),
+        })
       }
 
     } catch (cloudinaryError) {
       // Cloudinary 处理失败，回退到直接上传原图
-      console.error('[Upload] Cloudinary processing failed, uploading original image:', cloudinaryError)
+      logger.error('ADMIN', 'Cloudinary processing failed, uploading original', {
+        error: cloudinaryError instanceof Error ? cloudinaryError.message : String(cloudinaryError),
+      })
 
       const { error: uploadError } = await supabase.storage
         .from('donation-results')
@@ -442,15 +463,17 @@ export async function uploadDonationResultFile(formData: FormData) {
             upsert: false,
           })
       } catch (thumbnailError) {
-        console.error('[Upload] Failed to generate thumbnail:', thumbnailError)
+        logger.error('ADMIN', 'Failed to generate thumbnail', {
+          error: thumbnailError instanceof Error ? thumbnailError.message : String(thumbnailError),
+        })
       }
     }
   } else {
     // 非图片文件（视频）或 Cloudinary 未配置，直接上传原始文件
     if (!isImage) {
-      console.log(`[Upload] Uploading video file directly: ${file.name}`)
+      logger.debug('MEDIA', 'Uploading video file directly', { fileName: file.name })
     } else {
-      console.warn('[Upload] Cloudinary not configured, uploading original image')
+      logger.warn('MEDIA', 'Cloudinary not configured, uploading original image')
     }
 
     const { error: uploadError } = await supabase.storage
@@ -487,9 +510,11 @@ export async function uploadDonationResultFile(formData: FormData) {
             upsert: false,
           })
 
-        console.log(`[Upload] Thumbnail created: ${thumbnailFileName}`)
+        logger.debug('ADMIN', 'Thumbnail created', { fileName: thumbnailFileName })
       } catch (thumbnailError) {
-        console.error('[Upload] Failed to generate thumbnail:', thumbnailError)
+        logger.error('ADMIN', 'Failed to generate thumbnail', {
+          error: thumbnailError instanceof Error ? thumbnailError.message : String(thumbnailError),
+        })
       }
     }
   }

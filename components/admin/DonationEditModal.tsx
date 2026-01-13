@@ -8,6 +8,7 @@ import {
   getDonationResultFiles,
   deleteDonationResultFile
 } from '@/app/actions/admin'
+import { clientLogger } from '@/lib/logger-client'
 import DonationStatusProgress from './DonationStatusProgress'
 import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
 import {
@@ -99,7 +100,7 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
       const result = await getDonationResultFiles(donation.id)
       setFiles(result)
     } catch (err) {
-      console.error('Failed to load files:', err)
+      clientLogger.error('API', 'Failed to load donation files', { donationId: donation.id, error: err instanceof Error ? err.message : String(err) })
     } finally {
       setLoadingFiles(false)
     }

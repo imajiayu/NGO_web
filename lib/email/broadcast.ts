@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { EmailTemplate, loadTemplateContent, replaceTemplateVariables } from './templates'
+import { logger } from '@/lib/logger'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -105,7 +106,7 @@ export async function sendBroadcastEmail(
 
   // 打印错误日志（如果有）
   if (errors.length > 0) {
-    console.error('Broadcast email errors:', errors)
+    logger.error('EMAIL', 'Broadcast email errors', { errorCount: errors.length, errors })
   }
 
   return {

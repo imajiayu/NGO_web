@@ -11,6 +11,7 @@ import PaymentMethodSelector, { type PaymentMethod } from './PaymentMethodSelect
 import CryptoSelector from './CryptoSelector'
 import type { CreatePaymentResponse } from '@/lib/payment/nowpayments/types'
 import { getProjectName, getLocation, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
+import { clientLogger } from '@/lib/logger-client'
 
 interface DonationFormCardProps {
   project: ProjectStats | null
@@ -446,12 +447,12 @@ export default function DonationFormCard({
           )
           // Silently succeed - don't show error to user if subscription fails
         } catch (subscriptionError) {
-          console.error('Failed to create email subscription:', subscriptionError)
+          clientLogger.error('FORM:DONATION', 'Failed to create email subscription', { error: subscriptionError instanceof Error ? subscriptionError.message : String(subscriptionError) })
           // Don't block the donation flow if subscription fails
         }
       }
     } catch (err) {
-      console.error('Error creating payment intent:', err)
+      clientLogger.error('FORM:DONATION', 'Error creating payment intent', { error: err instanceof Error ? err.message : String(err) })
       if (err instanceof Error && err.message.includes('email')) {
         setError(t('errors.invalidEmail'))
       } else if (err instanceof Error && err.message.includes('validation')) {
@@ -539,11 +540,11 @@ export default function DonationFormCard({
             locale as 'en' | 'zh' | 'ua'
           )
         } catch (subscriptionError) {
-          console.error('Failed to create email subscription:', subscriptionError)
+          clientLogger.error('FORM:DONATION', 'Failed to create email subscription', { error: subscriptionError instanceof Error ? subscriptionError.message : String(subscriptionError) })
         }
       }
     } catch (err) {
-      console.error('Error creating crypto payment:', err)
+      clientLogger.error('FORM:DONATION', 'Error creating crypto payment', { error: err instanceof Error ? err.message : String(err) })
       if (err instanceof Error && err.message.includes('email')) {
         setError(t('errors.invalidEmail'))
       } else if (err instanceof Error && err.message.includes('validation')) {

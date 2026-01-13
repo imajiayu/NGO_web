@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createAnonClient } from '@/lib/supabase/server'
+import { logger } from '@/lib/logger'
 
 // Disable Next.js caching for this API route
 export const dynamic = 'force-dynamic'
@@ -40,7 +41,7 @@ export async function GET(
       .order('id', { ascending: true })
 
     if (error) {
-      console.error('Error fetching donations:', error)
+      logger.error('API', 'Error fetching order donations', { orderReference, error: error.message })
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
@@ -74,7 +75,7 @@ export async function GET(
       }
     )
   } catch (error) {
-    console.error('Unexpected error:', error)
+    logger.errorWithStack('API', 'Unexpected error in order donations', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

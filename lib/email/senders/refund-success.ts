@@ -5,6 +5,7 @@
 import { resend, FROM_EMAIL } from '../client'
 import { RefundSuccessEmailParams } from '../types'
 import { generateRefundSuccessEmail } from '../templates/transactional/refund-success'
+import { logger } from '@/lib/logger'
 
 /**
  * Send refund success notification email
@@ -22,14 +23,14 @@ export async function sendRefundSuccessEmail(params: RefundSuccessEmailParams) {
     })
 
     if (error) {
-      console.error('Error sending refund success email:', error)
+      logger.error('EMAIL', 'Error sending refund success email', { error: error.message })
       throw error
     }
 
-    console.log('Refund success email sent successfully:', data?.id)
+    logger.info('EMAIL', 'Refund success email sent', { messageId: data?.id })
     return data
   } catch (error) {
-    console.error('Failed to send refund success email:', error)
+    logger.errorWithStack('EMAIL', 'Failed to send refund success email', error)
     throw error
   }
 }

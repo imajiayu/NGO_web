@@ -6,8 +6,9 @@ import { sendPaymentSuccessEmail, sendRefundSuccessEmail } from '@/lib/email'
 import {
   PAYMENT_WEBHOOK_SOURCE_STATUSES,
   REFUND_WEBHOOK_SOURCE_STATUSES,
-  type DonationStatus
+  type DonationStatus,
 } from '@/lib/donation-status'
+import { logger } from '@/lib/logger'
 
 /**
  * NOWPayments Webhook Handler (IPN - Instant Payment Notification)
@@ -31,18 +32,23 @@ import {
  */
 export async function POST(req: Request) {
   try {
-    const body = await req.json() as NowPaymentsWebhookBody
+    const body = (await req.json()) as NowPaymentsWebhookBody
     const signature = req.headers.get('x-nowpayments-sig') || ''
 
     const paymentStatus = body.payment_status
-    const orderId = body.order_id // This is our order_reference
+    const orderId = body.order_id
 
-    console.log(`[NOWPAYMENTS WEBHOOK] Received: ${paymentStatus} for order ${orderId}`)
-    console.log(`[NOWPAYMENTS WEBHOOK] Payment ID: ${body.payment_id}, Actually paid: ${body.actually_paid} ${body.pay_currency}`)
+    logger.info('WEBHOOK:NOWPAYMENTS', 'Webhook received', {
+      status: paymentStatus,
+      orderId,
+      paymentId: body.payment_id,
+      actuallyPaid: body.actually_paid,
+      payCurrency: body.pay_currency,
+    })
 
     // Verify signature
     if (!signature || !verifyNowPaymentsSignature(body, signature)) {
-      console.error('[NOWPAYMENTS WEBHOOK] Invalid signature')
+      logger.error('WEBHOOK:NOWPAYMENTS', 'Invalid signature', { orderId })
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
     }
 
@@ -55,20 +61,23 @@ export async function POST(req: Request) {
       .eq('order_reference', orderId)
 
     if (fetchError) {
-      console.error('[NOWPAYMENTS WEBHOOK] Database error:', fetchError.message)
+      logger.error('WEBHOOK:NOWPAYMENTS', 'Database query failed', {
+        orderId,
+        error: fetchError.message,
+      })
       throw fetchError
     }
 
     // Case 1: No donations found
     if (!donations || donations.length === 0) {
-      console.warn('[NOWPAYMENTS WEBHOOK] Order not found:', orderId)
+      logger.warn('WEBHOOK:NOWPAYMENTS', 'Order not found', { orderId })
       return NextResponse.json({ status: 'ok', message: 'Order not found' })
     }
 
     // Verify this is a NOWPayments donation
-    const isNowPaymentsDonation = donations.some(d => d.payment_method === 'NOWPayments')
+    const isNowPaymentsDonation = donations.some((d) => d.payment_method === 'NOWPayments')
     if (!isNowPaymentsDonation) {
-      console.warn('[NOWPAYMENTS WEBHOOK] Order is not a NOWPayments donation:', orderId)
+      logger.warn('WEBHOOK:NOWPAYMENTS', 'Not a NOWPayments order', { orderId })
       return NextResponse.json({ status: 'ok', message: 'Not a NOWPayments order' })
     }
 
@@ -78,78 +87,83 @@ export async function POST(req: Request) {
 
     switch (paymentStatus) {
       case NOWPAYMENTS_STATUS.WAITING:
-        // No update needed, donation is already pending
-        console.log('[NOWPAYMENTS WEBHOOK] Payment waiting for user to send crypto')
+        logger.debug('WEBHOOK:NOWPAYMENTS', 'Waiting for crypto payment', { orderId })
         return NextResponse.json({ status: 'ok' })
 
       case NOWPAYMENTS_STATUS.CONFIRMING:
       case NOWPAYMENTS_STATUS.CONFIRMED:
       case NOWPAYMENTS_STATUS.SENDING:
         newStatus = 'processing'
-        console.log(`[NOWPAYMENTS WEBHOOK] Payment in progress: ${paymentStatus}`)
+        logger.info('WEBHOOK:NOWPAYMENTS', 'Payment in progress', {
+          orderId,
+          status: paymentStatus,
+        })
         break
 
       case NOWPAYMENTS_STATUS.FINISHED:
         newStatus = 'paid'
         shouldSendEmail = true
-        console.log('[NOWPAYMENTS WEBHOOK] Payment finished - funds received')
+        logger.info('WEBHOOK:NOWPAYMENTS', 'Payment finished', { orderId })
         break
 
       case NOWPAYMENTS_STATUS.PARTIALLY_PAID:
-        // User paid less than required - still mark as paid for manual reconciliation
-        // Admin should compare NOWPayments dashboard with database records
         newStatus = 'paid'
         shouldSendEmail = true
-        console.log(`[NOWPAYMENTS WEBHOOK] Partial payment - expected ${body.pay_amount}, received ${body.actually_paid} ${body.pay_currency}`)
-        console.log(`[NOWPAYMENTS WEBHOOK] Order ${orderId} requires manual reconciliation`)
+        logger.warn('WEBHOOK:NOWPAYMENTS', 'Partial payment - requires reconciliation', {
+          orderId,
+          expected: body.pay_amount,
+          received: body.actually_paid,
+          currency: body.pay_currency,
+        })
         break
 
       case NOWPAYMENTS_STATUS.FAILED:
         newStatus = 'failed'
-        console.log('[NOWPAYMENTS WEBHOOK] Payment failed')
+        logger.info('WEBHOOK:NOWPAYMENTS', 'Payment failed', { orderId })
         break
 
       case NOWPAYMENTS_STATUS.EXPIRED:
         newStatus = 'expired'
-        console.log('[NOWPAYMENTS WEBHOOK] Payment expired (7 days without payment)')
+        logger.info('WEBHOOK:NOWPAYMENTS', 'Payment expired', { orderId })
         break
 
       case NOWPAYMENTS_STATUS.REFUNDED:
         newStatus = 'refunded'
         shouldSendEmail = true
-        console.log('[NOWPAYMENTS WEBHOOK] Payment refunded')
+        logger.info('WEBHOOK:NOWPAYMENTS', 'Payment refunded', { orderId })
         break
 
       case NOWPAYMENTS_STATUS.WRONG_ASSET_CONFIRMED:
         newStatus = 'failed'
-        console.log('[NOWPAYMENTS WEBHOOK] Wrong asset/network used')
+        logger.warn('WEBHOOK:NOWPAYMENTS', 'Wrong asset/network used', { orderId })
         break
 
       case NOWPAYMENTS_STATUS.CANCELLED:
         newStatus = 'failed'
-        console.log('[NOWPAYMENTS WEBHOOK] Payment cancelled')
+        logger.info('WEBHOOK:NOWPAYMENTS', 'Payment cancelled', { orderId })
         break
 
       default:
-        console.warn(`[NOWPAYMENTS WEBHOOK] Unknown status: ${paymentStatus}`)
+        logger.warn('WEBHOOK:NOWPAYMENTS', 'Unknown status', { orderId, status: paymentStatus })
         return NextResponse.json({ status: 'ok', message: 'Unknown status' })
     }
 
     // Determine which statuses can be updated
-    // NOWPayments payments can only be updated from certain states
     const isRefund = paymentStatus === NOWPAYMENTS_STATUS.REFUNDED
     const transitionableStatuses: readonly DonationStatus[] = isRefund
       ? REFUND_WEBHOOK_SOURCE_STATUSES
       : PAYMENT_WEBHOOK_SOURCE_STATUSES
 
     // Check if any donations are in a transitionable state
-    const updatableDonations = donations.filter(d =>
+    const updatableDonations = donations.filter((d) =>
       transitionableStatuses.includes(d.donation_status as DonationStatus)
     )
 
     if (updatableDonations.length === 0) {
-      console.log('[NOWPAYMENTS WEBHOOK] No donations in transitionable state - skipping update')
-      console.log(`[NOWPAYMENTS WEBHOOK] Current statuses: ${donations.map(d => d.donation_status).join(', ')}`)
+      logger.debug('WEBHOOK:NOWPAYMENTS', 'No donations in transitionable state', {
+        orderId,
+        currentStatuses: donations.map((d) => d.donation_status),
+      })
       return NextResponse.json({ status: 'ok' })
     }
 
@@ -163,46 +177,58 @@ export async function POST(req: Request) {
         .select('project_id, donation_public_id, donor_email, donor_name, locale, amount')
 
       if (updateError) {
-        console.error('[NOWPAYMENTS WEBHOOK] Update failed:', updateError.message)
-        // Still return OK to prevent NOWPayments retries
+        logger.error('WEBHOOK:NOWPAYMENTS', 'Update failed', {
+          orderId,
+          error: updateError.message,
+        })
         return NextResponse.json({ status: 'ok', message: 'Update failed' })
       }
 
-      console.log(`[NOWPAYMENTS WEBHOOK] Updated ${updatedDonations?.length || 0} donations to ${newStatus}`)
+      logger.info('WEBHOOK:NOWPAYMENTS', 'Donations updated', {
+        orderId,
+        count: updatedDonations?.length || 0,
+        toStatus: newStatus,
+      })
 
       // Send confirmation email for successful payments
       if (shouldSendEmail && updatedDonations && updatedDonations.length > 0) {
         try {
           const firstDonation = updatedDonations[0]
+          const projectIds = [...new Set(updatedDonations.map((d) => d.project_id))]
 
-          // Get unique project IDs from all donations
-          const projectIds = [...new Set(updatedDonations.map(d => d.project_id))]
-
-          // Fetch all projects in one query
           const { data: projects } = await supabase
             .from('projects')
             .select('id, project_name_i18n, location_i18n, unit_name_i18n, aggregate_donations')
             .in('id', projectIds)
 
           if (projects && projects.length > 0) {
-            // Create a map for quick project lookup
-            const projectMap = new Map(projects.map(p => [p.id, p]))
+            const projectMap = new Map(projects.map((p) => [p.id, p]))
 
             if (newStatus === 'paid') {
-              // Build donation items array for payment success email
-              const donationItems = updatedDonations.map(donation => {
+              const donationItems = updatedDonations.map((donation) => {
                 const project = projectMap.get(donation.project_id)
                 return {
                   donationPublicId: donation.donation_public_id,
-                  projectNameI18n: (project?.project_name_i18n || { en: '', zh: '', ua: '' }) as { en: string; zh: string; ua: string },
-                  locationI18n: (project?.location_i18n || { en: '', zh: '', ua: '' }) as { en: string; zh: string; ua: string },
-                  unitNameI18n: (project?.unit_name_i18n || { en: '', zh: '', ua: '' }) as { en: string; zh: string; ua: string },
+                  projectNameI18n: (project?.project_name_i18n || { en: '', zh: '', ua: '' }) as {
+                    en: string
+                    zh: string
+                    ua: string
+                  },
+                  locationI18n: (project?.location_i18n || { en: '', zh: '', ua: '' }) as {
+                    en: string
+                    zh: string
+                    ua: string
+                  },
+                  unitNameI18n: (project?.unit_name_i18n || { en: '', zh: '', ua: '' }) as {
+                    en: string
+                    zh: string
+                    ua: string
+                  },
                   amount: Number(donation.amount),
-                  isAggregate: project?.aggregate_donations === true
+                  isAggregate: project?.aggregate_donations === true,
                 }
               })
 
-              // Calculate total from actually_paid (crypto amount converted)
               const totalAmount = updatedDonations.reduce((sum, d) => sum + Number(d.amount), 0)
 
               await sendPaymentSuccessEmail({
@@ -210,41 +236,50 @@ export async function POST(req: Request) {
                 donorName: firstDonation.donor_name,
                 donations: donationItems,
                 totalAmount,
-                currency: 'USD', // We price in USD
+                currency: 'USD',
                 locale: firstDonation.locale as 'en' | 'zh' | 'ua',
               })
 
-              console.log('[NOWPAYMENTS WEBHOOK] Confirmation email sent to', firstDonation.donor_email)
+              logger.info('WEBHOOK:NOWPAYMENTS', 'Confirmation email sent', {
+                orderId,
+                to: firstDonation.donor_email,
+              })
             } else if (newStatus === 'refunded') {
-              // Send refund success email
               const project = projectMap.get(firstDonation.project_id)
               const refundAmount = updatedDonations.reduce((sum, d) => sum + Number(d.amount), 0)
 
               await sendRefundSuccessEmail({
                 to: firstDonation.donor_email,
                 donorName: firstDonation.donor_name,
-                projectNameI18n: (project?.project_name_i18n || { en: '', zh: '', ua: '' }) as { en: string; zh: string; ua: string },
-                donationIds: updatedDonations.map(d => d.donation_public_id),
+                projectNameI18n: (project?.project_name_i18n || { en: '', zh: '', ua: '' }) as {
+                  en: string
+                  zh: string
+                  ua: string
+                },
+                donationIds: updatedDonations.map((d) => d.donation_public_id),
                 refundAmount,
                 currency: 'USD',
                 locale: firstDonation.locale as 'en' | 'zh' | 'ua',
               })
 
-              console.log('[NOWPAYMENTS WEBHOOK] Refund email sent to', firstDonation.donor_email)
+              logger.info('WEBHOOK:NOWPAYMENTS', 'Refund email sent', {
+                orderId,
+                to: firstDonation.donor_email,
+              })
             }
           }
         } catch (emailError) {
-          console.error('[NOWPAYMENTS WEBHOOK] Email failed:', emailError)
-          // Don't throw - email failure shouldn't fail the webhook
+          logger.error('WEBHOOK:NOWPAYMENTS', 'Email send failed', {
+            orderId,
+            error: emailError instanceof Error ? emailError.message : String(emailError),
+          })
         }
       }
     }
 
     return NextResponse.json({ status: 'ok' })
-
   } catch (error) {
-    console.error('[NOWPAYMENTS WEBHOOK] Unexpected error:', error)
-    // Return 200 to prevent NOWPayments retries for server errors
+    logger.errorWithStack('WEBHOOK:NOWPAYMENTS', 'Unexpected error', error)
     return NextResponse.json({ status: 'error', message: 'Internal error' })
   }
 }

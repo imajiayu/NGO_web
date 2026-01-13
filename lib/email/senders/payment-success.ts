@@ -5,6 +5,7 @@
 import { resend, FROM_EMAIL } from '../client'
 import { PaymentSuccessEmailParams } from '../types'
 import { generatePaymentSuccessEmail } from '../templates/transactional/payment-success'
+import { logger } from '@/lib/logger'
 
 /**
  * Send payment success confirmation email
@@ -22,14 +23,14 @@ export async function sendPaymentSuccessEmail(params: PaymentSuccessEmailParams)
     })
 
     if (error) {
-      console.error('Error sending payment success email:', error)
+      logger.error('EMAIL', 'Error sending payment success email', { error: error.message })
       throw error
     }
 
-    console.log('Payment success email sent successfully:', data?.id)
+    logger.info('EMAIL', 'Payment success email sent', { messageId: data?.id })
     return data
   } catch (error) {
-    console.error('Failed to send payment success email:', error)
+    logger.errorWithStack('EMAIL', 'Failed to send payment success email', error)
     throw error
   }
 }

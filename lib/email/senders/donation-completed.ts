@@ -5,6 +5,7 @@
 import { resend, FROM_EMAIL } from '../client'
 import { DonationCompletedEmailParams } from '../types'
 import { generateDonationCompletedEmail } from '../templates/transactional/donation-completed'
+import { logger } from '@/lib/logger'
 
 /**
  * Send donation completed notification email
@@ -22,14 +23,14 @@ export async function sendDonationCompletedEmail(params: DonationCompletedEmailP
     })
 
     if (error) {
-      console.error('Error sending donation completed email:', error)
+      logger.error('EMAIL', 'Error sending donation completed email', { error: error.message })
       throw error
     }
 
-    console.log('Donation completed email sent successfully:', data?.id)
+    logger.info('EMAIL', 'Donation completed email sent', { messageId: data?.id })
     return data
   } catch (error) {
-    console.error('Failed to send donation completed email:', error)
+    logger.errorWithStack('EMAIL', 'Failed to send donation completed email', error)
     throw error
   }
 }

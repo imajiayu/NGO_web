@@ -13,6 +13,7 @@ import {
   FileTextIcon,
 } from '@/components/icons'
 import Image from 'next/image'
+import { clientLogger } from '@/lib/logger-client'
 import { useTranslations } from 'next-intl'
 import type { LightboxImage } from '@/components/ImageLightbox'
 import ProjectProgressSection from '@/components/projects/shared/ProjectProgressSection'
@@ -135,7 +136,7 @@ export default function Project3DetailContent({
           setSuppliesData(suppliesDataJson)
         }
       } catch (error) {
-        console.error('Error loading project content:', error)
+        clientLogger.error('UI', 'Error loading project content', { project: 3, error: error instanceof Error ? error.message : String(error) })
       } finally {
         setLoading(false)
       }

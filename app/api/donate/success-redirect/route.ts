@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { logger } from '@/lib/logger'
 
 /**
  * API route to handle redirects from WayForPay
@@ -23,14 +24,10 @@ export async function GET(request: NextRequest) {
     // Extract locale from query params or default to 'en'
     const locale = url.searchParams.get('locale') || 'en'
 
-    console.log('[Success Redirect] GET received:', {
-      orderReference,
-      locale,
-      queryParams: Object.fromEntries(url.searchParams),
-    })
+    logger.debug('REDIRECT', 'GET received', { orderReference, locale })
 
     if (!orderReference) {
-      console.error('[Success Redirect] No order reference found in GET')
+      logger.warn('REDIRECT', 'No order reference found in GET')
       // Redirect to success page without order
       return NextResponse.redirect(
         new URL(`/${locale}/donate/success`, request.url)
@@ -41,11 +38,11 @@ export async function GET(request: NextRequest) {
     const successUrl = new URL(`/${locale}/donate/success`, request.url)
     successUrl.searchParams.set('order', orderReference)
 
-    console.log('[Success Redirect] GET redirecting to:', successUrl.toString())
+    logger.debug('REDIRECT', 'GET redirecting', { url: successUrl.toString() })
 
     return NextResponse.redirect(successUrl, 303)
   } catch (error) {
-    console.error('[Success Redirect] Error handling GET:', error)
+    logger.errorWithStack('REDIRECT', 'Error handling GET', error)
 
     // Fallback to success page without parameters
     return NextResponse.redirect(
@@ -73,15 +70,10 @@ export async function POST(request: NextRequest) {
       (formData.get('locale') as string) ||
       'en'
 
-    console.log('[Success Redirect] POST received:', {
-      orderReference,
-      locale,
-      formDataKeys: Array.from(formData.keys()),
-      queryParams: Object.fromEntries(url.searchParams),
-    })
+    logger.debug('REDIRECT', 'POST received', { orderReference, locale })
 
     if (!orderReference) {
-      console.error('[Success Redirect] No order reference found')
+      logger.warn('REDIRECT', 'No order reference found in POST')
       // Redirect to success page without order
       return NextResponse.redirect(
         new URL(`/${locale}/donate/success`, request.url)
@@ -92,11 +84,11 @@ export async function POST(request: NextRequest) {
     const successUrl = new URL(`/${locale}/donate/success`, request.url)
     successUrl.searchParams.set('order', orderReference)
 
-    console.log('[Success Redirect] Redirecting to:', successUrl.toString())
+    logger.debug('REDIRECT', 'POST redirecting', { url: successUrl.toString() })
 
     return NextResponse.redirect(successUrl, 303) // 303 See Other for POST->GET redirect
   } catch (error) {
-    console.error('[Success Redirect] Error handling POST:', error)
+    logger.errorWithStack('REDIRECT', 'Error handling POST', error)
 
     // Fallback to success page without parameters
     return NextResponse.redirect(

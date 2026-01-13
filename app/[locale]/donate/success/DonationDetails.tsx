@@ -10,6 +10,7 @@ import LoadingState from './LoadingState'
 import EmptyState from './EmptyState'
 import type { I18nText } from '@/types'
 import { getStatusGroup, type DonationStatus, type StatusGroup } from '@/lib/donation-status'
+import { clientLogger } from '@/lib/logger-client'
 
 type Donation = {
   id: number
@@ -54,7 +55,7 @@ export default function DonationDetails({ orderReference, locale }: Props) {
           }
         }
       } catch (error) {
-        console.error('Error fetching donations:', error)
+        clientLogger.error('API', 'Error fetching order donations', { orderReference, error: error instanceof Error ? error.message : String(error) })
       } finally {
         if (isMounted) {
           setLoading(false)

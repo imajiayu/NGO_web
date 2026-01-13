@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { logger } from '@/lib/logger'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -14,8 +15,8 @@ export async function POST(req: NextRequest) {
     // Extract email data from webhook payload
     const { email_id, from, to, subject, cc, bcc } = payload.data
 
-    console.log('📧 Received inbound email webhook:', {
-      email_id,
+    logger.info('WEBHOOK:RESEND', 'Inbound email received', {
+      emailId: email_id,
       from,
       to: to[0],
       subject,
@@ -79,7 +80,7 @@ ${textBody || '(No content)'}
       `.trim(),
     })
 
-    console.log('✅ Email forwarded successfully:', {
+    logger.info('WEBHOOK:RESEND', 'Email forwarded successfully', {
       messageId: forwardResult.data?.id,
       forwardedTo: 'majiayu110@gmail.com',
     })
@@ -93,7 +94,7 @@ ${textBody || '(No content)'}
       { status: 200 }
     )
   } catch (error) {
-    console.error('❌ Error forwarding email:', error)
+    logger.errorWithStack('WEBHOOK:RESEND', 'Error forwarding email', error)
 
     return NextResponse.json(
       {

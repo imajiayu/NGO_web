@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { markDonationWidgetFailed } from '@/app/actions/donation'
+import { clientLogger } from '@/lib/logger-client'
 
 interface Props {
   paymentParams: any
@@ -51,16 +52,17 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
     // Helper function to mark donation as failed (with duplicate prevention)
     const markAsFailed = async (reason: string) => {
       if (markedAsFailedRef.current) {
-        console.log('[WIDGET] Already marked as widget_load_failed, skipping duplicate call')
         return
       }
       markedAsFailedRef.current = true
-      console.log(`[WIDGET] Marking as widget_load_failed - Reason: ${reason}`)
+      clientLogger.warn('WIDGET:WAYFORPAY', 'Marking as widget_load_failed', { reason })
 
       try {
         await markDonationWidgetFailed(paymentParams.orderReference)
       } catch (err) {
-        console.error('[WIDGET] Failed to mark as widget_load_failed:', err)
+        clientLogger.error('WIDGET:WAYFORPAY', 'Failed to mark as widget_load_failed', {
+          error: err instanceof Error ? err.message : String(err),
+        })
       }
     }
 
@@ -68,7 +70,7 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
     const handleWindowError = (event: ErrorEvent) => {
       // Check if error is related to WayForPay
       if (event.message && event.message.includes('wayforpay')) {
-        console.error('[WIDGET] Window error detected:', event.message)
+        clientLogger.error('WIDGET:WAYFORPAY', 'Window error detected', { message: event.message })
         // Only mark as failed if widget was never detected (true load failure)
         if (!widgetOpenedRef.current && !hasRedirectedRef.current && !widgetEverDetectedRef.current) {
           setError(t('errors.paymentLoadFailed'))
@@ -205,7 +207,6 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
         // This helps detect widget opening even if user closes it quickly
         const doEarlyCheck = () => {
           if (checkWidgetOpened()) {
-            console.log('[WIDGET] Early detection: widget found in DOM')
             if (earlyDetectionIntervalRef.current) {
               clearInterval(earlyDetectionIntervalRef.current)
               earlyDetectionIntervalRef.current = null
@@ -244,7 +245,6 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
 
             // Skip if check already completed (prevents duplicate runs from React Strict Mode or re-renders)
             if (widgetCheckCompletedRef.current) {
-              console.log('[WIDGET] Widget check already completed, skipping')
               return
             }
             widgetCheckCompletedRef.current = true
@@ -252,16 +252,16 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
             if (!widgetOpenedRef.current && !hasRedirectedRef.current) {
               // First check if widget was ever detected (user may have closed it)
               if (widgetEverDetectedRef.current) {
-                console.log('[WIDGET] Widget was previously detected - user may have closed it')
                 widgetOpenedRef.current = true
                 // Don't mark as failed - donation stays pending, WayForPay will handle expiration
               } else if (checkWidgetOpened()) {
                 // Check DOM for WayForPay elements
-                console.log('[WIDGET] Widget detected in DOM - marking as opened')
                 widgetOpenedRef.current = true
               } else {
                 // Widget never appeared - true load failure
-                console.error('[WIDGET] Widget failed to open - no WayForPay elements detected')
+                clientLogger.error('WIDGET:WAYFORPAY', 'Widget failed to open', {
+                  message: 'No WayForPay elements detected after timeout',
+                })
                 setError(t('errors.paymentLoadFailed'))
                 setIsLoading(false)
                 setIsRedirecting(false)
@@ -293,7 +293,9 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
           setIsLoading(false)
         }
       } catch (err) {
-        console.error('[WIDGET] Widget initialization error:', err)
+        clientLogger.error('WIDGET:WAYFORPAY', 'Widget initialization error', {
+          error: err instanceof Error ? err.message : String(err),
+        })
         setError(t('errors.serverError'))
         setIsLoading(false)
         setIsRedirecting(false)

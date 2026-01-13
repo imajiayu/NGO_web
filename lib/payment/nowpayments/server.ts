@@ -4,14 +4,15 @@ import type {
   CreatePaymentResponse,
   NowPaymentsError,
 } from './types'
+import { logger } from '@/lib/logger'
 
 // Validate environment variables
 if (!process.env.NOWPAYMENTS_API_KEY) {
-  console.warn('NOWPAYMENTS_API_KEY is not set - NOWPayments integration will not work')
+  logger.warn('PAYMENT:NOWPAYMENTS', 'API key not set - integration will not work')
 }
 
 if (!process.env.NOWPAYMENTS_IPN_SECRET) {
-  console.warn('NOWPAYMENTS_IPN_SECRET is not set - Webhook verification will fail')
+  logger.warn('PAYMENT:NOWPAYMENTS', 'IPN secret not set - webhook verification will fail')
 }
 
 const NOWPAYMENTS_API_KEY = process.env.NOWPAYMENTS_API_KEY || ''
@@ -49,7 +50,7 @@ export function verifyNowPaymentsSignature(
   receivedSignature: string
 ): boolean {
   if (!NOWPAYMENTS_IPN_SECRET) {
-    console.error('[NOWPAYMENTS] IPN secret not configured')
+    logger.error('PAYMENT:NOWPAYMENTS', 'IPN secret not configured')
     return false
   }
 
@@ -66,7 +67,7 @@ export function verifyNowPaymentsSignature(
     // Compare signatures (case-insensitive)
     return calculatedSignature.toLowerCase() === receivedSignature.toLowerCase()
   } catch (error) {
-    console.error('[NOWPAYMENTS] Signature verification error:', error)
+    logger.errorWithStack('PAYMENT:NOWPAYMENTS', 'Signature verification error', error)
     return false
   }
 }
@@ -82,11 +83,11 @@ export async function createNowPaymentsPayment(
     throw new Error('NOWPAYMENTS_API_KEY is not configured')
   }
 
-  console.log('[NOWPAYMENTS] Creating payment:', {
-    order_id: params.order_id,
-    price_amount: params.price_amount,
-    price_currency: params.price_currency,
-    pay_currency: params.pay_currency || '(user choice)',
+  logger.info('PAYMENT:NOWPAYMENTS', 'Creating payment', {
+    orderId: params.order_id,
+    priceAmount: params.price_amount,
+    priceCurrency: params.price_currency,
+    payCurrency: params.pay_currency || '(user choice)',
   })
 
   const response = await fetch(`${NOWPAYMENTS_API_BASE}/payment`, {
@@ -100,7 +101,7 @@ export async function createNowPaymentsPayment(
 
   if (!response.ok) {
     const errorData = await response.json() as NowPaymentsError
-    console.error('[NOWPAYMENTS] Create payment error:', {
+    logger.error('PAYMENT:NOWPAYMENTS', 'Create payment error', {
       status: response.status,
       code: errorData.code,
       message: errorData.message,
@@ -110,11 +111,10 @@ export async function createNowPaymentsPayment(
 
   const data = await response.json() as CreatePaymentResponse
 
-  console.log('[NOWPAYMENTS] Payment created:', {
-    payment_id: data.payment_id,
-    pay_address: data.pay_address,
-    pay_amount: data.pay_amount,
-    pay_currency: data.pay_currency,
+  logger.info('PAYMENT:NOWPAYMENTS', 'Payment created', {
+    paymentId: data.payment_id,
+    payAmount: data.pay_amount,
+    payCurrency: data.pay_currency,
     status: data.payment_status,
   })
 

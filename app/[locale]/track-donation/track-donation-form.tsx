@@ -10,6 +10,7 @@ import DonationResultViewer from '@/components/donation/DonationResultViewer'
 import DonationStatusBadge from '@/components/donation/DonationStatusBadge'
 import { getProjectName, getUnitName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
 import type { I18nText } from '@/types'
+import { clientLogger } from '@/lib/logger-client'
 import {
   canViewResult,
   canRequestRefund,
@@ -208,7 +209,7 @@ export default function TrackDonationForm({ locale }: Props) {
         )
       }
     }).catch(err => {
-      console.error('Refund request failed:', err)
+      clientLogger.error('API', 'Refund request failed', { error: err instanceof Error ? err.message : String(err) })
       setError(t('errors.serverError'))
       // 重新查询获取正确的状态
       trackDonations({ email, donationId: refundableDonation.donation_public_id }).then(trackResult => {

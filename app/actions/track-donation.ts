@@ -13,6 +13,7 @@ import {
   REFUNDABLE_STATUSES,
   type DonationStatus
 } from '@/lib/donation-status'
+import { logger } from '@/lib/logger'
 
 const trackDonationSchema = z.object({
   email: z.string().email('Invalid email format'),
@@ -53,7 +54,7 @@ export async function trackDonations(data: {
     )
 
     if (error) {
-      console.error('Error calling get_donations_by_email_verified:', error)
+      logger.error('DONATION', 'get_donations_by_email_verified failed', { error: error.message })
       return { error: 'serverError' }
     }
 
@@ -83,7 +84,7 @@ export async function trackDonations(data: {
     if (error instanceof z.ZodError) {
       return { error: 'validationError' }
     }
-    console.error('Error tracking donations:', error)
+    logger.errorWithStack('DONATION', 'trackDonations failed', error)
     return { error: 'serverError' }
   }
 }
@@ -168,7 +169,7 @@ export async function requestRefund(data: {
       .single()
 
     if (fetchError || !donationData || !donationData.order_reference) {
-      console.error('Error fetching donation data:', fetchError)
+      logger.error('REFUND', 'Failed to fetch donation data', { donationPublicId: validated.donationPublicId, error: fetchError?.message })
       return { error: 'serverError' }
     }
 
@@ -180,7 +181,7 @@ export async function requestRefund(data: {
       .eq('order_reference', donationData.order_reference)
 
     if (orderError || !orderDonations || orderDonations.length === 0) {
-      console.error('Error fetching order donations:', orderError)
+      logger.error('REFUND', 'Failed to fetch order donations', { orderReference: donationData.order_reference, error: orderError?.message })
       return { error: 'serverError' }
     }
 
@@ -223,11 +224,11 @@ export async function requestRefund(data: {
         .in('id', donationIds)
 
       if (updateError) {
-        console.error('[REFUND] Error updating NOWPayments donation status:', updateError)
+        logger.error('REFUND', 'Failed to update NOWPayments donation status', { error: updateError.message })
         return { error: 'serverError' }
       }
 
-      console.log(`[REFUND] NOWPayments: Marked ${donationIds.length} donations as 'refunding' for manual processing`)
+      logger.info('REFUND', 'NOWPayments donations marked for manual refund', { count: donationIds.length })
 
       return {
         success: true,
@@ -264,7 +265,7 @@ export async function requestRefund(data: {
           return { error: 'refundDeclined', message: wayforpayResponse.reason }
         default:
           // Unknown status from WayForPay - mark as refunding so admin knows user wants refund
-          console.warn('Unknown WayForPay refund status:', wayforpayResponse.transactionStatus)
+          logger.warn('REFUND', 'Unknown WayForPay refund status', { status: wayforpayResponse.transactionStatus })
           newStatus = 'refunding'
       }
 
@@ -281,7 +282,7 @@ export async function requestRefund(data: {
 
       const alreadyRefunded = currentDonations?.every(d => d.donation_status === 'refunded')
       if (alreadyRefunded) {
-        console.log('[REFUND] All donations already refunded (webhook processed first) - skipping update and email')
+        logger.debug('REFUND', 'All donations already refunded by webhook', { orderReference: donationData.order_reference })
         return {
           success: true,
           status: 'refunded',
@@ -296,7 +297,7 @@ export async function requestRefund(data: {
         .map(d => d.id) || []
 
       if (idsToUpdate.length === 0) {
-        console.log('[REFUND] No donations to update - all already refunded')
+        logger.debug('REFUND', 'No donations to update - all already refunded', { orderReference: donationData.order_reference })
         return {
           success: true,
           status: 'refunded',
@@ -314,7 +315,7 @@ export async function requestRefund(data: {
         .in('id', idsToUpdate)
 
       if (updateError) {
-        console.error('Error updating donation status:', updateError)
+        logger.error('REFUND', 'Failed to update donation status', { error: updateError.message })
         return { error: 'serverError' }
       }
 
@@ -339,11 +340,12 @@ export async function requestRefund(data: {
               currency: (donationData.currency as string) || 'USD',
               locale: (firstDonation.locale as 'en' | 'zh' | 'ua') || 'en',
             })
-            console.log('[REFUND] Refund success email sent to', firstDonation.donor_email)
+            logger.info('REFUND', 'Refund success email sent', { to: firstDonation.donor_email })
           }
         } catch (emailError) {
-          console.error('[REFUND] Failed to send refund email:', emailError)
-          // Don't fail the refund operation if email fails
+          logger.error('REFUND', 'Failed to send refund email', {
+            error: emailError instanceof Error ? emailError.message : String(emailError),
+          })
         }
       }
 
@@ -355,10 +357,12 @@ export async function requestRefund(data: {
       }
 
     } catch (wayforpayError: any) {
-      console.error('WayForPay refund API error:', wayforpayError)
+      logger.error('REFUND', 'WayForPay refund API error', {
+        error: wayforpayError?.message || String(wayforpayError),
+        orderReference: donationData.order_reference,
+      })
 
       // Update status to 'refunding' so admin knows user attempted refund
-      // This ensures the refund request is tracked even if API call failed
       const donationIds = refundableDonations.map(d => d.id)
 
       try {
@@ -370,9 +374,11 @@ export async function requestRefund(data: {
           })
           .in('id', donationIds)
 
-        console.log(`[REFUND] Updated ${donationIds.length} donations to 'refunding' after API error`)
+        logger.info('REFUND', 'Donations marked as refunding after API error', { count: donationIds.length })
       } catch (updateError) {
-        console.error('[REFUND] Failed to update status to refunding:', updateError)
+        logger.error('REFUND', 'Failed to update status to refunding', {
+          error: updateError instanceof Error ? updateError.message : String(updateError),
+        })
       }
 
       return {
@@ -385,7 +391,7 @@ export async function requestRefund(data: {
     if (error instanceof z.ZodError) {
       return { error: 'validationError' }
     }
-    console.error('Error requesting refund:', error)
+    logger.errorWithStack('REFUND', 'requestRefund failed', error)
     return { error: 'serverError' }
   }
 }

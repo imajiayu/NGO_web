@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import type { CreatePaymentResponse } from '@/lib/payment/nowpayments/types'
+import { clientLogger } from '@/lib/logger-client'
 
 interface Props {
   paymentData: CreatePaymentResponse
@@ -23,7 +24,7 @@ function CopyButton({ text, label }: { text: string; label: string }) {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error('Failed to copy:', err)
+      clientLogger.error('CLIPBOARD', 'Failed to copy', { error: err instanceof Error ? err.message : String(err) })
     }
   }
 
