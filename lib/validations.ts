@@ -1,6 +1,15 @@
 import { z } from 'zod'
 
-// Project validation schemas
+// ============================================
+// Base Validation Rules
+// ============================================
+
+export const emailSchema = z.string().email('Invalid email address')
+export const localeSchema = z.enum(['en', 'zh', 'ua'])
+
+// ============================================
+// Project Schemas
+// ============================================
 export const createProjectSchema = z.object({
   project_name: z.string().min(3, 'Project name must be at least 3 characters').max(255),
   location: z.string().min(2, 'Location is required').max(255),
@@ -34,7 +43,10 @@ export const updateProjectSchema = z.object({
   status: z.enum(['planned', 'active', 'completed', 'paused']).optional(),
 })
 
-// Donation validation schemas
+// ============================================
+// Donation Schemas
+// ============================================
+
 export const createDonationSchema = z.object({
   project_id: z.number().int().min(0, 'Project ID is required'), // Allow 0 for rehabilitation center support
   donor_name: z.string().min(2, 'Name must be at least 2 characters').max(255),
@@ -58,8 +70,53 @@ export const donationFormSchema = z.object({
   locale: z.enum(['en', 'zh', 'ua']),
 })
 
-// Export types inferred from schemas
+// ============================================
+// Subscription Schemas
+// ============================================
+
+export const createSubscriptionSchema = z.object({
+  email: emailSchema,
+  locale: localeSchema
+})
+
+export const unsubscribeSchema = z.object({
+  email: emailSchema,
+  locale: localeSchema.optional()
+})
+
+// ============================================
+// Donation Tracking Schemas
+// ============================================
+
+export const trackDonationSchema = z.object({
+  email: emailSchema,
+  donationId: z.string().min(1, 'Donation ID is required'),
+})
+
+export const requestRefundSchema = z.object({
+  donationPublicId: z.string().min(1, 'Donation ID is required'),
+  email: emailSchema,
+})
+
+// ============================================
+// Email Broadcast Schemas
+// ============================================
+
+export const sendBroadcastSchema = z.object({
+  templateName: z.string().min(1, 'Template name is required'),
+  variables: z.record(z.string()).optional()
+})
+
+// ============================================
+// Type Exports
+// ============================================
+
 export type CreateProjectInput = z.infer<typeof createProjectSchema>
 export type UpdateProjectInput = z.infer<typeof updateProjectSchema>
 export type CreateDonationInput = z.infer<typeof createDonationSchema>
 export type DonationFormInput = z.infer<typeof donationFormSchema>
+export type CreateSubscriptionInput = z.infer<typeof createSubscriptionSchema>
+export type UnsubscribeInput = z.infer<typeof unsubscribeSchema>
+export type TrackDonationInput = z.infer<typeof trackDonationSchema>
+export type RequestRefundInput = z.infer<typeof requestRefundSchema>
+export type SendBroadcastInput = z.infer<typeof sendBroadcastSchema>

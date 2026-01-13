@@ -1,6 +1,6 @@
 'use server'
 
-import { createAuthClient, requireAdmin } from '@/lib/supabase/admin-auth'
+import { getAdminClient, getUserClient } from '@/lib/supabase/action-clients'
 import { revalidatePath } from 'next/cache'
 import type { Database } from '@/types/database'
 import sharp from 'sharp'
@@ -22,7 +22,7 @@ type Donation = Database['public']['Tables']['donations']['Row']
  * 管理员登录
  */
 export async function adminLogin(email: string, password: string) {
-  const supabase = await createAuthClient()
+  const supabase = await getUserClient()
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -40,7 +40,7 @@ export async function adminLogin(email: string, password: string) {
  * 管理员登出
  */
 export async function adminLogout() {
-  const supabase = await createAuthClient()
+  const supabase = await getUserClient()
   await supabase.auth.signOut()
   return { success: true }
 }
@@ -49,8 +49,7 @@ export async function adminLogout() {
  * 获取所有项目（管理员视图）
  */
 export async function getAdminProjects() {
-  await requireAdmin()
-  const supabase = await createAuthClient()
+  const supabase = await getAdminClient()
 
   const { data, error } = await supabase
     .from('projects')
@@ -65,8 +64,7 @@ export async function getAdminProjects() {
  * 创建项目
  */
 export async function createProject(project: ProjectInsert) {
-  await requireAdmin()
-  const supabase = await createAuthClient()
+  const supabase = await getAdminClient()
 
   const { data, error } = await supabase
     .from('projects')
@@ -85,8 +83,7 @@ export async function createProject(project: ProjectInsert) {
  * 更新项目
  */
 export async function updateProject(id: number, updates: ProjectUpdate) {
-  await requireAdmin()
-  const supabase = await createAuthClient()
+  const supabase = await getAdminClient()
 
   // 确保不修改这些字段
   const { id: _, created_at, updated_at, ...safeUpdates } = updates as any
@@ -113,8 +110,7 @@ export async function updateProject(id: number, updates: ProjectUpdate) {
  * 返回捐赠记录和状态历史
  */
 export async function getAdminDonations() {
-  await requireAdmin()
-  const supabase = await createAuthClient()
+  const supabase = await getAdminClient()
 
   // 获取所有捐赠
   const { data, error } = await supabase
@@ -164,8 +160,7 @@ export async function updateDonationStatus(
   id: number,
   newStatus: string
 ) {
-  await requireAdmin()
-  const supabase = await createAuthClient()
+  const supabase = await getAdminClient()
 
   // 获取当前捐赠记录（包含更多信息用于发送邮件）
   const { data: current, error: fetchError } = await supabase
@@ -303,8 +298,7 @@ export async function updateDonationStatus(
  * 文件存储在 donation-results/{donation_public_id}/{filename}
  */
 export async function uploadDonationResultFile(formData: FormData) {
-  await requireAdmin()
-  const supabase = await createAuthClient()
+  const supabase = await getAdminClient()
 
   const donationIdStr = formData.get('donationId') as string
   const file = formData.get('file') as File
@@ -539,8 +533,7 @@ export async function uploadDonationResultFile(formData: FormData) {
  * 获取捐赠的所有结果文件
  */
 export async function getDonationResultFiles(donationId: number) {
-  await requireAdmin()
-  const supabase = await createAuthClient()
+  const supabase = await getAdminClient()
 
   // 获取捐赠的 donation_public_id
   const { data: donation, error: donationError } = await supabase
@@ -596,8 +589,7 @@ export async function getDonationResultFiles(donationId: number) {
  * 删除捐赠结果文件（同时删除缩略图）
  */
 export async function deleteDonationResultFile(donationId: number, filePath: string) {
-  await requireAdmin()
-  const supabase = await createAuthClient()
+  const supabase = await getAdminClient()
 
   // 获取捐赠的 donation_public_id 以验证文件路径
   const { data: donation, error: donationError } = await supabase
@@ -648,8 +640,7 @@ export async function batchUpdateDonationStatus(
   donationIds: number[],
   newStatus: string
 ) {
-  await requireAdmin()
-  const supabase = await createAuthClient()
+  const supabase = await getAdminClient()
 
   if (donationIds.length === 0) {
     throw new Error('No donations selected')

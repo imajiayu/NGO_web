@@ -5,12 +5,13 @@
 
 'use server'
 
-import { createServerClient } from '@/lib/supabase/server'
+import { getAdminClient, getUserClient } from '@/lib/supabase/action-clients'
 import { sendBroadcastEmail } from '@/lib/email/broadcast'
 import { getAvailableTemplates, getEmailTemplate } from '@/lib/email/templates'
 import { z } from 'zod'
 import type { DonationLocale } from '@/types'
 import { logger } from '@/lib/logger'
+import { sendBroadcastSchema } from '@/lib/validations'
 
 type Locale = DonationLocale
 
@@ -34,20 +35,13 @@ export interface BroadcastResult {
   errors?: Array<{ email: string; error: string }>
 }
 
-// ==================== Validation ====================
-
-const sendBroadcastSchema = z.object({
-  templateName: z.string().min(1, 'Template name is required'),
-  variables: z.record(z.string()).optional()
-})
-
 // ==================== Helper Functions ====================
 
 /**
  * Get all subscribed recipients from database
  */
 async function getSubscribedRecipients(): Promise<BroadcastRecipient[]> {
-  const supabase = await createServerClient()
+  const supabase = await getUserClient()
 
   const { data, error } = await supabase
     .from('email_subscriptions')
@@ -62,28 +56,6 @@ async function getSubscribedRecipients(): Promise<BroadcastRecipient[]> {
   return data as BroadcastRecipient[]
 }
 
-/**
- * Verify admin permission
- */
-async function requireAdmin(): Promise<void> {
-  const supabase = await createServerClient()
-
-  const {
-    data: { user }
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    throw new Error('Unauthorized: Admin access required')
-  }
-
-  // Additional check using is_admin() function
-  const { data, error } = await supabase.rpc('is_admin')
-
-  if (error || !data) {
-    throw new Error('Unauthorized: Admin access required')
-  }
-}
-
 // ==================== Server Actions ====================
 
 /**
@@ -95,7 +67,7 @@ export async function sendEmailBroadcast(
 ): Promise<{ data: BroadcastResult | null; error?: string }> {
   try {
     // Verify admin permission
-    await requireAdmin()
+    await getAdminClient()
 
     // Validate input
     const validated = sendBroadcastSchema.parse(params)
@@ -201,7 +173,7 @@ export async function getAvailableBroadcastTemplates(): Promise<{
 }> {
   try {
     // Verify admin permission
-    await requireAdmin()
+    await getAdminClient()
 
     const templateList = getAvailableTemplates()
 
@@ -236,7 +208,7 @@ export async function previewEmailTemplate(
 ): Promise<{ data: { subject: string; html: string } | null; error?: string }> {
   try {
     // Verify admin permission
-    await requireAdmin()
+    await getAdminClient()
 
     const template = getEmailTemplate(templateName)
     if (!template) {

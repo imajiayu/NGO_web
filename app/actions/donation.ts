@@ -10,7 +10,7 @@ import {
 } from '@/lib/payment/nowpayments/server'
 import { getProjectStats } from '@/lib/supabase/queries'
 import { donationFormSchema } from '@/lib/validations'
-import { createAnonClient } from '@/lib/supabase/server'
+import { getPublicClient } from '@/lib/supabase/action-clients'
 import type { DonationStatus } from '@/types'
 import { getProjectName, getUnitName, type SupportedLocale } from '@/lib/i18n-utils'
 import { logger } from '@/lib/logger'
@@ -227,7 +227,7 @@ export async function createWayForPayDonation(data: {
     // - If aggregate_donations = false: Create one record per unit (traditional behavior)
     // These will be updated to 'paid' status when webhook receives payment confirmation
     // SECURITY: Use anonymous client - RLS policy enforces pending status only
-    const supabase = createAnonClient()
+    const supabase = getPublicClient()
     const donationRecords = []
 
     // Main project donation records
@@ -384,7 +384,7 @@ export async function markDonationWidgetFailed(
   orderReference: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = createAnonClient()
+    const supabase = getPublicClient()
 
     const { data, error } = await supabase
       .from('donations')
@@ -587,7 +587,7 @@ export async function createNowPaymentsDonation(data: {
     }
 
     // Create pending donation records
-    const supabase = createAnonClient()
+    const supabase = getPublicClient()
     const donationRecords = []
 
     if (project.aggregate_donations) {

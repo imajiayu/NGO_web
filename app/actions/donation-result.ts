@@ -1,7 +1,6 @@
 'use server'
 
-import { createClient } from '@supabase/supabase-js'
-import type { Database } from '@/types/database'
+import { getInternalClient } from '@/lib/supabase/action-clients'
 import { canViewResult, type DonationStatus } from '@/lib/donation-status'
 import { logger } from '@/lib/logger'
 
@@ -11,13 +10,7 @@ import { logger } from '@/lib/logger'
  */
 export async function getDonationResultUrl(donationPublicId: string) {
   try {
-    const supabase = createClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: { persistSession: false },
-      }
-    )
+    const supabase = getInternalClient()
 
     if (!donationPublicId || donationPublicId.trim() === '') {
       return { error: 'invalidDonationId' }
@@ -85,13 +78,7 @@ export async function getDonationResultUrl(donationPublicId: string) {
  */
 export async function getAllDonationResultFiles(donationPublicId: string) {
   try {
-    const supabase = createClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: { persistSession: false },
-      }
-    )
+    const supabase = getInternalClient()
 
     if (!donationPublicId || donationPublicId.trim() === '') {
       return { error: 'invalidDonationId', files: [] }

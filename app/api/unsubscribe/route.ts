@@ -7,13 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
 import { z } from 'zod'
 import { logger } from '@/lib/logger'
-
-// ==================== Validation ====================
-
-const unsubscribeSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  locale: z.enum(['en', 'zh', 'ua']).optional()
-})
+import { unsubscribeSchema } from '@/lib/validations'
 
 // ==================== GET Handler (Email Links) ====================
 

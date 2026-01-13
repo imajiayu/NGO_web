@@ -4,10 +4,11 @@
 
 'use server'
 
-import { createServerClient } from '@/lib/supabase/server'
+import { getUserClient } from '@/lib/supabase/action-clients'
 import { z } from 'zod'
 import type { DonationLocale } from '@/types'
 import { logger } from '@/lib/logger'
+import { createSubscriptionSchema } from '@/lib/validations'
 
 type Locale = DonationLocale
 
@@ -27,13 +28,6 @@ export interface SubscriptionFilter {
   search?: string
 }
 
-// ==================== Validation Schemas ====================
-
-const createSubscriptionSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  locale: z.enum(['en', 'zh', 'ua'])
-})
-
 // ==================== Server Actions ====================
 
 /**
@@ -48,7 +42,7 @@ export async function createEmailSubscription(
     // Validate input
     const validated = createSubscriptionSchema.parse({ email, locale })
 
-    const supabase = await createServerClient()
+    const supabase = await getUserClient()
 
     // Call database function for idempotent upsert
     const { data, error } = await supabase.rpc('upsert_email_subscription', {
@@ -79,7 +73,7 @@ export async function getSubscriptions(
   filter?: SubscriptionFilter
 ): Promise<{ data: EmailSubscription[] | null; error?: string }> {
   try {
-    const supabase = await createServerClient()
+    const supabase = await getUserClient()
 
     // Check admin permission
     const {

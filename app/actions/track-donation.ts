@@ -1,7 +1,7 @@
 'use server'
 
 import { z } from 'zod'
-import { createAnonClient, createServiceClient } from '@/lib/supabase/server'
+import { getPublicClient, getInternalClient } from '@/lib/supabase/action-clients'
 import { processWayForPayRefund } from '@/lib/payment/wayforpay/server'
 import { sendRefundSuccessEmail } from '@/lib/email'
 import {
@@ -14,11 +14,7 @@ import {
   type DonationStatus
 } from '@/lib/donation-status'
 import { logger } from '@/lib/logger'
-
-const trackDonationSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  donationId: z.string().min(1, 'Donation ID is required'),
-})
+import { trackDonationSchema, requestRefundSchema } from '@/lib/validations'
 
 /**
  * Track Donations - Secure Implementation
@@ -38,7 +34,7 @@ export async function trackDonations(data: {
     const validated = trackDonationSchema.parse(data)
 
     // SECURITY: Use anonymous client - verification handled by database function
-    const supabase = createAnonClient()
+    const supabase = getPublicClient()
 
     // 2. Call secure database function
     // Function will:
@@ -89,11 +85,6 @@ export async function trackDonations(data: {
   }
 }
 
-const requestRefundSchema = z.object({
-  donationPublicId: z.string().min(1, 'Donation ID is required'),
-  email: z.string().email('Invalid email format'),
-})
-
 /**
  * Request Refund - Integrated with WayForPay API
  *
@@ -116,7 +107,7 @@ export async function requestRefund(data: {
     const validated = requestRefundSchema.parse(data)
 
     // 2. Get donation details (verify ownership and eligibility)
-    const anonSupabase = createAnonClient()
+    const anonSupabase = getPublicClient()
 
     // First verify ownership using database function
     const { data: donations, error: verifyError } = await anonSupabase.rpc(
@@ -159,7 +150,7 @@ export async function requestRefund(data: {
     }
 
     // 4. Get order reference and all donations in this order
-    const serviceSupabase = createServiceClient()
+    const serviceSupabase = getInternalClient()
 
     // First, get the order_reference and payment_method for this donation
     const { data: donationData, error: fetchError } = await serviceSupabase
