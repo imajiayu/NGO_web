@@ -10,7 +10,23 @@
     "edit": "Edit",
     "close": "Close",
     "confirm": "Confirm",
-    "back": "Back"
+    "back": "Back",
+    "donationStatus": {
+      "pending": "Payment Pending",
+      "widget_load_failed": "Not Paid",
+      "processing": "Processing Payment",
+      "fraud_check": "Security Review",
+      "paid": "Payment Received",
+      "confirmed": "Confirmed",
+      "delivering": "In Progress",
+      "completed": "Completed",
+      "expired": "Payment Expired",
+      "declined": "Payment Declined",
+      "failed": "Payment Failed",
+      "refunding": "Refund In Progress",
+      "refund_processing": "Refund In Progress",
+      "refunded": "Refunded"
+    }
   },
   "navigation": {
     "home": "Home",
@@ -60,9 +76,9 @@
         "direct": {
           "title": "Direct",
           "items": [
-            "Monitor your and all anonymous donation results",
-            "Beneficiary or executor contact included",
-            "Donations go directly to designated recipients or projects"
+            "Track all donation outcomes",
+            "Recipient or executor contact included",
+            "Funds go directly to recipients"
           ]
         }
       },
@@ -508,22 +524,6 @@
       "project": "Project",
       "status": "Status"
     },
-    "status": {
-      "pending": "Payment Pending",
-      "widget_load_failed": "Not Paid",
-      "processing": "Processing Payment",
-      "fraud_check": "Security Review",
-      "paid": "Payment Received",
-      "confirmed": "Confirmed",
-      "delivering": "In Progress",
-      "completed": "Completed",
-      "expired": "Payment Expired",
-      "declined": "Payment Declined",
-      "failed": "Payment Failed",
-      "refunding": "Refund In Progress",
-      "refund_processing": "Refund In Progress",
-      "refunded": "Refunded"
-    },
     "actions": {
       "viewResult": "View Result",
       "requestRefund": "Request Refund"
@@ -598,22 +598,6 @@
       "updatedAt": "Last Updated",
       "status": "Status",
       "action": "Action"
-    },
-    "status": {
-      "pending": "Payment Pending",
-      "widget_load_failed": "Not Paid",
-      "processing": "Processing Payment",
-      "fraud_check": "Security Review",
-      "paid": "Payment Received",
-      "confirmed": "Confirmed",
-      "delivering": "In Progress",
-      "completed": "Completed",
-      "expired": "Payment Expired",
-      "declined": "Payment Declined",
-      "failed": "Payment Failed",
-      "refunding": "Refund In Progress",
-      "refund_processing": "Refund In Progress",
-      "refunded": "Refunded"
     },
     "actions": {
       "viewResult": "View Result"

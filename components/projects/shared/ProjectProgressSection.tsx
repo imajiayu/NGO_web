@@ -2,6 +2,8 @@
 
 import { useTranslations } from 'next-intl'
 import ProjectProgressBar from './ProjectProgressBar'
+import ProjectStatusBadge from '../ProjectStatusBadge'
+import LongTermBadge from '../LongTermBadge'
 import type { ProjectStats } from '@/types'
 import { getLocation, getUnitName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
 
@@ -10,12 +12,6 @@ interface ProjectProgressSectionProps {
   locale: string
 }
 
-const statusColors: Record<string, string> = {
-  active: 'bg-life-100 text-life-800 border-life-200',
-  completed: 'bg-ukraine-blue-100 text-ukraine-blue-800 border-ukraine-blue-200',
-  planned: 'bg-ukraine-gold-100 text-ukraine-gold-800 border-ukraine-gold-200',
-  paused: 'bg-gray-100 text-gray-800 border-gray-200',
-}
 
 export default function ProjectProgressSection({ project, locale }: ProjectProgressSectionProps) {
   const t = useTranslations('projects')
@@ -39,16 +35,8 @@ export default function ProjectProgressSection({ project, locale }: ProjectProgr
       <div className="p-3 md:p-4 space-y-2 md:space-y-3">
         {/* Status and Long-term Badges */}
         <div className="flex flex-wrap gap-1.5">
-          <span
-            className={`px-2 py-0.5 text-[10px] md:text-xs font-semibold rounded-full border ${statusColors[project.status || 'active']}`}
-          >
-            {t(`status.${project.status}` as any)}
-          </span>
-          {project.is_long_term === true && (
-            <span className="px-2 py-0.5 text-[10px] md:text-xs font-semibold rounded-full bg-ukraine-blue-100 text-ukraine-blue-800 border border-ukraine-blue-200">
-              {t('longTerm')}
-            </span>
-          )}
+          <ProjectStatusBadge status={project.status || 'active'} />
+          {project.is_long_term === true && <LongTermBadge />}
         </div>
 
         {/* Info Grid */}

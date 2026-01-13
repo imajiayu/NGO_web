@@ -5,7 +5,6 @@ import { STATUS_COLORS, type DonationStatus } from '@/lib/donation-status'
 
 interface Props {
   status: DonationStatus
-  namespace?: 'trackDonation' | 'projectDonationList'
 }
 
 /**
@@ -21,8 +20,8 @@ interface Props {
  * - Failed: Red/Gray (expired, declined, failed)
  * - Refund: Orange/Gray (refunding, refund_processing, refunded)
  */
-export default function DonationStatusBadge({ status, namespace = 'trackDonation' }: Props) {
-  const t = useTranslations(namespace)
+export default function DonationStatusBadge({ status }: Props) {
+  const t = useTranslations('common')
 
   // Get status color classes based on donation status
   const getStatusClasses = (status: DonationStatus): string => {
@@ -33,7 +32,7 @@ export default function DonationStatusBadge({ status, namespace = 'trackDonation
 
   return (
     <span className={getStatusClasses(status)}>
-      {t(`status.${status}`)}
+      {t(`donationStatus.${status}`)}
     </span>
   )
 }

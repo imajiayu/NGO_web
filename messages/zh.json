@@ -10,7 +10,23 @@
     "edit": "编辑",
     "close": "关闭",
     "confirm": "确认",
-    "back": "返回"
+    "back": "返回",
+    "donationStatus": {
+      "pending": "支付待确认",
+      "widget_load_failed": "未支付",
+      "processing": "支付处理中",
+      "fraud_check": "安全审核中",
+      "paid": "已支付",
+      "confirmed": "已确认",
+      "delivering": "配送中",
+      "completed": "已完成",
+      "expired": "支付超时",
+      "declined": "银行拒绝支付",
+      "failed": "支付失败",
+      "refunding": "退款处理中",
+      "refund_processing": "退款处理中",
+      "refunded": "已退款"
+    }
   },
   "navigation": {
     "home": "首页",
@@ -509,22 +525,6 @@
       "project": "项目",
       "status": "状态"
     },
-    "status": {
-      "pending": "支付待确认",
-      "widget_load_failed": "未支付",
-      "processing": "支付处理中",
-      "fraud_check": "安全审核中",
-      "paid": "已支付",
-      "confirmed": "已确认",
-      "delivering": "配送中",
-      "completed": "已完成",
-      "expired": "支付超时",
-      "declined": "银行拒绝支付",
-      "failed": "支付失败",
-      "refunding": "退款处理中",
-      "refund_processing": "退款处理中",
-      "refunded": "已退款"
-    },
     "actions": {
       "viewResult": "查看结果",
       "requestRefund": "申请退款"
@@ -599,22 +599,6 @@
       "updatedAt": "最后更新",
       "status": "状态",
       "action": "操作"
-    },
-    "status": {
-      "pending": "支付待确认",
-      "widget_load_failed": "未支付",
-      "processing": "支付处理中",
-      "fraud_check": "安全审核中",
-      "paid": "已支付",
-      "confirmed": "已确认",
-      "delivering": "配送中",
-      "completed": "已完成",
-      "expired": "支付超时",
-      "declined": "银行拒绝支付",
-      "failed": "支付失败",
-      "refunding": "退款处理中",
-      "refund_processing": "退款处理中",
-      "refunded": "已退款"
     },
     "actions": {
       "viewResult": "查看结果"

@@ -161,7 +161,7 @@ export default function ProjectDonationList({
                       {formatDate(donation.updated_at, locale as SupportedLocale)}
                     </td>
                     <td className="py-4 px-4">
-                      <DonationStatusBadge status={donation.donation_status} namespace="projectDonationList" />
+                      <DonationStatusBadge status={donation.donation_status} />
                     </td>
                     <td className="py-4 px-4">
                       {canViewResult(donation.donation_status) && (
@@ -222,7 +222,7 @@ export default function ProjectDonationList({
                       {donation.currency} {donation.amount.toFixed(2)}
                     </div>
                     <div className="scale-90 origin-right">
-                      <DonationStatusBadge status={donation.donation_status} namespace="projectDonationList" />
+                      <DonationStatusBadge status={donation.donation_status} />
                     </div>
                   </div>
 

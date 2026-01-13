@@ -8,6 +8,7 @@ import { getProjectName, getLocation, getUnitName, formatDate, type SupportedLoc
 import ProjectProgressBar from './shared/ProjectProgressBar'
 import GlobalLoadingSpinner from '@/components/GlobalLoadingSpinner'
 import ProjectStatusBadge from './ProjectStatusBadge'
+import LongTermBadge from './LongTermBadge'
 
 interface ProjectCardProps {
   project: ProjectStats
@@ -100,11 +101,7 @@ export default function ProjectCard({
                 <ProjectStatusBadge status={project.status || 'active'} />
 
                 {/* Long-term Badge */}
-                {project.is_long_term === true && (
-                  <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-ukraine-blue-100 text-ukraine-blue-800 border border-ukraine-blue-200">
-                    {t('longTerm')}
-                  </span>
-                )}
+                {project.is_long_term === true && <LongTermBadge />}
               </div>
 
               {/* Selected Checkmark */}
@@ -243,11 +240,7 @@ export default function ProjectCard({
             <ProjectStatusBadge status={project.status || 'active'} />
 
             {/* Long-term Badge */}
-            {project.is_long_term === true && (
-              <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-ukraine-blue-100 text-ukraine-blue-800 border border-ukraine-blue-200">
-                {t('longTerm')}
-              </span>
-            )}
+            {project.is_long_term === true && <LongTermBadge />}
           </div>
 
           <h3 className="text-lg font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-ukraine-blue-500 transition-colors font-display">
