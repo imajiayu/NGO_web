@@ -78,6 +78,7 @@ export default function DonatePageClient({
   const [isFlowExpanded, setIsFlowExpanded] = useState(false)
   const [isSheetOpen, setIsSheetOpen] = useState(true) // Default open on mobile
   const [hideSheetAtBottom, setHideSheetAtBottom] = useState(false)
+  const [expandSheetTrigger, setExpandSheetTrigger] = useState(0)
 
   // Shared form fields state (preserved across project switches)
   // Only preserve donor personal information, NOT project-specific fields
@@ -183,6 +184,20 @@ export default function DonatePageClient({
     }
   }, [selectedProjectId]) // Recalculate when project changes
 
+  // Listen for navigation donate button click to expand sheet
+  useEffect(() => {
+    const handleOpenDonationForm = () => {
+      if (selectedProjectId !== null) {
+        setExpandSheetTrigger(prev => prev + 1)
+      }
+    }
+
+    window.addEventListener('open-donation-form', handleOpenDonationForm)
+    return () => {
+      window.removeEventListener('open-donation-form', handleOpenDonationForm)
+    }
+  }, [selectedProjectId])
+
   // Callback to update all projects stats
   const handleProjectsUpdate = (updatedProjects: ProjectStats[]) => {
     setProjects(updatedProjects)
@@ -257,7 +272,7 @@ export default function DonatePageClient({
       />
 
       {/* Main Content Area */}
-      <div id="donation-content" className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
+      <div id="donation-content" className="max-w-7xl mx-auto px-4 md:px-6 pt-2 pb-6 md:pt-4 md:pb-10">
         {selectedProject && selectedProjectId !== null ? (
           <>
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-6">
@@ -303,6 +318,7 @@ export default function DonatePageClient({
                 snapPoints={[0.15, 1]} // Minimized (15%) and Full (100% - nav)
                 minimizedHint={t('donateNowButton')}
                 hideWhenMinimized={hideSheetAtBottom}
+                expandTrigger={expandSheetTrigger}
               >
               <div className="px-4 pt-1 pb-4">
                 <DonationFormCard

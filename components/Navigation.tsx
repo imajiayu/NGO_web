@@ -49,8 +49,9 @@ export default function Navigation() {
   }
 
   const handleDonateClick = () => {
-    // 如果当前已经在 /donate 页面，不执行任何操作
+    // 如果当前已经在 /donate 页面，触发事件拉起捐赠表单
     if (pathname === '/donate') {
+      window.dispatchEvent(new CustomEvent('open-donation-form'))
       return
     }
     setIsNavigating(true)

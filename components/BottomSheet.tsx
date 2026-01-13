@@ -11,6 +11,7 @@ interface BottomSheetProps {
   title?: string
   minimizedHint?: string // Text to show when minimized
   hideWhenMinimized?: boolean // Hide completely when minimized (to show footer)
+  expandTrigger?: number // Increment to trigger expand (used for external control)
 }
 
 // Constants
@@ -26,6 +27,7 @@ export default function BottomSheet({
   title,
   minimizedHint,
   hideWhenMinimized = false,
+  expandTrigger,
 }: BottomSheetProps) {
   const sheetRef = useRef<HTMLDivElement>(null)
   const [currentSnap, setCurrentSnap] = useState(0) // Start minimized
@@ -76,6 +78,13 @@ export default function BottomSheet({
   const toggleSheet = useCallback(() => {
     setCurrentSnap(prev => (prev === 0 ? 1 : 0))
   }, [])
+
+  // External expand trigger
+  useEffect(() => {
+    if (expandTrigger && expandTrigger > 0) {
+      setCurrentSnap(1)
+    }
+  }, [expandTrigger])
 
   // Mouse events
   const handleMouseDown = useCallback(
@@ -148,100 +157,74 @@ export default function BottomSheet({
   // Spring-like cubic bezier for smooth, bouncy animation
   const springTransition = 'cubic-bezier(0.32, 0.72, 0, 1)'
 
+  // 拖拽时的偏移量
+  const dragOffset = isDragging ? Math.max(0, currentY - startY) : 0
+
   return (
     <>
-      {/* Bottom Sheet - No backdrop since sheet is nearly full screen */}
+      {/* CTA Button - 在 Liquid Glass 上方，使用 calc 额外偏移 */}
+      {isMinimized && !shouldHide && (
+        <div
+          className="fixed left-0 right-0 z-40 cursor-pointer select-none"
+          onClick={toggleSheet}
+          style={{
+            // iOS 26 Liquid Glass 地址栏比 safe-area 更高
+            // 使用 calc 在 safe-area 基础上额外偏移 20px
+            bottom: 'calc(env(safe-area-inset-bottom, 0px) + 20px)',
+          }}
+        >
+          <div
+            className="flex items-center justify-center gap-3 py-4 px-6 bg-ukraine-gold-500 rounded-3xl mx-4"
+            style={{
+              boxShadow: '0 4px 20px -4px rgba(0, 0, 0, 0.2)',
+            }}
+          >
+            <ChevronUpIcon className="w-6 h-6 text-ukraine-blue-900" />
+            <span className="text-ukraine-blue-900 font-bold text-lg">
+              {minimizedHint || 'Donate Now'}
+            </span>
+            <ChevronUpIcon className="w-6 h-6 text-ukraine-blue-900" />
+          </div>
+        </div>
+      )}
+
+      {/* Sheet - 展开时覆盖屏幕，收起时向下滑出 */}
       <div
         ref={sheetRef}
         className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-50"
         style={{
-          // minimized状态使用auto高度以适应iOS safe area
-          // expanded状态使用计算高度
-          height: isDragging
-            ? `${Math.max(getSnapHeight(0), currentHeight - (currentY - startY))}px`
-            : isMinimized
-              ? 'auto'
-              : `${currentHeight}px`,
+          height: `${currentHeight}px`,
           maxHeight: '95vh',
-          transform: shouldHide ? 'translateY(100%)' : 'translateY(0)',
-          opacity: shouldHide ? 0 : 1,
-          // Smooth spring animation for height changes, instant for dragging
+          // 用 translateY 实现向下滑动收起
+          transform: isDragging
+            ? `translateY(${dragOffset}px)`
+            : isMinimized
+              ? 'translateY(100%)'
+              : 'translateY(0)',
           transition: isDragging
             ? 'none'
-            : `height 400ms ${springTransition}, transform 350ms ${springTransition}, opacity 250ms ease-out`,
-          // Elegant shadow that grows with expansion
+            : `transform 400ms ${springTransition}`,
           boxShadow: isExpanded
             ? '0 -8px 40px -12px rgba(0, 0, 0, 0.25), 0 -4px 16px -8px rgba(0, 0, 0, 0.1)'
-            : '0 -4px 20px -8px rgba(0, 0, 0, 0.15)',
+            : 'none',
         }}
       >
-        {/* Drag Handle */}
+        {/* Drag Handle - 向下箭头 */}
         <div
-          className="sticky top-0 z-10 cursor-pointer touch-none select-none"
+          className="cursor-pointer touch-none select-none"
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
           onClick={toggleSheet}
         >
-          {/* Minimized State - CTA Button */}
-          <div
-            className="overflow-hidden rounded-t-3xl"
-            style={{
-              opacity: isMinimized ? 1 : 0,
-              // 收起时：延迟出现，等内容先消失
-              transition: isMinimized
-                ? `opacity 200ms ease-out 200ms, height 300ms ${springTransition} 100ms`
-                : `opacity 150ms ease-out, height 200ms ${springTransition}`,
-            }}
-          >
-            <div
-              className="flex items-center justify-center gap-3 pt-4 px-6 bg-ukraine-gold-500"
-              style={{
-                // 使用safe-area-inset-bottom处理iPhone底部安全区域
-                // 在没有safe area的设备上env()返回0，不影响显示
-                paddingBottom: 'max(16px, env(safe-area-inset-bottom))',
-                minHeight: '64px',
-              }}
-            >
-              <ChevronUpIcon className="w-6 h-6 text-ukraine-blue-900" />
-              <span className="text-ukraine-blue-900 font-bold text-lg">
-                {minimizedHint || 'Donate Now'}
-              </span>
-              <ChevronUpIcon className="w-6 h-6 text-ukraine-blue-900" />
-            </div>
-          </div>
-
-          {/* Expanded State - Down Arrow */}
-          <div
-            className="bg-white rounded-t-3xl"
-            style={{
-              opacity: isExpanded ? 1 : 0,
-              height: isExpanded ? 'auto' : '0px',
-              overflow: 'hidden',
-              // 收起时：快速消失；展开时：延迟出现
-              transition: isExpanded
-                ? `opacity 200ms ease-out 150ms, height 300ms ${springTransition}`
-                : `opacity 100ms ease-out, height 150ms ease-out`,
-            }}
-          >
-            <div className="pt-2 pb-1 flex items-center justify-center">
-              <ChevronDownIcon className="w-5 h-5 text-gray-400" />
-            </div>
+          <div className="pt-2 pb-1 flex items-center justify-center">
+            <ChevronDownIcon className="w-5 h-5 text-gray-400" />
           </div>
         </div>
 
-        {/* Content with fade-in animation */}
+        {/* Content */}
         <div
           className="overflow-y-auto bg-white"
-          style={{
-            height: isExpanded ? 'calc(100% - 32px)' : '0px',
-            opacity: isExpanded ? 1 : 0,
-            visibility: isExpanded ? 'visible' : 'hidden',
-            pointerEvents: isExpanded ? 'auto' : 'none',
-            // Staggered content fade-in for polish
-            transition: isExpanded
-              ? `height 350ms ${springTransition}, opacity 300ms ease-out 100ms`
-              : `height 300ms ${springTransition}, opacity 150ms ease-out`,
-          }}
+          style={{ height: 'calc(100% - 28px)' }}
         >
           {children}
         </div>

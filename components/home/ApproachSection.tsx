@@ -95,7 +95,7 @@ export default function ApproachSection() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-[280px] md:max-w-none mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-[300px] md:max-w-none mx-auto">
           {features.map(({ key, icon, gradient, image }) => (
             <div
               key={key}

@@ -43,7 +43,7 @@ export default async function MissionSection() {
           <h3 className="text-xl sm:text-2xl font-semibold mb-5 md:mb-6 text-white/90 font-display">
             {t('who')}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-[280px] md:max-w-none mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-[300px] md:max-w-none mx-auto">
             {[
               { key: 'displaced', image: '/images/mission/displaced.webp' },
               { key: 'women', image: '/images/mission/women.webp' },
