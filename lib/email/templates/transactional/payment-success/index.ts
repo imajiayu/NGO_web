@@ -1,5 +1,8 @@
 /**
- * Payment Success Email Template - Website UI Style
+ * Payment Success Email Template - Ukraine Humanitarian Theme
+ *
+ * This is a transactional email sent immediately after successful payment.
+ * Design emphasizes trust (Ukraine blue) and gratitude (Life green for success).
  */
 
 import { PaymentSuccessEmailParams, EmailContent } from '../../../types'
@@ -31,7 +34,7 @@ export function generatePaymentSuccessEmail(params: PaymentSuccessEmailParams): 
   const t = paymentSuccessContent[locale]
   const trackingUrl = getTrackingUrl(locale)
 
-  // Badge text for header
+  // Badge text for header - using gold for positive confirmation
   const badgeText = {
     en: 'Payment Confirmed',
     zh: '支付已确认',
@@ -57,21 +60,21 @@ export function generatePaymentSuccessEmail(params: PaymentSuccessEmailParams): 
     )
   }).join('')
 
-  // Build email content
+  // Build email content with Ukraine theme
   const contentHTML = `
     <p style="color: rgba(255,255,255,0.9); font-size: 16px; line-height: 1.7; margin: 0 0 20px;">
       ${t.greeting(escapeHtml(donorName))}
     </p>
 
     <p style="color: rgba(255,255,255,0.75); font-size: 16px; line-height: 1.7; margin: 0 0 28px;">
-      <strong style="color: #34d399;">${t.thankYou}</strong> ${t.confirmation}
+      <strong style="color: #10B981;">${t.thankYou}</strong> ${t.confirmation}
     </p>
 
-    <!-- Order Details Card -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; margin: 20px 0;">
+    <!-- Order Details Card - Ukraine blue glass style -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, rgba(7,108,179,0.15) 0%, rgba(6,90,150,0.08) 100%); border: 1px solid rgba(7,108,179,0.3); border-radius: 16px; margin: 20px 0;">
       <tr>
         <td style="padding: 20px;">
-          <p style="color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 600; margin: 0 0 16px; text-transform: uppercase; letter-spacing: 1px;">${t.orderDetailsLabel}</p>
+          <p style="color: #F5B800; font-family: Georgia, 'Times New Roman', serif; font-size: 13px; font-weight: 600; margin: 0 0 16px; text-transform: uppercase; letter-spacing: 1px;">${t.orderDetailsLabel}</p>
           ${donationItemsHTML}
         </td>
       </tr>
@@ -84,7 +87,7 @@ export function generatePaymentSuccessEmail(params: PaymentSuccessEmailParams): 
     ${createActionBox(t.trackingTitle, `
       <p style="margin: 0 0 16px;">${t.trackingContent}</p>
       <div style="text-align: center;">
-        ${createButton(t.trackingButton, trackingUrl)}
+        ${createButton(t.trackingButton, trackingUrl, 'gold')}
       </div>
     `)}
 

@@ -1,5 +1,9 @@
 /**
- * Refund Success Email Template - Website UI Style
+ * Refund Success Email Template - Ukraine Humanitarian Theme
+ *
+ * This transactional email is sent when a refund has been processed.
+ * Design uses warm orange tones (not aggressive red) to convey information
+ * without alarming the recipient, while maintaining trust.
  */
 
 import { RefundSuccessEmailParams, EmailContent } from '../../../types'
@@ -31,35 +35,35 @@ export function generateRefundSuccessEmail(params: RefundSuccessEmailParams): Em
   const t = refundSuccessContent[locale]
   const projectName = getLocalizedText(projectNameI18n, locale)
 
-  // Badge text for header
+  // Badge text for header - neutral tone
   const badgeText = {
     en: 'Refund Processed',
     zh: '退款已处理',
     ua: 'Повернення оброблено'
   }[locale]
 
-  // Build email content
+  // Build email content with Ukraine theme - warm but informational
   const contentHTML = `
     <p style="color: rgba(255,255,255,0.9); font-size: 16px; line-height: 1.7; margin: 0 0 20px;">
       ${t.greeting(escapeHtml(donorName))}
     </p>
 
     <p style="color: rgba(255,255,255,0.75); font-size: 16px; line-height: 1.7; margin: 0 0 28px;">
-      <strong style="color: #ffffff;">${t.confirmation}</strong>
+      <strong style="color: #ffffff; font-family: Georgia, 'Times New Roman', serif;">${t.confirmation}</strong>
     </p>
 
     <p style="color: rgba(255,255,255,0.75); font-size: 15px; line-height: 1.7; margin: 0 0 20px;">
       ${t.processed}
     </p>
 
-    <!-- Refund Amount Card -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(220,38,38,0.1) 100%); border: 1px solid rgba(239,68,68,0.3); border-radius: 16px; margin: 20px 0;">
+    <!-- Refund Amount Card - Warm orange style (not aggressive red) -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, rgba(231,111,81,0.2) 0%, rgba(200,90,61,0.1) 100%); border: 1px solid rgba(231,111,81,0.4); border-radius: 16px; margin: 20px 0;">
       <tr>
         <td style="padding: 20px;">
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td style="color: rgba(255,255,255,0.7); font-weight: 600; font-size: 14px;">${t.refundAmountLabel}</td>
-              <td align="right" style="font-weight: 700; color: #f87171; font-size: 24px;">${formatCurrency(refundAmount, currency)}</td>
+              <td align="right" style="font-family: 'Courier New', monospace; font-weight: 700; color: #F7A989; font-size: 24px;">${formatCurrency(refundAmount, currency)}</td>
             </tr>
           </table>
         </td>
@@ -68,7 +72,7 @@ export function generateRefundSuccessEmail(params: RefundSuccessEmailParams): Em
 
     <!-- Donation IDs -->
     ${createDetailBox(`
-      <p style="color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 600; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 1px;">${t.donationIdsLabel}</p>
+      <p style="color: #F5B800; font-family: Georgia, 'Times New Roman', serif; font-size: 13px; font-weight: 600; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 1px;">${t.donationIdsLabel}</p>
       ${createDonationIdsList(donationIds)}
     `)}
 

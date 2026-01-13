@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Fraunces, Source_Sans_3, JetBrains_Mono } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
@@ -45,6 +45,11 @@ export const metadata: Metadata = {
       { url: '/favicon-512.webp', sizes: '512x512', type: 'image/webp' },
     ],
   },
+}
+
+// viewport-fit=cover 让内容延伸到iOS安全区域，配合env(safe-area-inset-*)使用
+export const viewport: Viewport = {
+  viewportFit: 'cover',
 }
 
 export function generateStaticParams() {

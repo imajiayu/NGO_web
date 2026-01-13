@@ -155,9 +155,13 @@ export default function BottomSheet({
         ref={sheetRef}
         className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-50"
         style={{
+          // minimized状态使用auto高度以适应iOS safe area
+          // expanded状态使用计算高度
           height: isDragging
             ? `${Math.max(getSnapHeight(0), currentHeight - (currentY - startY))}px`
-            : `${currentHeight}px`,
+            : isMinimized
+              ? 'auto'
+              : `${currentHeight}px`,
           maxHeight: '95vh',
           transform: shouldHide ? 'translateY(100%)' : 'translateY(0)',
           opacity: shouldHide ? 0 : 1,
@@ -183,14 +187,21 @@ export default function BottomSheet({
             className="overflow-hidden rounded-t-3xl"
             style={{
               opacity: isMinimized ? 1 : 0,
-              height: isMinimized ? '64px' : '0px',
               // 收起时：延迟出现，等内容先消失
               transition: isMinimized
                 ? `opacity 200ms ease-out 200ms, height 300ms ${springTransition} 100ms`
                 : `opacity 150ms ease-out, height 200ms ${springTransition}`,
             }}
           >
-            <div className="flex items-center justify-center gap-3 py-4 px-6 bg-ukraine-gold-500 h-16">
+            <div
+              className="flex items-center justify-center gap-3 pt-4 px-6 bg-ukraine-gold-500"
+              style={{
+                // 使用safe-area-inset-bottom处理iPhone底部安全区域
+                // 在没有safe area的设备上env()返回0，不影响显示
+                paddingBottom: 'max(16px, env(safe-area-inset-bottom))',
+                minHeight: '64px',
+              }}
+            >
               <ChevronUpIcon className="w-6 h-6 text-ukraine-blue-900" />
               <span className="text-ukraine-blue-900 font-bold text-lg">
                 {minimizedHint || 'Donate Now'}

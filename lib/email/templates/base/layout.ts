@@ -1,5 +1,10 @@
 /**
- * Base Email Layout - Website UI Style (Dark Gradient Theme)
+ * Base Email Layout - Ukraine Humanitarian Theme
+ *
+ * Design Language:
+ * - Deep Ukraine blue gradient background (trust, peace, sky)
+ * - Gold accents for highlights and CTAs (hope, wheat fields)
+ * - Clean, warm typography with Georgia for headings
  *
  * Uses inline styles for maximum email client compatibility
  */
@@ -32,11 +37,13 @@ export function createEmailLayout({ title, content, locale, badge, subtitle }: E
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title}</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: ${fontFamily}; background-color: #0f0f23;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #312e81 0%, #581c87 50%, #831843 100%); padding: 40px 20px;">
+<body style="margin: 0; padding: 0; font-family: ${fontFamily}; background-color: #02263E;">
+  <!-- Ukraine-themed gradient: deep blue to navy -->
+  <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #054878 0%, #04375B 50%, #02263E 100%); padding: 40px 20px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: rgba(255,255,255,0.03); border-radius: 24px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+        <!-- Main container with subtle blue glass effect -->
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: rgba(7,108,179,0.05); border-radius: 24px; overflow: hidden; border: 1px solid rgba(7,108,179,0.3);">
 
           ${createHeader(title, locale, badge, subtitle)}
 

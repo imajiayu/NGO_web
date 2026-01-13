@@ -1,5 +1,8 @@
 /**
- * Donation Completed Email Template - Website UI Style
+ * Donation Completed Email Template - Ukraine Humanitarian Theme
+ *
+ * This celebratory email is sent when a donation has been successfully delivered.
+ * Design emphasizes success (Life green) and gratitude (gold accents).
  */
 
 import { DonationCompletedEmailParams, EmailContent } from '../../../types'
@@ -40,14 +43,14 @@ export function generateDonationCompletedEmail(params: DonationCompletedEmailPar
   const unitName = getLocalizedText(unitNameI18n, locale)
   const trackingUrl = getTrackingUrl(locale)
 
-  // Badge text for header
+  // Badge text for header - celebratory gold
   const badgeText = {
     en: 'Mission Complete',
     zh: '使命达成',
     ua: 'Місію виконано'
   }[locale]
 
-  // Build email content
+  // Build email content with Ukraine theme - celebratory style
   const contentHTML = `
     <p style="color: rgba(255,255,255,0.9); font-size: 16px; line-height: 1.7; margin: 0 0 20px;">
       ${t.greeting(escapeHtml(donorName))}
@@ -59,17 +62,17 @@ export function generateDonationCompletedEmail(params: DonationCompletedEmailPar
       ${t.impact}
     </p>
 
-    <!-- Donation Details -->
+    <!-- Donation Details - Ukraine blue with gold highlights -->
     ${createDetailBox(`
-      ${createDetailRow(t.projectLabel, `<strong style="color: #60a5fa;">${escapeHtml(projectName)}</strong>`)}
+      ${createDetailRow(t.projectLabel, `<strong style="color: #1FA8E1; font-family: Georgia, 'Times New Roman', serif;">${escapeHtml(projectName)}</strong>`)}
       ${createDetailRow(t.locationLabel, escapeHtml(location))}
-      ${createDetailRow(t.quantityLabel, `<strong style="color: #34d399;">${quantity} ${escapeHtml(unitName)}</strong>`)}
-      ${createDetailRow(t.totalAmountLabel, `<strong style="color: #34d399;">${formatCurrency(totalAmount, currency)}</strong>`)}
+      ${createDetailRow(t.quantityLabel, `<strong style="color: #10B981;">${quantity} ${escapeHtml(unitName)}</strong>`)}
+      ${createDetailRow(t.totalAmountLabel, `<strong style="color: #10B981; font-family: 'Courier New', monospace;">${formatCurrency(totalAmount, currency)}</strong>`)}
     `)}
 
     <!-- Donation IDs -->
     ${createDetailBox(`
-      <p style="color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 600; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 1px;">${t.donationIdsLabel}</p>
+      <p style="color: #F5B800; font-family: Georgia, 'Times New Roman', serif; font-size: 13px; font-weight: 600; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 1px;">${t.donationIdsLabel}</p>
       ${createDonationIdsList(donationIds)}
     `)}
 
@@ -78,7 +81,7 @@ export function generateDonationCompletedEmail(params: DonationCompletedEmailPar
       <table width="100%" cellpadding="0" cellspacing="0" style="margin: 28px 0;">
         <tr>
           <td>
-            <p style="color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 600; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 1px;">${t.resultTitle}</p>
+            <p style="color: #F5B800; font-family: Georgia, 'Times New Roman', serif; font-size: 13px; font-weight: 600; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 1px;">${t.resultTitle}</p>
             <p style="color: rgba(255,255,255,0.75); font-size: 15px; margin: 0 0 16px;">${t.resultDescription}</p>
             ${createImage(resultImageUrl, 'Donation delivery confirmation')}
           </td>
@@ -86,7 +89,7 @@ export function generateDonationCompletedEmail(params: DonationCompletedEmailPar
       </table>
     ` : ''}
 
-    <!-- CTA Button -->
+    <!-- CTA Button - Green for success/completion -->
     <table width="100%" cellpadding="0" cellspacing="0" style="margin: 28px 0;">
       <tr>
         <td align="center">
@@ -97,7 +100,7 @@ export function generateDonationCompletedEmail(params: DonationCompletedEmailPar
     </table>
 
     <p style="color: rgba(255,255,255,0.75); font-size: 16px; line-height: 1.7; margin: 0 0 20px;">
-      <strong style="color: #ffffff;">${t.gratitude}</strong>
+      <strong style="color: #ffffff; font-family: Georgia, 'Times New Roman', serif;">${t.gratitude}</strong>
     </p>
 
     ${createSuccessBox(t.shareTitle, t.shareContent)}
