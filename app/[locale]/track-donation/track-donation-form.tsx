@@ -230,7 +230,7 @@ export default function TrackDonationForm({ locale }: Props) {
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
                 <div className="flex items-center gap-2">
-                  <MailIcon className="w-4 h-4 text-blue-600" />
+                  <MailIcon className="w-4 h-4 text-ukraine-blue-500" />
                   {t('form.email')}
                 </div>
               </label>
@@ -240,7 +240,7 @@ export default function TrackDonationForm({ locale }: Props) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none hover:border-gray-400 text-gray-900 placeholder:text-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ukraine-blue-500 focus:border-transparent transition-all outline-none hover:border-gray-400 text-gray-900 placeholder:text-gray-400"
                 placeholder={t('form.emailPlaceholder')}
               />
             </div>
@@ -249,7 +249,7 @@ export default function TrackDonationForm({ locale }: Props) {
             <div>
               <label htmlFor="donationId" className="block text-sm font-semibold text-gray-700 mb-2">
                 <div className="flex items-center gap-2">
-                  <HashIcon className="w-4 h-4 text-blue-600" />
+                  <HashIcon className="w-4 h-4 text-ukraine-blue-500" />
                   {t('form.donationId')}
                 </div>
               </label>
@@ -259,7 +259,7 @@ export default function TrackDonationForm({ locale }: Props) {
                 value={donationId}
                 onChange={(e) => setDonationId(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none hover:border-gray-400 text-gray-900 placeholder:text-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-ukraine-blue-500 focus:border-transparent transition-all outline-none hover:border-gray-400 text-gray-900 placeholder:text-gray-400"
                 placeholder={t('form.donationIdPlaceholder')}
               />
             </div>
@@ -269,7 +269,7 @@ export default function TrackDonationForm({ locale }: Props) {
           <button
             type="submit"
             disabled={loading}
-            className="group relative w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 overflow-hidden"
+            className="group relative w-full bg-ukraine-gold-500 text-ukraine-blue-900 py-4 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:bg-ukraine-gold-600 transform hover:-translate-y-0.5 overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
             {loading ? (
@@ -288,14 +288,14 @@ export default function TrackDonationForm({ locale }: Props) {
 
         {/* Error Message */}
         {error && (
-          <div className="mt-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
+          <div className="mt-6 p-4 bg-warm-50 border-l-4 border-warm-500 rounded-lg">
             <div className="flex items-start">
               <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="h-5 w-5 text-warm-500" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                 </svg>
               </div>
-              <p className="ml-3 text-sm text-red-700 font-medium">{error}</p>
+              <p className="ml-3 text-sm text-warm-700 font-medium">{error}</p>
             </div>
           </div>
         )}
@@ -358,7 +358,7 @@ export default function TrackDonationForm({ locale }: Props) {
                 return (
                   <div
                     key={orderReference}
-                    className="bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 overflow-hidden"
+                    className="bg-white rounded-xl border border-gray-200 hover:border-ukraine-blue-300 hover:shadow-lg transition-all duration-200 overflow-hidden"
                   >
                     <div className="p-6">
                       {/* Header Row */}
@@ -435,7 +435,7 @@ export default function TrackDonationForm({ locale }: Props) {
                               >
                                 {/* Top Row: Donation ID + Status */}
                                 <div className="flex items-center justify-between gap-2">
-                                  <code className="text-xs font-data bg-blue-50 text-blue-900 px-2 py-1 rounded border border-blue-200">
+                                  <code className="text-xs font-data bg-ukraine-blue-50 text-ukraine-blue-900 px-2 py-1 rounded border border-ukraine-blue-200">
                                     {donation.donation_public_id}
                                   </code>
                                   <DonationStatusBadge status={donation.donation_status} />
@@ -445,7 +445,7 @@ export default function TrackDonationForm({ locale }: Props) {
                                 <div>
                                   <Link
                                     href={`/donate?project=${donation.projects.id}`}
-                                    className="text-sm font-semibold text-gray-900 hover:text-blue-600 transition-colors inline-flex items-center gap-1 group"
+                                    className="text-sm font-semibold text-gray-900 hover:text-ukraine-blue-500 transition-colors inline-flex items-center gap-1 group"
                                   >
                                     {donationProjectName}
                                     <ExternalLinkIcon className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -482,7 +482,7 @@ export default function TrackDonationForm({ locale }: Props) {
                                 {/* View Result Button - shown only if this donation is completed */}
                                 {canViewResult(donation.donation_status) && (
                                   <button
-                                    className="flex items-center justify-center gap-2 px-3 py-2 mt-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-xs"
+                                    className="flex items-center justify-center gap-2 px-3 py-2 mt-2 bg-ukraine-blue-500 text-white rounded-lg hover:bg-ukraine-blue-700 transition-colors font-medium text-xs"
                                     onClick={() => setViewResultDonationId(donation.donation_public_id)}
                                   >
                                     <CheckCircle2Icon className="w-3.5 h-3.5" />

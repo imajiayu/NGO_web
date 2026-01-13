@@ -32,17 +32,17 @@ export default function ProjectStatusBadge({ status, namespace = 'projects' }: P
     const baseClasses = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium'
 
     switch (status) {
-      // Planned - Yellow (similar to donation pending)
+      // Planned - Gold (similar to donation pending)
       case 'planned':
-        return `${baseClasses} bg-yellow-100 text-yellow-800`
+        return `${baseClasses} bg-ukraine-gold-100 text-ukraine-gold-800`
 
       // Active - Green (similar to donation paid/confirmed/completed)
       case 'active':
-        return `${baseClasses} bg-green-100 text-green-800`
+        return `${baseClasses} bg-life-100 text-life-800`
 
       // Completed - Blue (similar to donation delivering)
       case 'completed':
-        return `${baseClasses} bg-blue-100 text-blue-800`
+        return `${baseClasses} bg-ukraine-blue-100 text-ukraine-blue-800`
 
       // Paused - Gray (similar to donation expired/refunded)
       case 'paused':

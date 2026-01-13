@@ -113,22 +113,22 @@ export const REFUND_DECLINED_CHECK_STATUSES: readonly DonationStatus[] = [
 // 4. UI 显示相关
 // ============================================
 
-/** 状态颜色映射 */
+/** 状态颜色映射 - 使用乌克兰主题色 */
 export const STATUS_COLORS: Record<DonationStatus, { bg: string; text: string }> = {
-  pending: { bg: 'bg-yellow-100', text: 'text-yellow-800' },
-  widget_load_failed: { bg: 'bg-gray-100', text: 'text-gray-700' },
-  processing: { bg: 'bg-blue-100', text: 'text-blue-800' },
-  fraud_check: { bg: 'bg-purple-100', text: 'text-purple-800' },
-  paid: { bg: 'bg-green-100', text: 'text-green-800' },
-  confirmed: { bg: 'bg-green-100', text: 'text-green-800' },
-  delivering: { bg: 'bg-blue-100', text: 'text-blue-700' },
-  completed: { bg: 'bg-green-100', text: 'text-green-800' },
-  expired: { bg: 'bg-gray-100', text: 'text-gray-600' },
-  declined: { bg: 'bg-red-100', text: 'text-red-800' },
-  failed: { bg: 'bg-red-100', text: 'text-red-800' },
-  refunding: { bg: 'bg-orange-100', text: 'text-orange-800' },
-  refund_processing: { bg: 'bg-orange-100', text: 'text-orange-800' },
-  refunded: { bg: 'bg-gray-100', text: 'text-gray-700' },
+  pending: { bg: 'bg-ukraine-gold-100', text: 'text-ukraine-gold-800' },
+  widget_load_failed: { bg: 'bg-warm-50', text: 'text-warm-700' },
+  processing: { bg: 'bg-ukraine-blue-100', text: 'text-ukraine-blue-700' },
+  fraud_check: { bg: 'bg-ukraine-blue-100', text: 'text-ukraine-blue-700' },
+  paid: { bg: 'bg-life-100', text: 'text-life-800' },
+  confirmed: { bg: 'bg-life-100', text: 'text-life-800' },
+  delivering: { bg: 'bg-ukraine-blue-100', text: 'text-ukraine-blue-700' },
+  completed: { bg: 'bg-life-100', text: 'text-life-800' },
+  expired: { bg: 'bg-warm-100', text: 'text-warm-800' },
+  declined: { bg: 'bg-warm-100', text: 'text-warm-800' },
+  failed: { bg: 'bg-warm-100', text: 'text-warm-800' },
+  refunding: { bg: 'bg-warm-100', text: 'text-warm-700' },
+  refund_processing: { bg: 'bg-warm-100', text: 'text-warm-700' },
+  refunded: { bg: 'bg-ukraine-blue-50', text: 'text-ukraine-blue-700' },
 }
 
 /** 主流程状态（用于进度显示） */

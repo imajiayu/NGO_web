@@ -71,25 +71,25 @@ export default function PaymentMethodSelector({
       id: 'card',
       icon: <CardIcon className="w-7 h-7" />,
       available: true,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50 hover:bg-blue-100',
-      borderColor: 'border-blue-200 hover:border-blue-400',
+      color: 'text-ukraine-blue-500',
+      bgColor: 'bg-ukraine-blue-50 hover:bg-ukraine-blue-100',
+      borderColor: 'border-ukraine-blue-200 hover:border-ukraine-blue-400',
     },
     {
       id: 'wechat',
       icon: <WeChatIcon className="w-7 h-7" />,
       available: false,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
-      borderColor: 'border-green-200',
+      color: 'text-life-600',
+      bgColor: 'bg-life-50',
+      borderColor: 'border-life-200',
     },
     {
       id: 'alipay',
       icon: <AlipayIcon className="w-7 h-7" />,
       available: false,
-      color: 'text-blue-500',
-      bgColor: 'bg-sky-50',
-      borderColor: 'border-sky-200',
+      color: 'text-ukraine-blue-500',
+      bgColor: 'bg-ukraine-blue-50',
+      borderColor: 'border-ukraine-blue-200',
     },
     {
       id: 'crypto',
@@ -114,12 +114,12 @@ export default function PaymentMethodSelector({
       </div>
 
       {/* Amount Display */}
-      <div className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+      <div className="p-4 bg-ukraine-blue-50 rounded-lg border border-ukraine-blue-200">
         <div className="text-center">
           <p className="text-sm text-gray-600 mb-1">
             {t('payment.total')}
           </p>
-          <p className="text-3xl font-bold text-blue-600 font-data">
+          <p className="text-3xl font-bold text-ukraine-blue-500 font-data">
             ${amount.toFixed(2)} USD
           </p>
         </div>

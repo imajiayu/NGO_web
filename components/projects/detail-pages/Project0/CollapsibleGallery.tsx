@@ -54,7 +54,7 @@ export default function CollapsibleGallery({
         <div className="flex justify-center mt-4">
           <button
             onClick={toggleExpand}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg"
+            className="flex items-center gap-2 px-6 py-3 bg-ukraine-blue-500 text-white rounded-lg hover:bg-ukraine-blue-600 transition-all shadow-md hover:shadow-lg"
           >
             <span className="font-medium text-sm md:text-base">{buttonText}</span>
             {isExpanded ? (

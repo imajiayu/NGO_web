@@ -67,12 +67,12 @@ function PaymentWidgetContainer({
         </div>
 
         {/* Amount Display */}
-        <div className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+        <div className="p-4 bg-gradient-to-br from-ukraine-blue-50 to-ukraine-gold-50/30 rounded-lg border border-ukraine-blue-200">
           <div className="text-center">
             <p className="text-sm text-gray-600 mb-1">
               {t('processing.donationAmount')}
             </p>
-            <p className="text-3xl font-bold text-blue-600 font-data">
+            <p className="text-3xl font-bold text-ukraine-blue-500 font-data">
               ${amount.toFixed(2)} USD
             </p>
           </div>
@@ -80,7 +80,7 @@ function PaymentWidgetContainer({
 
         {/* Processing Animation */}
         <div className="py-8 flex flex-col items-center justify-center space-y-4">
-          <svg className="animate-spin h-16 w-16 text-blue-600" fill="none" viewBox="0 0 24 24">
+          <svg className="animate-spin h-16 w-16 text-ukraine-blue-500" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
@@ -121,36 +121,36 @@ function PaymentWidgetContainer({
         </div>
 
         {/* Amount Display */}
-        <div className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+        <div className="p-4 bg-gradient-to-br from-ukraine-blue-50 to-ukraine-gold-50/30 rounded-lg border border-ukraine-blue-200">
           <div className="text-center">
             <p className="text-sm text-gray-600 mb-1">
               {t('processing.donationAmount')}
             </p>
-            <p className="text-3xl font-bold text-blue-600 font-data">
+            <p className="text-3xl font-bold text-ukraine-blue-500 font-data">
               ${amount.toFixed(2)} USD
             </p>
           </div>
         </div>
 
         {/* Error Message */}
-        <div className="p-5 bg-red-50 border-2 border-red-200 rounded-lg">
+        <div className="p-5 bg-warm-50 border-2 border-warm-200 rounded-lg">
           <div className="flex gap-3 mb-4">
-            <svg className="w-6 h-6 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-warm-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <div className="flex-1">
-              <p className="text-base font-bold text-red-800 mb-2">
+              <p className="text-base font-bold text-warm-800 mb-2">
                 {t('paymentError.unableToProcess')}
               </p>
-              <p className="text-sm text-red-700 mb-3">{error}</p>
-              <p className="text-xs text-red-600">
+              <p className="text-sm text-warm-700 mb-3">{error}</p>
+              <p className="text-xs text-warm-600">
                 {t('paymentError.tryAgainMessage')}
               </p>
             </div>
           </div>
           {/* Network Access Notice */}
-          <div className="pt-3 border-t border-red-300">
-            <p className="text-sm text-amber-700 font-medium">
+          <div className="pt-3 border-t border-warm-300">
+            <p className="text-sm text-ukraine-gold-700 font-medium">
               {t('networkNotice')}
             </p>
           </div>
@@ -623,7 +623,7 @@ export default function DonationFormCard({
     return (
       <div>
         <div className="bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 p-8 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-ukraine-blue-100 flex items-center justify-center">
             <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
             </svg>
@@ -644,7 +644,7 @@ export default function DonationFormCard({
     <div ref={formContainerRef}>
       <div className="bg-white rounded-xl border-2 border-gray-200 shadow-lg overflow-hidden relative">
         {/* Project Summary */}
-        <div className="bg-gradient-to-br from-blue-50 to-white p-6 border-b border-gray-200">
+        <div className="bg-ukraine-blue-50 p-6 border-b border-gray-200">
           <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2 font-display">
             {projectName}
           </h3>
@@ -658,7 +658,7 @@ export default function DonationFormCard({
             </div>
             {!isAggregatedProject && (
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-blue-600 font-data">
+                <span className="text-2xl font-bold text-ukraine-blue-500 font-data">
                   ${(project.unit_price || 0).toFixed(2)}
                 </span>
                 <span className="text-sm text-gray-500">
@@ -672,7 +672,7 @@ export default function DonationFormCard({
         {/* Donation Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="p-3 bg-warm-50 border border-warm-200 rounded-lg text-warm-700 text-sm">
               {error}
             </div>
           )}
@@ -692,7 +692,7 @@ export default function DonationFormCard({
                     onClick={() => setDonationAmount(amount)}
                     className={`px-3 py-2 rounded-lg border font-medium text-sm transition-all ${
                       donationAmount === amount
-                        ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                        ? 'bg-ukraine-blue-500 text-white border-ukraine-blue-500 shadow-md'
                         : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                     }`}
                   >
@@ -752,15 +752,15 @@ export default function DonationFormCard({
                     setDonationAmount(Math.round(num * 10) / 10)
                   }
                 }}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ukraine-blue-500 focus:border-transparent"
                 placeholder={t('amount.placeholder')}
               />
-              <div className="mt-2 p-2.5 bg-blue-50 rounded-lg">
+              <div className="mt-2 p-2.5 bg-ukraine-blue-50 rounded-lg">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium text-gray-700">
                     {t('payment.projectTotal')}:
                   </span>
-                  <span className="text-xl font-bold text-blue-600 font-data">
+                  <span className="text-xl font-bold text-ukraine-blue-500 font-data">
                     ${projectAmount.toFixed(2)} {t('payment.currency')}
                   </span>
                 </div>
@@ -780,7 +780,7 @@ export default function DonationFormCard({
                     onClick={() => setQuantity(num)}
                     className={`px-3 py-2 rounded-lg border font-medium text-sm transition-all ${
                       quantity === num
-                        ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                        ? 'bg-ukraine-blue-500 text-white border-ukraine-blue-500 shadow-md'
                         : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                     }`}
                   >
@@ -839,15 +839,15 @@ export default function DonationFormCard({
                     setQuantity(num) // This removes leading zeros
                   }
                 }}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ukraine-blue-500 focus:border-transparent"
                 placeholder={t('quantity.custom')}
               />
-              <div className="mt-2 p-2.5 bg-blue-50 rounded-lg">
+              <div className="mt-2 p-2.5 bg-ukraine-blue-50 rounded-lg">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium text-gray-700">
                     {t('payment.projectTotal')}:
                   </span>
-                  <span className="text-xl font-bold text-blue-600 font-data">
+                  <span className="text-xl font-bold text-ukraine-blue-500 font-data">
                     ${projectAmount.toFixed(2)} {t('payment.currency')}
                   </span>
                 </div>
@@ -862,23 +862,23 @@ export default function DonationFormCard({
                 <h4 className="font-semibold text-gray-900 font-display">
                   {t('tip.title')}
                 </h4>
-                <div className="flex-shrink-0 bg-amber-50 px-2 py-1 rounded text-xs font-medium text-amber-700">
+                <div className="flex-shrink-0 bg-ukraine-gold-50 px-2 py-1 rounded text-xs font-medium text-ukraine-gold-700 border border-ukraine-gold-200">
                   {t('tip.optional')}
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg p-4 mb-3 border border-amber-200">
+              <div className="bg-gradient-to-br from-ukraine-gold-50 to-ukraine-gold-100 rounded-lg p-4 mb-3 border border-ukraine-gold-200">
                 <p className="text-sm text-gray-800 font-medium mb-3">
                   {t('tip.description')}
                 </p>
 
                 <div className="grid grid-cols-2 gap-3 mb-3">
                   <div className="bg-white/80 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-amber-600 font-data">1,600+</div>
+                    <div className="text-2xl font-bold text-ukraine-gold-600 font-data">1,600+</div>
                     <div className="text-xs text-gray-600 mt-1">{t('tip.patientsServed')}</div>
                   </div>
                   <div className="bg-white/80 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-amber-600 font-data">$1,000</div>
+                    <div className="text-2xl font-bold text-ukraine-gold-600 font-data">$1,000</div>
                     <div className="text-xs text-gray-600 mt-1">{t('tip.avgCostPerPatient')}</div>
                   </div>
                 </div>
@@ -890,7 +890,7 @@ export default function DonationFormCard({
 
               <a
                 href={`/${locale}/donate?project=0`}
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1 mb-3"
+                className="text-sm text-ukraine-blue-500 hover:text-ukraine-blue-600 font-medium inline-flex items-center gap-1 mb-3"
               >
                 {t('tip.viewDetails')}
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -906,7 +906,7 @@ export default function DonationFormCard({
                     onClick={() => setTipAmount(amount)}
                     className={`px-3 py-2 rounded-lg border font-medium text-sm transition-all ${
                       tipAmount === amount
-                        ? 'bg-amber-600 text-white border-amber-600 shadow-md'
+                        ? 'bg-ukraine-gold-600 text-white border-ukraine-gold-600 shadow-md'
                         : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                     }`}
                   >
@@ -965,11 +965,11 @@ export default function DonationFormCard({
                     setTipAmount(Math.round(num * 10) / 10)
                   }
                 }}
-                className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ukraine-gold-500 focus:border-transparent"
                 placeholder={t('tip.placeholder')}
               />
               {tipAmount > 0 && (
-                <p className="mt-2 text-xs text-amber-700 flex items-center gap-1">
+                <p className="mt-2 text-xs text-ukraine-gold-700 flex items-center gap-1">
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
                   </svg>
@@ -981,7 +981,7 @@ export default function DonationFormCard({
 
           {/* Total Amount Summary */}
           <div className="border-t pt-3">
-            <div className="p-3 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+            <div className="p-3 bg-gradient-to-br from-ukraine-blue-50 to-ukraine-gold-50/30 rounded-lg border border-ukraine-blue-200">
               <div className="space-y-2">
                 {/* Show breakdown if there's a tip */}
                 {tipAmount > 0 && (
@@ -998,7 +998,7 @@ export default function DonationFormCard({
                       <span className="text-gray-600">
                         {t('payment.tipAmount')}:
                       </span>
-                      <span className="font-semibold text-amber-700 font-data">
+                      <span className="font-semibold text-ukraine-gold-700 font-data">
                         ${tipAmount.toFixed(2)}
                       </span>
                     </div>
@@ -1009,7 +1009,7 @@ export default function DonationFormCard({
                   <span className="text-base font-bold text-gray-900">
                     {t('payment.total')}:
                   </span>
-                  <span className="text-2xl font-bold text-blue-600 font-data">
+                  <span className="text-2xl font-bold text-ukraine-blue-500 font-data">
                     ${totalAmount.toFixed(2)} {t('payment.currency')}
                   </span>
                 </div>
@@ -1035,7 +1035,7 @@ export default function DonationFormCard({
                 maxLength={255}
                 value={donorName}
                 onChange={(e) => setDonorName(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ukraine-blue-500 focus:border-transparent"
                 placeholder={t('donor.namePlaceholder')}
               />
               <p className="mt-1 text-xs text-gray-500">{t('donor.nameHint')}</p>
@@ -1053,7 +1053,7 @@ export default function DonationFormCard({
                 onChange={(e) => setDonorEmail(e.target.value)}
                 onBlur={(e) => setDonorEmail(e.target.value.trim())}
                 pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ukraine-blue-500 focus:border-transparent"
                 placeholder={t('donor.emailPlaceholder')}
               />
               <p className="mt-1 text-xs text-gray-500">{t('donor.emailHint')}</p>
@@ -1078,7 +1078,7 @@ export default function DonationFormCard({
                 maxLength={255}
                 value={contactTelegram}
                 onChange={(e) => setContactTelegram(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ukraine-blue-500 focus:border-transparent"
                 placeholder={t('contact.telegramPlaceholder')}
               />
             </div>
@@ -1092,7 +1092,7 @@ export default function DonationFormCard({
                 maxLength={255}
                 value={contactWhatsapp}
                 onChange={(e) => setContactWhatsapp(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ukraine-blue-500 focus:border-transparent"
                 placeholder={t('contact.whatsappPlaceholder')}
               />
             </div>
@@ -1108,7 +1108,7 @@ export default function DonationFormCard({
               rows={3}
               value={donorMessage}
               onChange={(e) => setDonorMessage(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ukraine-blue-500 focus:border-transparent resize-none"
               placeholder={t('message.placeholder')}
             />
             <p className="mt-1 text-xs text-gray-500">
@@ -1137,8 +1137,8 @@ export default function DonationFormCard({
             disabled={processingState === 'creating' || project.status !== 'active'}
             className={`group relative w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 shadow-md overflow-hidden ${
               project.status !== 'active'
-                ? 'bg-gradient-to-r from-gray-400 to-gray-500 text-white cursor-not-allowed'
-                : 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 hover:shadow-xl disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed'
+                ? 'bg-gray-400 text-white cursor-not-allowed'
+                : 'bg-ukraine-gold-500 text-ukraine-blue-900 hover:bg-ukraine-gold-600 hover:shadow-xl disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed'
             }`}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
@@ -1151,7 +1151,7 @@ export default function DonationFormCard({
           </button>
 
           {/* Network Access Notice */}
-          <p className="text-sm text-amber-700 text-center font-medium">
+          <p className="text-sm text-ukraine-gold-700 text-center font-medium">
             {t('networkNotice')}
           </p>
         </form>

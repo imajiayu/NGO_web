@@ -33,8 +33,8 @@ export default function CopyButton({
 
   const variantStyles =
     variant === 'primary'
-      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-purple-700'
-      : 'bg-white/90 backdrop-blur-sm text-gray-700 shadow-md hover:shadow-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+      ? 'bg-ukraine-blue-500 text-white shadow-lg hover:shadow-xl hover:bg-ukraine-blue-600'
+      : 'bg-white/90 backdrop-blur-sm text-gray-700 shadow-md hover:shadow-lg border border-gray-200 hover:border-ukraine-blue-300 hover:bg-ukraine-blue-50'
 
   return (
     <button

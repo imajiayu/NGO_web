@@ -26,13 +26,13 @@ export default function DonationStatusFlow({ className = '' }: DonationStatusFlo
               {/* 连接线 */}
               {index < MAIN_STAGE_KEYS.length - 1 && (
                 <div
-                  className="absolute top-3 left-1/2 w-full h-0.5 bg-green-500"
+                  className="absolute top-3 left-1/2 w-full h-0.5 bg-life-500"
                   style={{ zIndex: 0 }}
                 />
               )}
               {/* 图标 */}
-              <div className="relative z-10 bg-white rounded-full p-1">
-                <CheckCircle2Icon className="w-6 h-6 text-green-600" />
+              <div className="relative z-10 bg-gradient-to-br from-life-50 to-white rounded-full p-2 border border-life-200 shadow-sm">
+                <CheckCircle2Icon className="w-5 h-5 text-life-600" />
               </div>
               {/* 标题 */}
               <div className="mt-2 text-center px-1 text-gray-700">
@@ -52,8 +52,8 @@ export default function DonationStatusFlow({ className = '' }: DonationStatusFlo
           <div className="relative flex items-start">
             {/* refund_pending */}
             <div className="flex flex-col items-center flex-1 relative">
-              <div className="relative z-10 bg-white rounded-full p-1">
-                <CheckCircle2Icon className="w-6 h-6 text-red-500" />
+              <div className="relative z-10 bg-gradient-to-br from-warm-50 to-white rounded-full p-2 border border-warm-200 shadow-sm">
+                <CheckCircle2Icon className="w-5 h-5 text-warm-600" />
               </div>
               <div className="mt-2 text-center px-1 text-gray-700">
                 <div className="text-xs sm:text-sm font-medium break-words">
@@ -70,11 +70,11 @@ export default function DonationStatusFlow({ className = '' }: DonationStatusFlo
             {/* refund_done */}
             <div className="flex flex-col items-center flex-1 relative">
               <div
-                className="absolute top-3 right-1/2 w-[200%] h-0.5 bg-red-500"
+                className="absolute top-3 right-1/2 w-[200%] h-0.5 bg-warm-500"
                 style={{ zIndex: 0 }}
               />
-              <div className="relative z-10 bg-white rounded-full p-1">
-                <CheckCircle2Icon className="w-6 h-6 text-red-500" />
+              <div className="relative z-10 bg-gradient-to-br from-warm-50 to-white rounded-full p-2 border border-warm-200 shadow-sm">
+                <CheckCircle2Icon className="w-5 h-5 text-warm-600" />
               </div>
               <div className="mt-2 text-center px-1 text-gray-700">
                 <div className="text-xs sm:text-sm font-medium break-words">
@@ -94,8 +94,8 @@ export default function DonationStatusFlow({ className = '' }: DonationStatusFlo
       {/* 描述卡片 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 sm:mt-14 md:mt-12">
         {MAIN_STAGE_KEYS.map((stageKey) => (
-          <div key={stageKey} className="p-4 rounded-lg border border-gray-200 bg-white">
-            <h4 className="font-semibold mb-2 text-gray-700 font-display">
+          <div key={stageKey} className="p-4 rounded-lg border border-life-200 bg-life-50/30">
+            <h4 className="font-semibold mb-2 text-life-800 font-display">
               {t(`stages.${stageKey}.title`)}
             </h4>
             <p className="text-sm text-gray-600">{t(`stages.${stageKey}.description`)}</p>
@@ -103,8 +103,8 @@ export default function DonationStatusFlow({ className = '' }: DonationStatusFlo
         ))}
 
         {REFUND_STAGE_KEYS.map((stageKey) => (
-          <div key={stageKey} className="p-4 rounded-lg border border-orange-100 bg-orange-50">
-            <h4 className="font-semibold mb-2 text-gray-700 font-display">
+          <div key={stageKey} className="p-4 rounded-lg border border-warm-200 bg-warm-50">
+            <h4 className="font-semibold mb-2 text-warm-800 font-display">
               {t(`stages.${stageKey}.title`)}
             </h4>
             <p className="text-sm text-gray-600">{t(`stages.${stageKey}.description`)}</p>

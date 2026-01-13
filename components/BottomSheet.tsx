@@ -190,12 +190,12 @@ export default function BottomSheet({
                 : `opacity 150ms ease-out, height 200ms ${springTransition}`,
             }}
           >
-            <div className="flex items-center justify-center gap-3 py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 h-16">
-              <ChevronUpIcon className="w-6 h-6 text-white" />
-              <span className="text-white font-bold text-lg">
+            <div className="flex items-center justify-center gap-3 py-4 px-6 bg-ukraine-gold-500 h-16">
+              <ChevronUpIcon className="w-6 h-6 text-ukraine-blue-900" />
+              <span className="text-ukraine-blue-900 font-bold text-lg">
                 {minimizedHint || 'Donate Now'}
               </span>
-              <ChevronUpIcon className="w-6 h-6 text-white" />
+              <ChevronUpIcon className="w-6 h-6 text-ukraine-blue-900" />
             </div>
           </div>
 

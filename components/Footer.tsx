@@ -183,7 +183,7 @@ export default async function Footer() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center w-20 h-20 bg-gray-50/90 backdrop-blur-sm rounded-lg text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 hover:scale-110 hover:shadow-lg border border-gray-100/50"
+                  className="flex items-center justify-center w-20 h-20 bg-gray-50/90 backdrop-blur-sm rounded-lg text-gray-600 hover:bg-ukraine-blue-50 hover:text-ukraine-blue-500 transition-all duration-200 hover:scale-110 hover:shadow-lg border border-gray-100/50 hover:border-ukraine-blue-200"
                   aria-label={social.name}
                 >
                   {social.icon}
@@ -208,7 +208,7 @@ export default async function Footer() {
                     {info.href ? (
                       <a
                         href={info.href}
-                        className="text-sm text-gray-900 hover:text-blue-600 transition-colors break-words"
+                        className="text-sm text-gray-900 hover:text-ukraine-blue-500 transition-colors break-words"
                       >
                         {info.value}
                       </a>
@@ -231,13 +231,13 @@ export default async function Footer() {
             <div className="space-y-3">
               <Link
                 href="/privacy-policy"
-                className="block text-sm text-gray-700 hover:text-blue-600 transition-colors"
+                className="block text-sm text-gray-700 hover:text-ukraine-blue-500 transition-colors hover:underline underline-offset-2"
               >
                 {t('privacyPolicy')}
               </Link>
               <Link
                 href="/public-agreement"
-                className="block text-sm text-gray-700 hover:text-blue-600 transition-colors"
+                className="block text-sm text-gray-700 hover:text-ukraine-blue-500 transition-colors hover:underline underline-offset-2"
               >
                 {t('publicAgreement')}
               </Link>

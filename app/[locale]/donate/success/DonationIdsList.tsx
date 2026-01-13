@@ -50,7 +50,7 @@ export default function DonationIdsList({ donations, locale, t }: DonationIdsLis
               label={t('copy.copyAll')}
               copiedLabel={t('copy.copied')}
               variant="secondary"
-              className="!bg-blue-600 hover:!bg-blue-700 !text-white !border-blue-600 w-full sm:w-auto"
+              className="!bg-ukraine-blue-500 hover:!bg-ukraine-blue-600 !text-white !border-ukraine-blue-500 w-full sm:w-auto"
             />
           </div>
         )}
@@ -89,7 +89,7 @@ export default function DonationIdsList({ donations, locale, t }: DonationIdsLis
                       1 {unitName}
                     </span>
                   )}
-                  <span className="text-base font-bold text-green-600">
+                  <span className="text-base font-bold text-life-600">
                     ${Number(donation.amount).toFixed(2)}
                   </span>
                 </div>

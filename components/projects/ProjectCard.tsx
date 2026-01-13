@@ -75,8 +75,8 @@ export default function ProjectCard({
           group flex-shrink-0 w-64 bg-white rounded-2xl border-2 overflow-hidden
           transition-all duration-300 transform relative bg-cover bg-center bg-no-repeat
           ${isSelected
-            ? 'border-blue-600 bg-blue-50 scale-105'
-            : 'border-gray-200 hover:border-blue-400'
+            ? 'border-ukraine-blue-500 bg-ukraine-blue-50 scale-105'
+            : 'border-gray-200 hover:border-ukraine-blue-400'
           }
         `}
         style={{
@@ -92,7 +92,7 @@ export default function ProjectCard({
           {/* Header with Tags - Always Visible */}
           <div className={`
             p-4 border-b transition-colors
-            ${isSelected ? 'bg-gradient-to-br from-blue-100/80 to-blue-50/80 border-blue-200' : 'bg-gradient-to-br from-blue-50/80 to-white/80 border-gray-100'}
+            ${isSelected ? 'bg-gradient-to-br from-ukraine-blue-100/80 to-ukraine-blue-50/80 border-ukraine-blue-200' : 'bg-gradient-to-br from-ukraine-blue-50/80 to-white/80 border-gray-100'}
           `}>
             <div className="flex items-start justify-between gap-2 mb-2">
               <div className="flex items-start gap-2 flex-wrap">
@@ -101,7 +101,7 @@ export default function ProjectCard({
 
                 {/* Long-term Badge */}
                 {project.is_long_term === true && (
-                  <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 border border-purple-200">
+                  <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-ukraine-blue-100 text-ukraine-blue-800 border border-ukraine-blue-200">
                     {t('longTerm')}
                   </span>
                 )}
@@ -109,8 +109,8 @@ export default function ProjectCard({
 
               {/* Selected Checkmark */}
               {isSelected && (
-                <div className="flex-shrink-0 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
-                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex-shrink-0 w-5 h-5 bg-ukraine-gold-500 rounded-full flex items-center justify-center">
+                  <svg className="w-3 h-3 text-ukraine-blue-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
@@ -119,7 +119,7 @@ export default function ProjectCard({
 
             <h3 className={`
               text-base font-bold leading-tight line-clamp-2 text-left font-display
-              ${isSelected ? 'text-blue-900' : 'text-gray-900 group-hover:text-blue-600'}
+              ${isSelected ? 'text-ukraine-blue-900' : 'text-gray-900 group-hover:text-ukraine-blue-500'}
               transition-colors
             `}>
               {projectName}
@@ -147,7 +147,7 @@ export default function ProjectCard({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 {project.aggregate_donations ? (
-                  <span className="text-sm font-semibold text-purple-700 text-left">
+                  <span className="text-sm font-semibold text-ukraine-gold-600 text-left">
                     {t('anyAmount')}
                   </span>
                 ) : (
@@ -186,7 +186,7 @@ export default function ProjectCard({
                 {project.is_long_term === true && !project.aggregate_donations && (
                   <div className="flex justify-between text-xs mb-1">
                     <span className="text-gray-600">{t('currentUnits')}</span>
-                    <span className="font-semibold text-blue-600 font-data">
+                    <span className="font-semibold text-ukraine-blue-500 font-data">
                       {currentUnits} {unitName}
                     </span>
                   </div>
@@ -225,7 +225,7 @@ export default function ProjectCard({
     <>
       <GlobalLoadingSpinner isLoading={isNavigating} />
       <div
-        className="group flex-shrink-0 w-80 bg-white rounded-2xl border-2 border-gray-200 hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden relative bg-cover bg-center bg-no-repeat flex flex-col"
+        className="group flex-shrink-0 w-80 bg-white rounded-2xl border-2 border-gray-200 hover:border-ukraine-blue-500 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden relative bg-cover bg-center bg-no-repeat flex flex-col"
         style={{
           backgroundImage: `url(/images/projects/project-${project.id}/card/bg.webp)`,
           backgroundColor: 'white'
@@ -237,20 +237,20 @@ export default function ProjectCard({
       {/* Content wrapper */}
       <div className="relative z-10 flex flex-col h-full">
         {/* Header with Tags */}
-        <div className="p-5 border-b border-gray-100 bg-gradient-to-br from-blue-50/80 to-white/80">
+        <div className="p-5 border-b border-gray-100 bg-gradient-to-br from-ukraine-blue-50/80 to-white/80">
           <div className="flex items-start justify-between gap-2 mb-3">
             {/* Status Badge */}
             <ProjectStatusBadge status={project.status || 'active'} />
 
             {/* Long-term Badge */}
             {project.is_long_term === true && (
-              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 border border-purple-200">
+              <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-ukraine-blue-100 text-ukraine-blue-800 border border-ukraine-blue-200">
                 {t('longTerm')}
               </span>
             )}
           </div>
 
-          <h3 className="text-lg font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors font-display">
+          <h3 className="text-lg font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-ukraine-blue-500 transition-colors font-display">
             {projectName}
           </h3>
         </div>
@@ -272,7 +272,7 @@ export default function ProjectCard({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             {project.aggregate_donations ? (
-              <span className="text-sm font-semibold text-purple-700">
+              <span className="text-sm font-semibold text-ukraine-gold-600">
                 {t('anyAmount')}
               </span>
             ) : (
@@ -311,7 +311,7 @@ export default function ProjectCard({
             {project.is_long_term === true && !project.aggregate_donations && (
               <div className="flex justify-between text-sm mb-2">
                 <span className="text-gray-600">{t('currentUnits')}</span>
-                <span className="font-semibold text-blue-600 font-data">
+                <span className="font-semibold text-ukraine-blue-500 font-data">
                   {currentUnits} {unitName}
                 </span>
               </div>
@@ -341,9 +341,9 @@ export default function ProjectCard({
         <div className="p-5 pt-0 mt-auto">
           <button
             onClick={handleDonateClick}
-            className="group/btn relative block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 hover:shadow-xl transition-all duration-300 shadow-md overflow-hidden"
+            className="group/btn relative block w-full text-center py-3 px-4 bg-ukraine-gold-500 text-ukraine-blue-900 rounded-xl font-semibold hover:bg-ukraine-gold-600 hover:shadow-xl transition-all duration-300 shadow-md overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000"></div>
             <span className="relative z-10">{t('viewDetails')}</span>
           </button>
         </div>

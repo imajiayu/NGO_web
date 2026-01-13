@@ -16,7 +16,7 @@ export default function ProjectResultsSection({ results, locale }: Props) {
     <section className="relative pt-12 md:pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-8 md:mb-10">
         <div className="text-center">
-          <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full mb-3">
+          <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-ukraine-gold-500 text-ukraine-blue-900 rounded-full mb-3">
             {t('results.label')}
           </span>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 md:mb-4 font-display">

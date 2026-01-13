@@ -188,17 +188,17 @@ export default function DonationResultViewer({
           <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
             {loading && (
               <div className="flex flex-col items-center justify-center py-20">
-                <Loader2Icon className="w-12 h-12 text-blue-600 animate-spin mb-4" />
+                <Loader2Icon className="w-12 h-12 text-ukraine-blue-500 animate-spin mb-4" />
                 <p className="text-gray-600">{t('loading')}</p>
               </div>
             )}
 
             {error && (
               <div className="flex flex-col items-center justify-center py-20">
-                <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mb-4">
-                  <ImageIcon className="w-8 h-8 text-red-600" />
+                <div className="w-16 h-16 rounded-full bg-warm-100 flex items-center justify-center mb-4">
+                  <ImageIcon className="w-8 h-8 text-warm-600" />
                 </div>
-                <p className="text-red-600 font-medium mb-2">{error}</p>
+                <p className="text-warm-600 font-medium mb-2">{error}</p>
                 <p className="text-sm text-gray-600">{t('contactSupport')}</p>
               </div>
             )}
@@ -211,7 +211,7 @@ export default function DonationResultViewer({
                     <button
                       key={index}
                       onClick={() => openLightbox(index)}
-                      className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 hover:ring-2 hover:ring-blue-500 transition-all group"
+                      className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 hover:ring-2 hover:ring-ukraine-blue-500 transition-all group"
                     >
                       {file.isImage && (
                         <>
@@ -248,7 +248,7 @@ export default function DonationResultViewer({
                   <button
                     onClick={handleDownloadAll}
                     disabled={downloading}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 px-4 py-2 bg-ukraine-blue-500 text-white rounded-lg hover:bg-ukraine-blue-600 transition-colors font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {downloading ? (
                       <>

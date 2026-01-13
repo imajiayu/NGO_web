@@ -75,8 +75,8 @@ function StatusIndicator({ status }: { status: string }) {
       ),
     },
     confirming: {
-      color: 'text-blue-700',
-      bgColor: 'bg-blue-50 border-blue-200',
+      color: 'text-ukraine-blue-600',
+      bgColor: 'bg-ukraine-blue-50 border-ukraine-blue-200',
       icon: (
         <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -85,8 +85,8 @@ function StatusIndicator({ status }: { status: string }) {
       ),
     },
     confirmed: {
-      color: 'text-blue-700',
-      bgColor: 'bg-blue-50 border-blue-200',
+      color: 'text-ukraine-blue-600',
+      bgColor: 'bg-ukraine-blue-50 border-ukraine-blue-200',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -94,8 +94,8 @@ function StatusIndicator({ status }: { status: string }) {
       ),
     },
     sending: {
-      color: 'text-purple-700',
-      bgColor: 'bg-purple-50 border-purple-200',
+      color: 'text-ukraine-gold-700',
+      bgColor: 'bg-ukraine-gold-50 border-ukraine-gold-200',
       icon: (
         <svg className="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -103,8 +103,8 @@ function StatusIndicator({ status }: { status: string }) {
       ),
     },
     finished: {
-      color: 'text-green-700',
-      bgColor: 'bg-green-50 border-green-200',
+      color: 'text-life-700',
+      bgColor: 'bg-life-50 border-life-200',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -188,8 +188,8 @@ export default function NowPaymentsWidget({
     return (
       <div className="p-6 space-y-6">
         <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
-            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-warm-100 flex items-center justify-center">
+            <svg className="w-8 h-8 text-warm-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>

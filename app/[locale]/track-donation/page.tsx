@@ -19,7 +19,7 @@ export default async function TrackDonationPage() {
   const locale = await getLocale()
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-gray-50">
+    <div className="min-h-screen bg-slate-50">
       {/* Hero Section */}
       <div className="relative overflow-hidden py-20 pb-32">
         {/* Background Images - Three vertical photos */}

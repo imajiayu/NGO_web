@@ -185,8 +185,8 @@ export default function CryptoSelector({
             {t('cryptoSelector.title')}
           </h2>
         </div>
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-center">
-          <p className="text-red-700">{loadError}</p>
+        <div className="p-4 bg-warm-50 border border-warm-200 rounded-lg text-center">
+          <p className="text-warm-700">{loadError}</p>
         </div>
         <button
           type="button"
@@ -301,7 +301,7 @@ export default function CryptoSelector({
                       {currency.name}
                     </span>
                     {currency.isStable && (
-                      <span className="text-xs px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded">
+                      <span className="text-xs px-1.5 py-0.5 bg-ukraine-blue-100 text-ukraine-blue-600 rounded">
                         Stablecoin
                       </span>
                     )}
@@ -329,13 +329,13 @@ export default function CryptoSelector({
       {selectedCrypto && (
         <div className={`p-3 rounded-lg border ${
           isBelowMinimum
-            ? 'bg-red-50 border-red-200'
+            ? 'bg-warm-50 border-warm-200'
             : 'bg-amber-50 border-amber-200'
         }`}>
           <div className="flex items-start gap-2">
             <svg
               className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
-                isBelowMinimum ? 'text-red-600' : 'text-amber-600'
+                isBelowMinimum ? 'text-warm-600' : 'text-amber-600'
               }`}
               fill="none"
               stroke="currentColor"
@@ -347,7 +347,7 @@ export default function CryptoSelector({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               )}
             </svg>
-            <div className={`text-sm ${isBelowMinimum ? 'text-red-800' : 'text-amber-800'}`}>
+            <div className={`text-sm ${isBelowMinimum ? 'text-warm-800' : 'text-amber-800'}`}>
               {isLoadingMin ? (
                 <span>{t('cryptoSelector.loadingMinimum')}</span>
               ) : minAmount !== null ? (

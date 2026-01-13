@@ -9,20 +9,20 @@ type InfoCardProps = {
 
 const VARIANT_STYLES = {
   blue: {
-    bg: 'bg-blue-50',
-    border: 'border-blue-200',
+    bg: 'bg-ukraine-blue-50',
+    border: 'border-ukraine-blue-200',
     borderStyle: 'border',
-    title: 'text-blue-900',
-    description: 'text-blue-800',
-    icon: 'text-blue-600',
+    title: 'text-ukraine-blue-900',
+    description: 'text-ukraine-blue-800',
+    icon: 'text-ukraine-blue-500',
   },
   purple: {
-    bg: 'bg-purple-50',
-    border: 'border-purple-200',
+    bg: 'bg-ukraine-gold-50',
+    border: 'border-ukraine-gold-200',
     borderStyle: 'border',
-    title: 'text-purple-900',
-    description: 'text-purple-800',
-    icon: 'text-purple-600',
+    title: 'text-ukraine-gold-900',
+    description: 'text-ukraine-gold-800',
+    icon: 'text-ukraine-gold-500',
   },
   yellow: {
     bg: 'bg-yellow-50',

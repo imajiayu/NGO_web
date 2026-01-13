@@ -36,25 +36,25 @@ export default async function ComplianceSection() {
                 href={`/documents/${encodeURIComponent(file)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex-shrink-0 w-48 p-4 bg-white rounded-xl border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2"
+                className="group flex-shrink-0 w-48 p-4 bg-white rounded-xl border-2 border-gray-200 hover:border-ukraine-blue-500 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2"
               >
                 {/* PDF Icon */}
                 <div className="flex justify-center mb-3">
-                  <div className="p-3 bg-red-50 rounded-lg group-hover:bg-red-100 transition-colors">
-                    <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <div className="p-3 bg-warm-50 rounded-lg group-hover:bg-warm-100 transition-colors border border-warm-200">
+                    <svg className="w-8 h-8 text-warm-600" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                     </svg>
                   </div>
                 </div>
 
                 {/* Document Name */}
-                <p className="text-sm font-medium text-gray-900 text-center leading-tight group-hover:text-blue-600 transition-colors line-clamp-3">
+                <p className="text-sm font-medium text-gray-900 text-center leading-tight group-hover:text-ukraine-blue-500 transition-colors line-clamp-3">
                   {t(`documents.${key}` as any)}
                 </p>
 
                 {/* Download Indicator */}
                 <div className="mt-3 flex justify-center">
-                  <span className="text-xs text-gray-500 group-hover:text-blue-600 transition-colors">
+                  <span className="text-xs text-gray-500 group-hover:text-ukraine-blue-500 transition-colors">
                     PDF
                   </span>
                 </div>

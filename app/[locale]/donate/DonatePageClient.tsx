@@ -246,7 +246,7 @@ export default function DonatePageClient({
   }, [])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50">
       {/* Project Selection Gallery */}
       <ProjectsGallery
         projects={projects}
@@ -343,7 +343,7 @@ export default function DonatePageClient({
             {/* Toggle Button */}
             <button
               onClick={() => setIsFlowExpanded(!isFlowExpanded)}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white border-2 border-ukraine-blue-500 text-ukraine-blue-500 rounded-lg hover:bg-ukraine-blue-50 transition-colors font-medium"
             >
               {isFlowExpanded ? (
                 <>
@@ -393,8 +393,8 @@ function EmptyState({ locale }: { locale: string }) {
 
   return (
     <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-12 text-center min-h-[400px] flex flex-col items-center justify-center">
-      <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-        <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-ukraine-blue-100 to-ukraine-gold-100 flex items-center justify-center">
+        <svg className="w-10 h-10 text-ukraine-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
         </svg>
       </div>

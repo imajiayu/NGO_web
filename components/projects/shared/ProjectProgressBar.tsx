@@ -32,14 +32,16 @@ export default function ProjectProgressBar({
             </>
           )}
         </span>
-        <span className={`font-data ${isComplete ? 'text-green-600 font-medium' : ''}`}>
+        <span className={`font-data ${isComplete ? 'text-life-600 font-medium' : ''}`}>
           {percentage.toFixed(1)}%
         </span>
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden shadow-inner">
         <div
           className={`h-full transition-all duration-500 ${
-            isComplete ? 'bg-green-500' : 'bg-blue-600'
+            isComplete
+              ? 'bg-gradient-to-r from-life-400 via-life-500 to-life-600'
+              : 'bg-gradient-to-r from-ukraine-blue-400 via-ukraine-blue-500 to-ukraine-blue-600'
           }`}
           style={{ width: `${percentage}%` }}
         />

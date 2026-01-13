@@ -132,7 +132,7 @@ export default function ProjectResultsMarquee({
                           </div>
 
                           {/* Hover Effect */}
-                          <div className="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute inset-0 bg-ukraine-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </div>
                       </div>
                     )

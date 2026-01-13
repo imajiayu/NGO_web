@@ -146,7 +146,7 @@ export default function ProjectDonationList({
                       {donation.donor_email_obfuscated || 'N/A'}
                     </td>
                     <td className="py-4 px-4">
-                      <code className="text-sm font-data bg-blue-50 text-blue-900 px-2 py-1 rounded border border-blue-200">
+                      <code className="text-sm font-data bg-ukraine-blue-50 text-ukraine-blue-900 px-2 py-1 rounded border border-ukraine-blue-200">
                         {donation.donation_public_id}
                       </code>
                     </td>
@@ -165,7 +165,7 @@ export default function ProjectDonationList({
                     <td className="py-4 px-4">
                       {canViewResult(donation.donation_status) && (
                         <button
-                          className="text-sm text-blue-600 hover:text-blue-800 font-medium hover:underline"
+                          className="text-sm text-ukraine-blue-500 hover:text-ukraine-blue-600 font-medium hover:underline"
                           onClick={() => setViewResultDonationId(donation.donation_public_id)}
                         >
                           {t('actions.viewResult')}
@@ -186,13 +186,13 @@ export default function ProjectDonationList({
           <div
             key={`mobile-group-${groupIndex}`}
             className={`
-              ${group.length > 1 ? 'border-l-4 border-blue-500 bg-blue-50/20 rounded-r-lg' : ''}
+              ${group.length > 1 ? 'border-l-4 border-ukraine-blue-500 bg-ukraine-blue-50/20 rounded-r-lg' : ''}
             `}
           >
             {/* Compact group indicator */}
             {group.length > 1 && (
               <div className="px-2 pt-1.5 pb-1">
-                <div className="text-[10px] font-bold text-blue-600 uppercase tracking-wider flex items-center gap-1">
+                <div className="text-[10px] font-bold text-ukraine-blue-500 uppercase tracking-wider flex items-center gap-1">
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"/>
                     <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"/>
@@ -210,7 +210,7 @@ export default function ProjectDonationList({
                 >
                   {/* Row 1: Donation ID (full width) */}
                   <div className="mb-2">
-                    <code className="text-xs font-data bg-blue-600 text-white px-2 py-1 rounded font-semibold">
+                    <code className="text-xs font-data bg-ukraine-blue-500 text-white px-2 py-1 rounded font-semibold">
                       {donation.donation_public_id}
                     </code>
                   </div>
@@ -256,7 +256,7 @@ export default function ProjectDonationList({
                   {/* Action Button (compact) */}
                   {canViewResult(donation.donation_status) && (
                     <button
-                      className="w-full mt-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded text-xs transition-colors"
+                      className="w-full mt-1.5 bg-ukraine-blue-500 hover:bg-ukraine-blue-600 text-white font-medium py-1.5 px-3 rounded text-xs transition-colors"
                       onClick={() => setViewResultDonationId(donation.donation_public_id)}
                     >
                       {t('actions.viewResult')}

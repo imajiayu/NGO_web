@@ -56,13 +56,13 @@ export default async function Home({ params }: Props) {
       <ImpactSection />
 
       {/* Wrapper for Projects, Results, Journey, Compliance sections */}
-      <div className="bg-gradient-to-b from-white from-80% to-blue-50">
+      <div className="bg-gradient-to-b from-white from-80% to-ukraine-blue-50">
         {/* Section 4: Projects */}
         <section id="projects-section" className="relative flex items-center justify-center pt-12 md:pt-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             {/* Header */}
             <div className="text-center mb-8 md:mb-10">
-              <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full mb-3">
+              <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-ukraine-gold-500 text-ukraine-blue-900 rounded-full mb-3">
                 {t('label')}
               </span>
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 font-display">

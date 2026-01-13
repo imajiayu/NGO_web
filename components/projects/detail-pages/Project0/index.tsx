@@ -203,7 +203,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
   if (loading) {
     return (
       <article className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
+        <div className="bg-ukraine-blue-500 p-8 text-white">
           <div className="h-8 bg-white/20 rounded w-3/4 mb-2 animate-pulse"></div>
           <div className="h-4 bg-white/20 rounded w-1/2 animate-pulse"></div>
         </div>
@@ -221,14 +221,14 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
   if (!content) {
     return (
       <article className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
+        <div className="bg-ukraine-blue-500 p-8 text-white">
           <h1 className="text-3xl font-bold mb-2 font-display">Way to Health</h1>
-          <p className="text-blue-100">
+          <p className="text-ukraine-blue-100">
             {t('rehabilitationCenter')}
           </p>
         </div>
         <div className="p-8">
-          <div className="p-8 bg-blue-50 border-2 border-blue-200 rounded-lg text-center">
+          <div className="p-8 bg-ukraine-blue-50 border-2 border-ukraine-blue-200 rounded-lg text-center">
             <p className="text-gray-600">
               {locale === 'en'
                 ? 'Content loading...'
@@ -246,9 +246,9 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
     <div className="space-y-3 md:space-y-4">
     <article className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 md:p-8 text-white">
+      <div className="bg-ukraine-blue-500 p-4 md:p-8 text-white">
         <h1 className="text-2xl md:text-4xl font-bold mb-2 whitespace-pre-line font-display">{content.title}</h1>
-        <p className="text-blue-100 text-sm md:text-lg mb-3 font-light">{content.subtitle}</p>
+        <p className="text-ukraine-blue-100 text-sm md:text-lg mb-3 font-light">{content.subtitle}</p>
         <div className="flex items-center gap-2 text-white/90 text-sm md:text-base">
           <MapPinIcon className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
           <span>
@@ -278,7 +278,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
           </div>
 
           {/* Funding Sources Section */}
-          <div className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 rounded-xl p-4 md:p-6 border border-slate-200/60">
+          <div className="bg-gradient-to-br from-slate-50 via-ukraine-blue-50/30 to-ukraine-gold-50/20 rounded-xl p-4 md:p-6 border border-slate-200/60">
             <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-3 md:mb-4 text-center font-display">
               {locale === 'en'
                 ? 'Our funding sources'
@@ -302,9 +302,9 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                   zh: '企业',
                   ua: 'Корпорації',
                   icon: Building2Icon,
-                  gradient: 'from-blue-500 to-indigo-500',
-                  bg: 'from-blue-50 to-indigo-50',
-                  border: 'border-blue-200/50'
+                  gradient: 'from-ukraine-blue-500 to-ukraine-blue-500',
+                  bg: 'from-ukraine-blue-50 to-ukraine-blue-100',
+                  border: 'border-ukraine-blue-200/50'
                 },
                 {
                   en: 'Churches',
@@ -362,9 +362,9 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
           {Object.values(content.statistics).map((stat: any, idx) => (
             <div
               key={idx}
-              className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-4 md:p-8 text-center"
+              className="bg-gradient-to-br from-ukraine-blue-50 to-ukraine-gold-50/30 rounded-lg p-4 md:p-8 text-center"
             >
-              <div className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 md:mb-3 font-data">
+              <div className="text-3xl md:text-5xl font-bold bg-ukraine-blue-500 bg-clip-text text-transparent mb-2 md:mb-3 font-data">
                 {stat.isAmount
                   ? `$${stat.value.toLocaleString()}`
                   : stat.value >= 1000
@@ -413,7 +413,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
           <section>
             {/* Header */}
             <div className="flex items-center gap-2 mb-3">
-              <UsersIcon className="w-5 h-5 text-purple-600 flex-shrink-0" />
+              <UsersIcon className="w-5 h-5 text-ukraine-gold-600 flex-shrink-0" />
               <h2 className="text-lg md:text-xl font-bold text-gray-900 font-display">
                 {content.team.title}
               </h2>
@@ -429,7 +429,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                   key={idx}
                   className="flex-shrink-0 bg-gray-50 rounded-lg px-3 py-2 flex items-center gap-2"
                 >
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-ukraine-gold-500 to-ukraine-gold-600 flex items-center justify-center text-white text-xs font-bold">
                     {idx + 1}
                   </div>
                   <p className="text-xs md:text-sm text-gray-700 font-medium whitespace-nowrap">{member}</p>
@@ -584,7 +584,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
             <div className="overflow-x-auto mb-6">
               <table className="w-full text-xs md:text-sm">
                 <thead>
-                  <tr className="bg-gradient-to-r from-blue-50 to-purple-50 border-b-2 border-blue-200">
+                  <tr className="bg-gradient-to-r from-ukraine-blue-50 to-ukraine-gold-50/30 border-b-2 border-ukraine-blue-200">
                     <th className="text-left p-2 md:p-3 font-bold text-gray-700">
                       {locale === 'en' ? 'Year' : locale === 'zh' ? '年份' : 'Рік'}
                     </th>
@@ -598,7 +598,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                     <th className="text-right p-2 md:p-3 font-bold text-green-600">
                       {locale === 'en' ? 'Donations' : locale === 'zh' ? '捐赠' : 'Донати'}
                     </th>
-                    <th className="text-right p-2 md:p-3 font-bold text-blue-600">
+                    <th className="text-right p-2 md:p-3 font-bold text-ukraine-blue-500">
                       {locale === 'en' ? 'Gov. Comp.' : locale === 'zh' ? '政府补偿' : 'Держ. комп.'}
                     </th>
                     <th className="text-right p-2 md:p-3 font-bold text-orange-600">
@@ -614,7 +614,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                         <div className="text-[10px] md:text-xs text-gray-500">{year.period}</div>
                       </td>
                       <td className="text-center p-2 md:p-3">
-                        <span className="inline-block bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-semibold">
+                        <span className="inline-block bg-ukraine-gold-100 text-ukraine-gold-700 px-2 py-0.5 rounded-full font-semibold">
                           {year.staffCount}
                         </span>
                       </td>
@@ -624,7 +624,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                       <td className="text-right p-2 md:p-3 font-bold text-green-600 font-data">
                         ₴{(year.donations / 1000000).toFixed(2)}M
                       </td>
-                      <td className="text-right p-2 md:p-3 font-bold text-blue-600 font-data">
+                      <td className="text-right p-2 md:p-3 font-bold text-ukraine-blue-500 font-data">
                         {year.governmentCompensation > 0 ? `₴${(year.governmentCompensation / 1000000).toFixed(2)}M` : '-'}
                       </td>
                       <td className="text-right p-2 md:p-3">
@@ -649,7 +649,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                   .map((year, idx) => (
                     <div
                       key={idx}
-                      className="relative rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow border-2 border-gray-200 hover:border-blue-400 group cursor-pointer"
+                      className="relative rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow border-2 border-gray-200 hover:border-ukraine-blue-400 group cursor-pointer"
                       onClick={() => {
                         setReportLightboxIndex(idx)
                         setReportLightboxOpen(true)
@@ -677,11 +677,11 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                 <div key={idx} className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-lg p-3 border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs md:text-sm font-bold text-gray-800">{category.name}</span>
-                    <span className="text-lg md:text-xl font-bold text-blue-600 font-data">{category.percentage}%</span>
+                    <span className="text-lg md:text-xl font-bold text-ukraine-blue-500 font-data">{category.percentage}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-1.5">
                     <div
-                      className="bg-gradient-to-r from-blue-500 to-purple-500 h-1.5 rounded-full"
+                      className="bg-gradient-to-r from-ukraine-blue-500 to-ukraine-blue-500 h-1.5 rounded-full"
                       style={{ width: `${category.percentage}%` }}
                     ></div>
                   </div>

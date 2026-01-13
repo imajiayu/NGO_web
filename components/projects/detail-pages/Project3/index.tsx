@@ -184,7 +184,7 @@ export default function Project3DetailContent({
       <div className="space-y-4">
         {/* Loading skeleton for detail */}
         <article className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
+          <div className="bg-ukraine-blue-500 p-8 text-white">
             <div className="h-8 bg-white/20 rounded w-3/4 mb-2 animate-pulse"></div>
             <div className="h-4 bg-white/20 rounded w-1/2 animate-pulse"></div>
           </div>
@@ -212,9 +212,9 @@ export default function Project3DetailContent({
       {content ? (
         <article className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 md:p-6 text-white">
+          <div className="bg-ukraine-blue-500 p-4 md:p-6 text-white">
             <h1 className="text-2xl md:text-3xl font-bold mb-1 font-display">{content.title}</h1>
-            <p className="text-blue-100 text-sm md:text-base">{content.subtitle}</p>
+            <p className="text-ukraine-blue-100 text-sm md:text-base">{content.subtitle}</p>
           </div>
 
           {/* Content Body */}
@@ -259,7 +259,7 @@ export default function Project3DetailContent({
             {/* Shelters */}
             <div className="space-y-3">
               <h2 className="text-lg md:text-xl font-bold text-gray-900 flex items-center gap-2 font-display">
-                <MapPinIcon className="w-5 h-5 text-blue-600" />
+                <MapPinIcon className="w-5 h-5 text-ukraine-blue-500" />
                 {locale === 'en'
                   ? 'Visited Facilities'
                   : locale === 'zh'
@@ -270,7 +270,7 @@ export default function Project3DetailContent({
                 {content.shelters.map((shelter, idx) => (
                   <div
                     key={idx}
-                    className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-3 md:p-4 border border-blue-200"
+                    className="bg-gradient-to-br from-ukraine-blue-50 to-ukraine-gold-50/30 rounded-lg p-3 md:p-4 border border-ukraine-blue-200"
                   >
                     <h3 className="font-bold text-sm md:text-base text-gray-900 mb-1 font-display">
                       {shelter.name}
@@ -278,11 +278,11 @@ export default function Project3DetailContent({
                     <p className="text-xs text-gray-600 italic mb-2">{shelter.nameOriginal}</p>
                     <div className="space-y-1.5 text-xs md:text-sm">
                       <div className="flex items-start gap-1.5">
-                        <MapPinIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <MapPinIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-ukraine-blue-500 mt-0.5 flex-shrink-0" />
                         <span className="text-gray-700 leading-tight">{shelter.address}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <UsersIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-purple-600 flex-shrink-0" />
+                        <UsersIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-ukraine-gold-600 flex-shrink-0" />
                         <span className="font-semibold text-gray-900">
                           {shelter.childrenCount} {t('children')}
                         </span>
@@ -305,7 +305,7 @@ export default function Project3DetailContent({
               </h2>
               <div className="grid grid-cols-3 gap-2 md:gap-3">
                 <div className="bg-white rounded-lg p-2 md:p-3 text-center shadow-sm">
-                  <div className="text-xl md:text-2xl font-bold text-blue-600 mb-0.5 font-data">
+                  <div className="text-xl md:text-2xl font-bold text-ukraine-blue-500 mb-0.5 font-data">
                     {content.statistics.totalChildren}
                   </div>
                   <div className="text-xs md:text-sm text-gray-600">
@@ -324,7 +324,7 @@ export default function Project3DetailContent({
                   </div>
                 </div>
                 <div className="bg-white rounded-lg p-2 md:p-3 text-center shadow-sm">
-                  <div className="text-xl md:text-2xl font-bold text-purple-600 mb-0.5 font-data">
+                  <div className="text-xl md:text-2xl font-bold text-ukraine-gold-600 mb-0.5 font-data">
                     ${content.statistics.averagePerChild}
                   </div>
                   <div className="text-xs md:text-sm text-gray-600">
@@ -359,7 +359,7 @@ export default function Project3DetailContent({
                       className="w-full px-3 md:px-4 py-2 md:py-3 bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 transition-colors flex items-center justify-between"
                     >
                       <div className="flex items-center gap-2 md:gap-3">
-                        <UsersIcon className="w-4 h-4 md:w-5 md:h-5 text-blue-600 flex-shrink-0" />
+                        <UsersIcon className="w-4 h-4 md:w-5 md:h-5 text-ukraine-blue-500 flex-shrink-0" />
                         <span className="font-semibold text-sm md:text-base text-gray-900">
                           {giftList.shelter}
                         </span>
@@ -380,9 +380,9 @@ export default function Project3DetailContent({
                           {giftList.children.map((child, childIdx) => (
                             <div
                               key={childIdx}
-                              className="flex items-center gap-2 p-2 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200"
+                              className="flex items-center gap-2 p-2 bg-gradient-to-r from-ukraine-blue-50 to-ukraine-gold-50/30 rounded-lg border border-ukraine-blue-200"
                             >
-                              <div className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                              <div className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-gradient-to-br from-ukraine-blue-500 to-ukraine-blue-500 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
                                 {childIdx + 1}
                               </div>
                               <div className="flex-1 min-w-0">
@@ -407,14 +407,14 @@ export default function Project3DetailContent({
       ) : (
         /* Placeholder if no content */
         <article className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
+          <div className="bg-ukraine-blue-500 p-8 text-white">
             <h1 className="text-3xl font-bold mb-2 font-display">Christmas Gift Program</h1>
-            <p className="text-blue-100">
+            <p className="text-ukraine-blue-100">
               {t('projectDetails')}
             </p>
           </div>
           <div className="p-8">
-            <div className="p-8 bg-blue-50 border-2 border-blue-200 rounded-lg text-center">
+            <div className="p-8 bg-ukraine-blue-50 border-2 border-ukraine-blue-200 rounded-lg text-center">
               <p className="text-gray-600">
                 {locale === 'en'
                   ? 'Detailed information will be available soon.'
@@ -481,7 +481,7 @@ export default function Project3DetailContent({
                         {supply.item}
                       </div>
                       <div className="col-span-3 md:col-span-2 text-center">
-                        <span className="inline-block px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full font-semibold text-xs">
+                        <span className="inline-block px-2 py-0.5 bg-ukraine-blue-100 text-ukraine-blue-800 rounded-full font-semibold text-xs">
                           ×{supply.quantity}
                         </span>
                       </div>
@@ -584,7 +584,7 @@ export default function Project3DetailContent({
       {content?.results && content.results.length > 0 && (
         <article className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 md:p-6 text-white">
+          <div className="bg-ukraine-blue-500 p-4 md:p-6 text-white">
             <h2 className="text-2xl md:text-3xl font-bold font-display">
               {locale === 'en'
                 ? 'Project Results'
@@ -592,7 +592,7 @@ export default function Project3DetailContent({
                 ? '项目成果'
                 : 'Результати проєкту'}
             </h2>
-            <p className="text-blue-100 text-sm md:text-base mt-2">
+            <p className="text-ukraine-blue-100 text-sm md:text-base mt-2">
               {locale === 'en'
                 ? 'View photos documenting our project activities and impact'
                 : locale === 'zh'

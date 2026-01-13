@@ -6,6 +6,46 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+
+  /* 乌克兰蓝色系 - 信任、和平、天空 */
+  --ukraine-blue-50: #E8F7FC;
+  --ukraine-blue-100: #C0E8F7;
+  --ukraine-blue-200: #8DD5F0;
+  --ukraine-blue-300: #52BFE8;
+  --ukraine-blue-400: #1FA8E1;
+  --ukraine-blue-500: #076CB3;
+  --ukraine-blue-600: #065A96;
+  --ukraine-blue-700: #054878;
+  --ukraine-blue-800: #04375B;
+  --ukraine-blue-900: #02263E;
+
+  /* 乌克兰金色系 - 希望、行动、麦田 */
+  --ukraine-gold-50: #FFFBEB;
+  --ukraine-gold-100: #FEF3C7;
+  --ukraine-gold-200: #FDE68A;
+  --ukraine-gold-300: #FCD34D;
+  --ukraine-gold-400: #FBBF24;
+  --ukraine-gold-500: #F5B800;
+  --ukraine-gold-600: #D19A00;
+  --ukraine-gold-700: #A67C00;
+
+  /* 温暖橙色系 - 紧迫、关怀 */
+  --warm-50: #FEF7F4;
+  --warm-100: #FDEBE4;
+  --warm-500: #E76F51;
+  --warm-600: #C85A3D;
+
+  /* 生命绿色系 - 成功、完成 */
+  --life-500: #10B981;
+  --life-600: #059669;
+
+  /* 语义化变量 */
+  --color-primary: var(--ukraine-blue-500);
+  --color-primary-hover: var(--ukraine-blue-600);
+  --color-accent: var(--ukraine-gold-500);
+  --color-accent-hover: var(--ukraine-gold-600);
+  --color-success: var(--life-500);
+  --color-warning: var(--warm-500);
 }
 
 /* Dark mode support disabled - using light mode only for now */
@@ -24,7 +64,8 @@
 
 body {
   color: rgb(0, 0, 0);
-  background: #f9fafb;
+  /* 很浅的带蓝调灰色背景 */
+  background: #f8fafc;
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 

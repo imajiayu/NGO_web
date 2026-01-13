@@ -8,25 +8,25 @@ type StatusBannerProps = {
 
 const STATUS_STYLES = {
   failed: {
-    container: 'bg-red-50 border-l-4 border-red-500',
-    icon: 'text-red-600',
-    title: 'text-red-900',
-    description: 'text-red-800',
-    amount: 'text-red-700',
+    container: 'bg-warm-50 border-l-4 border-warm-500',
+    icon: 'text-warm-600',
+    title: 'text-warm-900',
+    description: 'text-warm-800',
+    amount: 'text-warm-700',
   },
   processing: {
-    container: 'bg-yellow-50 border-l-4 border-yellow-400',
-    icon: 'text-yellow-600',
-    title: 'text-yellow-900',
-    description: 'text-yellow-800',
-    amount: 'text-yellow-700',
+    container: 'bg-ukraine-gold-50 border-l-4 border-ukraine-gold-400',
+    icon: 'text-ukraine-gold-600',
+    title: 'text-ukraine-gold-900',
+    description: 'text-ukraine-gold-800',
+    amount: 'text-ukraine-gold-700',
   },
   success: {
-    container: 'bg-green-50 border-l-4 border-green-500',
-    icon: 'text-green-600',
-    title: 'text-green-900',
-    description: 'text-green-800',
-    amount: 'text-green-700',
+    container: 'bg-life-50 border-l-4 border-life-500',
+    icon: 'text-life-600',
+    title: 'text-life-900',
+    description: 'text-life-800',
+    amount: 'text-life-700',
   },
 } as const
 
@@ -65,7 +65,7 @@ export default function StatusBanner({ type, title, description, amount, amountL
           <div className={`text-sm ${styles.amount}`}>
             <span className="font-medium">{amountLabel}</span>{' '}
             {type === 'success' ? (
-              <span className="text-xl font-bold text-green-900 font-data">${amount.toFixed(2)}</span>
+              <span className="text-xl font-bold text-life-900 font-data">${amount.toFixed(2)}</span>
             ) : (
               <span className="font-data">${amount.toFixed(2)}</span>
             )}{' '}

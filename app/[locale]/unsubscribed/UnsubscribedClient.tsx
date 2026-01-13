@@ -34,9 +34,9 @@ export default function UnsubscribedClient({ locale, hasError }: UnsubscribedCli
           {/* Icon */}
           <div className="mb-6">
             {hasError ? (
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-warm-100">
                 <svg
-                  className="w-8 h-8 text-red-600"
+                  className="w-8 h-8 text-warm-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -50,9 +50,9 @@ export default function UnsubscribedClient({ locale, hasError }: UnsubscribedCli
                 </svg>
               </div>
             ) : (
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-life-100">
                 <svg
-                  className="w-8 h-8 text-green-600"
+                  className="w-8 h-8 text-life-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -81,11 +81,11 @@ export default function UnsubscribedClient({ locale, hasError }: UnsubscribedCli
               <p className="text-sm text-gray-500 mb-6">{t('description')}</p>
 
               {/* Resubscribe Information */}
-              <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-900 font-medium mb-2">
+              <div className="mb-8 p-4 bg-ukraine-blue-50 border border-ukraine-blue-200 rounded-lg">
+                <p className="text-sm text-ukraine-blue-900 font-medium mb-2">
                   {t('resubscribe.title')}
                 </p>
-                <p className="text-sm text-blue-700">{t('resubscribe.description')}</p>
+                <p className="text-sm text-ukraine-blue-600">{t('resubscribe.description')}</p>
               </div>
             </>
           )}
@@ -93,7 +93,7 @@ export default function UnsubscribedClient({ locale, hasError }: UnsubscribedCli
           {/* Back to Home Button */}
           <button
             onClick={handleBackToHome}
-            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-ukraine-blue-500 hover:bg-ukraine-blue-600 transition-colors"
           >
             {t('backHome')}
           </button>

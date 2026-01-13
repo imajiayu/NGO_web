@@ -176,7 +176,7 @@ export default function PublicAgreementPage() {
                   href={t('section9.websiteValue')}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 underline"
+                  className="text-ukraine-blue-500 hover:text-ukraine-blue-600 underline"
                 >
                   {t('section9.websiteValue')}
                 </a>

@@ -29,7 +29,7 @@ export default function ApproachSection() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
         </svg>
       ),
-      gradient: 'from-blue-500 to-cyan-500',
+      gradient: 'from-ukraine-blue-500 to-ukraine-blue-400',
       image: '/images/approach/transparent.webp'
     },
     {
@@ -39,7 +39,7 @@ export default function ApproachSection() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       ),
-      gradient: 'from-purple-500 to-pink-500',
+      gradient: 'from-ukraine-gold-500 to-ukraine-gold-400',
       image: '/images/approach/efficient.webp'
     },
     {
@@ -50,20 +50,20 @@ export default function ApproachSection() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
         </svg>
       ),
-      gradient: 'from-orange-500 to-red-500',
+      gradient: 'from-warm-500 to-warm-400',
       image: '/images/approach/direct.webp'
     }
   ]
 
   return (
-    <section className="relative flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-100 overflow-x-hidden py-12 md:py-16">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-30">
+    <section className="relative flex items-center justify-center bg-gradient-to-br from-ukraine-gold-50 via-warm-50 to-ukraine-gold-100 overflow-x-hidden py-12 md:py-16">
+      {/* Background Image */}
+      <div className="absolute inset-0 opacity-20">
         <Image
           src="/images/hero/2.webp"
           alt="Approach"
           fill
-          className="object-cover mix-blend-overlay"
+          className="object-cover mix-blend-multiply"
           quality={60}
         />
       </div>
@@ -72,7 +72,7 @@ export default function ApproachSection() {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8 md:mb-10">
-          <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-blue-100 text-blue-700 rounded-full mb-3">
+          <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-ukraine-blue-100 text-ukraine-blue-600 rounded-full mb-3">
             {t('label')}
           </span>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 break-words font-display">
@@ -84,7 +84,7 @@ export default function ApproachSection() {
             </p>
             <button
               onClick={handleScrollToCompliance}
-              className="inline-flex items-center px-4 py-2 bg-white border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md flex-shrink-0"
+              className="inline-flex items-center px-4 py-2 bg-white border-2 border-ukraine-blue-500 text-ukraine-blue-500 font-semibold rounded-lg hover:bg-ukraine-blue-50 transition-all duration-200 shadow-sm hover:shadow-md flex-shrink-0"
             >
               <svg className="w-4 h-4 mr-1.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -95,7 +95,7 @@ export default function ApproachSection() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-[280px] md:max-w-none mx-auto">
           {features.map(({ key, icon, gradient, image }) => (
             <div
               key={key}
@@ -133,7 +133,7 @@ export default function ApproachSection() {
                     {(t.raw(`${key}.items` as any) as string[]).map((item: string, index: number) => (
                       <li key={index} className="flex items-start">
                         <svg
-                          className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 mr-2 mt-0.5 flex-shrink-0 drop-shadow-lg"
+                          className="w-4 h-4 sm:w-5 sm:h-5 text-life-400 mr-2 mt-0.5 flex-shrink-0 drop-shadow-lg"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >

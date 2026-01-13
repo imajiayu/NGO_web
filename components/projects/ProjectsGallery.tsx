@@ -42,7 +42,7 @@ export default function ProjectsGallery({
 
   return (
     <section className={`
-      ${mode === 'compact' ? 'bg-gradient-to-b from-gray-50 to-white py-6' : ''}
+      ${mode === 'compact' ? 'py-6' : ''}
     `}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         {/* Header - Only show when explicitly requested and not in compact mode */}

@@ -27,7 +27,7 @@ export default function SuccessActionButtons() {
       <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
         <button
           onClick={handleTrackDonation}
-          className="group relative inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 overflow-hidden"
+          className="group relative inline-flex items-center justify-center px-8 py-4 bg-ukraine-gold-500 text-ukraine-blue-900 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hover:bg-ukraine-gold-600 transition-all duration-300 hover:scale-105 overflow-hidden"
         >
           {/* Button Shine Effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
