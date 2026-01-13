@@ -29,14 +29,23 @@ body {
 }
 
 @layer base {
+  /* 标题使用 Fraunces 展示字体 */
   h1 {
-    @apply text-4xl font-bold;
+    @apply text-4xl font-bold font-display;
   }
   h2 {
-    @apply text-3xl font-semibold;
+    @apply text-3xl font-semibold font-display;
   }
   h3 {
-    @apply text-2xl font-semibold;
+    @apply text-2xl font-semibold font-display;
+  }
+  h4, h5, h6 {
+    @apply font-display;
+  }
+
+  /* 数据/统计数字使用等宽字体 */
+  .font-data {
+    font-feature-settings: 'tnum' 1; /* 表格数字，等宽对齐 */
   }
 }
 

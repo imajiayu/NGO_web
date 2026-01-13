@@ -105,7 +105,7 @@ export default function PaymentMethodSelector({
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-xl font-bold text-gray-900 mb-2">
+        <h2 className="text-xl font-bold text-gray-900 mb-2 font-display">
           {t('paymentMethod.title')}
         </h2>
         <p className="text-sm text-gray-600">
@@ -119,7 +119,7 @@ export default function PaymentMethodSelector({
           <p className="text-sm text-gray-600 mb-1">
             {t('payment.total')}
           </p>
-          <p className="text-3xl font-bold text-blue-600">
+          <p className="text-3xl font-bold text-blue-600 font-data">
             ${amount.toFixed(2)} USD
           </p>
         </div>

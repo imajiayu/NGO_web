@@ -16,7 +16,7 @@ export default function PrivacyPolicyPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 md:p-12">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-display">
           {t('title')}
         </h1>
         <p className="text-sm text-gray-500 mb-8">
@@ -31,7 +31,7 @@ export default function PrivacyPolicyPage() {
 
           {/* Section 1 */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3 font-display">
               {t('section1.title')}
             </h2>
             <p className="text-gray-700 leading-relaxed mb-3">
@@ -46,7 +46,7 @@ export default function PrivacyPolicyPage() {
 
           {/* Section 2 */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3 font-display">
               {t('section2.title')}
             </h2>
             <p className="text-gray-700 leading-relaxed mb-3">
@@ -62,7 +62,7 @@ export default function PrivacyPolicyPage() {
 
           {/* Section 3 */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3 font-display">
               {t('section3.title')}
             </h2>
             <p className="text-gray-700 leading-relaxed">
@@ -72,7 +72,7 @@ export default function PrivacyPolicyPage() {
 
           {/* Section 4 */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3 font-display">
               {t('section4.title')}
             </h2>
             <p className="text-gray-700 leading-relaxed">
@@ -82,7 +82,7 @@ export default function PrivacyPolicyPage() {
 
           {/* Section 5 */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3 font-display">
               {t('section5.title')}
             </h2>
             <p className="text-gray-700 leading-relaxed mb-3">
@@ -97,7 +97,7 @@ export default function PrivacyPolicyPage() {
 
           {/* Section 6 */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3 font-display">
               {t('section6.title')}
             </h2>
             <p className="text-gray-700 leading-relaxed">
@@ -107,7 +107,7 @@ export default function PrivacyPolicyPage() {
 
           {/* Section 7 */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3 font-display">
               {t('section7.title')}
             </h2>
             <p className="text-gray-700 leading-relaxed">
@@ -117,7 +117,7 @@ export default function PrivacyPolicyPage() {
 
           {/* Section 8 - Contact */}
           <section className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 font-display">
               {t('section8.title')}
             </h2>
             <p className="text-gray-700 leading-relaxed mb-4">

@@ -168,11 +168,11 @@ export default function DonationResultViewer({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold text-gray-900 font-display">
                 {t('title')}
               </h2>
               <p className="text-sm text-gray-600 mt-1">
-                {t('donationId')}: <code className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-800">{donationPublicId}</code>
+                {t('donationId')}: <code className="font-data bg-gray-100 px-2 py-1 rounded text-gray-800">{donationPublicId}</code>
               </p>
             </div>
             <button

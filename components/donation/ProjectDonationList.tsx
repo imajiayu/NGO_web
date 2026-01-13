@@ -103,7 +103,7 @@ export default function ProjectDonationList({
   if (!donations || donations.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-2xl font-bold mb-6">{t('title')}</h2>
+        <h2 className="text-2xl font-bold mb-6 font-display">{t('title')}</h2>
         <p className="text-gray-500 text-center py-8">{t('noDonations')}</p>
       </div>
     )
@@ -112,7 +112,7 @@ export default function ProjectDonationList({
   // Donations table
   return (
     <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
-      <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-900">{t('title')}</h2>
+      <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-900 font-display">{t('title')}</h2>
 
       {/* Desktop Table View - Hidden on Mobile */}
       <div className="hidden md:block overflow-x-auto">
@@ -146,7 +146,7 @@ export default function ProjectDonationList({
                       {donation.donor_email_obfuscated || 'N/A'}
                     </td>
                     <td className="py-4 px-4">
-                      <code className="text-sm font-mono bg-blue-50 text-blue-900 px-2 py-1 rounded border border-blue-200">
+                      <code className="text-sm font-data bg-blue-50 text-blue-900 px-2 py-1 rounded border border-blue-200">
                         {donation.donation_public_id}
                       </code>
                     </td>
@@ -210,7 +210,7 @@ export default function ProjectDonationList({
                 >
                   {/* Row 1: Donation ID (full width) */}
                   <div className="mb-2">
-                    <code className="text-xs font-mono bg-blue-600 text-white px-2 py-1 rounded font-semibold">
+                    <code className="text-xs font-data bg-blue-600 text-white px-2 py-1 rounded font-semibold">
                       {donation.donation_public_id}
                     </code>
                   </div>

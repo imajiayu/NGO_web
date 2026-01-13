@@ -193,7 +193,7 @@ export default function NowPaymentsWidget({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">{t('expired')}</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-2 font-display">{t('expired')}</h2>
           <p className="text-sm text-gray-600">{t('expiredMessage')}</p>
         </div>
 
@@ -217,7 +217,7 @@ export default function NowPaymentsWidget({
     <div className="p-6 space-y-5">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-xl font-bold text-gray-900 mb-1">{t('title')}</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-1 font-display">{t('title')}</h2>
         <p className="text-sm text-gray-600">{t('subtitle')}</p>
       </div>
 
@@ -225,7 +225,7 @@ export default function NowPaymentsWidget({
       <div className="p-4 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg border border-emerald-200">
         <div className="text-center space-y-2">
           <p className="text-sm text-gray-600">{t('sendExactAmount')}</p>
-          <p className="text-2xl font-bold text-emerald-600">
+          <p className="text-2xl font-bold text-emerald-600 font-data">
             {paymentData.pay_amount} {paymentData.pay_currency.toUpperCase()}
           </p>
           <p className="text-sm text-gray-500">
@@ -238,7 +238,7 @@ export default function NowPaymentsWidget({
       <div className="space-y-2">
         <p className="text-sm font-medium text-gray-700">{t('toAddress')}</p>
         <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
-          <p className="text-sm font-mono break-all text-gray-800 mb-2">
+          <p className="text-sm font-data break-all text-gray-800 mb-2">
             {paymentData.pay_address}
           </p>
           <CopyButton text={paymentData.pay_address} label={t('copyAddress')} />
@@ -266,7 +266,7 @@ export default function NowPaymentsWidget({
       {countdown !== null && countdown > 0 && (
         <div className="text-center p-3 bg-gray-50 rounded-lg border border-gray-200">
           <p className="text-xs text-gray-500 mb-1">{t('expiresIn')}</p>
-          <p className="text-lg font-mono font-bold text-gray-700">
+          <p className="text-lg font-data font-bold text-gray-700">
             {formatCountdown(countdown)}
           </p>
         </div>

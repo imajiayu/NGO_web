@@ -60,14 +60,14 @@ export default function StatusBanner({ type, title, description, amount, amountL
           {icon}
         </div>
         <div className="flex-1">
-          <h3 className={`font-bold ${styles.title} text-lg mb-1`}>{title}</h3>
+          <h3 className={`font-bold ${styles.title} text-lg mb-1 font-display`}>{title}</h3>
           <p className={`text-sm ${styles.description} mb-3`}>{description}</p>
           <div className={`text-sm ${styles.amount}`}>
             <span className="font-medium">{amountLabel}</span>{' '}
             {type === 'success' ? (
-              <span className="text-xl font-bold text-green-900">${amount.toFixed(2)}</span>
+              <span className="text-xl font-bold text-green-900 font-data">${amount.toFixed(2)}</span>
             ) : (
-              <span>${amount.toFixed(2)}</span>
+              <span className="font-data">${amount.toFixed(2)}</span>
             )}{' '}
             USD
           </div>

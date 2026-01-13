@@ -48,7 +48,7 @@ export default function ProjectsGallery({
         {/* Header - Only show when explicitly requested and not in compact mode */}
         {showHeader && mode !== 'compact' && (
           <div className="text-center mb-8">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 font-display">
               {t('hero.projects.title')}
             </h2>
             <p className="text-gray-600 text-lg">

@@ -29,18 +29,18 @@ export default async function MissionSection() {
         </div>
 
         {/* Title */}
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-3 md:mb-4 leading-tight">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-3 md:mb-4 leading-tight font-display">
           {t('title')}
         </h1>
 
         {/* Subtitle */}
-        <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 max-w-4xl mx-auto mb-8 leading-relaxed">
+        <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 max-w-4xl mx-auto mb-8 leading-relaxed font-light">
           {t('subtitle')}
         </p>
 
         {/* Who We Help */}
         <div className="mt-8 md:mt-10">
-          <h3 className="text-xl sm:text-2xl font-semibold mb-5 md:mb-6 text-white/90">
+          <h3 className="text-xl sm:text-2xl font-semibold mb-5 md:mb-6 text-white/90 font-display">
             {t('who')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">

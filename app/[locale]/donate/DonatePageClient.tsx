@@ -333,7 +333,7 @@ export default function DonatePageClient({
         {/* Full Width: Donation Process Flow */}
         <div className="mt-8 pt-8 md:mt-16 md:pt-16 border-t-2 border-gray-200">
           <div className="text-center mb-6 md:mb-8">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-display">
               {t('trackDonationTitle')}
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
@@ -398,7 +398,7 @@ function EmptyState({ locale }: { locale: string }) {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
         </svg>
       </div>
-      <h3 className="text-2xl font-bold text-gray-900 mb-3">
+      <h3 className="text-2xl font-bold text-gray-900 mb-3 font-display">
         {t('title')}
       </h3>
       <p className="text-gray-600 max-w-md">

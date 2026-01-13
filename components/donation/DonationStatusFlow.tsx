@@ -95,7 +95,7 @@ export default function DonationStatusFlow({ className = '' }: DonationStatusFlo
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 sm:mt-14 md:mt-12">
         {MAIN_STAGE_KEYS.map((stageKey) => (
           <div key={stageKey} className="p-4 rounded-lg border border-gray-200 bg-white">
-            <h4 className="font-semibold mb-2 text-gray-700">
+            <h4 className="font-semibold mb-2 text-gray-700 font-display">
               {t(`stages.${stageKey}.title`)}
             </h4>
             <p className="text-sm text-gray-600">{t(`stages.${stageKey}.description`)}</p>
@@ -104,7 +104,7 @@ export default function DonationStatusFlow({ className = '' }: DonationStatusFlo
 
         {REFUND_STAGE_KEYS.map((stageKey) => (
           <div key={stageKey} className="p-4 rounded-lg border border-orange-100 bg-orange-50">
-            <h4 className="font-semibold mb-2 text-gray-700">
+            <h4 className="font-semibold mb-2 text-gray-700 font-display">
               {t(`stages.${stageKey}.title`)}
             </h4>
             <p className="text-sm text-gray-600">{t(`stages.${stageKey}.description`)}</p>

@@ -51,13 +51,13 @@ export default function InfoCard({
             {icon}
           </div>
           <div>
-            <h4 className={`font-semibold ${styles.title} mb-1`}>{title}</h4>
+            <h4 className={`font-semibold ${styles.title} font-display mb-1`}>{title}</h4>
             <div className={`text-sm ${styles.description}`}>{description}</div>
           </div>
         </div>
       ) : (
         <>
-          <h4 className={`font-semibold ${styles.title} mb-2`}>{title}</h4>
+          <h4 className={`font-semibold ${styles.title} font-display mb-2`}>{title}</h4>
           <div className={`text-sm ${styles.description}`}>{description}</div>
         </>
       )}

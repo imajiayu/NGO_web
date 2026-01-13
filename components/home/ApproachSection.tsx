@@ -75,7 +75,7 @@ export default function ApproachSection() {
           <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-blue-100 text-blue-700 rounded-full mb-3">
             {t('label')}
           </span>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 break-words">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 break-words font-display">
             {t('title')}
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-5xl mx-auto">
@@ -124,7 +124,7 @@ export default function ApproachSection() {
                 {/* Content Container - Bottom */}
                 <div className="flex flex-col gap-4 mt-auto">
                   {/* Title with backdrop - auto width */}
-                  <h3 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wide inline-block px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg self-start">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wide inline-block px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg self-start font-display">
                     {t(`${key}.title` as any)}
                   </h3>
 

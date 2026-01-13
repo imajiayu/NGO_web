@@ -1,14 +1,25 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Source_Sans_3, JetBrains_Mono } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { getAdminSession } from '@/lib/supabase/admin-auth'
 import AdminNav from '@/components/admin/AdminNav'
 import '../globals.css'
 
-const inter = Inter({
+// 管理后台使用 Source Sans 3 作为主字体，保持专业简洁
+const sourceSans = Source_Sans_3({
+  subsets: ['latin', 'latin-ext'],
+  display: 'swap',
+  variable: '--font-source-sans',
+  weight: ['400', '500', '600', '700'],
+})
+
+// 数据字体 - 用于表格和统计数据
+const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   display: 'swap',
+  variable: '--font-jetbrains-mono',
+  weight: ['400', '500', '600'],
 })
 
 export const metadata: Metadata = {
@@ -30,7 +41,7 @@ export default async function AdminLayout({
   if (!session) {
     return (
       <html lang="en">
-        <body className={inter.className}>
+        <body className={`${sourceSans.variable} ${jetbrainsMono.variable} font-body antialiased`}>
           <NextIntlClientProvider messages={messages} locale="en">
             {children}
           </NextIntlClientProvider>
@@ -41,7 +52,7 @@ export default async function AdminLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${sourceSans.variable} ${jetbrainsMono.variable} font-body antialiased`}>
         <NextIntlClientProvider messages={messages} locale="en">
           <div className="min-h-screen bg-gray-50">
             <AdminNav />

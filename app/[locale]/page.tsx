@@ -65,7 +65,7 @@ export default async function Home({ params }: Props) {
               <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full mb-3">
                 {t('label')}
               </span>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 font-display">
                 {t('title')}
               </h2>
             </div>

@@ -171,7 +171,7 @@ export default async function Footer() {
         <div className="flex flex-col md:flex-row gap-6 md:gap-8 md:pb-16">
           {/* Left: Social Media Icons */}
           <div className="flex-shrink-0">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-6 font-display">
               {t('followUs')}
             </h3>
 
@@ -194,7 +194,7 @@ export default async function Footer() {
 
           {/* Middle: Contact Information */}
           <div className="flex-shrink-0 max-w-xs">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-6 font-display">
               {t('contactUs')}
             </h3>
             <div className="space-y-4">
@@ -225,7 +225,7 @@ export default async function Footer() {
 
           {/* Right: Policies */}
           <div className="flex-shrink-0">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-6 font-display">
               {t('policies')}
             </h3>
             <div className="space-y-3">

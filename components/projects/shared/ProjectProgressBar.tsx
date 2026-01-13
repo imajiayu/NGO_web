@@ -21,7 +21,7 @@ export default function ProjectProgressBar({
   return (
     <div className={`space-y-2 ${className}`}>
       <div className="flex justify-between text-sm text-gray-600">
-        <span>
+        <span className="font-data">
           {showAsAmount ? (
             <>
               ${current.toLocaleString()} / ${target.toLocaleString()}
@@ -32,7 +32,7 @@ export default function ProjectProgressBar({
             </>
           )}
         </span>
-        <span className={isComplete ? 'text-green-600 font-medium' : ''}>
+        <span className={`font-data ${isComplete ? 'text-green-600 font-medium' : ''}`}>
           {percentage.toFixed(1)}%
         </span>
       </div>

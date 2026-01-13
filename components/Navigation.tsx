@@ -107,13 +107,13 @@ export default function Navigation() {
             <div className="hidden md:flex items-center space-x-3">
               <button
                 onClick={handleTrackDonation}
-                className="px-5 py-2 text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                className="px-5 py-2 text-sm font-semibold tracking-wide text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
               >
                 {t('trackDonation')}
               </button>
               <button
                 onClick={handleDonateClick}
-                className="group relative px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg overflow-hidden"
+                className="group relative px-5 py-2 text-sm font-semibold tracking-wide text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                 <span className="relative z-10">{t('donate')}</span>
@@ -208,13 +208,13 @@ export default function Navigation() {
         <div className="md:hidden pb-3 pt-1 flex items-center justify-center space-x-3 px-4">
           <button
             onClick={handleTrackDonation}
-            className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border-2 border-gray-300 rounded-lg active:border-gray-400 active:bg-gray-50 transition-all duration-200"
+            className="flex-1 px-4 py-2 text-sm font-semibold tracking-wide text-gray-700 bg-white border-2 border-gray-300 rounded-lg active:border-gray-400 active:bg-gray-50 transition-all duration-200"
           >
             {t('trackDonation')}
           </button>
           <button
             onClick={handleDonateClick}
-            className="group relative flex-1 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 active:from-blue-700 active:to-purple-700 rounded-lg transition-all duration-200 shadow-md overflow-hidden"
+            className="group relative flex-1 px-4 py-2 text-sm font-semibold tracking-wide text-white bg-gradient-to-r from-blue-600 to-purple-600 active:from-blue-700 active:to-purple-700 rounded-lg transition-all duration-200 shadow-md overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
             <span className="relative z-10">{t('donate')}</span>

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Fraunces, Source_Sans_3, JetBrains_Mono } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
@@ -9,10 +9,28 @@ import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import '../globals.css'
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap', // Optimize font loading
-  preload: true,
+// 标题字体 - Fraunces 可变字体 (温暖有机的衬线字体)
+const fraunces = Fraunces({
+  subsets: ['latin', 'latin-ext'],
+  display: 'swap',
+  variable: '--font-fraunces',
+  weight: ['400', '500', '600', '700', '800', '900'],
+})
+
+// 正文字体 - Source Sans 3 (温暖友好的无衬线)
+const sourceSans = Source_Sans_3({
+  subsets: ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext'],
+  display: 'swap',
+  variable: '--font-source-sans',
+  weight: ['300', '400', '500', '600', '700'],
+})
+
+// 数据字体 - JetBrains Mono (清晰醒目的等宽字体)
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin', 'latin-ext', 'cyrillic'],
+  display: 'swap',
+  variable: '--font-jetbrains-mono',
+  weight: ['400', '500', '600', '700'],
 })
 
 export const metadata: Metadata = {
@@ -50,7 +68,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body className={inter.className}>
+      <body className={`${fraunces.variable} ${sourceSans.variable} ${jetbrainsMono.variable} font-body antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <Navigation />
           <main className="min-h-screen">

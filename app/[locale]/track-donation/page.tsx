@@ -78,10 +78,10 @@ export default async function TrackDonationPage() {
           <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase mb-6 text-white bg-white/20 backdrop-blur-sm rounded-full border border-white/30 shadow-lg">
             {t('pageTitle')}
           </span>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 inline-block px-6 py-3 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 inline-block px-6 py-3 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg font-display">
             {t('title')}
           </h1>
-          <p className="text-lg sm:text-xl text-white max-w-2xl inline-block px-6 py-3 bg-black/15 backdrop-blur-sm rounded shadow-md">
+          <p className="text-lg sm:text-xl text-white max-w-2xl inline-block px-6 py-3 bg-black/15 backdrop-blur-sm rounded shadow-md font-light">
             {t('description')}
           </p>
         </div>

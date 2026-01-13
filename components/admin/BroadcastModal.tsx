@@ -234,7 +234,7 @@ export default function BroadcastModal({
         >
           {/* Header */}
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className="text-xl font-bold text-gray-900 font-body">
               {showPreview ? 'Email Preview' : 'Send Newsletter Broadcast'}
             </h2>
             <button

@@ -14,7 +14,7 @@ export default async function AdminDonationsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Donations</h1>
+        <h1 className="text-2xl font-bold text-gray-900 font-body">Donations</h1>
       </div>
       <DonationsTable initialDonations={donations} statusHistory={history} />
     </div>

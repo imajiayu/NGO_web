@@ -39,7 +39,7 @@ export default function DonationIdsList({ donations, locale, t }: DonationIdsLis
             <div className="inline-block px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold tracking-wider uppercase rounded-full mb-2">
               {t('important')}
             </div>
-            <h3 className="font-bold text-gray-900 text-lg mb-1">{t('saveIdsTitle')}</h3>
+            <h3 className="font-bold text-gray-900 text-lg mb-1 font-display">{t('saveIdsTitle')}</h3>
             <p className="text-sm text-gray-700">{t('saveIdsDescription')}</p>
           </div>
         </div>
@@ -81,7 +81,7 @@ export default function DonationIdsList({ donations, locale, t }: DonationIdsLis
                   <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold flex-shrink-0">
                     {index + 1}
                   </span>
-                  <code className="text-sm font-mono text-gray-900 break-all">{donation.donation_public_id}</code>
+                  <code className="text-sm font-data text-gray-900 break-all">{donation.donation_public_id}</code>
                 </div>
                 <div className="flex items-center gap-2 whitespace-nowrap">
                   {!isAggregateProject && (

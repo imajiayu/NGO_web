@@ -72,7 +72,7 @@ export default function BatchDonationEditModal({ donations, onClose, onSaved }: 
       <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit} className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">
+            <h2 className="text-xl font-bold font-body">
               Batch Edit Donations ({donations.length} selected)
             </h2>
             <button
@@ -93,7 +93,7 @@ export default function BatchDonationEditModal({ donations, onClose, onSaved }: 
           {/* Status Progress Visualization */}
           <div className="mb-6">
             <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Donation Status Flow</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 font-body">Donation Status Flow</h3>
               <DonationStatusProgress
                 currentStatus={currentStatus}
                 selectedStatus={canUpdate ? newStatus : undefined}
@@ -163,7 +163,7 @@ export default function BatchDonationEditModal({ donations, onClose, onSaved }: 
           {/* Selected Donations List */}
           <div className="mb-6">
             <div className="bg-white rounded-lg p-4 border border-gray-200">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Selected Donations</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 font-body">Selected Donations</h3>
               <div className="max-h-64 overflow-y-auto">
                 <table className="min-w-full divide-y divide-gray-200 text-sm">
                   <thead className="bg-gray-50 sticky top-0">

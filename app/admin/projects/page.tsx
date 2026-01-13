@@ -14,7 +14,7 @@ export default async function AdminProjectsPage() {
   return (
     <div>
       <div className="mb-6 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
+        <h1 className="text-2xl font-bold text-gray-900 font-body">Projects</h1>
       </div>
       <ProjectsTable initialProjects={projects} />
     </div>

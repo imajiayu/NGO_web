@@ -64,10 +64,10 @@ export default async function ImpactSection() {
           <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-full mb-3">
             {t('label')}
           </span>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-3 md:mb-4">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-3 md:mb-4 font-display">
             {t('title')}
           </h2>
-          <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto font-light">
             {t('subtitle')}
           </p>
         </div>
@@ -103,7 +103,7 @@ export default async function ImpactSection() {
                 <div className="flex flex-col gap-3 mt-auto">
                   {/* Value with backdrop - Large stat number */}
                   <div
-                    className="font-bold text-white tracking-tight px-4 py-2 bg-black/25 backdrop-blur-md rounded-xl shadow-2xl self-start"
+                    className="font-bold text-white tracking-tight px-4 py-2 bg-black/25 backdrop-blur-md rounded-xl shadow-2xl self-start font-data"
                     style={{ fontSize: 'clamp(2rem, 4vw + 0.5rem, 3.75rem)' }}
                   >
                     {t(`${key}.value` as any)}

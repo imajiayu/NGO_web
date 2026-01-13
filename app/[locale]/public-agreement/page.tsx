@@ -15,7 +15,7 @@ export default function PublicAgreementPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 md:p-12">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 uppercase">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 uppercase font-display">
           {t('mainTitle')}
         </h1>
 
@@ -26,7 +26,7 @@ export default function PublicAgreementPage() {
         <div className="prose prose-gray max-w-none space-y-6">
           {/* Section 1: Definitions */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 font-display">
               {t('section1.title')}
             </h2>
             <div className="space-y-3">
@@ -55,7 +55,7 @@ export default function PublicAgreementPage() {
 
           {/* Section 2: Subject */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 font-display">
               {t('section2.title')}
             </h2>
             <p className="text-gray-700 leading-relaxed">
@@ -65,7 +65,7 @@ export default function PublicAgreementPage() {
 
           {/* Section 3: Acceptance */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 font-display">
               {t('section3.title')}
             </h2>
             <p className="text-gray-700 leading-relaxed">
@@ -75,7 +75,7 @@ export default function PublicAgreementPage() {
 
           {/* Section 4: Foundation Rights & Obligations */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 font-display">
               {t('section4.title')}
             </h2>
             <div className="space-y-4">
@@ -104,7 +104,7 @@ export default function PublicAgreementPage() {
 
           {/* Section 5: Donor Rights & Obligations */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 font-display">
               {t('section5.title')}
             </h2>
             <div className="space-y-4">
@@ -130,7 +130,7 @@ export default function PublicAgreementPage() {
 
           {/* Section 6: Place and Terms */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 font-display">
               {t('section6.title')}
             </h2>
             <p className="text-gray-700 leading-relaxed">
@@ -140,7 +140,7 @@ export default function PublicAgreementPage() {
 
           {/* Section 7: Methods */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 font-display">
               {t('section7.title')}
             </h2>
             <p className="text-gray-700 leading-relaxed mb-3">
@@ -150,7 +150,7 @@ export default function PublicAgreementPage() {
 
           {/* Section 8: Use of Donations */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 font-display">
               {t('section8.title')}
             </h2>
             <p className="text-gray-700 leading-relaxed">
@@ -160,7 +160,7 @@ export default function PublicAgreementPage() {
 
           {/* Section 9: Contact */}
           <section className="bg-gray-50 p-6 rounded-lg border border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 font-display">
               {t('section9.title')}
             </h2>
             <div className="space-y-2 text-gray-700">

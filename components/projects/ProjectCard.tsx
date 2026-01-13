@@ -118,7 +118,7 @@ export default function ProjectCard({
             </div>
 
             <h3 className={`
-              text-base font-bold leading-tight line-clamp-2 text-left
+              text-base font-bold leading-tight line-clamp-2 text-left font-display
               ${isSelected ? 'text-blue-900' : 'text-gray-900 group-hover:text-blue-600'}
               transition-colors
             `}>
@@ -152,7 +152,7 @@ export default function ProjectCard({
                   </span>
                 ) : (
                   <span className="text-sm text-gray-700 text-left">
-                    <span className="font-semibold text-gray-900">${(project.unit_price || 0).toFixed(2)}</span>
+                    <span className="font-semibold text-gray-900 font-data">${(project.unit_price || 0).toFixed(2)}</span>
                     {' '}{t('perUnit', { unitName })}
                   </span>
                 )}
@@ -186,7 +186,7 @@ export default function ProjectCard({
                 {project.is_long_term === true && !project.aggregate_donations && (
                   <div className="flex justify-between text-xs mb-1">
                     <span className="text-gray-600">{t('currentUnits')}</span>
-                    <span className="font-semibold text-blue-600">
+                    <span className="font-semibold text-blue-600 font-data">
                       {currentUnits} {unitName}
                     </span>
                   </div>
@@ -194,7 +194,7 @@ export default function ProjectCard({
 
                 <div className="flex justify-between text-xs text-gray-600 mb-1">
                   <span>{project.donation_count || 0} {t('donations')}</span>
-                  <span className="font-semibold text-gray-900">
+                  <span className="font-semibold text-gray-900 font-data">
                     ${(project.total_raised || 0).toFixed(2)}
                   </span>
                 </div>
@@ -250,7 +250,7 @@ export default function ProjectCard({
             )}
           </div>
 
-          <h3 className="text-lg font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors">
+          <h3 className="text-lg font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors font-display">
             {projectName}
           </h3>
         </div>
@@ -277,7 +277,7 @@ export default function ProjectCard({
               </span>
             ) : (
               <span className="text-sm text-gray-700">
-                <span className="font-semibold text-gray-900">${(project.unit_price || 0).toFixed(2)}</span>
+                <span className="font-semibold text-gray-900 font-data">${(project.unit_price || 0).toFixed(2)}</span>
                 {' '}{t('perUnit', { unitName })}
               </span>
             )}
@@ -311,7 +311,7 @@ export default function ProjectCard({
             {project.is_long_term === true && !project.aggregate_donations && (
               <div className="flex justify-between text-sm mb-2">
                 <span className="text-gray-600">{t('currentUnits')}</span>
-                <span className="font-semibold text-blue-600">
+                <span className="font-semibold text-blue-600 font-data">
                   {currentUnits} {unitName}
                 </span>
               </div>
@@ -319,7 +319,7 @@ export default function ProjectCard({
 
             <div className="flex justify-between text-sm text-gray-600 mb-2">
               <span>{project.donation_count || 0} {t('donations')}</span>
-              <span className="font-semibold text-gray-900">
+              <span className="font-semibold text-gray-900 font-data">
                 ${(project.total_raised || 0).toFixed(2)}
               </span>
             </div>

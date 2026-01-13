@@ -267,7 +267,7 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit} className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">
+            <h2 className="text-xl font-bold font-body">
               Edit Donation #{donation.id}
             </h2>
             <button
@@ -288,7 +288,7 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
           {/* Status Progress Visualization + Action Buttons */}
           <div className="mb-6">
             <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Donation Status Flow</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 font-body">Donation Status Flow</h3>
               <DonationStatusProgress
                 currentStatus={currentStatus}
                 selectedStatus={canUpdate ? newStatus : undefined}
@@ -356,7 +356,7 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
           {needsFileUpload && (
             <div className="mb-6">
               <div className="bg-white rounded-lg p-4 border-2 border-dashed border-blue-300">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2 font-body">
                   <span className="text-blue-600">📸</span>
                   Upload Result Images/Videos
                   <span className="text-red-500">*</span>
@@ -407,7 +407,7 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
           {canManageFiles && (
             <div className="mb-6">
               <div className="bg-white rounded-lg p-4 border border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2 font-body">
                   <span>📁</span>
                   Result Files Management
                 </h3>
@@ -555,7 +555,7 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
           {/* All Donation Info (Read-only) */}
           <div className="mb-6 space-y-4">
             <div className="p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Basic Information</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 font-body">Basic Information</h3>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <span className="font-medium text-gray-600">ID:</span>
@@ -577,7 +577,7 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
             </div>
 
             <div className="p-4 bg-blue-50 rounded-lg">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Donor Information</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 font-body">Donor Information</h3>
               <div className="grid grid-cols-1 gap-3 text-sm">
                 <div>
                   <span className="font-medium text-gray-600">Name:</span>
@@ -611,7 +611,7 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
             </div>
 
             <div className="p-4 bg-green-50 rounded-lg">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Payment Information</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 font-body">Payment Information</h3>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <span className="font-medium text-gray-600">Amount:</span>
@@ -625,7 +625,7 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
                 </div>
                 <div className="col-span-2">
                   <span className="font-medium text-gray-600">Order Reference:</span>
-                  <span className="ml-2 text-gray-900 font-mono text-xs">
+                  <span className="ml-2 text-gray-900 font-data text-xs">
                     {donation.order_reference}
                   </span>
                 </div>
@@ -633,7 +633,7 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
             </div>
 
             <div className="p-4 bg-purple-50 rounded-lg">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Timestamps</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 font-body">Timestamps</h3>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <span className="font-medium text-gray-600">Donated At:</span>
@@ -653,11 +653,11 @@ export default function DonationEditModal({ donation, statusHistory, onClose, on
             {/* Status History */}
             {statusHistory.length > 0 && (
               <div className="p-4 bg-purple-50 rounded-lg">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">Status Change History</h3>
+                <h3 className="text-sm font-semibold text-gray-700 mb-3 font-body">Status Change History</h3>
                 <div className="space-y-2">
                   {statusHistory.map((history) => (
                     <div key={history.id} className="flex items-center gap-2 text-sm text-gray-700 bg-white p-2 rounded">
-                      <span className="text-xs text-gray-500 font-mono">
+                      <span className="text-xs text-gray-500 font-data">
                         {new Date(history.changed_at).toLocaleString('zh-CN', {
                           year: 'numeric',
                           month: '2-digit',

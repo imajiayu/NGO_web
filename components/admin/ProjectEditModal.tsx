@@ -69,7 +69,7 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Edit Project #{project.id}</h2>
+            <h2 className="text-xl font-bold font-body">Edit Project #{project.id}</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 text-2xl"
@@ -122,7 +122,7 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Basic Info */}
             <div className="border-b pb-4">
-              <h3 className="text-lg font-semibold mb-3">Basic Information</h3>
+              <h3 className="text-lg font-semibold mb-3 font-body">Basic Information</h3>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -170,7 +170,7 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
 
             {/* Pricing & Units */}
             <div className="border-b pb-4">
-              <h3 className="text-lg font-semibold mb-3">Pricing & Units</h3>
+              <h3 className="text-lg font-semibold mb-3 font-body">Pricing & Units</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -216,7 +216,7 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
 
             {/* Dates */}
             <div className="border-b pb-4">
-              <h3 className="text-lg font-semibold mb-3">Timeline</h3>
+              <h3 className="text-lg font-semibold mb-3 font-body">Timeline</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -247,7 +247,7 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
 
             {/* i18n Fields */}
             <div className="border-b pb-4">
-              <h3 className="text-lg font-semibold mb-3">Internationalization (Optional)</h3>
+              <h3 className="text-lg font-semibold mb-3 font-body">Internationalization (Optional)</h3>
               <p className="text-sm text-gray-600 mb-4">
                 Provide translations for different languages. Leave empty to use the basic information above.
               </p>

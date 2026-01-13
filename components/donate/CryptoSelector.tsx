@@ -161,7 +161,7 @@ export default function CryptoSelector({
     return (
       <div className="p-6 space-y-6">
         <div className="text-center">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+          <h2 className="text-xl font-bold text-gray-900 mb-2 font-display">
             {t('cryptoSelector.title')}
           </h2>
         </div>
@@ -181,7 +181,7 @@ export default function CryptoSelector({
     return (
       <div className="p-6 space-y-6">
         <div className="text-center">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+          <h2 className="text-xl font-bold text-gray-900 mb-2 font-display">
             {t('cryptoSelector.title')}
           </h2>
         </div>
@@ -203,7 +203,7 @@ export default function CryptoSelector({
     <div className="p-6 space-y-4">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-xl font-bold text-gray-900 mb-1">
+        <h2 className="text-xl font-bold text-gray-900 mb-1 font-display">
           {t('cryptoSelector.title')}
         </h2>
         <p className="text-sm text-gray-600">
@@ -217,7 +217,7 @@ export default function CryptoSelector({
           <p className="text-sm text-gray-600 mb-1">
             {t('payment.total')}
           </p>
-          <p className="text-2xl font-bold text-emerald-600">
+          <p className="text-2xl font-bold text-emerald-600 font-data">
             ${amount.toFixed(2)} USD
           </p>
         </div>

@@ -71,12 +71,12 @@ export default function UnsubscribedClient({ locale, hasError }: UnsubscribedCli
           {/* Content */}
           {hasError ? (
             <>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('error.title')}</h1>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2 font-display">{t('error.title')}</h1>
               <p className="text-gray-600 mb-6">{t('error.message')}</p>
             </>
           ) : (
             <>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('title')}</h1>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2 font-display">{t('title')}</h1>
               <p className="text-gray-600 mb-2">{t('message')}</p>
               <p className="text-sm text-gray-500 mb-6">{t('description')}</p>
 

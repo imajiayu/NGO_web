@@ -30,7 +30,7 @@ export default function ProjectProgressSection({ project, locale }: ProjectProgr
     <div className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-3 md:px-4 py-2 md:py-3 text-white">
-        <h2 className="text-lg md:text-xl font-bold">
+        <h2 className="text-lg md:text-xl font-bold font-display">
           {t('projectProgress')}
         </h2>
       </div>

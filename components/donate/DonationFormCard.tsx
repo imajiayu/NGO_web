@@ -58,7 +58,7 @@ function PaymentWidgetContainer({
       <div className="p-6 space-y-6">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+          <h2 className="text-xl font-bold text-gray-900 mb-2 font-display">
             {t('processing.title')}
           </h2>
           <p className="text-sm text-gray-600">
@@ -72,7 +72,7 @@ function PaymentWidgetContainer({
             <p className="text-sm text-gray-600 mb-1">
               {t('processing.donationAmount')}
             </p>
-            <p className="text-3xl font-bold text-blue-600">
+            <p className="text-3xl font-bold text-blue-600 font-data">
               ${amount.toFixed(2)} USD
             </p>
           </div>
@@ -115,7 +115,7 @@ function PaymentWidgetContainer({
       <div className="p-6 space-y-6">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+          <h2 className="text-xl font-bold text-gray-900 mb-2 font-display">
             {t('paymentError.title')}
           </h2>
         </div>
@@ -126,7 +126,7 @@ function PaymentWidgetContainer({
             <p className="text-sm text-gray-600 mb-1">
               {t('processing.donationAmount')}
             </p>
-            <p className="text-3xl font-bold text-blue-600">
+            <p className="text-3xl font-bold text-blue-600 font-data">
               ${amount.toFixed(2)} USD
             </p>
           </div>
@@ -628,7 +628,7 @@ export default function DonationFormCard({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">
+          <h3 className="text-lg font-semibold text-gray-700 mb-2 font-display">
             {t('noProjectSelected')}
           </h3>
           <p className="text-sm text-gray-500">
@@ -645,7 +645,7 @@ export default function DonationFormCard({
       <div className="bg-white rounded-xl border-2 border-gray-200 shadow-lg overflow-hidden relative">
         {/* Project Summary */}
         <div className="bg-gradient-to-br from-blue-50 to-white p-6 border-b border-gray-200">
-          <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2">
+          <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2 font-display">
             {projectName}
           </h3>
           <div className="space-y-2">
@@ -658,7 +658,7 @@ export default function DonationFormCard({
             </div>
             {!isAggregatedProject && (
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-blue-600">
+                <span className="text-2xl font-bold text-blue-600 font-data">
                   ${(project.unit_price || 0).toFixed(2)}
                 </span>
                 <span className="text-sm text-gray-500">
@@ -760,7 +760,7 @@ export default function DonationFormCard({
                   <span className="text-sm font-medium text-gray-700">
                     {t('payment.projectTotal')}:
                   </span>
-                  <span className="text-xl font-bold text-blue-600">
+                  <span className="text-xl font-bold text-blue-600 font-data">
                     ${projectAmount.toFixed(2)} {t('payment.currency')}
                   </span>
                 </div>
@@ -847,7 +847,7 @@ export default function DonationFormCard({
                   <span className="text-sm font-medium text-gray-700">
                     {t('payment.projectTotal')}:
                   </span>
-                  <span className="text-xl font-bold text-blue-600">
+                  <span className="text-xl font-bold text-blue-600 font-data">
                     ${projectAmount.toFixed(2)} {t('payment.currency')}
                   </span>
                 </div>
@@ -859,7 +859,7 @@ export default function DonationFormCard({
           {project.id !== 0 && (
             <div className="border-t pt-5">
               <div className="flex items-start justify-between gap-2 mb-4">
-                <h4 className="font-semibold text-gray-900">
+                <h4 className="font-semibold text-gray-900 font-display">
                   {t('tip.title')}
                 </h4>
                 <div className="flex-shrink-0 bg-amber-50 px-2 py-1 rounded text-xs font-medium text-amber-700">
@@ -874,11 +874,11 @@ export default function DonationFormCard({
 
                 <div className="grid grid-cols-2 gap-3 mb-3">
                   <div className="bg-white/80 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-amber-600">1,600+</div>
+                    <div className="text-2xl font-bold text-amber-600 font-data">1,600+</div>
                     <div className="text-xs text-gray-600 mt-1">{t('tip.patientsServed')}</div>
                   </div>
                   <div className="bg-white/80 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-amber-600">$1,000</div>
+                    <div className="text-2xl font-bold text-amber-600 font-data">$1,000</div>
                     <div className="text-xs text-gray-600 mt-1">{t('tip.avgCostPerPatient')}</div>
                   </div>
                 </div>
@@ -990,7 +990,7 @@ export default function DonationFormCard({
                       <span className="text-gray-600">
                         {t('payment.projectDonation')}:
                       </span>
-                      <span className="font-semibold text-gray-900">
+                      <span className="font-semibold text-gray-900 font-data">
                         ${projectAmount.toFixed(2)}
                       </span>
                     </div>
@@ -998,7 +998,7 @@ export default function DonationFormCard({
                       <span className="text-gray-600">
                         {t('payment.tipAmount')}:
                       </span>
-                      <span className="font-semibold text-amber-700">
+                      <span className="font-semibold text-amber-700 font-data">
                         ${tipAmount.toFixed(2)}
                       </span>
                     </div>
@@ -1009,7 +1009,7 @@ export default function DonationFormCard({
                   <span className="text-base font-bold text-gray-900">
                     {t('payment.total')}:
                   </span>
-                  <span className="text-2xl font-bold text-blue-600">
+                  <span className="text-2xl font-bold text-blue-600 font-data">
                     ${totalAmount.toFixed(2)} {t('payment.currency')}
                   </span>
                 </div>
@@ -1019,7 +1019,7 @@ export default function DonationFormCard({
 
           {/* Donor Information */}
           <div className="space-y-3">
-            <h4 className="font-semibold text-gray-900 border-b pb-2">
+            <h4 className="font-semibold text-gray-900 border-b pb-2 font-display">
               {t('donor.title')}
             </h4>
 
@@ -1063,7 +1063,7 @@ export default function DonationFormCard({
           {/* Contact Methods (Optional) */}
           <div className="space-y-3">
             <div>
-              <h4 className="font-semibold text-gray-900 border-b pb-2">
+              <h4 className="font-semibold text-gray-900 border-b pb-2 font-display">
                 {t('contact.title')}
               </h4>
               <p className="text-xs text-gray-600 mt-1">{t('contact.description')}</p>
@@ -1165,7 +1165,7 @@ export default function DonationFormCard({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
+              <h3 className="text-xl font-bold text-gray-900 mb-2 font-display">
                 {t('formCard.cannotDonateNow')}
               </h3>
               <p className="text-sm text-gray-600">

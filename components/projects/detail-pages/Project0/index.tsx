@@ -222,7 +222,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
     return (
       <article className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
-          <h1 className="text-3xl font-bold mb-2">Way to Health</h1>
+          <h1 className="text-3xl font-bold mb-2 font-display">Way to Health</h1>
           <p className="text-blue-100">
             {t('rehabilitationCenter')}
           </p>
@@ -247,8 +247,8 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
     <article className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 md:p-8 text-white">
-        <h1 className="text-2xl md:text-4xl font-bold mb-2 whitespace-pre-line">{content.title}</h1>
-        <p className="text-blue-100 text-sm md:text-lg mb-3">{content.subtitle}</p>
+        <h1 className="text-2xl md:text-4xl font-bold mb-2 whitespace-pre-line font-display">{content.title}</h1>
+        <p className="text-blue-100 text-sm md:text-lg mb-3 font-light">{content.subtitle}</p>
         <div className="flex items-center gap-2 text-white/90 text-sm md:text-base">
           <MapPinIcon className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
           <span>
@@ -279,7 +279,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
 
           {/* Funding Sources Section */}
           <div className="bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 rounded-xl p-4 md:p-6 border border-slate-200/60">
-            <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-3 md:mb-4 text-center">
+            <h3 className="text-sm md:text-base font-semibold text-gray-800 mb-3 md:mb-4 text-center font-display">
               {locale === 'en'
                 ? 'Our funding sources'
                 : locale === 'zh'
@@ -364,7 +364,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
               key={idx}
               className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-4 md:p-8 text-center"
             >
-              <div className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 md:mb-3">
+              <div className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 md:mb-3 font-data">
                 {stat.isAmount
                   ? `$${stat.value.toLocaleString()}`
                   : stat.value >= 1000
@@ -372,7 +372,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                     : `${stat.value}+`
                 }
               </div>
-              <div className="text-xs md:text-base font-semibold text-gray-800 mb-1 md:mb-2">
+              <div className="text-xs md:text-base font-semibold text-gray-800 mb-1 md:mb-2 font-display">
                 {stat.label}
               </div>
               <div className="text-[10px] md:text-sm text-gray-600 leading-tight">
@@ -414,7 +414,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
             {/* Header */}
             <div className="flex items-center gap-2 mb-3">
               <UsersIcon className="w-5 h-5 text-purple-600 flex-shrink-0" />
-              <h2 className="text-lg md:text-xl font-bold text-gray-900">
+              <h2 className="text-lg md:text-xl font-bold text-gray-900 font-display">
                 {content.team.title}
               </h2>
               <span className="text-sm text-gray-600">
@@ -449,7 +449,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
 
         {/* Treatment Programs */}
         <section>
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2 font-display">
             <ActivityIcon className="w-6 h-6 text-green-600" />
             {content.treatmentPrograms.title}
           </h2>
@@ -462,7 +462,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                 key={idx}
                 className="bg-gradient-to-br from-green-50 to-teal-50 rounded-lg p-3 md:p-4 border border-green-200"
               >
-                <h3 className="font-bold text-gray-900 mb-1 md:mb-2 text-xs md:text-base">
+                <h3 className="font-bold text-gray-900 mb-1 md:mb-2 text-xs md:text-base font-display">
                   {program.name}
                 </h3>
                 <p className="text-[10px] md:text-sm text-gray-600 leading-tight">
@@ -496,7 +496,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                   {/* Title with Frosted Glass */}
                   <div className="absolute bottom-0 left-0 right-0 p-2 md:p-4">
                     <div className="inline-block backdrop-blur-md bg-white/10 rounded-lg px-2 py-1 md:px-3 md:py-2 border border-white/30 max-w-[90%]">
-                      <h3 className="font-bold text-white text-[10px] md:text-sm leading-tight">
+                      <h3 className="font-bold text-white text-[10px] md:text-sm leading-tight font-display">
                         {story.title}
                       </h3>
                     </div>
@@ -509,7 +509,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
 
         {/* Challenges - Resource Shortage */}
         <section>
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 font-display">
             {content.challenges.title}
           </h2>
           <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-6">
@@ -517,7 +517,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
             <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4 md:p-6 text-center">
-              <div className="text-3xl md:text-4xl font-bold text-red-600 mb-2">
+              <div className="text-3xl md:text-4xl font-bold text-red-600 mb-2 font-data">
                 {locale === 'en' ? '30' : '30'}
               </div>
               <div className="text-xs md:text-sm text-gray-700 leading-tight">
@@ -529,7 +529,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
               </div>
             </div>
             <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4 md:p-6 text-center">
-              <div className="text-3xl md:text-4xl font-bold text-red-600 mb-2">
+              <div className="text-3xl md:text-4xl font-bold text-red-600 mb-2 font-data">
                 {locale === 'zh' ? '2.7万' : '27K'}
               </div>
               <div className="text-xs md:text-sm text-gray-700 leading-tight">
@@ -541,7 +541,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
               </div>
             </div>
             <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4 md:p-6 text-center">
-              <div className="text-3xl md:text-4xl font-bold text-red-600 mb-2">
+              <div className="text-3xl md:text-4xl font-bold text-red-600 mb-2 font-data">
                 {locale === 'zh' ? '36万' : '360K'}
               </div>
               <div className="text-xs md:text-sm text-gray-700 leading-tight">
@@ -553,7 +553,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
               </div>
             </div>
             <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4 md:p-6 text-center">
-              <div className="text-3xl md:text-4xl font-bold text-red-600 mb-2">
+              <div className="text-3xl md:text-4xl font-bold text-red-600 mb-2 font-data">
                 {locale === 'en' ? '13.5' : '13.5'}
               </div>
               <div className="text-xs md:text-sm text-gray-700 leading-tight">
@@ -573,7 +573,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
         {/* Financial Status - Operating Scale */}
         {content.financialStatus && (
           <section>
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 font-display">
               {content.financialStatus.title}
             </h2>
             <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-4">
@@ -618,17 +618,17 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                           {year.staffCount}
                         </span>
                       </td>
-                      <td className="text-right p-2 md:p-3 font-bold text-red-600">
+                      <td className="text-right p-2 md:p-3 font-bold text-red-600 font-data">
                         ₴{(year.expenses / 1000000).toFixed(2)}M
                       </td>
-                      <td className="text-right p-2 md:p-3 font-bold text-green-600">
+                      <td className="text-right p-2 md:p-3 font-bold text-green-600 font-data">
                         ₴{(year.donations / 1000000).toFixed(2)}M
                       </td>
-                      <td className="text-right p-2 md:p-3 font-bold text-blue-600">
+                      <td className="text-right p-2 md:p-3 font-bold text-blue-600 font-data">
                         {year.governmentCompensation > 0 ? `₴${(year.governmentCompensation / 1000000).toFixed(2)}M` : '-'}
                       </td>
                       <td className="text-right p-2 md:p-3">
-                        <span className="inline-block bg-gradient-to-r from-orange-100 to-red-100 text-orange-700 px-2 py-1 rounded font-bold">
+                        <span className="inline-block bg-gradient-to-r from-orange-100 to-red-100 text-orange-700 px-2 py-1 rounded font-bold font-data">
                           ₴{(Math.abs(year.deficit) / 1000000).toFixed(2)}M
                         </span>
                       </td>
@@ -640,7 +640,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
 
             {/* Official Financial Reports */}
             <div className="mb-6">
-              <h3 className="text-base md:text-lg font-bold text-gray-900 mb-3">
+              <h3 className="text-base md:text-lg font-bold text-gray-900 mb-3 font-display">
                 {locale === 'en' ? 'Official Financial Reports' : locale === 'zh' ? '官方财务报告' : 'Офіційні фінансові звіти'}
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -677,7 +677,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                 <div key={idx} className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-lg p-3 border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs md:text-sm font-bold text-gray-800">{category.name}</span>
-                    <span className="text-lg md:text-xl font-bold text-blue-600">{category.percentage}%</span>
+                    <span className="text-lg md:text-xl font-bold text-blue-600 font-data">{category.percentage}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-1.5">
                     <div
@@ -695,7 +695,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
         {/* Call to Action - Support Appeal */}
         {content.callToAction && (
           <section className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 rounded-2xl p-6 md:p-8 border-2 border-amber-200">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 text-center">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 text-center font-display">
               {content.callToAction.title}
             </h2>
             <p className="text-sm md:text-base text-gray-700 text-center mb-6">
@@ -713,7 +713,7 @@ export default function Project0DetailContent({ project, locale }: Project0Detai
                       {idx + 1}
                     </div>
                     <div>
-                      <h3 className="font-bold text-gray-900 text-sm md:text-base mb-1">
+                      <h3 className="font-bold text-gray-900 text-sm md:text-base mb-1 font-display">
                         {purpose.title}
                       </h3>
                       <p className="text-xs md:text-sm text-gray-600 leading-relaxed">

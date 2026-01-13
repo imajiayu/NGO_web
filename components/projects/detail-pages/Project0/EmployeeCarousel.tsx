@@ -60,7 +60,7 @@ export default function EmployeeCarousel({
     <div className={`w-full ${className}`}>
       {/* Title */}
       {title && (
-        <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
+        <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 font-display">
           {title}
         </h3>
       )}

@@ -213,7 +213,7 @@ export default function Project3DetailContent({
         <article className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 md:p-6 text-white">
-            <h1 className="text-2xl md:text-3xl font-bold mb-1">{content.title}</h1>
+            <h1 className="text-2xl md:text-3xl font-bold mb-1 font-display">{content.title}</h1>
             <p className="text-blue-100 text-sm md:text-base">{content.subtitle}</p>
           </div>
 
@@ -258,7 +258,7 @@ export default function Project3DetailContent({
 
             {/* Shelters */}
             <div className="space-y-3">
-              <h2 className="text-lg md:text-xl font-bold text-gray-900 flex items-center gap-2">
+              <h2 className="text-lg md:text-xl font-bold text-gray-900 flex items-center gap-2 font-display">
                 <MapPinIcon className="w-5 h-5 text-blue-600" />
                 {locale === 'en'
                   ? 'Visited Facilities'
@@ -272,7 +272,7 @@ export default function Project3DetailContent({
                     key={idx}
                     className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-3 md:p-4 border border-blue-200"
                   >
-                    <h3 className="font-bold text-sm md:text-base text-gray-900 mb-1">
+                    <h3 className="font-bold text-sm md:text-base text-gray-900 mb-1 font-display">
                       {shelter.name}
                     </h3>
                     <p className="text-xs text-gray-600 italic mb-2">{shelter.nameOriginal}</p>
@@ -295,7 +295,7 @@ export default function Project3DetailContent({
 
             {/* Statistics */}
             <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-lg p-3 md:p-4 border border-green-200">
-              <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3 flex items-center gap-2">
+              <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3 flex items-center gap-2 font-display">
                 <DollarSignIcon className="w-5 h-5 text-green-600" />
                 {locale === 'en'
                   ? 'Program Statistics'
@@ -305,7 +305,7 @@ export default function Project3DetailContent({
               </h2>
               <div className="grid grid-cols-3 gap-2 md:gap-3">
                 <div className="bg-white rounded-lg p-2 md:p-3 text-center shadow-sm">
-                  <div className="text-xl md:text-2xl font-bold text-blue-600 mb-0.5">
+                  <div className="text-xl md:text-2xl font-bold text-blue-600 mb-0.5 font-data">
                     {content.statistics.totalChildren}
                   </div>
                   <div className="text-xs md:text-sm text-gray-600">
@@ -313,7 +313,7 @@ export default function Project3DetailContent({
                   </div>
                 </div>
                 <div className="bg-white rounded-lg p-2 md:p-3 text-center shadow-sm">
-                  <div className="text-xl md:text-2xl font-bold text-green-600 mb-0.5">
+                  <div className="text-xl md:text-2xl font-bold text-green-600 mb-0.5 font-data">
                     ${content.statistics.totalCost.usd}
                   </div>
                   <div className="text-xs md:text-sm text-gray-600">
@@ -324,7 +324,7 @@ export default function Project3DetailContent({
                   </div>
                 </div>
                 <div className="bg-white rounded-lg p-2 md:p-3 text-center shadow-sm">
-                  <div className="text-xl md:text-2xl font-bold text-purple-600 mb-0.5">
+                  <div className="text-xl md:text-2xl font-bold text-purple-600 mb-0.5 font-data">
                     ${content.statistics.averagePerChild}
                   </div>
                   <div className="text-xs md:text-sm text-gray-600">
@@ -336,7 +336,7 @@ export default function Project3DetailContent({
 
             {/* Gifts List - Collapsible */}
             <div className="space-y-2 md:space-y-3">
-              <h2 className="text-lg md:text-xl font-bold text-gray-900">
+              <h2 className="text-lg md:text-xl font-bold text-gray-900 font-display">
                 {locale === 'en'
                   ? 'Children & Gifts List'
                   : locale === 'zh'
@@ -408,7 +408,7 @@ export default function Project3DetailContent({
         /* Placeholder if no content */
         <article className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
-            <h1 className="text-3xl font-bold mb-2">Christmas Gift Program</h1>
+            <h1 className="text-3xl font-bold mb-2 font-display">Christmas Gift Program</h1>
             <p className="text-blue-100">
               {t('projectDetails')}
             </p>
@@ -434,7 +434,7 @@ export default function Project3DetailContent({
         <div className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-green-600 to-teal-600 p-3 md:p-4 text-white">
-            <h2 className="text-lg md:text-xl font-bold flex items-center gap-2">
+            <h2 className="text-lg md:text-xl font-bold flex items-center gap-2 font-display">
               <PackageIcon className="w-5 h-5" />
               {locale === 'en'
                 ? 'Supplies & Expenses'
@@ -447,7 +447,7 @@ export default function Project3DetailContent({
           <div className="p-4 md:p-5 space-y-4 md:space-y-5">
             {/* Supplies List Section */}
             <section>
-              <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 md:mb-3 flex items-center gap-2">
+              <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 md:mb-3 flex items-center gap-2 font-display">
                 <FileTextIcon className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
                 {locale === 'en'
                   ? 'Supply List & Unit Prices'
@@ -529,7 +529,7 @@ export default function Project3DetailContent({
 
             {/* Expense Receipts Section */}
             <section className="border-t border-gray-200 pt-3 md:pt-4">
-              <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 md:mb-3 flex items-center gap-2">
+              <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 md:mb-3 flex items-center gap-2 font-display">
                 <ReceiptIcon className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
                 {locale === 'en'
                   ? 'Expense Receipts'
@@ -585,7 +585,7 @@ export default function Project3DetailContent({
         <article className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 md:p-6 text-white">
-            <h2 className="text-2xl md:text-3xl font-bold">
+            <h2 className="text-2xl md:text-3xl font-bold font-display">
               {locale === 'en'
                 ? 'Project Results'
                 : locale === 'zh'

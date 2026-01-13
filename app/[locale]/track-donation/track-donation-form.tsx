@@ -319,7 +319,7 @@ export default function TrackDonationForm({ locale }: Props) {
           <div className="space-y-6">
             {/* Results Header */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold text-gray-900 font-display">
                 {t('results.title', { count: orders.length })}
               </h2>
             </div>
@@ -364,7 +364,7 @@ export default function TrackDonationForm({ locale }: Props) {
                       {/* Header Row */}
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
                         <div className="flex-1">
-                          <h3 className="text-lg font-bold text-gray-900">
+                          <h3 className="text-lg font-bold text-gray-900 font-display">
                             {t('results.orderTitle')} #{orderReference.slice(-8)}
                           </h3>
                           {projectCount > 1 && (
@@ -380,7 +380,7 @@ export default function TrackDonationForm({ locale }: Props) {
                         {/* Order Reference */}
                         <div>
                           <div className="text-xs text-gray-500 font-medium mb-1">{t('results.orderReference')}</div>
-                          <code className="text-xs font-mono bg-gray-100 px-2 py-1 rounded inline-block text-gray-800">
+                          <code className="text-xs font-data bg-gray-100 px-2 py-1 rounded inline-block text-gray-800">
                             {orderReference}
                           </code>
                         </div>
@@ -435,7 +435,7 @@ export default function TrackDonationForm({ locale }: Props) {
                               >
                                 {/* Top Row: Donation ID + Status */}
                                 <div className="flex items-center justify-between gap-2">
-                                  <code className="text-xs font-mono bg-blue-50 text-blue-900 px-2 py-1 rounded border border-blue-200">
+                                  <code className="text-xs font-data bg-blue-50 text-blue-900 px-2 py-1 rounded border border-blue-200">
                                     {donation.donation_public_id}
                                   </code>
                                   <DonationStatusBadge status={donation.donation_status} />
@@ -534,7 +534,7 @@ export default function TrackDonationForm({ locale }: Props) {
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
             <SearchIcon className="w-8 h-8 text-gray-400" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">No Donations Found</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2 font-display">No Donations Found</h3>
           <p className="text-gray-600">{t('errors.donationNotFound')}</p>
         </div>
       )}
@@ -559,7 +559,7 @@ export default function TrackDonationForm({ locale }: Props) {
                   <AlertTriangleIcon className="w-6 h-6 text-orange-600" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 font-display">
                     {t('refundDialog.title')}
                   </h3>
                   <p className="text-sm text-gray-600 mb-1">
@@ -581,7 +581,7 @@ export default function TrackDonationForm({ locale }: Props) {
                     return (
                       <div key={donation.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg text-sm">
                         <div className="flex-1 min-w-0">
-                          <code className="text-xs font-mono bg-orange-50 text-orange-800 px-1.5 py-0.5 rounded">
+                          <code className="text-xs font-data bg-orange-50 text-orange-800 px-1.5 py-0.5 rounded">
                             {donation.donation_public_id}
                           </code>
                           <div className="text-xs text-gray-500 truncate mt-0.5">{donationProjectName}</div>
