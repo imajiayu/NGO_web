@@ -51,7 +51,7 @@ export default async function MissionSection() {
             ].map(({ key, image }) => (
               <div
                 key={key}
-                className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 h-[240px] md:h-[400px]"
+                className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 h-[280px] md:h-[400px]"
               >
                 {/* Background Image */}
                 <Image
@@ -63,13 +63,14 @@ export default async function MissionSection() {
                 />
 
                 {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-black/40 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30 transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/40 group-hover:from-black/80 group-hover:via-black/60 group-hover:to-black/50 transition-all duration-500" />
 
                 {/* Content */}
-                <div className="absolute inset-0 flex items-end justify-center p-6 sm:p-8">
-                  <p className="text-lg sm:text-xl font-bold text-white leading-tight text-center">
+                <div className="relative z-10 h-full flex flex-col justify-end p-6 sm:p-8">
+                  {/* Title */}
+                  <h3 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wide px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg self-start font-display">
                     {t(key as 'displaced' | 'women' | 'civilians')}
-                  </p>
+                  </h3>
                 </div>
               </div>
             ))}

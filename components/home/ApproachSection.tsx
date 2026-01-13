@@ -110,8 +110,8 @@ export default function ApproachSection() {
                 sizes="(max-width: 768px) 100vw, 33vw"
               />
 
-              {/* Gradient Overlay - Stronger overlay for better contrast */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-20 group-hover:opacity-25 transition-all duration-500`} />
+              {/* Gradient Overlay for better contrast */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-25 transition-all duration-500`} />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/40 to-black/30 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/40 transition-all duration-500" />
 
               {/* Content */}

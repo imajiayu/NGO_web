@@ -88,8 +88,7 @@ export default async function ImpactSection() {
                 sizes="(max-width: 768px) 100vw, 33vw"
               />
 
-              {/* Gradient Overlay - Stronger overlay for better contrast */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-25 group-hover:opacity-30 transition-all duration-500`} />
+              {/* Gradient Overlay for better contrast */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/40 group-hover:from-black/80 group-hover:via-black/60 group-hover:to-black/50 transition-all duration-500" />
 
               {/* Card Content */}
