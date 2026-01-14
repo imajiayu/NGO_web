@@ -434,7 +434,7 @@ export default function Project3DetailContent({
       {suppliesData ? (
         <div className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-green-600 to-teal-600 p-3 md:p-4 text-white">
+          <div className="bg-ukraine-blue-500 p-3 md:p-4 text-white">
             <h2 className="text-lg md:text-xl font-bold flex items-center gap-2 font-display">
               <PackageIcon className="w-5 h-5" />
               {locale === 'en'

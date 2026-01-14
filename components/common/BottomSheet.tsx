@@ -134,16 +134,25 @@ export default function BottomSheet({
     }
   }, [isDragging, handleDragEnd])
 
-  // Lock body scroll when sheet is expanded
+  // Lock body scroll when sheet is expanded (mobile only)
   useEffect(() => {
-    if (isOpen && isExpanded) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
+    const MOBILE_BREAKPOINT = 1024
+
+    const updateScrollLock = () => {
+      const isMobile = window.innerWidth < MOBILE_BREAKPOINT
+      if (isOpen && isExpanded && isMobile) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = 'unset'
+      }
     }
+
+    updateScrollLock()
+    window.addEventListener('resize', updateScrollLock)
 
     return () => {
       document.body.style.overflow = 'unset'
+      window.removeEventListener('resize', updateScrollLock)
     }
   }, [isOpen, isExpanded])
 
