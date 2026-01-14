@@ -78,7 +78,10 @@ export default function HeroSection({ content, locale }: SectionProps) {
         <p className="text-xs md:text-sm text-white/80 max-w-xl">{content.subtitle}</p>
 
         {/* Funding Sources - Elegant Pills */}
-        <div className="flex flex-wrap gap-1.5 mt-2">
+        <div className="flex flex-wrap items-center gap-1.5 mt-2">
+          <span className="text-[10px] md:text-xs text-white/60 font-medium">
+            {t('project0.fundingSources.title')}:
+          </span>
           {fundingSources.map((source, idx) => {
             const Icon = source.icon
             return (
