@@ -166,14 +166,63 @@
     "total": "Всього",
     "items": "шт",
     "projectDetails": "Деталі проекту",
-    "rehabilitationCenter": "Реабілітаційний центр",
     "status": {
       "active": "Активний",
       "completed": "Завершено",
       "planned": "Заплановано",
       "paused": "Призупинено"
     },
-    "viewDetails": "Переглянути деталі"
+    "viewDetails": "Переглянути деталі",
+    "contentLoading": "Завантаження...",
+    "showLess": "Показати менше",
+    "viewAllPhotos": "Дивитись всі фото",
+    "project0": {
+      "location": "Дніпро, Україна",
+      "established": "З 2022",
+      "subtitle": "Безкоштовний центр реабілітації для постраждалих",
+      "fundingSources": {
+        "charities": "Благодійники",
+        "corporations": "Корпорації",
+        "churches": "Церкви"
+      },
+      "storiesOfHope": "Історії надії",
+      "challenges": {
+        "centers": "Центрів",
+        "patientsPerYear": "Пацієнтів",
+        "injured": "Постраждалих",
+        "yearsWait": "Років"
+      },
+      "financial": {
+        "year": "Рік",
+        "staff": "Персонал",
+        "expenses": "Витрати",
+        "donations": "Донати",
+        "government": "Держ.",
+        "deficit": "Дефіцит",
+        "officialReports": "Офіційні звіти"
+      },
+      "supportUs": "Підтримайте нас",
+      "heroImageAlt": "Реабілітаційний центр Way to Health",
+      "teamMemberAlt": "Член команди {number}",
+      "eventImageAlt": "Фото заходу {number}"
+    },
+    "project3": {
+      "christmasYear": "Різдво 2025",
+      "defaultTitle": "Різдвяна програма",
+      "programImpact": "Вплив програми",
+      "visitedFacilities": "Відвідані заклади",
+      "visitedFacilitiesDesc": "Притулки та дитячі будинки",
+      "childrenWishes": "Діти та їхні бажання",
+      "childrenWishesDesc": "Натисніть, щоб побачити",
+      "suppliesExpenses": "Матеріали та витрати",
+      "suppliesExpensesDesc": "Повна прозорість",
+      "supplyList": "Список матеріалів",
+      "expenseReceipts": "Квитанції",
+      "momentsOfJoy": "Моменти радості",
+      "momentsOfJoyDesc": "Діти отримують подарунки",
+      "heroImageAlt": "Різдвяна програма подарунків",
+      "receiptImageAlt": "Квитанція {number}"
+    }
   },
   "donate": {
     "title": "Зробити донат",

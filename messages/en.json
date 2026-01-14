@@ -166,14 +166,63 @@
     "total": "Total",
     "items": "items",
     "projectDetails": "Project Details",
-    "rehabilitationCenter": "Rehabilitation Center",
     "status": {
       "active": "Active",
       "completed": "Completed",
       "planned": "Planned",
       "paused": "Paused"
     },
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "contentLoading": "Content loading...",
+    "showLess": "Show Less",
+    "viewAllPhotos": "View All Photos",
+    "project0": {
+      "location": "Dnipro, Ukraine",
+      "established": "Est. 2022",
+      "subtitle": "Free Rehabilitation Center for Ukrainian War Victims",
+      "fundingSources": {
+        "charities": "Charities",
+        "corporations": "Corporations",
+        "churches": "Churches"
+      },
+      "storiesOfHope": "Stories of Hope",
+      "challenges": {
+        "centers": "Centers",
+        "patientsPerYear": "Patients/Yr",
+        "injured": "Injured",
+        "yearsWait": "Yrs Wait"
+      },
+      "financial": {
+        "year": "Year",
+        "staff": "Staff",
+        "expenses": "Expenses",
+        "donations": "Donations",
+        "government": "Gov.",
+        "deficit": "Deficit",
+        "officialReports": "Official Reports"
+      },
+      "supportUs": "Support Us",
+      "heroImageAlt": "Way to Health Rehabilitation Center",
+      "teamMemberAlt": "Team member {number}",
+      "eventImageAlt": "Event photo {number}"
+    },
+    "project3": {
+      "christmasYear": "Christmas 2025",
+      "defaultTitle": "Christmas Gift Program",
+      "programImpact": "Program Impact",
+      "visitedFacilities": "Visited Facilities",
+      "visitedFacilitiesDesc": "Shelters and orphanages",
+      "childrenWishes": "Children & Their Wishes",
+      "childrenWishesDesc": "Click to reveal gift wishes",
+      "suppliesExpenses": "Supplies & Expenses",
+      "suppliesExpensesDesc": "Complete transparency",
+      "supplyList": "Supply List",
+      "expenseReceipts": "Expense Receipts",
+      "momentsOfJoy": "Moments of Joy",
+      "momentsOfJoyDesc": "Children receiving gifts",
+      "heroImageAlt": "Christmas Gift Program",
+      "receiptImageAlt": "Receipt {number}"
+    }
   },
   "donate": {
     "title": "Make a Donation",

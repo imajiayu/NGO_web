@@ -11,6 +11,8 @@ const ImageLightbox = dynamic(() => import('@/components/common/ImageLightbox'),
 
 interface ProjectResultsMasonryProps {
   results: ProjectResult[]
+  /** Optional: all results for lightbox (useful when displaying subset but want full gallery in lightbox) */
+  allResultsForLightbox?: ProjectResult[]
   className?: string
 }
 
@@ -48,10 +50,14 @@ const getSizeFromPriority = (priority?: number): ImageSize => {
 
 export default function ProjectResultsMasonry({
   results,
+  allResultsForLightbox,
   className = '',
 }: ProjectResultsMasonryProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState(0)
+
+  // Use allResultsForLightbox if provided, otherwise use results
+  const lightboxSourceResults = allResultsForLightbox || results
 
   // Assign sizes to results based on priority
   const masonryItems = useMemo<MasonryItem[]>(() => {
@@ -61,15 +67,15 @@ export default function ProjectResultsMasonry({
     }))
   }, [results])
 
-  // Prepare images for lightbox
+  // Prepare images for lightbox (use full list if provided)
   const lightboxImages = useMemo<LightboxImage[]>(
     () =>
-      results.map((result) => ({
+      lightboxSourceResults.map((result) => ({
         url: result.imageUrl,
         caption: result.caption,
         alt: result.caption,
       })),
-    [results]
+    [lightboxSourceResults]
   )
 
   const openLightbox = (index: number) => {

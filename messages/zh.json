@@ -166,14 +166,63 @@
     "total": "总计",
     "items": "件",
     "projectDetails": "项目详情",
-    "rehabilitationCenter": "康复中心",
     "status": {
       "active": "进行中",
       "completed": "已完成",
       "planned": "计划中",
       "paused": "已暂停"
     },
-    "viewDetails": "查看详情"
+    "viewDetails": "查看详情",
+    "contentLoading": "内容加载中...",
+    "showLess": "收起",
+    "viewAllPhotos": "查看全部照片",
+    "project0": {
+      "location": "第聂伯，乌克兰",
+      "established": "创立于 2022",
+      "subtitle": "免费的乌克兰战争受伤者康复中心",
+      "fundingSources": {
+        "charities": "慈善机构",
+        "corporations": "企业",
+        "churches": "教会"
+      },
+      "storiesOfHope": "希望的故事",
+      "challenges": {
+        "centers": "康复中心",
+        "patientsPerYear": "患者/年",
+        "injured": "受伤者",
+        "yearsWait": "年等待"
+      },
+      "financial": {
+        "year": "年份",
+        "staff": "员工",
+        "expenses": "支出",
+        "donations": "捐赠",
+        "government": "政府",
+        "deficit": "赤字",
+        "officialReports": "官方报告"
+      },
+      "supportUs": "支持我们",
+      "heroImageAlt": "Way to Health 康复中心",
+      "teamMemberAlt": "团队成员 {number}",
+      "eventImageAlt": "活动照片 {number}"
+    },
+    "project3": {
+      "christmasYear": "2025 圣诞节",
+      "defaultTitle": "圣诞礼物项目",
+      "programImpact": "项目影响",
+      "visitedFacilities": "走访机构",
+      "visitedFacilitiesDesc": "收容所和孤儿院",
+      "childrenWishes": "孩子们的心愿",
+      "childrenWishesDesc": "点击揭晓礼物愿望",
+      "suppliesExpenses": "物资与支出",
+      "suppliesExpensesDesc": "完全透明",
+      "supplyList": "物资清单",
+      "expenseReceipts": "支出凭证",
+      "momentsOfJoy": "喜悦时刻",
+      "momentsOfJoyDesc": "孩子们收到礼物",
+      "heroImageAlt": "圣诞礼物项目",
+      "receiptImageAlt": "收据 {number}"
+    }
   },
   "donate": {
     "title": "进行捐赠",

@@ -7,7 +7,11 @@
  * Available Components:
  * - ProjectProgressBar: Displays progress towards a goal
  * - ProjectResultsMasonry: Masonry grid layout for result images
+ * - FadeInSection: Scroll-triggered fade-in animation wrapper
+ * - AnimatedNumber: Animated number counter with intersection observer
  */
 
 export { default as ProjectProgressBar } from './ProjectProgressBar'
 export { default as ProjectResultsMasonry } from './ProjectResultsMasonry'
+export { default as FadeInSection } from './FadeInSection'
+export { default as AnimatedNumber } from './AnimatedNumber'

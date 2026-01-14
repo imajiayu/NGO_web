@@ -386,6 +386,29 @@ supabase gen types typescript --linked > types/database.ts
 
 支持 3 种语言: `en` (英文), `zh` (中文), `ua` (乌克兰语)
 
+### 开发规范
+
+**禁止在代码中硬编码用户可见文案。** 所有 UI 文本必须使用翻译键：
+
+```typescript
+// ❌ 错误 - 硬编码文案
+<button>Submit</button>
+<p>Please enter your email</p>
+
+// ✅ 正确 - 使用翻译键
+<button>{t('common.submit')}</button>
+<p>{t('form.emailPlaceholder')}</p>
+```
+
+翻译文件位于 `messages/` 目录：
+- `messages/en.json` - 英文
+- `messages/zh.json` - 中文
+- `messages/ua.json` - 乌克兰语
+
+**例外情况：** 品牌名称可以硬编码，无需翻译（如 "Way to Health"）。
+
+### 使用方式
+
 ```typescript
 // Server Component
 const t = await getTranslations('namespace')

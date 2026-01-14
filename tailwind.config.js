@@ -72,6 +72,32 @@ module.exports = {
           800: '#065F46',
           900: '#064E3B',
         },
+        // 圣诞主题色系 - 温暖童话风格
+        christmas: {
+          // 酒红色 - 温暖、节日
+          berry: {
+            DEFAULT: '#9B2335',
+            light: '#C4384C',
+            dark: '#721A28',
+          },
+          // 松绿色 - 自然、永恒
+          pine: {
+            DEFAULT: '#1B4332',
+            light: '#2D6A4F',
+            dark: '#132A21',
+          },
+          // 暖金色 - 希望、魔法
+          gold: {
+            DEFAULT: '#D4AF37',
+            light: '#E5C861',
+            dark: '#B8962E',
+          },
+          // 奶油白 - 雪景、温馨
+          cream: {
+            DEFAULT: '#FDF8F3',
+            dark: '#F5EBE0',
+          },
+        },
       },
     },
   },
