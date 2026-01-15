@@ -308,6 +308,7 @@
     { "imageUrl": "/images/projects/project-0/result/result10.webp", "priority": 10 },
     { "imageUrl": "/images/projects/project-0/result/result11.webp", "priority": 8 },
     { "imageUrl": "/images/projects/project-0/result/result12.webp", "priority": 6 },
-    { "imageUrl": "/images/projects/project-0/result/result13.webp", "priority": 4 }
+    { "imageUrl": "/images/projects/project-0/result/result13.webp", "priority": 4 },
+    { "imageUrl": "/images/projects/project-0/result/result14.webp", "priority": 8 }
   ]
 }
