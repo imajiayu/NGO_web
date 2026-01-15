@@ -47,8 +47,10 @@
       "mission": {
         "label": "OUR MISSION",
         "title": "Healing the Wounds of War",
-        "subtitle": "A local charity foundation in Dnipro, Ukraine, operating a medium-sized rehabilitation center dedicated to helping war victims rebuild their lives.",
-        "who": "Who We Help",
+        "subtitleLine1": "A local charity foundation in Dnipro, Ukraine, operating a medium-sized rehabilitation center.",
+        "subtitleBefore": "Dedicated to helping ",
+        "subtitleHighlight": "war victims",
+        "subtitleAfter": " rebuild their lives.",
         "displaced": "Displaced Families in Shelters",
         "women": "Widows & Orphans",
         "civilians": "Civilians Under Attack"
@@ -61,7 +63,7 @@
           "title": "Transparent",
           "items": [
             "Full receipts for every expense",
-            "Unique tracking ID for each donation",
+            "Unique tracking ID",
             "Real-time donation tracking"
           ]
         },
@@ -77,7 +79,7 @@
           "title": "Direct",
           "items": [
             "Track all donation outcomes",
-            "Recipient or executor contact included",
+            "Recipient contact included",
             "Funds go directly to recipients"
           ]
         }

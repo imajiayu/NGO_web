@@ -33,17 +33,23 @@ export default async function MissionSection() {
           {t('title')}
         </h1>
 
-        {/* Subtitle */}
-        <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 max-w-4xl mx-auto mb-8 leading-relaxed font-light">
-          {t('subtitle')}
-        </p>
+        {/* Subtitle - two lines with centered highlight */}
+        <div className="max-w-4xl mx-auto mb-8 md:mb-10">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 leading-relaxed font-light">
+            {t('subtitleLine1')}
+          </p>
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-200 leading-relaxed font-light mt-2">
+            {t('subtitleBefore')}
+            <span className="relative inline-block font-semibold text-white">
+              {t('subtitleHighlight')}
+              <span className="absolute left-0 right-0 bottom-0 h-[3px] bg-gradient-to-r from-ukraine-gold-400 via-ukraine-gold-300 to-ukraine-gold-400 rounded-full" />
+            </span>
+            {t('subtitleAfter')}
+          </p>
+        </div>
 
-        {/* Who We Help */}
-        <div className="mt-8 md:mt-10">
-          <h3 className="text-xl sm:text-2xl font-semibold mb-5 md:mb-6 text-white/90 font-display">
-            {t('who')}
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-[300px] md:max-w-none mx-auto">
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-[300px] md:max-w-none mx-auto">
             {[
               { key: 'displaced', image: '/images/mission/displaced.webp' },
               { key: 'women', image: '/images/mission/women.webp' },
@@ -75,7 +81,6 @@ export default async function MissionSection() {
               </div>
             ))}
           </div>
-        </div>
       </div>
 
       {/* Scroll Indicator - Hidden on mobile */}
