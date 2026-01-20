@@ -100,35 +100,60 @@ export default function ProjectProgressSection({ project, locale }: ProjectProgr
         {/* Divider */}
         <div className="border-t border-gray-200 pt-2 mt-2">
           {/* Funding Information */}
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {/* Show current units for long-term NON-aggregated projects */}
             {project.is_long_term === true && !project.aggregate_donations && (
-              <div className="flex justify-between text-xs md:text-sm">
-                <span className="text-gray-600">{t('currentUnits')}</span>
-                <span className="font-semibold text-ukraine-gold-600">
-                  {currentUnits} {unitName}
+              <div className="flex justify-between items-baseline text-xs md:text-sm">
+                <span className="text-gray-500">{t('currentUnits')}</span>
+                <span className="font-data font-bold text-ukraine-gold-600 tabular-nums">
+                  {currentUnits} <span className="font-normal text-gray-400">{unitName}</span>
                 </span>
               </div>
             )}
 
-            <div className="flex justify-between text-xs md:text-sm text-gray-600">
-              <span>
-                {project.donation_count || 0} {t('donations')}
-              </span>
-              <span className="font-semibold text-gray-900">
-                ${(project.total_raised || 0).toFixed(2)}
-              </span>
-            </div>
+            {/* Stats - Enhanced card for long-term projects, compact for others */}
+            {project.is_long_term === true ? (
+              // Long-term: Larger stats card (no progress bar needed)
+              <div className="bg-gradient-to-br from-ukraine-gold-50 to-ukraine-gold-100/50 -mx-1.5 px-3 py-3 rounded-xl border border-ukraine-gold-200/60 shadow-sm">
+                <div className="flex justify-between items-center">
+                  <div className="flex flex-col">
+                    <span className="font-data text-2xl md:text-3xl font-bold text-ukraine-gold-600 tabular-nums">{project.donation_count || 0}</span>
+                    <span className="text-xs md:text-sm text-gray-500">{t('donations')}</span>
+                  </div>
+                  <div className="text-right flex flex-col">
+                    <span className="font-data text-2xl md:text-3xl font-bold text-ukraine-gold-600 tabular-nums tracking-tight">
+                      ${(project.total_raised || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                    <span className="text-xs md:text-sm text-gray-500">{t('raised')}</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // Fixed-term: Compact stats row + progress bar
+              <>
+                <div className="flex justify-between items-center bg-gradient-to-r from-ukraine-gold-50 via-ukraine-gold-50/50 to-transparent -mx-1.5 px-2 py-1.5 rounded-lg border border-ukraine-gold-100/50">
+                  <div className="flex items-baseline gap-1">
+                    <span className="font-data text-lg md:text-xl font-bold text-ukraine-gold-600 tabular-nums">{project.donation_count || 0}</span>
+                    <span className="text-xs md:text-sm text-gray-500">{t('donations')}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-data text-lg md:text-xl font-bold text-ukraine-gold-600 tabular-nums tracking-tight">
+                      ${(project.total_raised || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                </div>
 
-            {/* Progress Bar */}
-            {project.is_long_term !== true && hasValidTarget && (
-              <ProjectProgressBar
-                current={currentUnits}
-                target={targetUnits}
-                unitName={unitName}
-                showAsAmount={project.aggregate_donations ?? false}
-                className="mt-1.5"
-              />
+                {/* Progress Bar */}
+                {hasValidTarget && (
+                  <ProjectProgressBar
+                    current={currentUnits}
+                    target={targetUnits}
+                    unitName={unitName}
+                    showAsAmount={project.aggregate_donations ?? false}
+                    className="mt-1"
+                  />
+                )}
+              </>
             )}
           </div>
         </div>

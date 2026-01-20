@@ -196,7 +196,6 @@ export type Database = {
           aggregate_donations: boolean
           created_at: string | null
           current_units: number
-          description_i18n: Json | null
           end_date: string | null
           id: number
           is_long_term: boolean | null
@@ -216,7 +215,6 @@ export type Database = {
           aggregate_donations?: boolean
           created_at?: string | null
           current_units?: number
-          description_i18n?: Json | null
           end_date?: string | null
           id?: number
           is_long_term?: boolean | null
@@ -236,7 +234,6 @@ export type Database = {
           aggregate_donations?: boolean
           created_at?: string | null
           current_units?: number
-          description_i18n?: Json | null
           end_date?: string | null
           id?: number
           is_long_term?: boolean | null
@@ -279,7 +276,6 @@ export type Database = {
         Row: {
           aggregate_donations: boolean | null
           current_units: number | null
-          description_i18n: Json | null
           donation_count: number | null
           end_date: string | null
           id: number | null

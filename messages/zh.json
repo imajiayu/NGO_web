@@ -152,6 +152,7 @@
     "target": "目标",
     "currentUnits": "当前募集",
     "donations": "次捐赠",
+    "raised": "已筹集",
     "perUnit": "每{unitName}",
     "anyAmount": "任意金额",
     "projectProgress": "项目进度",
@@ -186,7 +187,9 @@
         "title": "资金来源",
         "charities": "慈善机构",
         "corporations": "企业",
-        "churches": "教会"
+        "churches": "教会",
+        "government": "政府补贴",
+        "individuals": "私人捐助"
       },
       "storiesOfHope": "希望的故事",
       "challenges": {

@@ -44,7 +44,6 @@
 | unit_price | NUMERIC(10,2) | NOT NULL, >0 | 单位价格 |
 | unit_name | VARCHAR(50) | DEFAULT 'kit' | 单位名称 |
 | unit_name_i18n | JSONB | DEFAULT '{}' | 多语言单位名称 |
-| description_i18n | JSONB | DEFAULT '{}' | 多语言描述 |
 | status | VARCHAR(20) | DEFAULT 'planned' | planned/active/completed/paused |
 | aggregate_donations | BOOLEAN | DEFAULT false, NOT NULL | 捐赠聚合标志 **[不可修改]** |
 | created_at | TIMESTAMPTZ | DEFAULT now() | 创建时间 **[不可修改]** |

@@ -390,57 +390,6 @@ export default function ProjectEditModal({ project, onClose, onSaved }: Props) {
                   </div>
                 </div>
 
-                {/* Description i18n */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-3">Description Translations</h4>
-                  <div className="grid grid-cols-1 gap-3">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">
-                        English (en)
-                      </label>
-                      <textarea
-                        value={(formData.description_i18n as any)?.en || ''}
-                        onChange={(e) => {
-                          const current = (formData.description_i18n as any) || {}
-                          updateField('description_i18n', { ...current, en: e.target.value || undefined })
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                        rows={3}
-                        placeholder="Description"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">
-                        Chinese (zh)
-                      </label>
-                      <textarea
-                        value={(formData.description_i18n as any)?.zh || ''}
-                        onChange={(e) => {
-                          const current = (formData.description_i18n as any) || {}
-                          updateField('description_i18n', { ...current, zh: e.target.value || undefined })
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                        rows={3}
-                        placeholder="描述"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">
-                        Ukrainian (ua)
-                      </label>
-                      <textarea
-                        value={(formData.description_i18n as any)?.ua || ''}
-                        onChange={(e) => {
-                          const current = (formData.description_i18n as any) || {}
-                          updateField('description_i18n', { ...current, ua: e.target.value || undefined })
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                        rows={3}
-                        placeholder="Опис"
-                      />
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
 

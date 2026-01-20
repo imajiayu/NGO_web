@@ -152,6 +152,7 @@
     "target": "Target",
     "currentUnits": "Collected",
     "donations": "donations",
+    "raised": "raised",
     "perUnit": "per {unitName}",
     "anyAmount": "Any Amount",
     "projectProgress": "Project Progress",
@@ -186,7 +187,9 @@
         "title": "Funded by",
         "charities": "Charities",
         "corporations": "Corporations",
-        "churches": "Churches"
+        "churches": "Churches",
+        "government": "Government",
+        "individuals": "Individuals"
       },
       "storiesOfHope": "Stories of Hope",
       "challenges": {

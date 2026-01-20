@@ -152,6 +152,7 @@
     "target": "Ціль",
     "currentUnits": "Зібрано",
     "donations": "донатів",
+    "raised": "зібрано",
     "perUnit": "за {unitName}",
     "anyAmount": "Будь-яка сума",
     "projectProgress": "Прогрес проекту",
@@ -186,7 +187,9 @@
         "title": "Нас підтримують",
         "charities": "Благодійники",
         "corporations": "Корпорації",
-        "churches": "Церкви"
+        "churches": "Церкви",
+        "government": "Держава",
+        "individuals": "Приватні особи"
       },
       "storiesOfHope": "Історії надії",
       "challenges": {

@@ -24,7 +24,7 @@ export default function HeroSection({ content, project, locale }: HeroSectionPro
           src="/images/projects/project-3/card/bg.webp"
           alt={t('project3.heroImageAlt')}
           fill
-          sizes="100vw"
+          sizes="(max-width: 1280px) 100vw, 1280px"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
           priority
         />

@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import { MapPinIcon, HeartIcon, Building2Icon, ChurchIcon } from '@/components/icons'
+import { MapPinIcon, HeartIcon, Building2Icon, ChurchIcon, LandmarkIcon, UserIcon } from '@/components/icons'
 import type { SectionProps } from '../types'
 
 export default function HeroSection({ content, locale }: SectionProps) {
@@ -24,6 +24,16 @@ export default function HeroSection({ content, locale }: SectionProps) {
       label: t('project0.fundingSources.churches'),
       color: 'from-amber-500/80 to-orange-500/80',
     },
+    {
+      icon: LandmarkIcon,
+      label: t('project0.fundingSources.government'),
+      color: 'from-emerald-500/80 to-teal-500/80',
+    },
+    {
+      icon: UserIcon,
+      label: t('project0.fundingSources.individuals'),
+      color: 'from-violet-500/80 to-purple-500/80',
+    },
   ]
 
   return (
@@ -34,7 +44,7 @@ export default function HeroSection({ content, locale }: SectionProps) {
           src="/images/projects/project-0/card/bg.webp"
           alt={t('project0.heroImageAlt')}
           fill
-          sizes="100vw"
+          sizes="(max-width: 1280px) 100vw, 1280px"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
           priority
         />

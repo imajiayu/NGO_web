@@ -115,7 +115,7 @@ export default function ProjectCard({
             </div>
 
             <h3 className={`
-              text-base font-bold leading-tight line-clamp-2 text-left font-display
+              text-base font-bold leading-tight line-clamp-2 min-h-[2.5em] text-left font-display
               ${isSelected ? 'text-ukraine-blue-900' : 'text-gray-900 group-hover:text-ukraine-blue-500'}
               transition-colors
             `}>
@@ -179,22 +179,47 @@ export default function ProjectCard({
 
               {/* Funding Information */}
               <div className="pt-2 border-t border-gray-100">
-                {/* Show current units for long-term NON-aggregated projects (since they don't have progress bar) */}
+                {/* Show current units for long-term NON-aggregated projects */}
                 {project.is_long_term === true && !project.aggregate_donations && (
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-gray-600">{t('currentUnits')}</span>
-                    <span className="font-semibold text-ukraine-blue-500 font-data">
-                      {currentUnits} {unitName}
+                  <div className="flex justify-between items-baseline text-xs mb-1">
+                    <span className="text-gray-500">{t('currentUnits')}</span>
+                    <span className="font-data font-bold text-ukraine-gold-600 tabular-nums">
+                      {currentUnits} <span className="font-normal text-gray-400">{unitName}</span>
                     </span>
                   </div>
                 )}
 
-                <div className="flex justify-between text-xs text-gray-600 mb-1">
-                  <span>{project.donation_count || 0} {t('donations')}</span>
-                  <span className="font-semibold text-gray-900 font-data">
-                    ${(project.total_raised || 0).toFixed(2)}
-                  </span>
-                </div>
+                {/* Stats - Enhanced card for long-term projects (to fill space), compact for others */}
+                {project.is_long_term === true ? (
+                  // Long-term: Larger stats card to compensate for missing end date + progress bar
+                  <div className="bg-gradient-to-br from-ukraine-gold-50 to-ukraine-gold-100/50 -mx-1.5 px-3 py-3 rounded-xl border border-ukraine-gold-200/60 shadow-sm">
+                    <div className="flex justify-between items-center">
+                      <div className="flex flex-col">
+                        <span className="font-data text-2xl font-bold text-ukraine-gold-600 tabular-nums">{project.donation_count || 0}</span>
+                        <span className="text-xs text-gray-500">{t('donations')}</span>
+                      </div>
+                      <div className="text-right flex flex-col">
+                        <span className="font-data text-2xl font-bold text-ukraine-gold-600 tabular-nums tracking-tight">
+                          ${(project.total_raised || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </span>
+                        <span className="text-xs text-gray-500">{t('raised')}</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // Fixed-term: Compact stats row
+                  <div className="flex justify-between items-center bg-gradient-to-r from-ukraine-gold-50 via-ukraine-gold-50/50 to-transparent -mx-1.5 px-2 py-1.5 rounded-lg border border-ukraine-gold-100/50 mb-1">
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-data text-lg font-bold text-ukraine-gold-600 tabular-nums">{project.donation_count || 0}</span>
+                      <span className="text-xs text-gray-500">{t('donations')}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-data text-lg font-bold text-ukraine-gold-600 tabular-nums tracking-tight">
+                        ${(project.total_raised || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Progress Bar - Only show for fixed-term projects with valid targets */}
@@ -243,7 +268,7 @@ export default function ProjectCard({
             {project.is_long_term === true && <LongTermBadge />}
           </div>
 
-          <h3 className="text-lg font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-ukraine-blue-500 transition-colors font-display">
+          <h3 className="text-lg font-bold text-gray-900 leading-tight line-clamp-2 min-h-[2.5em] group-hover:text-ukraine-blue-500 transition-colors font-display">
             {projectName}
           </h3>
         </div>
@@ -300,34 +325,61 @@ export default function ProjectCard({
 
           {/* Funding Information */}
           <div className="pt-3 border-t border-gray-100">
-            {/* Show current units for long-term NON-aggregated projects (since they don't have progress bar) */}
+            {/* Show current units for long-term NON-aggregated projects */}
             {project.is_long_term === true && !project.aggregate_donations && (
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-gray-600">{t('currentUnits')}</span>
-                <span className="font-semibold text-ukraine-blue-500 font-data">
-                  {currentUnits} {unitName}
+              <div className="flex justify-between items-baseline text-sm mb-2">
+                <span className="text-gray-500">{t('currentUnits')}</span>
+                <span className="font-data font-bold text-ukraine-gold-600 tabular-nums">
+                  {currentUnits} <span className="font-normal text-gray-400">{unitName}</span>
                 </span>
               </div>
             )}
 
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
-              <span>{project.donation_count || 0} {t('donations')}</span>
-              <span className="font-semibold text-gray-900 font-data">
-                ${(project.total_raised || 0).toFixed(2)}
-              </span>
-            </div>
-          </div>
+            {/* Stats - Enhanced card for long-term projects (to fill space), compact for others */}
+            {project.is_long_term === true ? (
+              // Long-term: Larger stats card to compensate for missing end date + progress bar
+              <div className="bg-gradient-to-br from-ukraine-gold-50 to-ukraine-gold-100/50 -mx-1.5 px-4 py-4 rounded-xl border border-ukraine-gold-200/60 shadow-sm">
+                <div className="flex justify-between items-center">
+                  <div className="flex flex-col">
+                    <span className="font-data text-3xl font-bold text-ukraine-gold-600 tabular-nums">{project.donation_count || 0}</span>
+                    <span className="text-sm text-gray-500">{t('donations')}</span>
+                  </div>
+                  <div className="text-right flex flex-col">
+                    <span className="font-data text-3xl font-bold text-ukraine-gold-600 tabular-nums tracking-tight">
+                      ${(project.total_raised || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                    <span className="text-sm text-gray-500">{t('raised')}</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // Fixed-term: Compact stats row + progress bar
+              <>
+                <div className="flex justify-between items-center bg-gradient-to-r from-ukraine-gold-50 via-ukraine-gold-50/50 to-transparent -mx-1.5 px-2 py-2 rounded-lg border border-ukraine-gold-100/50">
+                  <div className="flex items-baseline gap-1">
+                    <span className="font-data text-xl font-bold text-ukraine-gold-600 tabular-nums">{project.donation_count || 0}</span>
+                    <span className="text-sm text-gray-500">{t('donations')}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="font-data text-xl font-bold text-ukraine-gold-600 tabular-nums tracking-tight">
+                      ${(project.total_raised || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                </div>
 
-          {/* Progress Bar - Only show for fixed-term projects with valid targets */}
-          {project.is_long_term !== true && showProgress && hasValidTarget && (
-            <ProjectProgressBar
-              current={currentUnits}
-              target={targetUnits}
-              unitName={unitName}
-              showAsAmount={project.aggregate_donations ?? false}
-              className="mt-2"
-            />
-          )}
+                {/* Progress Bar */}
+                {showProgress && hasValidTarget && (
+                  <ProjectProgressBar
+                    current={currentUnits}
+                    target={targetUnits}
+                    unitName={unitName}
+                    showAsAmount={project.aggregate_donations ?? false}
+                    className="mt-2"
+                  />
+                )}
+              </>
+            )}
+          </div>
         </div>
 
         {/* Action Button - Fixed at bottom */}

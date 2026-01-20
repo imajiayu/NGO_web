@@ -147,6 +147,7 @@ export default async function Footer() {
           src="/images/footer/footer.webp"
           alt="Footer Background"
           fill
+          sizes="100vw"
           className="hidden md:block object-cover object-right"
           quality={85}
           priority={false}
@@ -157,6 +158,7 @@ export default async function Footer() {
           src="/images/footer/footer-mobile.webp"
           alt="Footer Background"
           fill
+          sizes="100vw"
           className="md:hidden object-cover object-right"
           quality={85}
           priority={false}

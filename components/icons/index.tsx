@@ -251,3 +251,23 @@ export const SparklesIcon = ({ className }: IconProps) => (
     <path d="M5 18H3" />
   </svg>
 )
+
+// 地标/政府建筑
+export const LandmarkIcon = ({ className }: IconProps) => (
+  <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+    <path d="M3 22h18" />
+    <path d="M6 18v-7" />
+    <path d="M10 18v-7" />
+    <path d="M14 18v-7" />
+    <path d="M18 18v-7" />
+    <path d="M12 2 2 8h20z" />
+  </svg>
+)
+
+// 用户
+export const UserIcon = ({ className }: IconProps) => (
+  <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+)
