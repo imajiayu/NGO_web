@@ -23,6 +23,9 @@ interface ProjectCardProps {
   // Selection state (only for compact mode)
   isSelected?: boolean
   onSelect?: (id: number) => void
+
+  // Force collapse details (used for scroll-based collapse on mobile)
+  forceCollapse?: boolean
 }
 
 export default function ProjectCard({
@@ -32,7 +35,13 @@ export default function ProjectCard({
   showProgress = true,
   isSelected = false,
   onSelect,
+  forceCollapse = false,
 }: ProjectCardProps) {
+  // In compact mode on donate page: default expanded, collapse on scroll
+  // forceCollapse=true means user scrolled down, so collapse
+  // forceCollapse=false means at top or default, so expand
+  const shouldExpandDetails = !forceCollapse
+
   const t = useTranslations('projects')
   const router = useRouter()
   const pathname = usePathname()
@@ -73,8 +82,8 @@ export default function ProjectCard({
         type="button"
         onClick={handleSelectClick}
         className={`
-          group flex-shrink-0 w-64 bg-white rounded-2xl border-2 overflow-hidden
-          transition-all duration-300 transform relative bg-cover bg-center bg-no-repeat
+          group flex-shrink-0 w-64 h-fit bg-white rounded-2xl border-2 overflow-hidden
+          transition-[border-color,transform,box-shadow] duration-300 relative bg-cover bg-center bg-no-repeat
           ${isSelected
             ? 'border-ukraine-blue-500 bg-ukraine-blue-50 scale-105'
             : 'border-gray-200 hover:border-ukraine-blue-400'
@@ -89,7 +98,7 @@ export default function ProjectCard({
         <div className="absolute inset-0 bg-white/75 backdrop-blur-[2px]"></div>
 
         {/* Content wrapper */}
-        <div className="relative z-10">
+        <div className="relative z-10 h-fit">
           {/* Header with Tags - Always Visible */}
           <div className={`
             p-4 border-b transition-colors
@@ -123,12 +132,18 @@ export default function ProjectCard({
             </h3>
           </div>
 
-          {/* Details - Show on hover only */}
-          <div className={`
-            overflow-hidden transition-all duration-300 ease-in-out
-            max-h-0 group-hover:max-h-[32rem]
-          `}>
-            <div className="p-4 pt-3 space-y-2.5">
+          {/* Details - Animated collapse with padding transition (Safari fix) */}
+          <div
+            className="overflow-hidden px-4"
+            style={{
+              maxHeight: shouldExpandDetails ? '500px' : '0px',
+              paddingTop: shouldExpandDetails ? '12px' : '0px',
+              paddingBottom: shouldExpandDetails ? '16px' : '0px',
+              opacity: shouldExpandDetails ? 1 : 0,
+              transition: 'max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease',
+            }}
+          >
+            <div className="space-y-2.5">
               {/* Location */}
               <div className="flex items-start gap-2">
                 <svg className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

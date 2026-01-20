@@ -41,8 +41,8 @@ export default async function ProjectsGrid() {
             </div>
           </div>
 
-          {/* Scroll Hint (Mobile) */}
-          <div className="md:hidden text-center mt-4">
+          {/* Scroll Hint */}
+          <div className="text-center mt-4">
             <p className="text-sm text-gray-500 flex items-center justify-center">
               <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
