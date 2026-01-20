@@ -3,6 +3,7 @@
 import { useEffect, useCallback, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { XIcon, ChevronLeftIcon, ChevronRightIcon, Loader2Icon } from '@/components/icons'
+import { useBodyScrollLock } from '@/lib/hooks/useBodyScrollLock'
 import Image from 'next/image'
 
 export interface LightboxImage {
@@ -82,6 +83,8 @@ export default function ImageLightbox({
   }
 
   const onTouchMove = (e: React.TouchEvent) => {
+    // 阻止 Safari 橡皮筋效果
+    e.preventDefault()
     setTouchEnd(e.targetTouches[0].clientX)
   }
 
@@ -97,16 +100,7 @@ export default function ImageLightbox({
   }
 
   // Prevent body scroll when lightbox is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
+  useBodyScrollLock(isOpen)
 
   if (!isOpen || images.length === 0 || !mounted) return null
 
@@ -114,7 +108,7 @@ export default function ImageLightbox({
 
   const lightboxContent = (
     <div
-      className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
+      className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center touch-none"
       onClick={onClose}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
@@ -211,24 +205,81 @@ export default function ImageLightbox({
           </div>
         )}
 
-        {/* Progress Dots */}
+        {/* Progress Dots - Smart collapse when many images */}
         {images.length > 1 && (
-          <div className="flex items-center gap-2 pointer-events-auto">
-            {images.map((_, index) => (
-              <button
-                key={index}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setCurrentIndex(index)
-                }}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  index === currentIndex
-                    ? 'bg-white w-8'
-                    : 'bg-white/40 hover:bg-white/60'
-                }`}
-                aria-label={`Go to image ${index + 1}`}
-              />
-            ))}
+          <div className="flex items-center gap-1.5 pointer-events-auto max-w-[80vw] justify-center">
+            {images.map((_, index) => {
+              // 计算当前点与选中点的距离
+              const distance = Math.abs(index - currentIndex)
+
+              // 图片少于等于 7 张时，显示所有点
+              if (images.length <= 7) {
+                return (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setCurrentIndex(index)
+                    }}
+                    className={`h-2 rounded-full transition-all ${
+                      index === currentIndex
+                        ? 'bg-white w-6'
+                        : 'bg-white/40 hover:bg-white/60 w-2'
+                    }`}
+                    aria-label={`Go to image ${index + 1}`}
+                  />
+                )
+              }
+
+              // 图片多于 7 张时，智能折叠
+              // 只显示当前点附近的 5 个点（current ± 2）
+              // 边缘的点缩小显示
+              const maxVisibleDistance = 2
+
+              // 完全隐藏太远的点
+              if (distance > maxVisibleDistance + 1) {
+                return null
+              }
+
+              // 边缘点缩小
+              const isEdge = distance === maxVisibleDistance + 1
+              if (isEdge) {
+                // 只在两端显示一个缩小的点作为提示
+                const isStart = index < currentIndex && currentIndex > maxVisibleDistance
+                const isEnd = index > currentIndex && currentIndex < images.length - maxVisibleDistance - 1
+                if (!isStart && !isEnd) return null
+
+                return (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setCurrentIndex(index)
+                    }}
+                    className="w-1 h-1 rounded-full bg-white/30 transition-all"
+                    aria-label={`Go to image ${index + 1}`}
+                  />
+                )
+              }
+
+              return (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setCurrentIndex(index)
+                  }}
+                  className={`h-2 rounded-full transition-all ${
+                    index === currentIndex
+                      ? 'bg-white w-6'
+                      : distance <= 1
+                        ? 'bg-white/40 hover:bg-white/60 w-2'
+                        : 'bg-white/30 hover:bg-white/50 w-1.5'
+                  }`}
+                  aria-label={`Go to image ${index + 1}`}
+                />
+              )
+            })}
           </div>
         )}
 

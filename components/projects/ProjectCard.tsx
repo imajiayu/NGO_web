@@ -84,9 +84,10 @@ export default function ProjectCard({
         className={`
           group flex-shrink-0 w-64 h-fit bg-white rounded-2xl border-2 overflow-hidden
           transition-[border-color,transform,box-shadow] duration-300 relative bg-cover bg-center bg-no-repeat
+          touch-manipulation select-none
           ${isSelected
             ? 'border-ukraine-blue-500 bg-ukraine-blue-50 scale-105'
-            : 'border-gray-200 hover:border-ukraine-blue-400'
+            : 'border-gray-200 [@media(hover:hover)]:hover:border-ukraine-blue-400 active:border-ukraine-blue-400'
           }
         `}
         style={{

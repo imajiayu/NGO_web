@@ -278,6 +278,54 @@ MissionSection, ApproachSection, ImpactSection, DonationJourneySection, Complian
 
 ---
 
+## 可复用工具
+
+> **重要**: 在实现新功能前，先检查这里是否有现成的工具可用，避免重复造轮子。
+
+### React Hooks (`lib/hooks/`)
+
+| Hook | 说明 | 使用场景 |
+|------|------|----------|
+| `useBodyScrollLock(isLocked)` | 锁定页面滚动（移动端安全） | Modal, Lightbox, BottomSheet, 全屏弹层 |
+
+### 工具函数 (`lib/`)
+
+| 文件 | 主要导出 | 说明 |
+|------|----------|------|
+| `utils.ts` | `cn()`, `formatCurrency()` | 类名合并 (clsx+twMerge)、货币格式化 |
+| `i18n-utils.ts` | `getTranslatedText()`, `getProjectName()`, `getLocation()`, `getUnitName()`, `formatDate()` | 数据库 i18n 字段解析、日期格式化 |
+| `donation-status.ts` | 状态常量、状态判断函数 | 捐赠状态相关的所有逻辑 |
+| `validations.ts` | Zod schemas | 表单和 API 验证 |
+| `cloudinary.ts` | `processImageWithCloudinary()` | 图片处理和人脸模糊 |
+| `logger.ts` / `logger-client.ts` | `logger`, `clientLogger` | 服务端/客户端日志 |
+
+### Supabase 客户端 (`lib/supabase/`)
+
+| 函数 | 说明 | 使用场景 |
+|------|------|----------|
+| `createClient()` | 浏览器端客户端 | Client Components |
+| `createServerClient()` | 服务端客户端（带 cookies） | Server Components, Server Actions |
+| `createServiceClient()` | Service Role 客户端 | Webhooks, 管理员操作 |
+| `getAdminClient()` | 已验证管理员客户端 | Admin Server Actions |
+
+### 捐赠状态工具 (`lib/donation-status.ts`)
+
+```typescript
+// 状态判断
+isPrePaymentStatus(status)    // 是否支付前状态
+isFailedStatus(status)        // 是否失败状态
+isRefundStatus(status)        // 是否退款相关状态
+canRequestRefund(status)      // 是否可申请退款
+canViewResult(status)         // 是否可查看捐赠结果
+
+// 状态转换
+getNextAllowedStatuses(status)           // 获取允许的下一状态
+isValidAdminTransition(from, to)         // 验证管理员状态转换
+needsFileUpload(from, to)                // 转换是否需要上传文件
+```
+
+---
+
 ## Server Actions
 
 | Action | 说明 |
