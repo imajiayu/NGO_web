@@ -1,8 +1,50 @@
-import { getTranslations } from 'next-intl/server'
-import Image from 'next/image'
+'use client'
 
-export default async function MissionSection() {
-  const t = await getTranslations('home.hero.mission')
+import { useTranslations } from 'next-intl'
+import Image from 'next/image'
+import MobileCarousel from '@/components/common/MobileCarousel'
+
+export default function MissionSection() {
+  const t = useTranslations('home.hero.mission')
+
+  const cards = [
+    { key: 'displaced', image: '/images/mission/displaced.webp' },
+    { key: 'women', image: '/images/mission/women.webp' },
+    { key: 'civilians', image: '/images/mission/civilians.webp' }
+  ] as const
+
+  // 单张卡片组件（移动端和桌面端复用）
+  const Card = ({ cardKey, image, isMobile = false }: {
+    cardKey: typeof cards[number]['key']
+    image: string
+    isMobile?: boolean
+  }) => (
+    <div
+      className={`group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 ${
+        isMobile ? 'h-[280px]' : 'h-[280px] md:h-[400px]'
+      }`}
+    >
+      {/* Background Image */}
+      <Image
+        src={image}
+        alt={t(cardKey)}
+        fill
+        className="object-cover transition-transform duration-500 group-hover:scale-110"
+        sizes={isMobile ? '78vw' : '(max-width: 768px) 100vw, 33vw'}
+      />
+
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/40 group-hover:from-black/80 group-hover:via-black/60 group-hover:to-black/50 transition-all duration-500" />
+
+      {/* Content */}
+      <div className="relative z-10 h-full flex flex-col justify-end p-6 sm:p-8">
+        {/* Title */}
+        <h3 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wide px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg self-start font-display">
+          {t(cardKey)}
+        </h3>
+      </div>
+    </div>
+  )
 
   return (
     <section className="relative flex items-center justify-center overflow-hidden py-12 md:py-16">
@@ -48,39 +90,21 @@ export default async function MissionSection() {
           </p>
         </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-[300px] md:max-w-none mx-auto">
-            {[
-              { key: 'displaced', image: '/images/mission/displaced.webp' },
-              { key: 'women', image: '/images/mission/women.webp' },
-              { key: 'civilians', image: '/images/mission/civilians.webp' }
-            ].map(({ key, image }) => (
-              <div
-                key={key}
-                className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 h-[280px] md:h-[400px]"
-              >
-                {/* Background Image */}
-                <Image
-                  src={image}
-                  alt={t(key as 'displaced' | 'women' | 'civilians')}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
-
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/40 group-hover:from-black/80 group-hover:via-black/60 group-hover:to-black/50 transition-all duration-500" />
-
-                {/* Content */}
-                <div className="relative z-10 h-full flex flex-col justify-end p-6 sm:p-8">
-                  {/* Title */}
-                  <h3 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wide px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg self-start font-display">
-                    {t(key as 'displaced' | 'women' | 'civilians')}
-                  </h3>
-                </div>
-              </div>
+        {/* Mobile: Horizontal Carousel */}
+        <div className="-mx-4">
+          <MobileCarousel>
+            {cards.map(({ key, image }) => (
+              <Card key={key} cardKey={key} image={image} isMobile />
             ))}
-          </div>
+          </MobileCarousel>
+        </div>
+
+        {/* Desktop: Grid Layout */}
+        <div className="hidden md:grid grid-cols-3 gap-6">
+          {cards.map(({ key, image }) => (
+            <Card key={key} cardKey={key} image={image} />
+          ))}
+        </div>
       </div>
 
       {/* Scroll Indicator - Hidden on mobile */}

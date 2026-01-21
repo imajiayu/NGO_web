@@ -91,7 +91,7 @@ export default function ProjectCard({
           touch-manipulation select-none shadow-lg bg-[#1a1a1a]
           ${isSelected
             ? 'border-ukraine-gold-400 scale-105 shadow-ukraine-gold-500/30'
-            : 'border-white/20 [@media(hover:hover)]:hover:border-ukraine-gold-400/60 active:border-ukraine-gold-400/60'
+            : 'border-ukraine-blue-400/30 [@media(hover:hover)]:hover:border-ukraine-gold-400/60 active:border-ukraine-gold-400/60'
           }
         `}
       >
@@ -271,7 +271,7 @@ export default function ProjectCard({
     <>
       <GlobalLoadingSpinner isLoading={isNavigating} />
       <div
-        className="group flex-shrink-0 w-80 rounded-2xl border-2 border-white/20 hover:border-ukraine-gold-400/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden relative flex flex-col shadow-lg bg-[#1a1a1a]"
+        className="group flex-shrink-0 w-80 rounded-2xl border-2 border-ukraine-blue-400/30 hover:border-ukraine-gold-400/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden relative flex flex-col shadow-lg bg-[#1a1a1a]"
       >
       {/* Background image container - inside border */}
       <div

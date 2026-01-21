@@ -36,15 +36,6 @@ export default function Snowfall() {
           ❄
         </div>
       ))}
-      <style jsx>{`
-        @keyframes snowfall {
-          0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
-        }
-        .animate-snowfall { animation: snowfall linear infinite; }
-      `}</style>
     </div>
   )
 }

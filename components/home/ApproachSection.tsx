@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
+import MobileCarousel from '@/components/common/MobileCarousel'
 
 export default function ApproachSection() {
   const t = useTranslations('home.hero.approach')
@@ -53,7 +54,73 @@ export default function ApproachSection() {
       gradient: 'from-warm-500 to-warm-400',
       image: '/images/approach/direct.webp'
     }
-  ]
+  ] as const
+
+  // 单张卡片组件（移动端和桌面端复用）
+  const Card = ({ feature, isMobile = false }: {
+    feature: typeof features[number]
+    isMobile?: boolean
+  }) => {
+    const { key, icon, gradient, image } = feature
+    return (
+      <div
+        className={`group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 ${
+          isMobile ? 'h-[320px]' : 'h-[320px] md:h-[400px]'
+        }`}
+      >
+        {/* Background Image */}
+        <Image
+          src={image}
+          alt={t(`${key}.title` as any)}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-110"
+          sizes={isMobile ? '78vw' : '(max-width: 768px) 100vw, 33vw'}
+        />
+
+        {/* Gradient Overlay for better contrast */}
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-25 transition-all duration-500`} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/40 to-black/30 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/40 transition-all duration-500" />
+
+        {/* Content */}
+        <div className="relative z-10 h-full flex flex-col justify-between p-6 sm:p-8">
+          {/* Icon */}
+          <div className={`inline-flex p-4 bg-gradient-to-br ${gradient} rounded-2xl text-white shadow-xl self-start`}>
+            {icon}
+          </div>
+
+          {/* Content Container - Bottom */}
+          <div className="flex flex-col gap-4 mt-auto">
+            {/* Title with backdrop - auto width */}
+            <h3 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wide inline-block px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg self-start font-display">
+              {t(`${key}.title` as any)}
+            </h3>
+
+            {/* List Items with subtle backdrop - auto width */}
+            <ul className="space-y-2">
+              {(t.raw(`${key}.items` as any) as string[]).map((item: string, index: number) => (
+                <li key={index} className="flex items-start">
+                  <svg
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-life-400 mr-2 mt-0.5 flex-shrink-0 drop-shadow-lg"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span className="text-white text-sm sm:text-base leading-relaxed font-medium px-2 py-1 bg-black/15 backdrop-blur-sm rounded shadow-md inline-block">
+                    {item}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <section className="relative flex items-center justify-center bg-gradient-to-br from-ukraine-gold-50 via-warm-50 to-ukraine-gold-100 overflow-x-hidden py-12 md:py-16">
@@ -94,64 +161,19 @@ export default function ApproachSection() {
           </div>
         </div>
 
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-[300px] md:max-w-none mx-auto">
-          {features.map(({ key, icon, gradient, image }) => (
-            <div
-              key={key}
-              className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 h-[320px] md:h-[400px]"
-            >
-              {/* Background Image */}
-              <Image
-                src={image}
-                alt={t(`${key}.title` as any)}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                sizes="(max-width: 768px) 100vw, 33vw"
-              />
+        {/* Mobile: Horizontal Carousel */}
+        <div className="-mx-4">
+          <MobileCarousel indicatorTheme="light">
+            {features.map((feature) => (
+              <Card key={feature.key} feature={feature} isMobile />
+            ))}
+          </MobileCarousel>
+        </div>
 
-              {/* Gradient Overlay for better contrast */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-25 transition-all duration-500`} />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/40 to-black/30 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/40 transition-all duration-500" />
-
-              {/* Content */}
-              <div className="relative z-10 h-full flex flex-col justify-between p-6 sm:p-8">
-                {/* Icon */}
-                <div className={`inline-flex p-4 bg-gradient-to-br ${gradient} rounded-2xl text-white shadow-xl self-start`}>
-                  {icon}
-                </div>
-
-                {/* Content Container - Bottom */}
-                <div className="flex flex-col gap-4 mt-auto">
-                  {/* Title with backdrop - auto width */}
-                  <h3 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-wide inline-block px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg self-start font-display">
-                    {t(`${key}.title` as any)}
-                  </h3>
-
-                  {/* List Items with subtle backdrop - auto width */}
-                  <ul className="space-y-2">
-                    {(t.raw(`${key}.items` as any) as string[]).map((item: string, index: number) => (
-                      <li key={index} className="flex items-start">
-                        <svg
-                          className="w-4 h-4 sm:w-5 sm:h-5 text-life-400 mr-2 mt-0.5 flex-shrink-0 drop-shadow-lg"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <span className="text-white text-sm sm:text-base leading-relaxed font-medium px-2 py-1 bg-black/15 backdrop-blur-sm rounded shadow-md inline-block">
-                          {item}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
+        {/* Desktop: Grid Layout */}
+        <div className="hidden md:grid grid-cols-3 gap-6">
+          {features.map((feature) => (
+            <Card key={feature.key} feature={feature} />
           ))}
         </div>
       </div>

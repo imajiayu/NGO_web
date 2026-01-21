@@ -17,6 +17,17 @@ module.exports = {
         // 中文字体回退
         chinese: ['"PingFang SC"', '"Hiragino Sans GB"', '"Microsoft YaHei"', 'sans-serif'],
       },
+      animation: {
+        snowfall: 'snowfall linear infinite',
+      },
+      keyframes: {
+        snowfall: {
+          '0%': { transform: 'translateY(-10px) rotate(0deg)', opacity: '0' },
+          '10%': { opacity: '1' },
+          '90%': { opacity: '1' },
+          '100%': { transform: 'translateY(100vh) rotate(360deg)', opacity: '0' },
+        },
+      },
       colors: {
         // 乌克兰蓝色系 - 信任、和平、天空
         ukraine: {

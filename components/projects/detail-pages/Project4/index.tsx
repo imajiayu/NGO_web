@@ -172,17 +172,28 @@ export default function Project4DetailContent({ project, locale }: Project4Detai
               <section>
                 {/* Highlights - Key Numbers */}
                 {content.highlights && content.highlights.length > 0 && (
-                  <div className="flex flex-wrap gap-3 md:gap-4 mb-5">
+                  <div className="grid grid-cols-3 gap-2 md:gap-3 mb-5">
                     {content.highlights.map((h, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-100/80"
+                        className="relative flex flex-col items-center text-center p-2.5 md:p-4 bg-gradient-to-br from-amber-50 via-orange-50/80 to-amber-100/60 rounded-xl border border-amber-200/60 shadow-sm overflow-hidden group"
                       >
-                        <span className="text-xl md:text-2xl font-bold text-amber-600">{h.number}</span>
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium text-gray-800 leading-tight">{h.label}</span>
-                          <span className="text-xs text-gray-500 leading-tight">{h.detail}</span>
-                        </div>
+                        {/* Decorative background number */}
+                        <span className="absolute -right-1 -top-2 text-[3rem] md:text-[4.5rem] font-black text-amber-200/40 leading-none select-none pointer-events-none">
+                          {h.number}
+                        </span>
+                        {/* Main number */}
+                        <span className="relative text-2xl md:text-4xl font-black text-amber-600 leading-none mb-1 md:mb-1.5">
+                          {h.number}
+                        </span>
+                        {/* Label */}
+                        <span className="relative text-xs md:text-sm font-semibold text-gray-800 leading-tight">
+                          {h.label}
+                        </span>
+                        {/* Detail */}
+                        <span className="relative text-[10px] md:text-xs text-gray-500 leading-snug mt-0.5 text-balance">
+                          {h.detail}
+                        </span>
                       </div>
                     ))}
                   </div>

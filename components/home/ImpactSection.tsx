@@ -1,8 +1,11 @@
-import { getTranslations } from 'next-intl/server'
-import Image from 'next/image'
+'use client'
 
-export default async function ImpactSection() {
-  const t = await getTranslations('home.hero.impact')
+import { useTranslations } from 'next-intl'
+import Image from 'next/image'
+import MobileCarousel from '@/components/common/MobileCarousel'
+
+export default function ImpactSection() {
+  const t = useTranslations('home.hero.impact')
 
   const stats = [
     {
@@ -35,7 +38,64 @@ export default async function ImpactSection() {
       color: 'from-life-400 to-life-600',
       image: '/images/impact/shelters.webp'
     }
-  ]
+  ] as const
+
+  // 单张卡片组件（移动端和桌面端复用）
+  const Card = ({ stat, isMobile = false }: {
+    stat: typeof stats[number]
+    isMobile?: boolean
+  }) => {
+    const { key, icon, color, image } = stat
+    return (
+      <div
+        className={`group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 ${
+          isMobile ? 'h-[280px]' : 'h-[280px] md:h-[400px]'
+        }`}
+      >
+        {/* Background Image */}
+        <Image
+          src={image}
+          alt={t(`${key}.label` as any)}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-110"
+          sizes={isMobile ? '78vw' : '(max-width: 768px) 100vw, 33vw'}
+        />
+
+        {/* Gradient Overlay for better contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/40 group-hover:from-black/80 group-hover:via-black/60 group-hover:to-black/50 transition-all duration-500" />
+
+        {/* Card Content */}
+        <div className="relative z-10 h-full flex flex-col justify-between p-6 sm:p-8">
+          {/* Icon */}
+          <div className={`inline-flex p-4 bg-gradient-to-br ${color} rounded-2xl text-white shadow-xl self-start`}>
+            {icon}
+          </div>
+
+          {/* Stats Container */}
+          <div className="flex flex-col gap-3 mt-auto">
+            {/* Value with backdrop - Large stat number */}
+            <div
+              className="font-bold text-white tracking-tight px-4 py-2 bg-black/25 backdrop-blur-md rounded-xl shadow-2xl self-start font-data"
+              style={{ fontSize: isMobile ? 'clamp(1.75rem, 3vw + 0.5rem, 2.5rem)' : 'clamp(2rem, 4vw + 0.5rem, 3.75rem)' }}
+            >
+              {t(`${key}.value` as any)}
+            </div>
+
+            {/* Label with backdrop */}
+            <div
+              className="text-white font-semibold leading-snug px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg self-start"
+              style={{ fontSize: isMobile ? 'clamp(0.875rem, 1.5vw + 0.25rem, 1rem)' : 'clamp(1rem, 2vw + 0.25rem, 1.25rem)' }}
+            >
+              {t(`${key}.label` as any)}
+            </div>
+          </div>
+
+          {/* Glow Effect */}
+          <div className={`absolute inset-0 bg-gradient-to-br ${color} rounded-3xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500`} />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <section className="relative flex items-center justify-center overflow-hidden py-12 md:py-16">
@@ -72,55 +132,19 @@ export default async function ImpactSection() {
           </p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-[300px] md:max-w-none mx-auto">
-          {stats.map(({ key, icon, color, image }) => (
-            <div
-              key={key}
-              className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 h-[280px] md:h-[400px]"
-            >
-              {/* Background Image */}
-              <Image
-                src={image}
-                alt={t(`${key}.label` as any)}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                sizes="(max-width: 768px) 100vw, 33vw"
-              />
+        {/* Mobile: Horizontal Carousel */}
+        <div className="-mx-4">
+          <MobileCarousel indicatorTheme="dark">
+            {stats.map((stat) => (
+              <Card key={stat.key} stat={stat} isMobile />
+            ))}
+          </MobileCarousel>
+        </div>
 
-              {/* Gradient Overlay for better contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/40 group-hover:from-black/80 group-hover:via-black/60 group-hover:to-black/50 transition-all duration-500" />
-
-              {/* Card Content */}
-              <div className="relative z-10 h-full flex flex-col justify-between p-6 sm:p-8">
-                {/* Icon */}
-                <div className={`inline-flex p-4 bg-gradient-to-br ${color} rounded-2xl text-white shadow-xl self-start`}>
-                  {icon}
-                </div>
-
-                {/* Stats Container */}
-                <div className="flex flex-col gap-3 mt-auto">
-                  {/* Value with backdrop - Large stat number */}
-                  <div
-                    className="font-bold text-white tracking-tight px-4 py-2 bg-black/25 backdrop-blur-md rounded-xl shadow-2xl self-start font-data"
-                    style={{ fontSize: 'clamp(2rem, 4vw + 0.5rem, 3.75rem)' }}
-                  >
-                    {t(`${key}.value` as any)}
-                  </div>
-
-                  {/* Label with backdrop */}
-                  <div
-                    className="text-white font-semibold leading-snug px-3 py-2 bg-black/20 backdrop-blur-sm rounded-lg shadow-lg self-start"
-                    style={{ fontSize: 'clamp(1rem, 2vw + 0.25rem, 1.25rem)' }}
-                  >
-                    {t(`${key}.label` as any)}
-                  </div>
-                </div>
-
-                {/* Glow Effect */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${color} rounded-3xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500`} />
-              </div>
-            </div>
+        {/* Desktop: Grid Layout */}
+        <div className="hidden md:grid grid-cols-3 gap-6">
+          {stats.map((stat) => (
+            <Card key={stat.key} stat={stat} />
           ))}
         </div>
       </div>
