@@ -20,7 +20,11 @@ export default function ProjectProgressSection({ project, locale }: ProjectProgr
   const unitName = getUnitName(project.unit_name_i18n, project.unit_name, locale as SupportedLocale)
   const currentUnits = project.current_units ?? 0
   const targetUnits = project.target_units ?? 0
+  const totalRaised = project.total_raised ?? 0
   const hasValidTarget = targetUnits > 0
+
+  // For progress bar: aggregated projects use total_raised (amount), non-aggregated use current_units
+  const progressCurrent = project.aggregate_donations ? totalRaised : currentUnits
 
   return (
     <div className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
@@ -146,7 +150,7 @@ export default function ProjectProgressSection({ project, locale }: ProjectProgr
                 {/* Progress Bar */}
                 {hasValidTarget && (
                   <ProjectProgressBar
-                    current={currentUnits}
+                    current={progressCurrent}
                     target={targetUnits}
                     unitName={unitName}
                     showAsAmount={project.aggregate_donations ?? false}

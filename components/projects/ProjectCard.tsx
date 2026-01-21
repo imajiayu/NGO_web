@@ -71,7 +71,11 @@ export default function ProjectCard({
   // Calculate totals using unit count
   const currentUnits = project.current_units ?? 0
   const targetUnits = project.target_units ?? 0
+  const totalRaised = project.total_raised ?? 0
   const hasValidTarget = targetUnits > 0
+
+  // For progress bar: aggregated projects use total_raised (amount), non-aggregated use current_units
+  const progressCurrent = project.aggregate_donations ? totalRaised : currentUnits
 
   // ===================================================================
   // COMPACT MODE RENDERING
@@ -100,7 +104,7 @@ export default function ProjectCard({
           }}
         />
         {/* Light overlay + Gradient for contrast */}
-        <div className="absolute inset-0 bg-white/15" />
+        <div className="absolute inset-0 bg-white/30" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-black/20" />
 
         {/* Content wrapper */}
@@ -246,7 +250,7 @@ export default function ProjectCard({
               {/* Progress Bar - Only show for fixed-term projects with valid targets */}
               {project.is_long_term !== true && hasValidTarget && (
                 <ProjectProgressBar
-                  current={currentUnits}
+                  current={progressCurrent}
                   target={targetUnits}
                   unitName={unitName}
                   showAsAmount={project.aggregate_donations ?? false}
@@ -278,7 +282,8 @@ export default function ProjectCard({
           backgroundColor: '#1a1a1a'
         }}
       />
-      {/* Gradient overlay for contrast */}
+      {/* Light overlay + Gradient for contrast */}
+      <div className="absolute inset-0 bg-white/30" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/40 to-black/25" />
 
       {/* Content wrapper */}
@@ -395,7 +400,7 @@ export default function ProjectCard({
                 {/* Progress Bar */}
                 {showProgress && hasValidTarget && (
                   <ProjectProgressBar
-                    current={currentUnits}
+                    current={progressCurrent}
                     target={targetUnits}
                     unitName={unitName}
                     showAsAmount={project.aggregate_donations ?? false}

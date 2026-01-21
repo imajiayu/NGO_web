@@ -75,6 +75,28 @@
 
 **管理员可修改**: paid → confirmed → delivering → completed
 
+### 项目类型 (2x2)
+
+| 字段 | 值 | 含义 |
+|------|-----|------|
+| `is_long_term` | true | 长期项目，无结束日期，无目标上限 |
+| `is_long_term` | false | 固定期限项目，有结束日期和目标 |
+| `aggregate_donations` | true | 聚合项目，按金额捐赠（`target_units` = 目标金额） |
+| `aggregate_donations` | false | 非聚合项目，按单位捐赠（`target_units` = 目标单位数） |
+
+**进度计算**（`project_stats` 视图）：
+- 聚合项目：`total_raised / target_units`（金额/目标金额）
+- 非聚合项目：`current_units / target_units`（单位数/目标单位数）
+
+**UI 展示逻辑**（`ProjectCard`, `ProjectProgressSection`）：
+
+| 项目类型 | 进度条 | 结束日期 | 当前单位数 |
+|----------|--------|----------|------------|
+| 固定期限 + 非聚合 | ✅ 显示（单位） | ✅ 显示 | ❌ |
+| 固定期限 + 聚合 | ✅ 显示（金额） | ✅ 显示 | ❌ |
+| 长期 + 非聚合 | ❌ | ❌ | ✅ 显示 |
+| 长期 + 聚合 | ❌ | ❌ | ❌ |
+
 ### 数据库函数
 
 **业务函数 (5个)**
