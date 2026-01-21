@@ -1,0 +1,96 @@
+{
+  "title": "Aid List",
+  "description": "These items will help the children's learning and growth. Purchased items include receipt verification.",
+  "statusLabels": {
+    "pending": "Pending",
+    "purchased": "Purchased",
+    "delivered": "Delivered"
+  },
+  "items": [
+    {
+      "item": "Toy dollhouse",
+      "itemOriginal": "Іграшковий будинок",
+      "category": "toys",
+      "quantity": 1,
+      "unitPrice": { "uah": 1200, "usd": 29 },
+      "status": "pending",
+      "forChild": "Girls"
+    },
+    {
+      "item": "Doll",
+      "itemOriginal": "Лялька",
+      "category": "toys",
+      "quantity": 2,
+      "unitPrice": { "uah": 450, "usd": 11 },
+      "status": "pending",
+      "forChild": "Mariyka, Sofia"
+    },
+    {
+      "item": "Pirates of the Caribbean book series",
+      "itemOriginal": "Набір книг «Пірати Карибського моря»",
+      "category": "books",
+      "quantity": 1,
+      "unitPrice": { "uah": 380, "usd": 9 },
+      "status": "pending"
+    },
+    {
+      "item": "Puzzles",
+      "itemOriginal": "Пазли",
+      "category": "toys",
+      "quantity": 3,
+      "unitPrice": { "uah": 180, "usd": 4 },
+      "status": "pending"
+    },
+    {
+      "item": "Educational electronic STEM kit",
+      "itemOriginal": "Електричний розвиваючий конструктор для дітей",
+      "category": "educational",
+      "quantity": 1,
+      "unitPrice": { "uah": 850, "usd": 21 },
+      "status": "pending"
+    },
+    {
+      "item": "'Guilty' series, 'Return of Rachel Price' books",
+      "itemOriginal": "Книги. Серія «Винні», «Повернення Рейчал Прайз»",
+      "category": "books",
+      "quantity": 1,
+      "unitPrice": { "uah": 320, "usd": 8 },
+      "status": "pending",
+      "forChild": "Katya"
+    },
+    {
+      "item": "Building blocks",
+      "itemOriginal": "Конструктор для Діми",
+      "category": "toys",
+      "quantity": 1,
+      "unitPrice": { "uah": 650, "usd": 16 },
+      "status": "pending",
+      "forChild": "Dima"
+    },
+    {
+      "item": "Children's mattress (1.20×0.60)",
+      "itemOriginal": "Дитячий матрас 1.20 / 60",
+      "category": "furniture",
+      "quantity": 1,
+      "unitPrice": { "uah": 2800, "usd": 68 },
+      "status": "pending"
+    },
+    {
+      "item": "Metal wardrobe",
+      "itemOriginal": "Шкаф жилізний",
+      "category": "furniture",
+      "quantity": 1,
+      "unitPrice": { "uah": 4500, "usd": 109 },
+      "status": "pending"
+    }
+  ],
+  "total": {
+    "items": 12,
+    "totalCost": { "uah": 12140, "usd": 294 }
+  },
+  "exchangeRateNote": "Exchange rate: 1 USD ≈ 41.3 UAH",
+  "receipts": {
+    "description": "Purchase receipts (uploaded after purchase)",
+    "images": []
+  }
+}

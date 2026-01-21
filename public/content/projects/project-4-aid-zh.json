@@ -1,0 +1,96 @@
+{
+  "title": "援助清单",
+  "description": "这些物品将帮助孩子们的学习与成长。已购买的物品会附上收据凭证。",
+  "statusLabels": {
+    "pending": "待购买",
+    "purchased": "已购买",
+    "delivered": "已送达"
+  },
+  "items": [
+    {
+      "item": "玩具小房子",
+      "itemOriginal": "Іграшковий будинок",
+      "category": "toys",
+      "quantity": 1,
+      "unitPrice": { "uah": 1200, "usd": 29 },
+      "status": "pending",
+      "forChild": "女孩们"
+    },
+    {
+      "item": "娃娃",
+      "itemOriginal": "Лялька",
+      "category": "toys",
+      "quantity": 2,
+      "unitPrice": { "uah": 450, "usd": 11 },
+      "status": "pending",
+      "forChild": "玛丽卡、索菲亚"
+    },
+    {
+      "item": "《加勒比海盗》系列图书",
+      "itemOriginal": "Набір книг «Пірати Карибського моря»",
+      "category": "books",
+      "quantity": 1,
+      "unitPrice": { "uah": 380, "usd": 9 },
+      "status": "pending"
+    },
+    {
+      "item": "拼图",
+      "itemOriginal": "Пазли",
+      "category": "toys",
+      "quantity": 3,
+      "unitPrice": { "uah": 180, "usd": 4 },
+      "status": "pending"
+    },
+    {
+      "item": "儿童电子益智STEM教育套装",
+      "itemOriginal": "Електричний розвиваючий конструктор для дітей",
+      "category": "educational",
+      "quantity": 1,
+      "unitPrice": { "uah": 850, "usd": 21 },
+      "status": "pending"
+    },
+    {
+      "item": "《有罪》《瑞秋·普莱斯的回归》系列书籍",
+      "itemOriginal": "Книги. Серія «Винні», «Повернення Рейчал Прайз»",
+      "category": "books",
+      "quantity": 1,
+      "unitPrice": { "uah": 320, "usd": 8 },
+      "status": "pending",
+      "forChild": "卡佳"
+    },
+    {
+      "item": "拼装积木",
+      "itemOriginal": "Конструктор для Діми",
+      "category": "toys",
+      "quantity": 1,
+      "unitPrice": { "uah": 650, "usd": 16 },
+      "status": "pending",
+      "forChild": "迪马"
+    },
+    {
+      "item": "儿童床垫（1.20×0.60）",
+      "itemOriginal": "Дитячий матрас 1.20 / 60",
+      "category": "furniture",
+      "quantity": 1,
+      "unitPrice": { "uah": 2800, "usd": 68 },
+      "status": "pending"
+    },
+    {
+      "item": "金属衣柜",
+      "itemOriginal": "Шкаф жилізний",
+      "category": "furniture",
+      "quantity": 1,
+      "unitPrice": { "uah": 4500, "usd": 109 },
+      "status": "pending"
+    }
+  ],
+  "total": {
+    "items": 12,
+    "totalCost": { "uah": 12140, "usd": 294 }
+  },
+  "exchangeRateNote": "汇率参考：1 USD ≈ 41.3 UAH",
+  "receipts": {
+    "description": "采购凭证（购买完成后上传）",
+    "images": []
+  }
+}

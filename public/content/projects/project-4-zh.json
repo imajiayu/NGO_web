@@ -1,0 +1,119 @@
+{
+  "title": "援助前线单亲八孩家庭",
+  "subtitle": "一位母亲的坚守——独自抚养8个孩子，在战火中守护爱与希望",
+  "location": "米科拉伊夫卡，乌克兰东部",
+  "images": [
+    "/images/projects/project-4/details/family-portrait.webp",
+    "/images/projects/project-4/details/children-together.webp",
+    "/images/projects/project-4/details/girl-katya-1.webp"
+  ],
+  "introduction": [
+    "在乌克兰东部米科拉伊夫卡村，生活着一个充满爱与坚韧的家庭。母亲奥克萨娜独自抚养着8个孩子——其中4个是亲生的，4个是几年前从孤儿院收养的。她用爱将这个家庭组织得井井有条，让每个孩子都感到被需要、被珍视。",
+    "父亲伊戈尔曾服役于乌克兰第92独立机械化旅，在前线保卫国家时失踪（实际已牺牲）。由于官方认定为「失踪」而非「阵亡」，家庭无法获得任何国家抚恤金。",
+    "这是他们的第四个居住地。由于距离前线非常近，他们随时可能需要再次搬迁。基本生活物资已有保障，但孩子们的学习和成长需求无法得到满足。"
+  ],
+  "highlights": [
+    { "number": "8", "label": "个孩子", "detail": "4个亲生 + 4个收养" },
+    { "number": "4", "label": "次搬迁", "detail": "因战争被迫迁徙" },
+    { "number": "0", "label": "抚恤金", "detail": "因「失踪」身份" }
+  ],
+  "family": {
+    "mother": {
+      "name": "奥克萨娜",
+      "nameOriginal": "Оксана",
+      "description": "独自抚养8个孩子"
+    },
+    "father": {
+      "name": "伊戈尔",
+      "nameOriginal": "Ігор",
+      "description": "前线失踪（因「失踪」身份无抚恤金）"
+    },
+    "grandmother": {
+      "name": "玛丽亚",
+      "nameOriginal": "Марія",
+      "description": "住在附近，支持这个家庭"
+    },
+    "childrenCount": {
+      "total": 8,
+      "biological": 4,
+      "adopted": 4,
+      "boys": 5,
+      "girls": 3
+    }
+  },
+  "children": {
+    "boys": [
+      { "name": "安德烈", "nameOriginal": "Андрій" },
+      { "name": "帕夫洛", "nameOriginal": "Павло" },
+      { "name": "米基塔", "nameOriginal": "Микита" },
+      { "name": "谢尔盖", "nameOriginal": "Сергій" },
+      { "name": "阿列克谢", "nameOriginal": "Олексій" }
+    ],
+    "girls": [
+      { "name": "卡佳（长女）", "nameOriginal": "Катя" },
+      { "name": "玛丽卡", "nameOriginal": "Марійка" },
+      { "name": "索菲亚", "nameOriginal": "Софія" }
+    ]
+  },
+  "livingConditions": {
+    "title": "生活状况",
+    "description": "5个男孩住在同一间房间使用双层床，3个女孩住在另一间房间。尽管空间有限，每个孩子都能找到属于自己的小角落。",
+    "images": [
+      "/images/projects/project-4/details/wood-stove.webp",
+      "/images/projects/project-4/details/desk.webp"
+    ],
+    "points": [
+      "基本生存需求已得到满足（食物、卫生用品充足）",
+      "使用木柴取暖，有人定期送柴",
+      "房屋需要维修但无经济能力",
+      "由于靠近前线，不确定能住多久"
+    ]
+  },
+  "childrenTalents": {
+    "title": "孩子们的天赋",
+    "description": "孩子们非常有天赋，尤其擅长绘画。母亲奥克萨娜本身也很有创造力，她始终鼓励并支持孩子们的兴趣爱好。",
+    "talents": [
+      { "activity": "绘画创作", "image": "/images/projects/project-4/details/girl-sofia-drawing.webp" },
+      { "activity": "阅读书籍", "image": "/images/projects/project-4/details/boy-reading.webp" },
+      { "activity": "手工制作", "image": "/images/projects/project-4/details/girl-mariyka-desk.webp" }
+    ],
+    "artworkImage": "/images/projects/project-4/details/artwork-closet.webp"
+  },
+  "adoptionStory": {
+    "title": "收养故事",
+    "content": "几年前，母亲奥克萨娜在一次探访孤儿院时，决定给孩子们一个真正的家庭。所有被收养的孩子在这个家中找到了安全感，获得了爱与归属感。母亲成功地将家庭生活组织得井井有条，确保每一个孩子都感到被需要、感到幸福。"
+  },
+  "fruitWishes": {
+    "title": "水果的渴望",
+    "description": "当被问到是否想要新鲜水果时，孩子们的眼睛立刻亮了起来。他们最想要的是：",
+    "fruits": ["橘子", "香蕉", "梨"]
+  },
+  "whyGifts": {
+    "title": "为什么援助这些物资",
+    "causeLabel": "现状",
+    "effectLabel": "因此",
+    "reasons": [
+      "基本生活（食物、保暖）已有保障",
+      "靠近前线，居住稳定性极低",
+      "不适合长期投资（修房、大型电器等）",
+      "书籍、益智类玩具、教育类物品是当前最需要的",
+      "帮助孩子们在战争中保留童年"
+    ],
+    "conclusion": "这是目前最现实、最有意义的支持方式。"
+  },
+  "familyGallery": {
+    "images": [
+      { "url": "/images/projects/project-4/details/mother-daughter-cooking.webp", "priority": "high" },
+      { "url": "/images/projects/project-4/details/girl-katya-2.webp", "priority": "medium" },
+      { "url": "/images/projects/project-4/details/boy-blocks-1.webp", "priority": "medium" },
+      { "url": "/images/projects/project-4/details/boy-blocks-2.webp", "priority": "low" },
+      { "url": "/images/projects/project-4/details/boy-drawing.webp", "priority": "low" },
+      { "url": "/images/projects/project-4/details/boy-toy.webp", "priority": "low" }
+    ]
+  },
+  "callToAction": {
+    "title": "他们在等待被看见",
+    "content": "这个家庭失去了父亲，多次被迫迁徙，资源极其有限，却依然守住了爱、尊严、团结和对未来的希望。他们的力量来自相互尊重、天赋与创造力、强烈的家庭纽带。",
+    "closing": "这8个孩子——4个亲生的，4个收养的——都在等待一个被看见、被记住、被温柔对待的未来。"
+  }
+}

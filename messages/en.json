@@ -228,6 +228,26 @@
       "momentsOfJoyDesc": "Children receiving gifts",
       "heroImageAlt": "Christmas Gift Program",
       "receiptImageAlt": "Receipt {number}"
+    },
+    "project4": {
+      "defaultTitle": "Mykolaivka Family Support",
+      "familySupport": "Family Support",
+      "heroImageAlt": "Family Support Project",
+      "familyMembers": "Family Members",
+      "mother": "Mother",
+      "father": "Father",
+      "grandmother": "Grandmother",
+      "boys": "Boys",
+      "girls": "Girls",
+      "categoryToys": "Toys",
+      "categoryBooks": "Books",
+      "categoryEducational": "Educational",
+      "categoryFurniture": "Furniture",
+      "categoryFood": "Food",
+      "artworkCollectionAlt": "Artwork collection",
+      "woodStoveAlt": "Wood stove heating",
+      "studyAreaAlt": "Study area",
+      "familyMomentAlt": "Family moment"
     }
   },
   "donate": {

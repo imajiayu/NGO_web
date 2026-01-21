@@ -1,0 +1,119 @@
+{
+  "title": "Aid for a Single Mother of 8 Near the Frontline",
+  "subtitle": "One mother's courage — raising 8 children alone while holding onto love and hope amidst war",
+  "location": "Mykolaivka, Eastern Ukraine",
+  "images": [
+    "/images/projects/project-4/details/family-portrait.webp",
+    "/images/projects/project-4/details/children-together.webp",
+    "/images/projects/project-4/details/girl-katya-1.webp"
+  ],
+  "introduction": [
+    "In the village of Mykolaivka in Eastern Ukraine lives a family filled with love and resilience. Mother Oksana raises 8 children alone — 4 biological and 4 adopted from an orphanage years ago. She has organized this family with love, ensuring every child feels needed and cherished.",
+    "Father Ihor served in the 92nd Separate Mechanized Brigade. He went missing at the front lines (actually killed in action). Because he is officially listed as 'missing' rather than 'killed,' the family cannot receive any government benefits.",
+    "This is their fourth home. Due to proximity to the front lines, they may need to relocate again at any moment. Basic necessities are covered, but the children's educational and developmental needs remain unmet."
+  ],
+  "highlights": [
+    { "number": "8", "label": "children", "detail": "4 biological + 4 adopted" },
+    { "number": "4", "label": "relocations", "detail": "forced by war" },
+    { "number": "0", "label": "pension", "detail": "due to 'missing' status" }
+  ],
+  "family": {
+    "mother": {
+      "name": "Oksana",
+      "nameOriginal": "Оксана",
+      "description": "Raising 8 children alone"
+    },
+    "father": {
+      "name": "Ihor",
+      "nameOriginal": "Ігор",
+      "description": "Missing at the front (no pension due to 'missing' status)"
+    },
+    "grandmother": {
+      "name": "Maria",
+      "nameOriginal": "Марія",
+      "description": "Lives nearby, supporting the family"
+    },
+    "childrenCount": {
+      "total": 8,
+      "biological": 4,
+      "adopted": 4,
+      "boys": 5,
+      "girls": 3
+    }
+  },
+  "children": {
+    "boys": [
+      { "name": "Andrii", "nameOriginal": "Андрій" },
+      { "name": "Pavlo", "nameOriginal": "Павло" },
+      { "name": "Mykyta", "nameOriginal": "Микита" },
+      { "name": "Serhii", "nameOriginal": "Сергій" },
+      { "name": "Oleksii", "nameOriginal": "Олексій" }
+    ],
+    "girls": [
+      { "name": "Katya (eldest)", "nameOriginal": "Катя" },
+      { "name": "Mariyka", "nameOriginal": "Марійка" },
+      { "name": "Sofia", "nameOriginal": "Софія" }
+    ]
+  },
+  "livingConditions": {
+    "title": "Living Conditions",
+    "description": "The 5 boys share one room with bunk beds, while the 3 girls share another. Despite limited space, each child has found their own little corner.",
+    "images": [
+      "/images/projects/project-4/details/wood-stove.webp",
+      "/images/projects/project-4/details/desk.webp"
+    ],
+    "points": [
+      "Basic survival needs are met (food, hygiene supplies provided)",
+      "Heated with firewood, delivered regularly",
+      "House needs repairs but they cannot afford them",
+      "Uncertain how long they can stay due to proximity to front lines"
+    ]
+  },
+  "childrenTalents": {
+    "title": "Children's Talents",
+    "description": "The children are very talented, especially in drawing. Mother Oksana herself is creative and always encourages and supports the children's interests.",
+    "talents": [
+      { "activity": "Drawing & Art", "image": "/images/projects/project-4/details/girl-sofia-drawing.webp" },
+      { "activity": "Reading", "image": "/images/projects/project-4/details/boy-reading.webp" },
+      { "activity": "Crafts", "image": "/images/projects/project-4/details/girl-mariyka-desk.webp" }
+    ],
+    "artworkImage": "/images/projects/project-4/details/artwork-closet.webp"
+  },
+  "adoptionStory": {
+    "title": "The Adoption Story",
+    "content": "A few years ago, during a visit to an orphanage, mother Oksana decided to give those children a real family. All adopted children have found safety in this home, gaining love and a sense of belonging. She has organized family life remarkably well, ensuring every child feels needed and happy."
+  },
+  "fruitWishes": {
+    "title": "Longing for Fruit",
+    "description": "When asked if they wanted fresh fruit, the children's eyes lit up immediately. They most want:",
+    "fruits": ["Oranges/tangerines", "Bananas", "Pears"]
+  },
+  "whyGifts": {
+    "title": "Why Aid These Supplies",
+    "causeLabel": "Situation",
+    "effectLabel": "Therefore",
+    "reasons": [
+      "Basic needs (food, heating) are already covered",
+      "Near the front lines with unstable housing",
+      "Long-term investments not practical (repairs, appliances)",
+      "Books, educational toys, and learning materials are most needed",
+      "Helps children preserve their childhood despite war"
+    ],
+    "conclusion": "This is the most practical and meaningful way to help."
+  },
+  "familyGallery": {
+    "images": [
+      { "url": "/images/projects/project-4/details/mother-daughter-cooking.webp", "priority": "high" },
+      { "url": "/images/projects/project-4/details/girl-katya-2.webp", "priority": "medium" },
+      { "url": "/images/projects/project-4/details/boy-blocks-1.webp", "priority": "medium" },
+      { "url": "/images/projects/project-4/details/boy-blocks-2.webp", "priority": "low" },
+      { "url": "/images/projects/project-4/details/boy-drawing.webp", "priority": "low" },
+      { "url": "/images/projects/project-4/details/boy-toy.webp", "priority": "low" }
+    ]
+  },
+  "callToAction": {
+    "title": "They Are Waiting to Be Seen",
+    "content": "This family lost their father, has been forced to relocate multiple times, has extremely limited resources, yet still holds onto love, dignity, unity, and hope for the future. Their strength comes from mutual respect, talent and creativity, and strong family bonds.",
+    "closing": "These 8 children - 4 biological, 4 adopted - are all waiting for a future where they are seen, remembered, and treated with kindness."
+  }
+}

@@ -228,6 +228,26 @@
       "momentsOfJoyDesc": "Діти отримують подарунки",
       "heroImageAlt": "Різдвяна програма подарунків",
       "receiptImageAlt": "Квитанція {number}"
+    },
+    "project4": {
+      "defaultTitle": "Підтримка родини з Миколаївки",
+      "familySupport": "Підтримка родини",
+      "heroImageAlt": "Проект підтримки родини",
+      "familyMembers": "Члени родини",
+      "mother": "Мати",
+      "father": "Батько",
+      "grandmother": "Бабуся",
+      "boys": "Хлопчики",
+      "girls": "Дівчата",
+      "categoryToys": "Іграшки",
+      "categoryBooks": "Книги",
+      "categoryEducational": "Освітні",
+      "categoryFurniture": "Меблі",
+      "categoryFood": "Їжа",
+      "artworkCollectionAlt": "Колекція творчих робіт",
+      "woodStoveAlt": "Опалення дровами",
+      "studyAreaAlt": "Навчальна зона",
+      "familyMomentAlt": "Родинний момент"
     }
   },
   "donate": {

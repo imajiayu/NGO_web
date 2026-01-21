@@ -228,6 +228,26 @@
       "momentsOfJoyDesc": "孩子们收到礼物",
       "heroImageAlt": "圣诞礼物项目",
       "receiptImageAlt": "收据 {number}"
+    },
+    "project4": {
+      "defaultTitle": "米科拉伊夫卡家庭援助",
+      "familySupport": "家庭援助",
+      "heroImageAlt": "家庭援助项目",
+      "familyMembers": "家庭成员",
+      "mother": "母亲",
+      "father": "父亲",
+      "grandmother": "祖母",
+      "boys": "男孩",
+      "girls": "女孩",
+      "categoryToys": "玩具",
+      "categoryBooks": "书籍",
+      "categoryEducational": "教育",
+      "categoryFurniture": "家具",
+      "categoryFood": "食品",
+      "artworkCollectionAlt": "艺术作品集",
+      "woodStoveAlt": "柴火炉取暖",
+      "studyAreaAlt": "学习区域",
+      "familyMomentAlt": "家庭时刻"
     }
   },
   "donate": {

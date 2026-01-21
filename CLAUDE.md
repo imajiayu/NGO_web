@@ -156,7 +156,9 @@ NGO_web/
 │   ├── i18n-utils.ts             # 国际化工具
 │   └── hooks/                    # 自定义 React Hooks
 ├── messages/                     # 翻译文件 (en/zh/ua)
-├── public/content/projects/      # 项目内容 JSON
+├── public/
+│   ├── content/projects/         # 项目内容 JSON (project-X-{locale}.json)
+│   └── images/projects/          # 项目图片 (project-X/)
 ├── types/                        # TypeScript 类型
 ├── supabase/migrations/          # 1 个 baseline 迁移文件 (20260109000000_baseline.sql)
 └── docs/DATABASE_SCHEMA.md       # 数据库架构文档
@@ -236,7 +238,20 @@ MissionSection, ApproachSection, ImpactSection, DonationJourneySection, Complian
 
 **共享组件** (`shared/`): ProjectProgressBar, ProjectProgressSection, ProjectResultsMasonry
 
-**详情页** (`detail-pages/`): Project0, Project3
+**项目详情页** (`detail-pages/`):
+
+每个项目由三部分组成：
+
+| 项目 | 组件目录 | 内容 JSON | 图片目录 |
+|------|----------|-----------|----------|
+| Project0 | `detail-pages/Project0/` | `public/content/projects/project-0-{en,zh,ua}.json` | `public/images/projects/project-0/` |
+| Project3 | `detail-pages/Project3/` | `public/content/projects/project-3-{en,zh,ua}.json` | `public/images/projects/project-3/` |
+| Project4 | `detail-pages/Project4/` | `public/content/projects/project-4-{en,zh,ua}.json` | `public/images/projects/project-4/` |
+
+组件目录结构：
+- `index.tsx` - 主组件入口
+- `types.ts` - 类型定义
+- `sections/` - 区块组件
 
 ### 捐赠表单组件 (`components/donate-form/`)
 
@@ -496,5 +511,5 @@ getTranslatedText(project.project_name_i18n, locale, fallback)
 
 ---
 
-**文档版本**: 2.4.1
-**最后更新**: 2026-01-10
+**文档版本**: 2.4.2
+**最后更新**: 2026-01-21

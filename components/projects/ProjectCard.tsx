@@ -82,28 +82,33 @@ export default function ProjectCard({
         type="button"
         onClick={handleSelectClick}
         className={`
-          group flex-shrink-0 w-64 h-fit bg-white rounded-2xl border-2 overflow-hidden
-          transition-[border-color,transform,box-shadow] duration-300 relative bg-cover bg-center bg-no-repeat
-          touch-manipulation select-none
+          group flex-shrink-0 w-64 h-fit rounded-2xl border-2 overflow-hidden
+          transition-[border-color,transform,box-shadow] duration-300 relative
+          touch-manipulation select-none shadow-lg bg-[#1a1a1a]
           ${isSelected
-            ? 'border-ukraine-blue-500 bg-ukraine-blue-50 scale-105'
-            : 'border-gray-200 [@media(hover:hover)]:hover:border-ukraine-blue-400 active:border-ukraine-blue-400'
+            ? 'border-ukraine-gold-400 scale-105 shadow-ukraine-gold-500/30'
+            : 'border-white/20 [@media(hover:hover)]:hover:border-ukraine-gold-400/60 active:border-ukraine-gold-400/60'
           }
         `}
-        style={{
-          backgroundImage: `url(/images/projects/project-${project.id}/card/bg.webp)`,
-          backgroundColor: 'white'
-        }}
       >
-        {/* Semi-transparent overlay for the entire card */}
-        <div className="absolute inset-0 bg-white/75 backdrop-blur-[2px]"></div>
+        {/* Background image container - inside border */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url(/images/projects/project-${project.id}/card/bg.webp)`,
+            backgroundColor: '#1a1a1a'
+          }}
+        />
+        {/* Light overlay + Gradient for contrast */}
+        <div className="absolute inset-0 bg-white/15" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-black/20" />
 
         {/* Content wrapper */}
         <div className="relative z-10 h-fit">
           {/* Header with Tags - Always Visible */}
           <div className={`
             p-4 border-b transition-colors
-            ${isSelected ? 'bg-gradient-to-br from-ukraine-blue-100/80 to-ukraine-blue-50/80 border-ukraine-blue-200' : 'bg-gradient-to-br from-ukraine-blue-50/80 to-white/80 border-gray-100'}
+            ${isSelected ? 'bg-black/30 backdrop-blur-md border-ukraine-gold-400/50' : 'bg-black/20 backdrop-blur-sm border-white/10'}
           `}>
             <div className="flex items-start justify-between gap-2 mb-2">
               <div className="flex items-start gap-2 flex-wrap">
@@ -126,46 +131,46 @@ export default function ProjectCard({
 
             <h3 className={`
               text-base font-bold leading-tight line-clamp-2 min-h-[2.5em] text-left font-display
-              ${isSelected ? 'text-ukraine-blue-900' : 'text-gray-900 group-hover:text-ukraine-blue-500'}
-              transition-colors
+              ${isSelected ? 'text-ukraine-gold-300' : 'text-white group-hover:text-ukraine-gold-300'}
+              transition-colors drop-shadow-md
             `}>
               {projectName}
             </h3>
           </div>
 
-          {/* Details - Animated collapse with padding transition (Safari fix) */}
+          {/* Details - Animated collapse */}
           <div
             className="overflow-hidden px-4"
             style={{
               maxHeight: shouldExpandDetails ? '500px' : '0px',
-              paddingTop: shouldExpandDetails ? '12px' : '0px',
+              paddingTop: shouldExpandDetails ? '8px' : '0px',
               paddingBottom: shouldExpandDetails ? '16px' : '0px',
               opacity: shouldExpandDetails ? 1 : 0,
               transition: 'max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease',
             }}
           >
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               {/* Location */}
               <div className="flex items-start gap-2">
-                <svg className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-white/80 mt-0.5 flex-shrink-0 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span className="text-sm text-gray-700 text-left">{location}</span>
+                <span className="text-sm text-white font-medium text-left px-2 py-0.5 bg-black/20 backdrop-blur-sm rounded shadow-md">{location}</span>
               </div>
 
               {/* Unit Price or Flexible Amount */}
               <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-white/80 flex-shrink-0 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 {project.aggregate_donations ? (
-                  <span className="text-sm font-semibold text-ukraine-gold-600 text-left">
+                  <span className="text-sm font-semibold text-ukraine-gold-300 text-left px-2 py-0.5 bg-black/20 backdrop-blur-sm rounded shadow-md">
                     {t('anyAmount')}
                   </span>
                 ) : (
-                  <span className="text-sm text-gray-700 text-left">
-                    <span className="font-semibold text-gray-900 font-data">${(project.unit_price || 0).toFixed(2)}</span>
+                  <span className="text-sm text-white font-medium text-left px-2 py-0.5 bg-black/20 backdrop-blur-sm rounded shadow-md">
+                    <span className="font-semibold font-data">${(project.unit_price || 0).toFixed(2)}</span>
                     {' '}{t('perUnit', { unitName })}
                   </span>
                 )}
@@ -173,64 +178,64 @@ export default function ProjectCard({
 
               {/* Start Date */}
               <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-white/80 flex-shrink-0 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <span className="text-sm text-gray-700 text-left">
-                  {t('startDate')}: <span className="font-medium">{formatDate(project.start_date, locale as SupportedLocale)}</span>
+                <span className="text-sm text-white font-medium text-left px-2 py-0.5 bg-black/20 backdrop-blur-sm rounded shadow-md">
+                  {t('startDate')}: {formatDate(project.start_date, locale as SupportedLocale)}
                 </span>
               </div>
 
               {/* End Date - Only show for fixed-term projects */}
               {project.is_long_term !== true && (
                 <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-white/80 flex-shrink-0 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                   </svg>
-                  <span className="text-sm text-gray-700 text-left">
-                    {t('endDate')}: <span className="font-medium">{formatDate(project.end_date, locale as SupportedLocale)}</span>
+                  <span className="text-sm text-white font-medium text-left px-2 py-0.5 bg-black/20 backdrop-blur-sm rounded shadow-md">
+                    {t('endDate')}: {formatDate(project.end_date, locale as SupportedLocale)}
                   </span>
                 </div>
               )}
 
               {/* Funding Information */}
-              <div className="pt-2 border-t border-gray-100">
+              <div className="pt-2">
                 {/* Show current units for long-term NON-aggregated projects */}
                 {project.is_long_term === true && !project.aggregate_donations && (
                   <div className="flex justify-between items-baseline text-xs mb-1">
-                    <span className="text-gray-500">{t('currentUnits')}</span>
-                    <span className="font-data font-bold text-ukraine-gold-600 tabular-nums">
-                      {currentUnits} <span className="font-normal text-gray-400">{unitName}</span>
+                    <span className="text-white/80 px-2 py-0.5 bg-black/20 backdrop-blur-sm rounded shadow-md">{t('currentUnits')}</span>
+                    <span className="font-data font-bold text-ukraine-gold-300 tabular-nums px-2 py-0.5 bg-black/20 backdrop-blur-sm rounded shadow-md">
+                      {currentUnits} <span className="font-normal text-white/70">{unitName}</span>
                     </span>
                   </div>
                 )}
 
-                {/* Stats - Enhanced card for long-term projects (to fill space), compact for others */}
+                {/* Stats */}
                 {project.is_long_term === true ? (
-                  // Long-term: Larger stats card to compensate for missing end date + progress bar
-                  <div className="bg-gradient-to-br from-ukraine-gold-50 to-ukraine-gold-100/50 -mx-1.5 px-3 py-3 rounded-xl border border-ukraine-gold-200/60 shadow-sm">
+                  // Long-term: Larger stats card
+                  <div className="bg-black/25 backdrop-blur-md px-3 py-3 rounded-xl shadow-lg">
                     <div className="flex justify-between items-center">
                       <div className="flex flex-col">
-                        <span className="font-data text-2xl font-bold text-ukraine-gold-600 tabular-nums">{project.donation_count || 0}</span>
-                        <span className="text-xs text-gray-500">{t('donations')}</span>
+                        <span className="font-data text-2xl font-bold text-ukraine-gold-300 tabular-nums drop-shadow-md">{project.donation_count || 0}</span>
+                        <span className="text-xs text-white/80">{t('donations')}</span>
                       </div>
                       <div className="text-right flex flex-col">
-                        <span className="font-data text-2xl font-bold text-ukraine-gold-600 tabular-nums tracking-tight">
+                        <span className="font-data text-2xl font-bold text-ukraine-gold-300 tabular-nums tracking-tight drop-shadow-md">
                           ${(project.total_raised || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
-                        <span className="text-xs text-gray-500">{t('raised')}</span>
+                        <span className="text-xs text-white/80">{t('raised')}</span>
                       </div>
                     </div>
                   </div>
                 ) : (
                   // Fixed-term: Compact stats row
-                  <div className="flex justify-between items-center bg-gradient-to-r from-ukraine-gold-50 via-ukraine-gold-50/50 to-transparent -mx-1.5 px-2 py-1.5 rounded-lg border border-ukraine-gold-100/50 mb-1">
+                  <div className="flex justify-between items-center bg-black/25 backdrop-blur-md px-2 py-1.5 rounded-lg shadow-lg mb-1">
                     <div className="flex items-baseline gap-1">
-                      <span className="font-data text-lg font-bold text-ukraine-gold-600 tabular-nums">{project.donation_count || 0}</span>
-                      <span className="text-xs text-gray-500">{t('donations')}</span>
+                      <span className="font-data text-lg font-bold text-ukraine-gold-300 tabular-nums drop-shadow-md">{project.donation_count || 0}</span>
+                      <span className="text-xs text-white/80">{t('donations')}</span>
                     </div>
                     <div className="text-right">
-                      <span className="font-data text-lg font-bold text-ukraine-gold-600 tabular-nums tracking-tight">
+                      <span className="font-data text-lg font-bold text-ukraine-gold-300 tabular-nums tracking-tight drop-shadow-md">
                         ${(project.total_raised || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </span>
                     </div>
@@ -263,19 +268,23 @@ export default function ProjectCard({
     <>
       <GlobalLoadingSpinner isLoading={isNavigating} />
       <div
-        className="group flex-shrink-0 w-80 bg-white rounded-2xl border-2 border-gray-200 hover:border-ukraine-blue-500 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden relative bg-cover bg-center bg-no-repeat flex flex-col"
+        className="group flex-shrink-0 w-80 rounded-2xl border-2 border-white/20 hover:border-ukraine-gold-400/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden relative flex flex-col shadow-lg bg-[#1a1a1a]"
+      >
+      {/* Background image container - inside border */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url(/images/projects/project-${project.id}/card/bg.webp)`,
-          backgroundColor: 'white'
+          backgroundColor: '#1a1a1a'
         }}
-      >
-      {/* Semi-transparent overlay for the entire card */}
-      <div className="absolute inset-0 bg-white/75 backdrop-blur-[2px]"></div>
+      />
+      {/* Gradient overlay for contrast */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/40 to-black/25" />
 
       {/* Content wrapper */}
       <div className="relative z-10 flex flex-col h-full">
         {/* Header with Tags */}
-        <div className="p-5 border-b border-gray-100 bg-gradient-to-br from-ukraine-blue-50/80 to-white/80">
+        <div className="p-5 border-b border-white/10 bg-black/20 backdrop-blur-sm">
           <div className="flex items-start justify-between gap-2 mb-3">
             {/* Status Badge */}
             <ProjectStatusBadge status={project.status || 'active'} />
@@ -284,7 +293,7 @@ export default function ProjectCard({
             {project.is_long_term === true && <LongTermBadge />}
           </div>
 
-          <h3 className="text-lg font-bold text-gray-900 leading-tight line-clamp-2 min-h-[2.5em] group-hover:text-ukraine-blue-500 transition-colors font-display">
+          <h3 className="text-lg font-bold text-white leading-tight line-clamp-2 min-h-[2.5em] group-hover:text-ukraine-gold-300 transition-colors font-display drop-shadow-md">
             {projectName}
           </h3>
         </div>
@@ -293,25 +302,25 @@ export default function ProjectCard({
         <div className="p-5 space-y-3 flex-grow">
           {/* Location */}
           <div className="flex items-start gap-2">
-            <svg className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-white/80 mt-0.5 flex-shrink-0 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span className="text-sm text-gray-700">{location}</span>
+            <span className="text-sm text-white font-medium px-2 py-1 bg-black/20 backdrop-blur-sm rounded shadow-md">{location}</span>
           </div>
 
           {/* Unit Price or Flexible Amount */}
           <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-white/80 flex-shrink-0 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             {project.aggregate_donations ? (
-              <span className="text-sm font-semibold text-ukraine-gold-600">
+              <span className="text-sm font-semibold text-ukraine-gold-300 px-2 py-1 bg-black/20 backdrop-blur-sm rounded shadow-md">
                 {t('anyAmount')}
               </span>
             ) : (
-              <span className="text-sm text-gray-700">
-                <span className="font-semibold text-gray-900 font-data">${(project.unit_price || 0).toFixed(2)}</span>
+              <span className="text-sm text-white font-medium px-2 py-1 bg-black/20 backdrop-blur-sm rounded shadow-md">
+                <span className="font-semibold font-data">${(project.unit_price || 0).toFixed(2)}</span>
                 {' '}{t('perUnit', { unitName })}
               </span>
             )}
@@ -319,65 +328,65 @@ export default function ProjectCard({
 
           {/* Start Date */}
           <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-white/80 flex-shrink-0 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <span className="text-sm text-gray-700">
-              {t('startDate')}: <span className="font-medium">{formatDate(project.start_date, locale as SupportedLocale)}</span>
+            <span className="text-sm text-white font-medium px-2 py-1 bg-black/20 backdrop-blur-sm rounded shadow-md">
+              {t('startDate')}: {formatDate(project.start_date, locale as SupportedLocale)}
             </span>
           </div>
 
           {/* End Date - Only show for fixed-term projects */}
           {project.is_long_term !== true && (
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-white/80 flex-shrink-0 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
               </svg>
-              <span className="text-sm text-gray-700">
-                {t('endDate')}: <span className="font-medium">{formatDate(project.end_date, locale as SupportedLocale)}</span>
+              <span className="text-sm text-white font-medium px-2 py-1 bg-black/20 backdrop-blur-sm rounded shadow-md">
+                {t('endDate')}: {formatDate(project.end_date, locale as SupportedLocale)}
               </span>
             </div>
           )}
 
           {/* Funding Information */}
-          <div className="pt-3 border-t border-gray-100">
+          <div className="pt-3">
             {/* Show current units for long-term NON-aggregated projects */}
             {project.is_long_term === true && !project.aggregate_donations && (
               <div className="flex justify-between items-baseline text-sm mb-2">
-                <span className="text-gray-500">{t('currentUnits')}</span>
-                <span className="font-data font-bold text-ukraine-gold-600 tabular-nums">
-                  {currentUnits} <span className="font-normal text-gray-400">{unitName}</span>
+                <span className="text-white/80 px-2 py-1 bg-black/20 backdrop-blur-sm rounded shadow-md">{t('currentUnits')}</span>
+                <span className="font-data font-bold text-ukraine-gold-300 tabular-nums px-2 py-1 bg-black/20 backdrop-blur-sm rounded shadow-md">
+                  {currentUnits} <span className="font-normal text-white/80">{unitName}</span>
                 </span>
               </div>
             )}
 
             {/* Stats - Enhanced card for long-term projects (to fill space), compact for others */}
             {project.is_long_term === true ? (
-              // Long-term: Larger stats card to compensate for missing end date + progress bar
-              <div className="bg-gradient-to-br from-ukraine-gold-50 to-ukraine-gold-100/50 -mx-1.5 px-4 py-4 rounded-xl border border-ukraine-gold-200/60 shadow-sm">
+              // Long-term: Larger stats card
+              <div className="bg-black/25 backdrop-blur-md px-4 py-4 rounded-xl shadow-lg">
                 <div className="flex justify-between items-center">
                   <div className="flex flex-col">
-                    <span className="font-data text-3xl font-bold text-ukraine-gold-600 tabular-nums">{project.donation_count || 0}</span>
-                    <span className="text-sm text-gray-500">{t('donations')}</span>
+                    <span className="font-data text-3xl font-bold text-ukraine-gold-300 tabular-nums drop-shadow-md">{project.donation_count || 0}</span>
+                    <span className="text-sm text-white/80">{t('donations')}</span>
                   </div>
                   <div className="text-right flex flex-col">
-                    <span className="font-data text-3xl font-bold text-ukraine-gold-600 tabular-nums tracking-tight">
+                    <span className="font-data text-3xl font-bold text-ukraine-gold-300 tabular-nums tracking-tight drop-shadow-md">
                       ${(project.total_raised || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
-                    <span className="text-sm text-gray-500">{t('raised')}</span>
+                    <span className="text-sm text-white/80">{t('raised')}</span>
                   </div>
                 </div>
               </div>
             ) : (
               // Fixed-term: Compact stats row + progress bar
               <>
-                <div className="flex justify-between items-center bg-gradient-to-r from-ukraine-gold-50 via-ukraine-gold-50/50 to-transparent -mx-1.5 px-2 py-2 rounded-lg border border-ukraine-gold-100/50">
+                <div className="flex justify-between items-center bg-black/25 backdrop-blur-md px-3 py-2 rounded-lg shadow-lg">
                   <div className="flex items-baseline gap-1">
-                    <span className="font-data text-xl font-bold text-ukraine-gold-600 tabular-nums">{project.donation_count || 0}</span>
-                    <span className="text-sm text-gray-500">{t('donations')}</span>
+                    <span className="font-data text-xl font-bold text-ukraine-gold-300 tabular-nums drop-shadow-md">{project.donation_count || 0}</span>
+                    <span className="text-sm text-white/80">{t('donations')}</span>
                   </div>
                   <div className="text-right">
-                    <span className="font-data text-xl font-bold text-ukraine-gold-600 tabular-nums tracking-tight">
+                    <span className="font-data text-xl font-bold text-ukraine-gold-300 tabular-nums tracking-tight drop-shadow-md">
                       ${(project.total_raised || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                   </div>

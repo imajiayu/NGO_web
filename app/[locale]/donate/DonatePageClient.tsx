@@ -9,6 +9,7 @@ import ProjectsGallery from '@/components/projects/ProjectsGallery'
 import {
   Project0DetailContent,
   Project3DetailContent,
+  Project4DetailContent,
 } from '@/components/projects/detail-pages'
 import DonationFormCard from '@/components/donate-form/DonationFormCard'
 import DonationStatusFlow from '@/components/donation-display/DonationStatusFlow'
@@ -43,6 +44,8 @@ function renderProjectDetail(
       return <Project0DetailContent key={key} project={project} locale={locale} />
     case 3:
       return <Project3DetailContent key={key} project={project} locale={locale} />
+    case 4:
+      return <Project4DetailContent key={key} project={project} locale={locale} />
     default:
       // Fallback for projects without dedicated detail pages
       return (
