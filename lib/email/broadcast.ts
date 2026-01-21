@@ -57,51 +57,54 @@ export async function sendBroadcastEmail(
   let failureCount = 0
   const errors: Array<{ email: string; error: string }> = []
 
-  // 批量发送邮件（每批最多 50 个收件人）
-  const batches: string[][] = []
-  for (let i = 0; i < recipients.length; i += 50) {
-    batches.push(recipients.slice(i, i + 50))
-  }
+  // 串行发送邮件，每封之间添加延迟避免 Resend rate limit (3 req/s)
+  // 使用 500ms 延迟确保稳定性
+  const DELAY_BETWEEN_EMAILS_MS = 500
 
-  for (const batch of batches) {
-    const results = await Promise.allSettled(
-      batch.map(async (email) => {
-        // 为每个收件人生成唯一的取消订阅链接
-        const unsubscribeUrl = `${appUrl}/api/unsubscribe?email=${encodeURIComponent(email)}&locale=${locale}`
+  for (let i = 0; i < recipients.length; i++) {
+    const email = recipients[i]
 
-        // 替换模板变量
-        const personalizedVariables = {
-          ...defaultVariables,
-          unsubscribe_url: unsubscribeUrl,
-        }
-        const personalizedHtml = replaceTemplateVariables(htmlContent, personalizedVariables)
+    try {
+      // 为每个收件人生成唯一的取消订阅链接
+      const unsubscribeUrl = `${appUrl}/api/unsubscribe?email=${encodeURIComponent(email)}&locale=${locale}`
 
-        // 发送邮件（群发使用专用地址，未配置时回退到默认地址）
-        return resend.emails.send({
-          from: process.env.RESEND_BROADCAST_FROM_EMAIL || process.env.RESEND_FROM_EMAIL!,
-          to: email,
-          subject: subject,
-          html: personalizedHtml,
-          headers: {
-            'List-Unsubscribe': `<${unsubscribeUrl}>`,
-            'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-          },
-        })
-      })
-    )
-
-    // 统计结果
-    results.forEach((result, index) => {
-      if (result.status === 'fulfilled') {
-        successCount++
-      } else {
-        failureCount++
-        errors.push({
-          email: batch[index],
-          error: result.reason?.message || 'Unknown error',
-        })
+      // 替换模板变量
+      const personalizedVariables = {
+        ...defaultVariables,
+        unsubscribe_url: unsubscribeUrl,
       }
-    })
+      const personalizedHtml = replaceTemplateVariables(htmlContent, personalizedVariables)
+
+      // 发送邮件（群发使用专用地址，未配置时回退到默认地址）
+      const { data, error } = await resend.emails.send({
+        from: process.env.RESEND_BROADCAST_FROM_EMAIL || process.env.RESEND_FROM_EMAIL!,
+        to: email,
+        subject: subject,
+        html: personalizedHtml,
+        headers: {
+          'List-Unsubscribe': `<${unsubscribeUrl}>`,
+          'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        },
+      })
+
+      // Resend SDK 不会 reject，而是返回 { data, error }
+      if (error) {
+        throw new Error(error.message)
+      }
+
+      successCount++
+      logger.info('EMAIL', `Broadcast email sent (${i + 1}/${recipients.length})`, { email })
+    } catch (err) {
+      failureCount++
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error'
+      errors.push({ email, error: errorMessage })
+      logger.error('EMAIL', `Failed to send broadcast email to ${email}`, { error: errorMessage })
+    }
+
+    // 添加延迟（最后一封不需要）
+    if (i < recipients.length - 1) {
+      await new Promise((resolve) => setTimeout(resolve, DELAY_BETWEEN_EMAILS_MS))
+    }
   }
 
   // 打印错误日志（如果有）
