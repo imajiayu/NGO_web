@@ -36,6 +36,7 @@ export interface AidListData {
     totalCost: { uah: number; usd: number }
   }
   exchangeRateNote?: string
+  note?: string
   receipts?: {
     description: string
     images: string[]

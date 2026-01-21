@@ -176,6 +176,13 @@ export default function AidListSection({ aidData, locale, onReceiptClick }: AidL
               <span className="italic">{aidData.exchangeRateNote}</span>
             </div>
           )}
+
+          {/* Note about remaining donations */}
+          {aidData.note && (
+            <div className="mt-2 text-xs text-gray-600 italic">
+              {aidData.note}
+            </div>
+          )}
         </section>
 
         {/* Receipts - matching Project3 style */}

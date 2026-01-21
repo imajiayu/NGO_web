@@ -29,6 +29,7 @@ export interface TemplateContent {
 // 模板定义
 import project0Ongoing from './broadcast/project0-ongoing'
 import project3Completed from './broadcast/project3-completed'
+import project4Ongoing from './broadcast/project4-ongoing'
 
 // HTML 内容（通过 webpack asset/source 导入）
 import project0OngoingEn from './content/project0-ongoing/en.html'
@@ -37,11 +38,15 @@ import project0OngoingUa from './content/project0-ongoing/ua.html'
 import project3CompletedEn from './content/project3-completed/en.html'
 import project3CompletedZh from './content/project3-completed/zh.html'
 import project3CompletedUa from './content/project3-completed/ua.html'
+import project4OngoingEn from './content/project4-ongoing/en.html'
+import project4OngoingZh from './content/project4-ongoing/zh.html'
+import project4OngoingUa from './content/project4-ongoing/ua.html'
 import { logger } from '@/lib/logger'
 
 const REGISTERED_TEMPLATES: EmailTemplate[] = [
   project0Ongoing,
   project3Completed,
+  project4Ongoing,
 ]
 
 // 静态内容映射
@@ -55,6 +60,11 @@ const TEMPLATE_CONTENTS: Record<string, TemplateContent> = {
     en: project3CompletedEn,
     zh: project3CompletedZh,
     ua: project3CompletedUa,
+  },
+  'project4-ongoing': {
+    en: project4OngoingEn,
+    zh: project4OngoingZh,
+    ua: project4OngoingUa,
   },
 }
 

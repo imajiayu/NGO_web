@@ -76,9 +76,9 @@ export async function sendBroadcastEmail(
         }
         const personalizedHtml = replaceTemplateVariables(htmlContent, personalizedVariables)
 
-        // 发送邮件
+        // 发送邮件（群发使用专用地址，未配置时回退到默认地址）
         return resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL!,
+          from: process.env.RESEND_BROADCAST_FROM_EMAIL || process.env.RESEND_FROM_EMAIL!,
           to: email,
           subject: subject,
           html: personalizedHtml,
