@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 import { useRouter, usePathname } from '@/i18n/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import type { ProjectStats } from '@/types'
 import { getProjectName, getLocation, getUnitName, formatDate, type SupportedLocale } from '@/lib/i18n-utils'
 import ProjectProgressBar from './shared/ProjectProgressBar'
@@ -57,16 +57,18 @@ export default function ProjectCard({
   const location = getLocation(project.location_i18n, project.location, locale as SupportedLocale)
   const unitName = getUnitName(project.unit_name_i18n, project.unit_name, locale as SupportedLocale)
 
-  const handleDonateClick = () => {
+  // P2 优化: useCallback 避免不必要的重渲染
+  const handleDonateClick = useCallback(() => {
     setIsNavigating(true)
     router.push(`/donate?project=${project.id}`)
-  }
+  }, [router, project.id])
 
-  const handleSelectClick = () => {
+  // P2 优化: useCallback 避免不必要的重渲染
+  const handleSelectClick = useCallback(() => {
     if (project.id !== null && project.id !== undefined && onSelect) {
       onSelect(project.id)
     }
-  }
+  }, [project.id, onSelect])
 
   // Calculate totals using unit count
   const currentUnits = project.current_units ?? 0

@@ -438,18 +438,15 @@ export default function DonationFormCard({
       setPaymentParams(result.paymentParams!)
       setProcessingState('ready')
 
-      // Handle newsletter subscription if checked
+      // P2 优化: Fire-and-forget 模式 - 邮件订阅不阻塞支付流程
+      // 订阅失败不影响支付成功，无需等待
       if (subscribeToNewsletter && donorEmail) {
-        try {
-          await createEmailSubscription(
-            donorEmail.trim(),
-            locale as 'en' | 'zh' | 'ua'
-          )
-          // Silently succeed - don't show error to user if subscription fails
-        } catch (subscriptionError) {
+        createEmailSubscription(
+          donorEmail.trim(),
+          locale as 'en' | 'zh' | 'ua'
+        ).catch(subscriptionError => {
           clientLogger.error('FORM:DONATION', 'Failed to create email subscription', { error: subscriptionError instanceof Error ? subscriptionError.message : String(subscriptionError) })
-          // Don't block the donation flow if subscription fails
-        }
+        })
       }
     } catch (err) {
       clientLogger.error('FORM:DONATION', 'Error creating payment intent', { error: err instanceof Error ? err.message : String(err) })
@@ -532,16 +529,15 @@ export default function DonationFormCard({
       setProcessingState('crypto_ready')
       setIsCryptoLoading(false)
 
-      // Handle newsletter subscription if checked
+      // P2 优化: Fire-and-forget 模式 - 邮件订阅不阻塞支付流程
+      // 订阅失败不影响支付成功，无需等待
       if (subscribeToNewsletter && donorEmail) {
-        try {
-          await createEmailSubscription(
-            donorEmail.trim(),
-            locale as 'en' | 'zh' | 'ua'
-          )
-        } catch (subscriptionError) {
+        createEmailSubscription(
+          donorEmail.trim(),
+          locale as 'en' | 'zh' | 'ua'
+        ).catch(subscriptionError => {
           clientLogger.error('FORM:DONATION', 'Failed to create email subscription', { error: subscriptionError instanceof Error ? subscriptionError.message : String(subscriptionError) })
-        }
+        })
       }
     } catch (err) {
       clientLogger.error('FORM:DONATION', 'Error creating crypto payment', { error: err instanceof Error ? err.message : String(err) })

@@ -73,15 +73,24 @@ export default function Project3DetailContent({ project, locale }: Project3Detai
     [suppliesData]
   )
 
-  const handleDetailImageClick = (index: number) => {
+  // P2 优化: useCallback 避免不必要的重渲染
+  const handleDetailImageClick = useCallback((index: number) => {
     setDetailLightboxIndex(index)
     setDetailLightboxOpen(true)
-  }
+  }, [])
 
-  const handleReceiptClick = (index: number) => {
+  const handleReceiptClick = useCallback((index: number) => {
     setReceiptLightboxIndex(index)
     setReceiptLightboxOpen(true)
-  }
+  }, [])
+
+  const handleDetailLightboxClose = useCallback(() => {
+    setDetailLightboxOpen(false)
+  }, [])
+
+  const handleReceiptLightboxClose = useCallback(() => {
+    setReceiptLightboxOpen(false)
+  }, [])
 
   if (loading) {
     return (
@@ -239,7 +248,7 @@ export default function Project3DetailContent({ project, locale }: Project3Detai
           images={detailLightboxImages}
           initialIndex={detailLightboxIndex}
           isOpen={detailLightboxOpen}
-          onClose={() => setDetailLightboxOpen(false)}
+          onClose={handleDetailLightboxClose}
         />
       )}
       {receiptLightboxOpen && (
@@ -247,7 +256,7 @@ export default function Project3DetailContent({ project, locale }: Project3Detai
           images={receiptLightboxImages}
           initialIndex={receiptLightboxIndex}
           isOpen={receiptLightboxOpen}
-          onClose={() => setReceiptLightboxOpen(false)}
+          onClose={handleReceiptLightboxClose}
         />
       )}
     </div>

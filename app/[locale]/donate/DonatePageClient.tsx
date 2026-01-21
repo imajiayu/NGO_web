@@ -12,8 +12,17 @@ import {
   Project4DetailContent,
 } from '@/components/projects/detail-pages'
 import DonationFormCard from '@/components/donate-form/DonationFormCard'
-import DonationStatusFlow from '@/components/donation-display/DonationStatusFlow'
-import ProjectDonationList from '@/components/donation-display/ProjectDonationList'
+// P2 优化: 动态加载折叠区域组件（默认折叠，用户点击后才显示）
+const DonationStatusFlow = dynamic(
+  () => import('@/components/donation-display/DonationStatusFlow'),
+  { ssr: true }
+)
+
+// P2 优化: 动态加载页面底部组件（滚动后才可见）
+const ProjectDonationList = dynamic(
+  () => import('@/components/donation-display/ProjectDonationList'),
+  { ssr: true }
+)
 
 import { getProjectName, type SupportedLocale } from '@/lib/i18n-utils'
 

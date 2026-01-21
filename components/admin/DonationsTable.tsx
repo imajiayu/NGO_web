@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import type { Database } from '@/types/database'
 import DonationEditModal from './DonationEditModal'
 import BatchDonationEditModal from './BatchDonationEditModal'
@@ -45,37 +45,57 @@ export default function DonationsTable({ initialDonations, statusHistory }: Prop
     setShowBatchEdit(false)
   }
 
-  // 全选/取消全选
-  const handleSelectAll = (checked: boolean) => {
+  // Get unique projects for filter
+  const uniqueProjects = Array.from(
+    new Map(donations.map((d) => [d.project_id, d.projects])).entries()
+  ).map(([id, project]) => ({ id, name: project.project_name }))
+
+  // 过滤后的捐赠列表 - 移到 handlers 之前避免引用错误
+  const filteredDonations = useMemo(() => {
+    return donations.filter((d) => {
+      const matchesStatus = statusFilter === 'all' || d.donation_status === statusFilter
+      const matchesProject = projectFilter === 'all' || d.project_id === Number(projectFilter)
+      return matchesStatus && matchesProject
+    })
+  }, [donations, statusFilter, projectFilter])
+
+  // 全选/取消全选 - P2 优化: useCallback 避免不必要的重渲染
+  const handleSelectAll = useCallback((checked: boolean) => {
     if (checked) {
       const newSelected = new Set(filteredDonations.map(d => d.id))
       setSelectedIds(newSelected)
     } else {
       setSelectedIds(new Set())
     }
-  }
+  }, [filteredDonations])
 
-  // 单选
-  const handleSelectOne = (id: number, checked: boolean) => {
-    const newSelected = new Set(selectedIds)
-    if (checked) {
-      newSelected.add(id)
-    } else {
-      newSelected.delete(id)
-    }
-    setSelectedIds(newSelected)
-  }
+  // 单选 - P2 优化: useCallback + 函数式 setState
+  const handleSelectOne = useCallback((id: number, checked: boolean) => {
+    setSelectedIds(prev => {
+      const newSelected = new Set(prev)
+      if (checked) {
+        newSelected.add(id)
+      } else {
+        newSelected.delete(id)
+      }
+      return newSelected
+    })
+  }, [])
 
-  // Get unique projects for filter
-  const uniqueProjects = Array.from(
-    new Map(donations.map((d) => [d.project_id, d.projects])).entries()
-  ).map(([id, project]) => ({ id, name: project.project_name }))
-
-  const filteredDonations = donations.filter((d) => {
-    const matchesStatus = statusFilter === 'all' || d.donation_status === statusFilter
-    const matchesProject = projectFilter === 'all' || d.project_id === Number(projectFilter)
-    return matchesStatus && matchesProject
-  })
+  // 分组全选 - P2 优化: useCallback + 函数式 setState
+  const handleSelectGroup = useCallback((groupDonations: Donation[], checked: boolean) => {
+    setSelectedIds(prev => {
+      const newSelected = new Set(prev)
+      groupDonations.forEach(d => {
+        if (checked) {
+          newSelected.add(d.id)
+        } else {
+          newSelected.delete(d.id)
+        }
+      })
+      return newSelected
+    })
+  }, [])
 
   // 按 order_reference 分组
   const donationGroups = useMemo(() => {
@@ -256,17 +276,7 @@ export default function DonationsTable({ initialDonations, statusHistory }: Prop
                             input.indeterminate = someSelected
                           }
                         }}
-                        onChange={(e) => {
-                          const newSelected = new Set(selectedIds)
-                          group.donations.forEach(d => {
-                            if (e.target.checked) {
-                              newSelected.add(d.id)
-                            } else {
-                              newSelected.delete(d.id)
-                            }
-                          })
-                          setSelectedIds(newSelected)
-                        }}
+                        onChange={(e) => handleSelectGroup(group.donations, e.target.checked)}
                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                       />
                     </th>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { FadeInSection } from '@/components/projects/shared'
@@ -102,30 +102,38 @@ export default function Project4DetailContent({ project, locale }: Project4Detai
     [aidData]
   )
 
-  const handleDetailImageClick = (index: number) => {
+  // P2 优化: useCallback 避免不必要的重渲染
+  const handleDetailImageClick = useCallback((index: number) => {
     setDetailLightboxIndex(index)
     setDetailLightboxOpen(true)
-  }
+  }, [])
 
-  const handleGalleryImageClick = (index: number) => {
+  const handleGalleryImageClick = useCallback((index: number) => {
     setGalleryLightboxIndex(index)
     setGalleryLightboxOpen(true)
-  }
+  }, [])
 
-  const handleLivingConditionsImageClick = (index: number) => {
+  const handleLivingConditionsImageClick = useCallback((index: number) => {
     setLivingConditionsLightboxIndex(index)
     setLivingConditionsLightboxOpen(true)
-  }
+  }, [])
 
-  const handleTalentImageClick = (index: number) => {
+  const handleTalentImageClick = useCallback((index: number) => {
     setTalentLightboxIndex(index)
     setTalentLightboxOpen(true)
-  }
+  }, [])
 
-  const handleReceiptClick = (index: number) => {
+  const handleReceiptClick = useCallback((index: number) => {
     setReceiptLightboxIndex(index)
     setReceiptLightboxOpen(true)
-  }
+  }, [])
+
+  // Lightbox close handlers
+  const handleDetailLightboxClose = useCallback(() => setDetailLightboxOpen(false), [])
+  const handleGalleryLightboxClose = useCallback(() => setGalleryLightboxOpen(false), [])
+  const handleLivingConditionsLightboxClose = useCallback(() => setLivingConditionsLightboxOpen(false), [])
+  const handleTalentLightboxClose = useCallback(() => setTalentLightboxOpen(false), [])
+  const handleReceiptLightboxClose = useCallback(() => setReceiptLightboxOpen(false), [])
 
   if (loading) {
     return (
@@ -284,7 +292,7 @@ export default function Project4DetailContent({ project, locale }: Project4Detai
           images={detailLightboxImages}
           initialIndex={detailLightboxIndex}
           isOpen={detailLightboxOpen}
-          onClose={() => setDetailLightboxOpen(false)}
+          onClose={handleDetailLightboxClose}
         />
       )}
       {galleryLightboxOpen && (
@@ -292,7 +300,7 @@ export default function Project4DetailContent({ project, locale }: Project4Detai
           images={galleryLightboxImages}
           initialIndex={galleryLightboxIndex}
           isOpen={galleryLightboxOpen}
-          onClose={() => setGalleryLightboxOpen(false)}
+          onClose={handleGalleryLightboxClose}
         />
       )}
       {livingConditionsLightboxOpen && (
@@ -300,7 +308,7 @@ export default function Project4DetailContent({ project, locale }: Project4Detai
           images={livingConditionsLightboxImages}
           initialIndex={livingConditionsLightboxIndex}
           isOpen={livingConditionsLightboxOpen}
-          onClose={() => setLivingConditionsLightboxOpen(false)}
+          onClose={handleLivingConditionsLightboxClose}
         />
       )}
       {talentLightboxOpen && (
@@ -308,7 +316,7 @@ export default function Project4DetailContent({ project, locale }: Project4Detai
           images={talentLightboxImages}
           initialIndex={talentLightboxIndex}
           isOpen={talentLightboxOpen}
-          onClose={() => setTalentLightboxOpen(false)}
+          onClose={handleTalentLightboxClose}
         />
       )}
       {receiptLightboxOpen && receiptLightboxImages.length > 0 && (
@@ -316,7 +324,7 @@ export default function Project4DetailContent({ project, locale }: Project4Detai
           images={receiptLightboxImages}
           initialIndex={receiptLightboxIndex}
           isOpen={receiptLightboxOpen}
-          onClose={() => setReceiptLightboxOpen(false)}
+          onClose={handleReceiptLightboxClose}
         />
       )}
     </div>
