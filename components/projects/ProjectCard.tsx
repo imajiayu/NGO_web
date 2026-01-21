@@ -103,9 +103,8 @@ export default function ProjectCard({
             backgroundColor: '#1a1a1a'
           }}
         />
-        {/* Light overlay + Gradient for contrast */}
-        <div className="absolute inset-0 bg-white/30" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-black/20" />
+        {/* Gradient overlay for text contrast */}
+        <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/70 via-black/40 to-black/10" />
 
         {/* Content wrapper */}
         <div className="relative z-10 h-fit">
@@ -282,9 +281,8 @@ export default function ProjectCard({
           backgroundColor: '#1a1a1a'
         }}
       />
-      {/* Light overlay + Gradient for contrast */}
-      <div className="absolute inset-0 bg-white/30" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/40 to-black/25" />
+      {/* Gradient overlay for text contrast */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/70 via-black/40 to-black/10" />
 
       {/* Content wrapper */}
       <div className="relative z-10 flex flex-col h-full">

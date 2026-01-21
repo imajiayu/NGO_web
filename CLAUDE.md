@@ -84,18 +84,25 @@
 | `aggregate_donations` | true | 聚合项目，按金额捐赠（`target_units` = 目标金额） |
 | `aggregate_donations` | false | 非聚合项目，按单位捐赠（`target_units` = 目标单位数） |
 
-**进度计算**（`project_stats` 视图）：
+**关键字段语义**：
+- `current_units`：触发器每条 donation 记录 +1
+  - 非聚合项目：每单位创建一条记录 → `current_units` = 单位数
+  - 聚合项目：每笔捐赠一条记录 → `current_units` = 订单数（不用于进度计算）
+- `total_raised`：累计金额（视图计算 SUM(amount)）
+- `target_units`：非聚合=目标单位数，聚合=目标金额
+
+**进度计算**（`project_stats` 视图 + UI 组件）：
 - 聚合项目：`total_raised / target_units`（金额/目标金额）
 - 非聚合项目：`current_units / target_units`（单位数/目标单位数）
 
 **UI 展示逻辑**（`ProjectCard`, `ProjectProgressSection`）：
 
-| 项目类型 | 进度条 | 结束日期 | 当前单位数 |
-|----------|--------|----------|------------|
-| 固定期限 + 非聚合 | ✅ 显示（单位） | ✅ 显示 | ❌ |
-| 固定期限 + 聚合 | ✅ 显示（金额） | ✅ 显示 | ❌ |
-| 长期 + 非聚合 | ❌ | ❌ | ✅ 显示 |
-| 长期 + 聚合 | ❌ | ❌ | ❌ |
+| 项目类型 | 进度条数据源 | 结束日期 | 当前单位数 |
+|----------|--------------|----------|------------|
+| 固定期限 + 非聚合 | `current_units` | ✅ 显示 | ❌ |
+| 固定期限 + 聚合 | `total_raised` | ✅ 显示 | ❌ |
+| 长期 + 非聚合 | ❌ 无进度条 | ❌ | ✅ 显示 |
+| 长期 + 聚合 | ❌ 无进度条 | ❌ | ❌ |
 
 ### 数据库函数
 
