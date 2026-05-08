@@ -301,7 +301,8 @@
     "project6": {
       "defaultTitle": "夏日生活物资包裹 - 母亲孩子庇护所",
       "badge": "母与子",
-      "heroImageAlt": "「和平之家」的母亲与孩子们"
+      "heroImageAlt": "「和平之家」的母亲与孩子们",
+      "perPackageTableTitle": "单份包裹明细"
     }
   },
   "donate": {

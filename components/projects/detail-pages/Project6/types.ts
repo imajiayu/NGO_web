@@ -25,14 +25,51 @@ export interface IntroStat {
 
 export type BundleItemType = 'food' | 'hygiene' | 'clothing' | 'detergent'
 
+export interface BundleMoney {
+  uah: number
+  usd: number
+}
+
+export interface BundleSupplyItem {
+  name: string
+  qty: number
+  qtyUnit: string
+  unitPrice: BundleMoney
+}
+
 export interface BundleItem {
   type: BundleItemType
   label: string
+  items: BundleSupplyItem[]
+  subtotal: BundleMoney
+}
+
+export interface BundleTotals {
+  perPackage: BundleMoney
+  packageCount: number
+  grandTotal: BundleMoney
+}
+
+export interface BundleLabels {
+  sectionTitle: string
+  sectionSubtitle: string
+  subtotal: string
+  perPackage: string
+  perPackageHint: string
+  grandTotal: string
+  exchangeRateNote: string
+  qtyHeader: string
+  unitPriceHeader: string
+  itemHeader: string
+  receiptsTitle: string
+  receiptsPlaceholder: string
 }
 
 export interface BundleContent {
   intro: string
   items: BundleItem[]
+  totals: BundleTotals
+  labels: BundleLabels
 }
 
 export interface IntroductionContent {

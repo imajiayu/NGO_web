@@ -10,7 +10,7 @@ import { useActiveSection } from '@/lib/hooks/useActiveSection'
 import { useLightboxFromUrls } from '@/lib/hooks/useLightbox'
 import { useProjectContent } from '@/lib/hooks/useProjectContent'
 
-import { HeroSection, IntroductionSection } from './sections'
+import { HeroSection, IntroductionSection, SuppliesSection } from './sections'
 import type { Project6Content, Project6DetailContentProps } from './types'
 
 export default function Project6DetailContent({ project, locale }: Project6DetailContentProps) {
@@ -35,6 +35,7 @@ export default function Project6DetailContent({ project, locale }: Project6Detai
     if (!content) return []
     return [
       { id: 'p6-introduction', label: t('sectionNav.introduction') },
+      { id: 'p6-supplies', label: t('sectionNav.supplies') },
       { id: 'p6-project-progress', label: t('sectionNav.projectProgress') },
     ]
   }, [content, t])
@@ -72,6 +73,10 @@ export default function Project6DetailContent({ project, locale }: Project6Detai
 
       <FadeInSection id="p6-introduction">
         <IntroductionSection introduction={content.introduction} onImageClick={lightbox.open} />
+      </FadeInSection>
+
+      <FadeInSection id="p6-supplies" delay={50}>
+        <SuppliesSection bundle={content.introduction.bundle} />
       </FadeInSection>
 
       <FadeInSection id="p6-project-progress" delay={100}>

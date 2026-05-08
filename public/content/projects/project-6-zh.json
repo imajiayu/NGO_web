@@ -30,20 +30,69 @@
       }
     ],
     "paragraphs": [
-      "和平之家庇护所位于第聂伯罗市斯洛博赞斯克村，长期接收流离至第聂伯罗的母亲与孩子，其原住所均位于被占领地区或前线附近，全部因战争而损毁。所有女性的丈夫——包括平民与军人——部分在俄罗斯针对平民的袭击中遇难，部分在前线阵亡或失踪。",
+      "和平之家庇护所位于第聂伯罗市斯洛博赞斯克村，长期接收流离至第聂伯罗的母亲与孩子。\n\n其原住所均位于被占领地区或前线附近，全部因战争而损毁。\n\n所有女性的丈夫——包括平民与军人——部分在俄罗斯针对平民的袭击中遇难，部分在前线阵亡或失踪。",
       "乌克兰政府免费提供该房屋使用权；联合国粮食署提供基本食物保障，包括：油米面糖，以及番茄罐头与鸡肉罐头。最小的孩子 1 岁，最大的孩子 7 岁，平均年龄 3–4 岁。",
       "由于孩子年龄太小，并且多次搬家，部分母亲无稳定工作与收入；尤其是当在前线服役的丈夫状态由“失踪”到“阵亡”的确认期间，无抚恤金。大多数家庭只有每月 100–200 美元的乌克兰国内流离失所者补助——需要承担一位母亲与多名儿童的全部开销。"
     ],
     "bundle": {
-      "intro": "本项目旨在为该庇护所提供多份相同规格的基本生活物资，包括：",
+      "intro": "本项目捐赠统一规格包裹（衣物尺码除外），均为庇护所当前最紧急需要，且无任何国家补贴的物资。",
       "items": [
-        { "type": "food", "label": "儿童食物" },
-        { "type": "hygiene", "label": "女性月经用品" },
-        { "type": "clothing", "label": "衣物与床上用品" },
-        { "type": "detergent", "label": "日常洗涤剂" }
-      ]
+        {
+          "type": "food",
+          "label": "儿童食物",
+          "items": [
+            { "name": "儿童食品（奶粉 / 酸奶 / 果泥 / 零食）", "qty": 1, "qtyUnit": "套", "unitPrice": { "uah": 640, "usd": 16 } }
+          ],
+          "subtotal": { "uah": 640, "usd": 16 }
+        },
+        {
+          "type": "hygiene",
+          "label": "月经用品",
+          "items": [
+            { "name": "月经用品（日用 + 夜用 + 私护湿巾）", "qty": 1, "qtyUnit": "套", "unitPrice": { "uah": 160, "usd": 4 } }
+          ],
+          "subtotal": { "uah": 160, "usd": 4 }
+        },
+        {
+          "type": "clothing",
+          "label": "儿童短袖与床上用品",
+          "items": [
+            { "name": "儿童短袖 T 恤", "qty": 2, "qtyUnit": "件", "unitPrice": { "uah": 180, "usd": 4.5 } },
+            { "name": "床品（床单 + 枕套）", "qty": 1, "qtyUnit": "套", "unitPrice": { "uah": 200, "usd": 5 } }
+          ],
+          "subtotal": { "uah": 560, "usd": 14 }
+        },
+        {
+          "type": "detergent",
+          "label": "洗衣液与清洁剂",
+          "items": [
+            { "name": "洗衣液（2.5 升装）", "qty": 1, "qtyUnit": "桶", "unitPrice": { "uah": 180, "usd": 4.5 } },
+            { "name": "多用途清洁喷雾", "qty": 1, "qtyUnit": "瓶", "unitPrice": { "uah": 60, "usd": 1.5 } }
+          ],
+          "subtotal": { "uah": 240, "usd": 6 }
+        }
+      ],
+      "totals": {
+        "perPackage": { "uah": 1600, "usd": 40 },
+        "packageCount": 10,
+        "grandTotal": { "uah": 16000, "usd": 400 }
+      },
+      "labels": {
+        "sectionTitle": "包裹明细与预算",
+        "sectionSubtitle": "10 份相同规格 · 覆盖 7 个家庭",
+        "subtotal": "小计",
+        "perPackage": "每份包裹",
+        "perPackageHint": "× 10 份目标",
+        "grandTotal": "项目总目标",
+        "exchangeRateNote": "* 单价按 1 USD ≈ ₴40 估算，实际采购价以发票为准。",
+        "qtyHeader": "数量",
+        "unitPriceHeader": "单价",
+        "itemHeader": "物品",
+        "receiptsTitle": "支出收据",
+        "receiptsPlaceholder": "采购完成后将在此公示完整收据。"
+      }
     },
-    "closingCaption": "2026 年 3 月 · 食品援助活动",
+    "closingCaption": "2025-2026 持续援助记录",
     "images": {
       "opening": { "src": "/images/projects/project-6/details/entrance-1.webp", "alt": "庇护所入口" },
       "arrival": [

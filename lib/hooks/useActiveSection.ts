@@ -2,13 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-/**
- * Tracks which section is currently visible in the viewport using IntersectionObserver.
- * Returns the id of the topmost visible section.
- *
- * Uses a generous rootMargin so that a section is considered "active" as soon as
- * its top enters the upper portion of the viewport (below the sticky nav + SectionNav).
- */
+const ANCHOR_OFFSET = 200
+
 export function useActiveSection(sectionIds: string[]): string | null {
   const [activeId, setActiveId] = useState<string | null>(null)
   const visibleMap = useRef<Map<string, IntersectionObserverEntry>>(new Map())
@@ -19,9 +14,6 @@ export function useActiveSection(sectionIds: string[]): string | null {
     const map = visibleMap.current
     map.clear()
 
-    // Top margin: exclude sticky nav (~120px mobile, ~72px desktop).
-    // Using -160px covers SectionNav height on both breakpoints.
-    // Bottom margin: -40% means a section is "active" while in the top 60% of the viewport.
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -32,20 +24,39 @@ export function useActiveSection(sectionIds: string[]): string | null {
           }
         }
 
-        // Pick the topmost visible section
-        let topmost: string | null = null
-        let minTop = Infinity
+        // Pick the most recently scrolled-past section: among visible entries
+        // whose top has crossed the anchor line (top <= ANCHOR_OFFSET), choose
+        // the one with the largest top (closest to the anchor from above).
+        // This avoids selecting a tall preceding section whose bottom still
+        // intersects: with min-top selection, an earlier long section would
+        // win because its top is the most negative.
+        let chosen: string | null = null
+        let chosenTop = -Infinity
         for (const [id, entry] of map) {
           const top = entry.boundingClientRect.top
-          if (top < minTop) {
-            minTop = top
-            topmost = id
+          if (top <= ANCHOR_OFFSET && top > chosenTop) {
+            chosenTop = top
+            chosen = id
           }
         }
-        setActiveId(topmost)
+
+        // Fallback for page top: nothing has crossed the anchor yet — pick the
+        // first visible section by document order using the smallest top.
+        if (chosen === null) {
+          let minTop = Infinity
+          for (const [id, entry] of map) {
+            const top = entry.boundingClientRect.top
+            if (top < minTop) {
+              minTop = top
+              chosen = id
+            }
+          }
+        }
+
+        setActiveId(chosen)
       },
       {
-        rootMargin: '-160px 0px -40% 0px',
+        rootMargin: `-${ANCHOR_OFFSET}px 0px -40% 0px`,
         threshold: 0,
       }
     )

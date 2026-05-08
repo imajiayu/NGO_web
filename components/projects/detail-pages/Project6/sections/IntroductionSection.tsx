@@ -172,8 +172,9 @@ function BundleHygieneIcon({ className }: { className?: string }) {
       aria-hidden
       className={className}
     >
-      <path d="M12 3c-3 4-6 8-6 12a6 6 0 0 0 12 0c0-4-3-8-6-12z" />
-      <path d="M9.5 14a3 3 0 0 0 2 3" />
+      <circle cx="12" cy="9" r="5" />
+      <path d="M12 14v7" />
+      <path d="M9 18h6" />
     </svg>
   )
 }
@@ -327,11 +328,39 @@ export default function IntroductionSection({
           imgSizes="100vw"
         />
 
-        {/* ─── BLOCK A: 背景叙事 (drop cap) + arrival 单图 ─── */}
+        {/* ─── BLOCK A: 背景叙事 chapter card (numbered §01–03) + arrival 单图 ─── */}
         <div className="mb-6 grid gap-4 md:mb-9 md:grid-cols-12 md:gap-6">
-          <p className="font-body text-[15px] leading-[1.7] text-stone-700 first-letter:float-left first-letter:mr-2 first-letter:mt-1 first-letter:font-display first-letter:text-[2.85em] first-letter:font-bold first-letter:leading-[0.92] first-letter:text-rose-700 md:col-span-7 md:text-base md:leading-[1.75] md:first-letter:mr-2.5 md:first-letter:text-[3.2em]">
-            {paragraphs[0]}
-          </p>
+          <article className="relative overflow-hidden rounded-xl border border-rose-200/55 bg-white/55 p-5 backdrop-blur-sm md:col-span-7 md:rounded-2xl md:p-6">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-[0.05]"
+              style={{
+                backgroundImage:
+                  'radial-gradient(circle at 1px 1px, rgba(120, 53, 90, 0.6) 1px, transparent 0)',
+                backgroundSize: '12px 12px',
+              }}
+            />
+            <span
+              aria-hidden
+              className="pointer-events-none absolute -left-10 -top-10 h-28 w-28 rounded-full bg-rose-200/35 blur-2xl"
+            />
+            <span
+              aria-hidden
+              className="pointer-events-none absolute -bottom-12 -right-10 h-28 w-28 rounded-full bg-amber-200/30 blur-2xl"
+            />
+
+            <div className="relative space-y-4 md:space-y-5">
+              {paragraphs[0].split('\n\n').map((para, i) => (
+                <p
+                  key={i}
+                  className="font-body text-[15px] leading-[1.7] text-stone-700 md:text-base md:leading-[1.75]"
+                >
+                  {para}
+                </p>
+              ))}
+            </div>
+          </article>
+
           <ImageButton
             img={images.arrival[0]}
             index={idxArrival[0]}

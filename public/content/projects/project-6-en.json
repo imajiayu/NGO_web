@@ -30,20 +30,69 @@
       }
     ],
     "paragraphs": [
-      "The House of Peace shelter is located in Slobozhanske village, Dnipro, and has long taken in mothers and children displaced to Dnipro. All of their previous homes were located in occupied territories or near the front line, and all were destroyed by the war. The husbands of these women — both civilians and soldiers — were in some cases killed in Russian attacks targeting civilians, and in others killed or missing in action on the front line.",
+      "The House of Peace shelter is located in Slobozhanske village, Dnipro, and has long taken in mothers and children displaced to Dnipro.\n\nAll of their previous homes were located in occupied territories or near the front line, and all were destroyed by the war.\n\nThe husbands of these women — both civilians and soldiers — were in some cases killed in Russian attacks targeting civilians, and in others killed or missing in action on the front line.",
       "The Ukrainian government provides the use of the building free of charge; the UN World Food Programme provides basic food rations, including: oil, rice, flour, and sugar, as well as canned tomatoes and canned chicken. The youngest child is 1 year old, the oldest is 7, with an average age of 3–4.",
       "Because the children are very young and the families have moved many times, some mothers have no stable employment or income; in particular, during the period when a husband serving on the front line has his status reclassified from “missing” to “killed in action,” no pension is paid. Most families have only Ukraine's monthly internally-displaced-person allowance of $100–200 — which must cover all expenses of one mother and several children."
     ],
     "bundle": {
-      "intro": "This project provides the shelter with multiple care packages of identical specification, including:",
+      "intro": "All packages follow a single specification (clothing sizes aside) — every item is what the shelter needs most urgently, and none of it is covered by any state subsidy.",
       "items": [
-        { "type": "food", "label": "Children's food" },
-        { "type": "hygiene", "label": "Women's menstrual products" },
-        { "type": "clothing", "label": "Clothing and bedding" },
-        { "type": "detergent", "label": "Daily detergents" }
-      ]
+        {
+          "type": "food",
+          "label": "Children's food",
+          "items": [
+            { "name": "Children's food (formula, yogurt, purée, snacks)", "qty": 1, "qtyUnit": "set", "unitPrice": { "uah": 640, "usd": 16 } }
+          ],
+          "subtotal": { "uah": 640, "usd": 16 }
+        },
+        {
+          "type": "hygiene",
+          "label": "Menstrual products",
+          "items": [
+            { "name": "Menstrual products (day + night pads + wipes)", "qty": 1, "qtyUnit": "set", "unitPrice": { "uah": 160, "usd": 4 } }
+          ],
+          "subtotal": { "uah": 160, "usd": 4 }
+        },
+        {
+          "type": "clothing",
+          "label": "Children's tees & bed linen",
+          "items": [
+            { "name": "Children's T-shirts", "qty": 2, "qtyUnit": "pcs", "unitPrice": { "uah": 180, "usd": 4.5 } },
+            { "name": "Bed linen (sheet, pillowcase)", "qty": 1, "qtyUnit": "set", "unitPrice": { "uah": 200, "usd": 5 } }
+          ],
+          "subtotal": { "uah": 560, "usd": 14 }
+        },
+        {
+          "type": "detergent",
+          "label": "Laundry & cleaning",
+          "items": [
+            { "name": "Laundry detergent (2.5 L)", "qty": 1, "qtyUnit": "bottle", "unitPrice": { "uah": 180, "usd": 4.5 } },
+            { "name": "Multi-purpose cleaning spray", "qty": 1, "qtyUnit": "bottle", "unitPrice": { "uah": 60, "usd": 1.5 } }
+          ],
+          "subtotal": { "uah": 240, "usd": 6 }
+        }
+      ],
+      "totals": {
+        "perPackage": { "uah": 1600, "usd": 40 },
+        "packageCount": 10,
+        "grandTotal": { "uah": 16000, "usd": 400 }
+      },
+      "labels": {
+        "sectionTitle": "Package contents & budget",
+        "sectionSubtitle": "10 identical packages · 7 families",
+        "subtotal": "Subtotal",
+        "perPackage": "Per package",
+        "perPackageHint": "× 10 packages",
+        "grandTotal": "Project goal",
+        "exchangeRateNote": "* Prices estimated at 1 USD ≈ ₴40; actual procurement costs will follow invoices.",
+        "qtyHeader": "Qty",
+        "unitPriceHeader": "Unit price",
+        "itemHeader": "Item",
+        "receiptsTitle": "Expense receipts",
+        "receiptsPlaceholder": "Receipts will be published here once procurement is complete."
+      }
     },
-    "closingCaption": "March 2026 · Food aid activity",
+    "closingCaption": "Ongoing aid records · 2025-2026",
     "images": {
       "opening": { "src": "/images/projects/project-6/details/entrance-1.webp", "alt": "Shelter entrance" },
       "arrival": [
