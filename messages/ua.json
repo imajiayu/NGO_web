@@ -297,6 +297,11 @@
       "expenseReceipts": "Чеки витрат",
       "receiptImageAlt": "Чек {number}",
       "donationResultAlt": "Фото результату пожертви {index}"
+    },
+    "project6": {
+      "defaultTitle": "Літні пакунки необхідного — притулок для матерів та дітей",
+      "badge": "Матері та діти",
+      "heroImageAlt": "Матері та діти у Домі «Мир»"
     }
   },
   "donate": {

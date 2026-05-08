@@ -1,0 +1,73 @@
+{
+  "title": "夏日生活物资包裹 - 母亲孩子庇护所",
+  "subtitle": "为第聂伯罗 Дім «Мир» 庇护所的 7 位母亲与 12 个孩子提供生活必需品包裹",
+  "location": "Дім «Мир» 庇护所 · 第聂伯罗市，斯洛博赞斯克村，家庭街 12 号",
+  "introduction": {
+    "stats": [
+      {
+        "type": "shelter",
+        "label": "庇护所",
+        "primary": "Дім «Мир»",
+        "secondary": "「和平之家」"
+      },
+      {
+        "type": "location",
+        "label": "地址",
+        "primary": "第聂伯罗 · 斯洛博赞斯克村",
+        "secondary": "家庭街 12 号"
+      },
+      {
+        "type": "mothers",
+        "label": "母亲",
+        "primary": "7",
+        "secondary": "位母亲"
+      },
+      {
+        "type": "children",
+        "label": "孩子",
+        "primary": "12",
+        "secondary": "个孩子"
+      }
+    ],
+    "paragraphs": [
+      "和平之家庇护所位于第聂伯罗市斯洛博赞斯克村，长期接收流离至第聂伯罗的母亲与孩子，其原住所均位于被占领地区或前线附近，全部因战争而损毁。所有女性的丈夫——包括平民与军人——部分在俄罗斯针对平民的袭击中遇难，部分在前线阵亡或失踪。",
+      "乌克兰政府免费提供该房屋使用权；联合国粮食署提供基本食物保障，包括：油米面糖，以及番茄罐头与鸡肉罐头。最小的孩子 1 岁，最大的孩子 7 岁，平均年龄 3–4 岁。",
+      "由于孩子年龄太小，并且多次搬家，部分母亲无稳定工作与收入；尤其是当在前线服役的丈夫状态由“失踪”到“阵亡”的确认期间，无抚恤金。大多数家庭只有每月 100–200 美元的乌克兰国内流离失所者补助——需要承担一位母亲与多名儿童的全部开销。"
+    ],
+    "bundle": {
+      "intro": "本项目旨在为该庇护所提供多份相同规格的基本生活物资，包括：",
+      "items": [
+        { "type": "food", "label": "儿童食物" },
+        { "type": "hygiene", "label": "女性月经用品" },
+        { "type": "clothing", "label": "衣物与床上用品" },
+        { "type": "detergent", "label": "日常洗涤剂" }
+      ]
+    },
+    "closingCaption": "2026 年 3 月 · 食品援助活动",
+    "images": {
+      "opening": { "src": "/images/projects/project-6/details/entrance-1.webp", "alt": "庇护所入口" },
+      "arrival": [
+        { "src": "/images/projects/project-6/details/wall-photo.webp", "alt": "庇护所" }
+      ],
+      "bedroomHero": { "src": "/images/projects/project-6/details/bedroom-5.webp", "alt": "庇护所卧室" },
+      "bedroomDetails": [
+        { "src": "/images/projects/project-6/details/bedroom-3.webp", "alt": "庇护所卧室" }
+      ],
+      "daily": [
+        { "src": "/images/projects/project-6/details/living-room.webp", "alt": "庇护所客厅" },
+        { "src": "/images/projects/project-6/details/living-room-2.webp", "alt": "庇护所客厅" },
+        { "src": "/images/projects/project-6/details/living-room-3.webp", "alt": "庇护所客厅" },
+        { "src": "/images/projects/project-6/details/kitchen-1.webp", "alt": "庇护所厨房" },
+        { "src": "/images/projects/project-6/details/kitchen.webp", "alt": "庇护所厨房" },
+        { "src": "/images/projects/project-6/details/yard.webp", "alt": "庇护所院子" },
+        { "src": "/images/projects/project-6/details/yard-1.webp", "alt": "庇护所院子" },
+        { "src": "/images/projects/project-6/details/shoe-rack.webp", "alt": "庇护所" }
+      ],
+      "closing": [
+        { "src": "/images/projects/project-6/details/visit-1.webp", "alt": "2026 年 3 月食品援助活动" },
+        { "src": "/images/projects/project-6/details/visit-2.webp", "alt": "2026 年 3 月食品援助活动" },
+        { "src": "/images/projects/project-6/details/visit-3.webp", "alt": "2026 年 3 月食品援助活动" }
+      ]
+    }
+  }
+}

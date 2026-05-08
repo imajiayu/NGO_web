@@ -258,6 +258,7 @@ router.push('/target')
 | Project3 | `detail-pages/Project3/` | `public/content/projects/project-3-{en,zh,ua}.json` | `public/images/projects/project-3/` |
 | Project4 | `detail-pages/Project4/` | `public/content/projects/project-4-{en,zh,ua}.json` | `public/images/projects/project-4/` |
 | Project5 | `detail-pages/Project5/` | `public/content/projects/project-5-{en,zh,ua}.json` | `public/images/projects/project-5/` |
+| Project6 | `detail-pages/Project6/` | `public/content/projects/project-6-{en,zh,ua}.json` | `public/images/projects/project-6/` |
 
 组件目录结构：
 

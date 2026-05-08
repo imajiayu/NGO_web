@@ -12,8 +12,8 @@
   ],
   "shelters": [
     {
-      "name": "「Shelter」庇护所",
-      "nameOriginal": "Притулок «Шелтер»",
+      "name": "「和平之家」",
+      "nameOriginal": "Дім «Мир»",
       "address": "第聂伯罗市，斯洛博赞斯克村，家庭街 12 号",
       "childrenCount": 18
     },
@@ -41,7 +41,7 @@
   },
   "giftsList": [
     {
-      "shelter": "「Shelter」庇护所",
+      "shelter": "「和平之家」",
       "children": [
         {
           "name": "Ваня",

@@ -12,8 +12,8 @@
   ],
   "shelters": [
     {
-      "name": "Shelter",
-      "nameOriginal": "Притулок «Шелтер»",
+      "name": "House of Peace",
+      "nameOriginal": "Дім «Мир»",
       "address": "12 Simeyna St, Slobozhanske village, Dnipro",
       "childrenCount": 18
     },
@@ -41,7 +41,7 @@
   },
   "giftsList": [
     {
-      "shelter": "Shelter",
+      "shelter": "House of Peace",
       "children": [
         {
           "name": "Vanya",

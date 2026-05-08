@@ -297,6 +297,11 @@
       "expenseReceipts": "Expense Receipts",
       "receiptImageAlt": "Receipt {number}",
       "donationResultAlt": "Donation result photo {index}"
+    },
+    "project6": {
+      "defaultTitle": "Summer Care Packages — Shelter for Mothers and Children",
+      "badge": "Mothers & Children",
+      "heroImageAlt": "Mothers and children at House of Peace"
     }
   },
   "donate": {
