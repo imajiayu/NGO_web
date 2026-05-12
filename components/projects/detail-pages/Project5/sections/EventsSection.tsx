@@ -142,8 +142,9 @@ export default function EventsSection({
                       (() => {
                         const useUniformGrid =
                           event.images.length > 0 &&
-                          (event.images.length - 5) % 4 === 1 &&
-                          event.images.length !== 5
+                          (event.images.length < 5 ||
+                            ((event.images.length - 5) % 4 === 1 &&
+                              event.images.length !== 5))
 
                         if (useUniformGrid) {
                           return (

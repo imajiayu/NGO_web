@@ -17,13 +17,13 @@ interface MosaicItem {
 }
 
 // 20 images from project donation results sections:
-// P0 donationResults ×2, P3 results ×15, P4 results ×2, P5 donationResults ×1
+// P0 donationResults ×3, P3 results ×13, P4 results ×2, P5 donationResults ×2
 // Desktop layout: 12 cols × 8 rows, all 96 cells covered
 const MOSAIC_ITEMS: MosaicItem[] = [
   // Row 1-2 (3+2+3+2+2 = 12)
   {
-    imageUrl: '/images/projects/project-3/results/activity-2.webp',
-    projectId: 3,
+    imageUrl: '/images/projects/project-5/details/results/result2.webp',
+    projectId: 5,
     colStart: 1,
     colEnd: 4,
     rowStart: 1,

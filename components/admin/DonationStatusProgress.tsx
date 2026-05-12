@@ -76,7 +76,7 @@ export default function DonationStatusProgress({
 
   return (
     <div className="py-4 sm:py-6">
-      <div className="flex items-center justify-between overflow-x-auto pb-2">
+      <div className="flex items-center justify-between overflow-x-auto px-1 py-2">
         {NORMAL_FLOW_STATUSES.map((status, index) => {
           const state = getStatusState(status.key, index)
           const isClickable = state === 'next' && onStatusSelect

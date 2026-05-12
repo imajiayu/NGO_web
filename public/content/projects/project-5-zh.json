@@ -130,6 +130,18 @@
           "/images/projects/project-5/details/event-4-receipts/IMG_5614.webp",
           "/images/projects/project-5/details/event-4-receipts/IMG_5615.webp"
         ]
+      },
+      {
+        "date": "2026-05-09",
+        "location": "卡利诺瓦街（Калинова вулиця）",
+        "images": [
+          "/images/projects/project-5/details/event-5/IMG_0199.webp",
+          "/images/projects/project-5/details/event-5/IMG_0200.webp",
+          "/images/projects/project-5/details/event-5/IMG_0201.webp"
+        ],
+        "receipts": [
+          "/images/projects/project-5/details/event-5-receipts/receipt-023.webp"
+        ]
       }
     ]
   },
@@ -138,7 +150,18 @@
     "items": [
       {
         "image": "/images/projects/project-5/details/results/result1.webp",
-        "orientation": "portrait"
+        "orientation": "portrait",
+        "aspectRatio": 0.84
+      },
+      {
+        "image": "/images/projects/project-5/details/results/result2.webp",
+        "orientation": "portrait",
+        "aspectRatio": 0.5625
+      },
+      {
+        "image": "/images/projects/project-5/details/results/result3.webp",
+        "orientation": "portrait",
+        "aspectRatio": 0.5625
       }
     ]
   }
