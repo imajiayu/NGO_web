@@ -63,15 +63,7 @@ export async function getAnalyticsSummary(
   const supabase = await getAdminClient()
   const fromIso = rangeToIso(range)
 
-  // page_views typing is added in migration 20260515 — `types/database.ts`
-  // regeneration is part of the deploy verification, so cast until then.
-  type RawQueryBuilder = {
-    select: (cols: string) => RawQueryBuilder
-    gte: (col: string, val: string) => RawQueryBuilder
-    then: <T>(onFulfilled: (v: { data: PageViewRow[] | null; error: { message: string } | null }) => T) => Promise<T>
-  }
-  type RawClient = { from: (t: string) => RawQueryBuilder }
-  let pageViewsQuery: RawQueryBuilder = (supabase as unknown as RawClient)
+  let pageViewsQuery = supabase
     .from('page_views')
     .select('event_type, page_type, entity_id, session_id')
   if (fromIso) pageViewsQuery = pageViewsQuery.gte('created_at', fromIso)
@@ -86,7 +78,7 @@ export async function getAnalyticsSummary(
   let donationsQuery = supabase
     .from('donations')
     .select('project_id, order_reference')
-    .in('donation_status', SUCCESS_DONATION_STATUSES as unknown as string[])
+    .in('donation_status', [...SUCCESS_DONATION_STATUSES])
   if (fromIso) donationsQuery = donationsQuery.gte('created_at', fromIso)
   const { data: donationsRaw, error: donationError } = await donationsQuery
   if (donationError) {
@@ -102,7 +94,7 @@ export async function getAnalyticsSummary(
   let ordersQuery = supabase
     .from('market_orders')
     .select('item_id, id')
-    .in('status', SUCCESS_MARKET_STATUSES as unknown as string[])
+    .in('status', [...SUCCESS_MARKET_STATUSES])
   if (fromIso) ordersQuery = ordersQuery.gte('created_at', fromIso)
   const { data: ordersRaw, error: ordersError } = await ordersQuery
   if (ordersError) {

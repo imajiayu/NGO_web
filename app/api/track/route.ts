@@ -42,28 +42,16 @@ export async function POST(req: NextRequest) {
     const userAgent = req.headers.get('user-agent')?.slice(0, 500) ?? null
 
     const supabase = getPublicClient()
-    // page_views table typing is added in migration 20260515. Cast until
-    // `supabase gen types` regenerates `types/database.ts`.
-    const { error } = await (
-      supabase as unknown as {
-        from: (t: string) => {
-          insert: (row: Record<string, unknown>) => Promise<{
-            error: { message: string; code: string } | null
-          }>
-        }
-      }
-    )
-      .from('page_views')
-      .insert({
-        event_type: data.event_type,
-        page_type: data.page_type,
-        entity_id: data.entity_id ?? null,
-        path: data.path,
-        locale: data.locale,
-        session_id: data.session_id,
-        user_agent: userAgent,
-        referrer: data.referrer ?? null,
-      })
+    const { error } = await supabase.from('page_views').insert({
+      event_type: data.event_type,
+      page_type: data.page_type,
+      entity_id: data.entity_id ?? null,
+      path: data.path,
+      locale: data.locale,
+      session_id: data.session_id,
+      user_agent: userAgent,
+      referrer: data.referrer ?? null,
+    })
 
     if (error) {
       logger.warn('API', 'page_views insert failed', {
