@@ -32,6 +32,8 @@ export interface AnalyticsFunnelRow {
 export interface AnalyticsSummary {
   timeRange: AnalyticsTimeRange
   fromIso: string | null
+  successFromIso: string
+  pageViewsBirthIso: string
   generatedAt: string
   home: { views: number; viewsDeduped: number }
   marketList: { views: number; viewsDeduped: number }
@@ -41,6 +43,17 @@ export interface AnalyticsSummary {
 
 const SUCCESS_DONATION_STATUSES = ['paid', 'confirmed', 'delivering', 'completed'] as const
 const SUCCESS_MARKET_STATUSES = ['paid', 'shipped', 'completed'] as const
+
+// page_views 表上线时间（commit 51394c9，2026-05-15 22:46:10 +0800）。
+// 该时间点之前 donations / market_orders 已有历史数据，但没有对应的浏览/CTA 事件，
+// 直接按用户选的时间窗口统计 successes 会出现 "successes > views" 的不一致。
+// 把成功计数下限钳到这里，确保漏斗的三层（views / cta / success）共享同一根时间轴。
+export const PAGE_VIEWS_BIRTH_ISO = '2026-05-15T14:46:10Z'
+
+function maxIso(a: string | null, b: string): string {
+  if (a === null) return b
+  return a > b ? a : b
+}
 
 type PageType = 'home' | 'project' | 'market_item' | 'market_list' | 'other'
 
@@ -62,6 +75,7 @@ export async function getAnalyticsSummary(
 ): Promise<AnalyticsSummary> {
   const supabase = await getAdminClient()
   const fromIso = rangeToIso(range)
+  const successFromIso = maxIso(fromIso, PAGE_VIEWS_BIRTH_ISO)
 
   let pageViewsQuery = supabase
     .from('page_views')
@@ -79,7 +93,7 @@ export async function getAnalyticsSummary(
     .from('donations')
     .select('project_id, order_reference')
     .in('donation_status', [...SUCCESS_DONATION_STATUSES])
-  if (fromIso) donationsQuery = donationsQuery.gte('created_at', fromIso)
+  donationsQuery = donationsQuery.gte('created_at', successFromIso)
   const { data: donationsRaw, error: donationError } = await donationsQuery
   if (donationError) {
     logger.error('ADMIN', 'donations query failed', { error: donationError.message })
@@ -95,7 +109,7 @@ export async function getAnalyticsSummary(
     .from('market_orders')
     .select('item_id, id')
     .in('status', [...SUCCESS_MARKET_STATUSES])
-  if (fromIso) ordersQuery = ordersQuery.gte('created_at', fromIso)
+  ordersQuery = ordersQuery.gte('created_at', successFromIso)
   const { data: ordersRaw, error: ordersError } = await ordersQuery
   if (ordersError) {
     logger.error('ADMIN', 'market_orders query failed', { error: ordersError.message })
@@ -199,6 +213,8 @@ export async function getAnalyticsSummary(
   return {
     timeRange: range,
     fromIso,
+    successFromIso,
+    pageViewsBirthIso: PAGE_VIEWS_BIRTH_ISO,
     generatedAt: new Date().toISOString(),
     home: { views: homeStats.raw, viewsDeduped: homeStats.dedup },
     marketList: { views: marketListStats.raw, viewsDeduped: marketListStats.dedup },

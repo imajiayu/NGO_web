@@ -134,6 +134,20 @@ export default function AnalyticsDashboard({ initial }: AnalyticsDashboardProps)
         </div>
       )}
 
+      {(data.fromIso === null || data.fromIso < data.pageViewsBirthIso) && (
+        <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-800">
+          <strong>Note:</strong> Page view / CTA tracking went live on{' '}
+          {new Date(data.pageViewsBirthIso).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+          })}
+          . Events before that date don&apos;t exist, so success counts are clamped to that
+          start date to keep the funnel internally consistent. Pre-launch successes are
+          still visible in the donations / market orders pages.
+        </div>
+      )}
+
       {/* KPI cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <KpiCard label="Total page views" value={formatNumber(grandViews)} hint={deduped ? 'per session' : 'raw'} />
