@@ -48,7 +48,7 @@ const SUCCESS_MARKET_STATUSES = ['paid', 'shipped', 'completed'] as const
 // 该时间点之前 donations / market_orders 已有历史数据，但没有对应的浏览/CTA 事件，
 // 直接按用户选的时间窗口统计 successes 会出现 "successes > views" 的不一致。
 // 把成功计数下限钳到这里，确保漏斗的三层（views / cta / success）共享同一根时间轴。
-export const PAGE_VIEWS_BIRTH_ISO = '2026-05-15T14:46:10Z'
+const PAGE_VIEWS_BIRTH_ISO = '2026-05-15T14:46:10Z'
 
 function maxIso(a: string | null, b: string): string {
   if (a === null) return b
