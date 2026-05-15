@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic'
 import { getTranslations } from 'next-intl/server'
 import { Suspense } from 'react'
 
+import PageViewTracker from '@/components/analytics/PageViewTracker'
 import ApproachSection from '@/components/home/ApproachSection'
 import ComplianceSection from '@/components/home/ComplianceSection'
 import HomeMarketGrid from '@/components/home/HomeMarketGrid'
@@ -48,11 +49,13 @@ export async function generateMetadata(props: { params: Promise<{ locale: string
   }
 }
 
-export default async function Home() {
+export default async function Home(props: { params: Promise<{ locale: string }> }) {
+  const { locale } = await props.params
   const t = await getTranslations('home.hero')
 
   return (
     <div className="w-full">
+      <PageViewTracker pageType="home" locale={locale} />
       {/* Section 1: Mission */}
       <MissionSection />
 

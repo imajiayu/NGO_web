@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 
 import { getPublicMarketItems } from '@/app/actions/market-items'
+import PageViewTracker from '@/components/analytics/PageViewTracker'
 import MarketItemGrid from '@/components/market/MarketItemGrid'
 import { locales } from '@/i18n/config'
 import { Link } from '@/i18n/navigation'
@@ -47,6 +48,7 @@ export default async function MarketPage({ params }: Props) {
 
   return (
     <main>
+      <PageViewTracker pageType="market_list" locale={locale} />
       {/* Hero — 全宽深蓝背景，紧接导航栏 */}
       <section className="relative overflow-hidden bg-gradient-to-br from-ukraine-blue-900 via-ukraine-blue-800 to-ukraine-blue-700">
         {/* 点阵纹理 */}

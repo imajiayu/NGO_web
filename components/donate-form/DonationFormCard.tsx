@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { createNowPaymentsDonation, createWayForPayDonation } from '@/app/actions/donation'
 import { createEmailSubscription } from '@/app/actions/subscription'
 import NowPaymentsWidget from '@/components/donate-form/widgets/NowPaymentsWidget'
+import { trackEvent } from '@/lib/analytics/track'
 import { getTranslatedText } from '@/lib/i18n-utils'
 import { clientLogger } from '@/lib/logger-client'
 import type { CreatePaymentResponse } from '@/lib/payment/nowpayments/types'
@@ -280,6 +281,15 @@ export default function DonationFormCard({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!project || project.id === null || project.id === undefined) return
+
+    // Async, fire-and-forget — never blocks or affects the submit flow.
+    trackEvent({
+      event_type: 'cta_click',
+      page_type: 'project',
+      entity_id: project.id,
+      path: typeof window !== 'undefined' ? window.location.pathname : '',
+      locale: locale === 'zh' || locale === 'ua' ? locale : 'en',
+    })
 
     // Prevent duplicate submissions
     if (processingState === 'creating' || processingState === 'selecting_method') return

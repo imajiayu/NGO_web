@@ -6,6 +6,7 @@
  * continue to work without changes.
  */
 
+export * from './admin/analytics'
 export * from './admin/auth'
 export * from './admin/donation-files'
 export * from './admin/donations'

@@ -39,6 +39,7 @@
 - 邮件转发功能（入站邮件自动转发）
 - 捐赠状态审计追踪
 - 义卖市场（Email OTP 认证、固定价格商品、WayForPay 支付、订单管理、凭证上传）
+- 转化漏斗分析（页面浏览 + CTA 点击事件，admin 后台「曝光 → 意图 → 成功」漏斗）
 
 ---
 
@@ -68,6 +69,7 @@
 | `market_items`                | 义卖商品（标题、价格、库存、状态）           |
 | `market_orders`               | 义卖订单（买家、商品、金额、收货地址、物流） |
 | `market_order_status_history` | 义卖订单状态历史                             |
+| `page_views`                  | 页面浏览 + CTA 点击事件（append-only 分析表） |
 
 ### 捐赠状态 (14个)
 
@@ -158,10 +160,11 @@ waytofutureua/
 │   │   ├── projects/             # 项目管理
 │   │   ├── donations/            # 捐赠管理
 │   │   ├── subscriptions/        # 订阅管理
-│   │   └── market/               # 义卖管理（商品 + 订单）
+│   │   ├── market/               # 义卖管理（商品 + 订单）
+│   │   └── analytics/            # 转化漏斗分析
 │   ├── actions/                  # Server Actions
 │   │   ├── admin.ts              # 管理员操作 barrel（re-export 自 admin/）
-│   │   ├── admin/                # 拆分：auth / projects / donations / donation-files
+│   │   ├── admin/                # 拆分：auth / projects / donations / donation-files / analytics
 │   │   ├── donation.ts           # 捐赠创建
 │   │   ├── donation-result.ts    # 结果查询
 │   │   ├── track-donation.ts     # 追踪和退款
@@ -181,6 +184,7 @@ waytofutureua/
 │       ├── webhooks/resend-inbound/ # 入站邮件转发
 │       ├── donations/            # 捐赠 API
 │       ├── donate/success-redirect/ # 重定向
+│       ├── track/                # 分析事件上报（anon INSERT page_views）
 │       └── unsubscribe/          # 取消订阅
 ├── components/
 │   ├── common/                   # 通用 UI 组件 (BottomSheet, CopyButton, ImageLightbox)
@@ -192,12 +196,14 @@ waytofutureua/
 │   │   └── shared/               # 共享组件
 │   ├── donate-form/              # 捐赠表单 (DonationFormCard, 支付组件)
 │   ├── donation-display/         # 捐赠展示 (状态徽章、流程图、结果查看器)
+│   ├── analytics/                # 分析组件 (PageViewTracker — 渲染 null 的 view 上报组件)
 │   └── admin/                    # 管理员组件
 ├── lib/
 │   ├── supabase/                 # 数据库集成
 │   ├── wayforpay/                # WayForPay 支付集成（捐赠）
 │   ├── payment/nowpayments/      # NOWPayments 加密货币集成
 │   ├── market/                   # 义卖工具 (状态、验证、WayForPay、工具函数)
+│   ├── analytics/                # 客户端分析上报 (track.ts — sessionStorage sid + 30s 去重 + sendBeacon)
 │   ├── projects/                 # 项目元数据（supported IDs、内容 JSON loader）
 │   ├── email/                    # 邮件服务
 │   │   ├── templates/            # 邮件模板

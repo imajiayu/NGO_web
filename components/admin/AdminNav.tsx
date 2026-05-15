@@ -36,6 +36,7 @@ export default function AdminNav() {
     { href: '/admin/subscriptions', label: 'Subscriptions' },
     { href: '/admin/market', label: 'Market Items' },
     { href: '/admin/market/orders', label: 'Market Orders' },
+    { href: '/admin/analytics', label: 'Analytics' },
   ]
 
   const isActive = (href: string) => pathname === href

@@ -345,6 +345,45 @@ export type Database = {
           },
         ]
       }
+      page_views: {
+        Row: {
+          created_at: string
+          entity_id: number | null
+          event_type: string
+          id: number
+          locale: string
+          page_type: string
+          path: string
+          referrer: string | null
+          session_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          entity_id?: number | null
+          event_type: string
+          id?: number
+          locale: string
+          page_type: string
+          path: string
+          referrer?: string | null
+          session_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          entity_id?: number | null
+          event_type?: string
+          id?: number
+          locale?: string
+          page_type?: string
+          path?: string
+          referrer?: string | null
+          session_id?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           aggregate_donations: boolean

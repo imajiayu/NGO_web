@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { createSaleOrder } from '@/app/actions/market-sale'
 import { SpinnerIcon } from '@/components/icons'
+import { trackEvent } from '@/lib/analytics/track'
 import { useMarketAuth } from '@/lib/hooks/useMarketAuth'
 import { canPurchase, getItemDisplayInfo } from '@/lib/market/market-status'
 import { formatMarketPrice } from '@/lib/market/market-utils'
@@ -64,6 +65,14 @@ export default function SaleCheckoutPanel({ item, locale }: SaleCheckoutPanelPro
   const purchasable = canPurchase(item.status) && hasStock
 
   const handleBuyClick = () => {
+    // Async, fire-and-forget — never blocks or affects the checkout flow.
+    trackEvent({
+      event_type: 'cta_click',
+      page_type: 'market_item',
+      entity_id: item.id,
+      path: typeof window !== 'undefined' ? window.location.pathname : '',
+      locale: locale === 'zh' || locale === 'ua' ? locale : 'en',
+    })
     setStep('checkout')
   }
 

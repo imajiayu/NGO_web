@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 
 import { getMarketItemById } from '@/app/actions/market-items'
+import PageViewTracker from '@/components/analytics/PageViewTracker'
 import MarketItemDetail from '@/components/market/MarketItemDetail'
 import { BASE_URL, getAlternates } from '@/lib/constants'
 import { getTranslatedText } from '@/lib/i18n-utils'
@@ -55,6 +56,7 @@ export default async function MarketItemPage({ params }: Props) {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
+      <PageViewTracker pageType="market_item" entityId={id} locale={locale} />
       <MarketItemDetail item={item} locale={locale} />
     </main>
   )

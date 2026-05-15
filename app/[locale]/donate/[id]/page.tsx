@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 
+import PageViewTracker from '@/components/analytics/PageViewTracker'
 import { locales } from '@/i18n/config'
 import { BASE_URL, getAlternates } from '@/lib/constants'
 import { getTranslatedText } from '@/lib/i18n-utils'
@@ -78,5 +79,10 @@ export default async function DonatePageWithProject({ params }: Props) {
   const projects = await getAllProjectsWithStats()
   if (!projects.some((p) => p.id === projectId)) notFound()
 
-  return <DonatePageClient projects={projects} locale={locale} initialProjectId={projectId} />
+  return (
+    <>
+      <PageViewTracker pageType="project" entityId={projectId} locale={locale} />
+      <DonatePageClient projects={projects} locale={locale} initialProjectId={projectId} />
+    </>
+  )
 }
