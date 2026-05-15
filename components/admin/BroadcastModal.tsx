@@ -141,7 +141,7 @@ export default function BroadcastModal({
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || BASE_URL
     const projectId = getProjectId()
     if (projectId) {
-      return `${baseUrl}/${locale}/donate?project=${projectId}`
+      return `${baseUrl}/${locale}/donate/${projectId}`
     }
     return `${baseUrl}/${locale}/donate`
   }

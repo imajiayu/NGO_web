@@ -1,16 +1,23 @@
+import dynamic from 'next/dynamic'
 import { getTranslations } from 'next-intl/server'
 import { Suspense } from 'react'
 
 import ApproachSection from '@/components/home/ApproachSection'
 import ComplianceSection from '@/components/home/ComplianceSection'
-import DonationJourneySection from '@/components/home/DonationJourneySection'
 import HomeMarketGrid from '@/components/home/HomeMarketGrid'
 import ImpactSection from '@/components/home/ImpactSection'
 import MissionSection from '@/components/home/MissionSection'
-import ProjectResultsSection from '@/components/home/ProjectResultsSection'
 import ProjectsGrid from '@/components/projects/ProjectsGrid'
 import { locales } from '@/i18n/config'
 import { BASE_URL, getAlternates } from '@/lib/constants'
+
+// 首屏下方的 client component 延迟加载，减少 first load JS（PageSpeed: chunks/2450 浪费 58 KiB）
+const ProjectResultsSection = dynamic(() => import('@/components/home/ProjectResultsSection'), {
+  loading: () => <div className="h-96 animate-pulse bg-gray-50" />,
+})
+const DonationJourneySection = dynamic(() => import('@/components/home/DonationJourneySection'), {
+  loading: () => <div className="h-96 animate-pulse bg-white" />,
+})
 
 export const revalidate = 60
 

@@ -42,17 +42,24 @@ export default function Navigation() {
   const handleLocaleChange = (newLocale: string) => {
     setTargetLocale(newLocale)
     startTransition(() => {
-      // 保留当前的查询参数（如 ?order=xxx, ?project=xxx）
-      const searchParams = typeof window !== 'undefined' ? window.location.search : ''
-      const newPath = searchParams ? `${pathname}${searchParams}` : pathname
-      router.replace(newPath, { locale: newLocale })
+      // 直接读 window.location 而不是 usePathname() —— DonatePageClient 切换项目时通过
+      // history.replaceState 同步 URL 到 /donate/{id}，Next 内部 routing state 不会更新，
+      // 此时 pathname hook 会返回切换前的旧值（例如初始进入的 /donate），导致语言切换丢失项目。
+      let newPath = pathname
+      let search = ''
+      if (typeof window !== 'undefined') {
+        const segments = window.location.pathname.split('/').filter(Boolean)
+        newPath = segments.length > 1 ? '/' + segments.slice(1).join('/') : '/'
+        search = window.location.search
+      }
+      router.replace(`${newPath}${search}`, { locale: newLocale })
     })
     setIsDropdownOpen(false)
   }
 
   const handleDonateClick = () => {
-    // 如果当前已经在 /donate 页面，触发事件拉起捐赠表单
-    if (pathname === '/donate') {
+    // 已经在 /donate 或 /donate/{id} 时只拉起表单，不重新导航。
+    if (pathname === '/donate' || pathname.startsWith('/donate/')) {
       window.dispatchEvent(new CustomEvent('open-donation-form'))
       return
     }

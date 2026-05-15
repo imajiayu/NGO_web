@@ -143,6 +143,7 @@ waytofutureua/
 │   ├── [locale]/                 # 国际化路由
 │   │   ├── page.tsx              # 主页
 │   │   ├── donate/               # 捐赠流程
+│   │   │   ├── [id]/             # 项目直链路由（SSR + SEO，/donate/{id}）
 │   │   │   └── success/          # 支付成功页
 │   │   ├── track-donation/       # 捐赠追踪
 │   │   ├── unsubscribed/         # 取消订阅页
@@ -197,6 +198,7 @@ waytofutureua/
 │   ├── wayforpay/                # WayForPay 支付集成（捐赠）
 │   ├── payment/nowpayments/      # NOWPayments 加密货币集成
 │   ├── market/                   # 义卖工具 (状态、验证、WayForPay、工具函数)
+│   ├── projects/                 # 项目元数据（supported IDs、内容 JSON loader）
 │   ├── email/                    # 邮件服务
 │   │   ├── templates/            # 邮件模板
 │   │   └── senders/              # 发送器

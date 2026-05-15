@@ -262,7 +262,7 @@ export default function ProjectResultsMosaic() {
 
   const handleClick = (projectId: number) => {
     setIsNavigating(true)
-    router.push(`/donate?project=${projectId}`)
+    router.push(`/donate/${projectId}`)
   }
 
   return (

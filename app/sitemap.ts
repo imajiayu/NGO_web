@@ -2,9 +2,12 @@ import type { MetadataRoute } from 'next'
 
 import { locales } from '@/i18n/config'
 import { BASE_URL } from '@/lib/constants'
+import { SUPPORTED_PROJECT_IDS } from '@/lib/projects/supported'
 
 // 使用固定日期，避免每次请求都生成新的 lastModified 导致搜索引擎忽略该信号
 const LAST_UPDATED = new Date('2026-03-06')
+
+const PROJECT_PAGES = SUPPORTED_PROJECT_IDS.map((id) => `/donate/${id}`)
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
@@ -14,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/market',
     '/privacy-policy',
     '/public-agreement',
+    ...PROJECT_PAGES,
   ]
 
   const entries: MetadataRoute.Sitemap = []

@@ -50,7 +50,7 @@ export async function sendBroadcastEmail(params: BroadcastEmailParams): Promise<
 
   const projectId = template.projectId
   const projectUrl = projectId
-    ? `${appUrl}/${locale}/donate?project=${projectId}`
+    ? `${appUrl}/${locale}/donate/${projectId}`
     : `${appUrl}/${locale}/donate`
 
   const defaultVariables: Record<string, string> = {

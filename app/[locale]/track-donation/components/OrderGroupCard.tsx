@@ -138,7 +138,7 @@ export default function OrderGroupCard({
                   {/* Middle Row: Project Name (clickable) */}
                   <div>
                     <Link
-                      href={`/donate?project=${donation.projects.id}`}
+                      href={`/donate/${donation.projects.id}`}
                       className="group inline-flex items-center gap-1 text-sm font-semibold text-gray-900 transition-colors hover:text-ukraine-blue-500"
                     >
                       {donationProjectName}

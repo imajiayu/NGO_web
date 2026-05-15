@@ -57,7 +57,7 @@ export default function TipSection({
       </div>
 
       <a
-        href={`/${locale}/donate?project=0`}
+        href={`/${locale}/donate/0`}
         className="mb-3 inline-flex items-center gap-1 text-sm font-medium text-ukraine-blue-500 hover:text-ukraine-blue-600"
       >
         {t('tip.viewDetails')}

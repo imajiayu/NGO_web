@@ -1,0 +1,11 @@
+# 限定为支持 ES2022+ 的现代浏览器，消除 Next.js 注入的 polyfills
+# Object.hasOwn / Array.prototype.at 需要 Chrome 93+ / Safari 15.4+
+# Way to Future UA 用户画像：海外捐赠者（iOS/Safari）+ 大陆用户（Chrome 内核 WeChat），
+# 移动端最低 baseline = iOS 15.4（2022-03）已覆盖绝大多数活跃设备。
+Chrome >= 93
+Edge >= 93
+Firefox >= 92
+Safari >= 15.4
+iOS >= 15.4
+not dead
+not op_mini all

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -36,7 +37,7 @@ export default function ProjectCardFull({ project, locale, showProgress = true }
 
   const handleDonateClick = useCallback(() => {
     setIsNavigating(true)
-    router.push(`/donate?project=${project.id}`)
+    router.push(`/donate/${project.id}`)
   }, [router, project.id])
 
   const { currentUnits, targetUnits, hasValidTarget, progressCurrent } = getProjectProgress(project)
@@ -45,13 +46,13 @@ export default function ProjectCardFull({ project, locale, showProgress = true }
     <>
       <GlobalLoadingSpinner isLoading={isNavigating} />
       <div className="group relative flex w-80 flex-shrink-0 transform flex-col overflow-hidden rounded-2xl border-2 border-ukraine-blue-400/30 bg-[#1a1a1a] shadow-lg transition-all duration-300 hover:-translate-y-2 hover:border-ukraine-gold-400/60">
-        {/* Background image container - inside border */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url(/images/projects/project-${project.id}/card/bg.webp)`,
-            backgroundColor: '#1a1a1a',
-          }}
+        {/* Background image - optimized via next/image */}
+        <Image
+          src={`/images/projects/project-${project.id}/card/bg.webp`}
+          alt=""
+          fill
+          sizes="320px"
+          className="object-cover object-center"
         />
         {/* Gradient overlay for text contrast */}
         <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/70 via-black/40 to-black/10" />

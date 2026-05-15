@@ -116,9 +116,10 @@ const sentryWebpackPluginOptions = {
 
   // New webpack-specific options (replaces deprecated top-level options)
   webpack: {
-    // Automatically annotate React components to show their full name in breadcrumbs and session replay
+    // reactComponentAnnotation 配合 Session Replay 使用，Replay 已移除后无意义
+    // 关闭可减少 SSR HTML 体积 + 加速 build
     reactComponentAnnotation: {
-      enabled: true,
+      enabled: false,
     },
 
     // Automatically tree-shake Sentry logger statements to reduce bundle size

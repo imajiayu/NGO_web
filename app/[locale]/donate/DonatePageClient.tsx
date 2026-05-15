@@ -166,10 +166,10 @@ export default function DonatePageClient({
   // Handle project selection
   const handleProjectSelect = (id: number) => {
     setSelectedProjectId(id)
-    // 同步更新 URL，这样语言切换时能保留项目选择
-    const url = new URL(window.location.href)
-    url.searchParams.set('project', id.toString())
-    window.history.replaceState({}, '', url.toString())
+    // 同步更新 URL 为 /{locale}/donate/{id}（path 形式），这样刷新 / 语言切换 / 分享都能保留项目选择。
+    // 用 history.replaceState 而非 router.replace —— 保证 client component 不 unmount，
+    // 用户填了一半的表单字段（donorInfo）不会因切换项目而丢失。
+    window.history.replaceState({}, '', `/${locale}/donate/${id}`)
   }
 
   return (
