@@ -17,13 +17,27 @@ export async function generateMetadata({ params }: Props) {
   if (!item) return {}
 
   const title = getTranslatedText(item.title_i18n, locale as AppLocale) || 'Item'
-  const tCommon = await getTranslations({ locale, namespace: 'common' })
+  const [tCommon, tMarket] = await Promise.all([
+    getTranslations({ locale, namespace: 'common' }),
+    getTranslations({ locale, namespace: 'market' }),
+  ])
+  const description = tMarket('itemMetaDescription', { title })
+  const ogImage = `/images/market/item-${itemId}/og.jpg`
 
   return {
     title: `${title} — ${tCommon('appName')}`,
+    description,
     openGraph: {
       title,
+      description,
       url: `${BASE_URL}/${locale}/market/${itemId}`,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage],
     },
     alternates: getAlternates(`/${locale}/market/${itemId}`),
   }

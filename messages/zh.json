@@ -786,18 +786,16 @@
     "publicAgreement": "用户协议"
   },
   "metadata": {
-    "homeDescription": "乌克兰第聂伯罗慈善基金会，运营康复中心，帮助战争受害者重建生活。提供医疗援助、儿童项目和社区支持。",
-    "donateDescription": "支持我们在乌克兰的项目 — 医疗康复、儿童教育、人道主义援助。每一笔捐赠都直接帮助第聂伯罗受战争影响的家庭。",
-    "trackDonationDescription": "实时追踪您的捐赠进度 — 从支付到交付，每一步都有照片更新，全程透明。",
+    "homeDescription": "乌克兰第聂伯罗 Way to Future UA 慈善基金会，运营战争受害者康复中心，提供医疗援助、儿童项目和人道主义支持。",
+    "donateDescription": "向乌克兰第聂伯罗的验证公益项目捐款：医疗康复、儿童教育、人道主义援助。支持银行卡、Apple Pay 和加密货币，资金流向全程透明。",
+    "trackDonationDescription": "实时追踪您在 Way to Future UA 的捐赠进度：从支付到交付的每一步都有照片更新，捐赠完成前可随时申请退款。",
     "logoAlt": "WAY 标志",
     "orgDescription": "Way to Future UA 是一家位于乌克兰第聂伯罗的注册慈善基金会，运营康复中心，致力于帮助战争受害者重建生活。",
-    "titleSuffix": "乌克兰第聂伯罗慈善基金会",
-    "ogBadge": "慈善基金会",
-    "ogTagline": "乌克兰第聂伯罗康复中心，帮助战争受害者重建生活。"
+    "titleSuffix": "乌克兰第聂伯罗慈善基金会"
   },
   "privacyPolicy": {
     "title": "隐私政策",
-    "description": "我们如何收集、使用和保护您的个人信息",
+    "description": "Way to Future UA 如何收集、使用和保护您的个人数据 —— 涵盖捐赠者信息、Cookie 政策和您的隐私权利说明。",
     "effectiveDate": "生效日期",
     "effectiveDateValue": "2022年9月24日",
     "intro": "慈善基金会'通往未来乌克兰'（以下简称'我们'或'基金会'）尊重您的隐私，并致力于保护您提供的个人数据。本隐私政策说明我们收集哪些信息、如何使用以及如何存储这些信息。",
@@ -849,7 +847,7 @@
   },
   "publicAgreement": {
     "title": "公开协议",
-    "description": "慈善捐赠条款和条件",
+    "description": "Way to Future UA 慈善捐赠公开要约协议 —— 详述捐赠者权利、资金使用规则与退款条款。",
     "mainTitle": "关于慈善捐赠的公开协议（要约）",
     "intro": "本协议是适用于访问 https://waytofutureua.org.ua 并希望进行慈善捐赠的个人的正式公开要约。该要约由慈善组织'通往未来乌克兰'提出，由负责人Mykyta Zhalnin签署。",
     "section1": {
@@ -941,7 +939,8 @@
   "market": {
     "title": "慈善市集",
     "subtitle": "通过购买或竞拍独特物品支持我们的公益事业",
-    "description": "浏览慈善商品和拍卖活动",
+    "description": "支持第聂伯罗康复中心的慈善市集 —— 购买独特商品，每笔订单都有照片凭证证明资金用途，直接帮助受战争影响的乌克兰家庭。",
+    "itemMetaDescription": "购买 {title}，支持第聂伯罗战争受害者康复中心，每笔订单都附有照片凭证证明资金用途。",
     "hero": {
       "tagline": "透明公益",
       "subtitle": "每一笔资金都标明详细用途，并提供后续照片与视频反馈",

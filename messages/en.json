@@ -786,18 +786,16 @@
     "publicAgreement": "Public Agreement"
   },
   "metadata": {
-    "homeDescription": "A charity foundation in Dnipro, Ukraine. We operate a rehabilitation center helping war victims rebuild their lives through medical aid, children's programs, and community support.",
-    "donateDescription": "Support our projects in Ukraine — medical rehabilitation, children's education, humanitarian aid. Every donation directly helps war-affected families in Dnipro.",
-    "trackDonationDescription": "Track your donation progress in real time — from payment to delivery. Full transparency with photo updates at every step.",
+    "homeDescription": "Dnipro-based charity foundation operating a rehabilitation center for war victims — medical care, children's programs and humanitarian aid across Ukraine.",
+    "donateDescription": "Donate to verified Ukraine projects — medical rehabilitation, children's education and humanitarian aid in Dnipro. Card, Apple Pay or crypto. 100% transparent.",
+    "trackDonationDescription": "Track your Way to Future UA donation in real time — from payment to delivery, with photo updates at every step. Refunds available anytime before completion.",
     "logoAlt": "WAY Logo",
     "orgDescription": "Way to Future UA is a registered charity foundation in Dnipro, Ukraine, operating a rehabilitation center dedicated to helping war victims rebuild their lives.",
-    "titleSuffix": "Charity Foundation in Dnipro, Ukraine",
-    "ogBadge": "Charity Foundation",
-    "ogTagline": "Rehabilitation center in Dnipro, Ukraine. Helping war victims rebuild their lives."
+    "titleSuffix": "Charity Foundation in Dnipro, Ukraine"
   },
   "privacyPolicy": {
     "title": "Privacy Policy",
-    "description": "How we collect, use, and protect your personal information",
+    "description": "How Way to Future UA collects, uses and protects your personal data — donor information, cookies and your privacy rights.",
     "effectiveDate": "Effective Date",
     "effectiveDateValue": "September 24, 2022",
     "intro": "Charitable foundation \"Way to future UA\" (hereinafter referred to as \"we\" or \"the Foundation\") respects your privacy and is committed to protecting the personal data you provide. This privacy policy explains what information we collect, how we use it, and how we store it.",
@@ -849,7 +847,7 @@
   },
   "publicAgreement": {
     "title": "Public Agreement",
-    "description": "Terms and conditions for charitable donations",
+    "description": "Public offer agreement for charitable donations to Way to Future UA — donor rights, fund usage rules and refund terms.",
     "mainTitle": "PUBLIC AGREEMENT (OFFER) REGARDING CHARITABLE DONATIONS",
     "intro": "This agreement is an official public offer applicable to individuals visiting https://waytofutureua.org.ua who wish to make charitable donations. The offer is presented by the charitable organization \"Way to future UA,\" signed by head Mykyta Zhalnin.",
     "section1": {
@@ -941,7 +939,8 @@
   "market": {
     "title": "Charity Market",
     "subtitle": "Support our mission through purchasing or bidding on unique items",
-    "description": "Browse charity sale items and auctions",
+    "description": "Charity market supporting our Dnipro rehabilitation center — buy unique items with photo proof of fund usage. Every order helps war-affected families.",
+    "itemMetaDescription": "Purchase {title} to support our Dnipro rehabilitation center for war victims. Photo proof of fund usage included with every order.",
     "hero": {
       "tagline": "TRANSPARENT CHARITY",
       "subtitle": "Every fund has a clear purpose, with photo and video proof delivered to you",
