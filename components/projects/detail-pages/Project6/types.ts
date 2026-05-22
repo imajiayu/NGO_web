@@ -12,6 +12,7 @@ export interface IntroductionImages {
   bedroomDetails: IntroImage[]
   daily: IntroImage[]
   closing: IntroImage[]
+  groupPhoto: IntroImage
 }
 
 export type IntroStatType = 'shelter' | 'location' | 'mothers' | 'children'

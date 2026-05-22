@@ -22,11 +22,17 @@ export default function Project6DetailContent({ project, locale }: Project6Detai
 
   const lightboxImageUrls = useMemo(() => {
     if (!content?.introduction?.images) return []
-    const { opening, arrival, bedroomHero, bedroomDetails, daily, closing } =
+    const { opening, arrival, bedroomHero, bedroomDetails, daily, closing, groupPhoto } =
       content.introduction.images
-    return [opening, ...arrival, bedroomHero, ...bedroomDetails, ...daily, ...closing].map(
-      (img) => img.src
-    )
+    return [
+      opening,
+      ...arrival,
+      bedroomHero,
+      ...bedroomDetails,
+      ...daily,
+      ...closing,
+      groupPhoto,
+    ].map((img) => img.src)
   }, [content?.introduction?.images])
 
   const { lightbox, images: lightboxImages } = useLightboxFromUrls(lightboxImageUrls)

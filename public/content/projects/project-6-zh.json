@@ -116,7 +116,8 @@
         { "src": "/images/projects/project-6/details/visit-1.webp", "alt": "2026 年 3 月食品援助活动" },
         { "src": "/images/projects/project-6/details/visit-2.webp", "alt": "2026 年 3 月食品援助活动" },
         { "src": "/images/projects/project-6/details/visit-3.webp", "alt": "2026 年 3 月食品援助活动" }
-      ]
+      ],
+      "groupPhoto": { "src": "/images/projects/project-6/details/group-photo.webp", "alt": "庇护所母亲与孩子们的合影" }
     }
   }
 }

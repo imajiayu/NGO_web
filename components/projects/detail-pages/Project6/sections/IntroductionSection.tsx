@@ -288,6 +288,7 @@ export default function IntroductionSection({
   const idxBedroomDetails = [3]
   const idxDaily = [4, 5, 6, 7, 8, 9, 10, 11]
   const idxClosing = [12, 13, 14]
+  const idxGroupPhoto = 15
 
   return (
     <section className="relative overflow-hidden rounded-xl border border-rose-100/70 bg-gradient-to-br from-rose-50/90 via-stone-50 to-amber-50/70 shadow-sm md:rounded-3xl">
@@ -503,7 +504,7 @@ export default function IntroductionSection({
         </div>
 
         {/* ─── BLOCK G: closing 三联 + caption (mobile: horizontal snap scroll) ─── */}
-        <figure>
+        <figure className="mb-6 md:mb-9">
           <figcaption className="mb-2.5 flex items-center gap-3 md:mb-3.5">
             <span
               aria-hidden
@@ -526,6 +527,15 @@ export default function IntroductionSection({
             ))}
           </div>
         </figure>
+
+        {/* ─── BLOCK H: 合影 (full-bleed) ─── */}
+        <ImageButton
+          img={images.groupPhoto}
+          index={idxGroupPhoto}
+          onClick={onImageClick}
+          className="block aspect-[16/9] w-full rounded-xl md:rounded-2xl"
+          imgSizes="100vw"
+        />
       </div>
     </section>
   )

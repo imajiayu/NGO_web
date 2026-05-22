@@ -116,7 +116,8 @@
         { "src": "/images/projects/project-6/details/visit-1.webp", "alt": "Food aid activity, March 2026" },
         { "src": "/images/projects/project-6/details/visit-2.webp", "alt": "Food aid activity, March 2026" },
         { "src": "/images/projects/project-6/details/visit-3.webp", "alt": "Food aid activity, March 2026" }
-      ]
+      ],
+      "groupPhoto": { "src": "/images/projects/project-6/details/group-photo.webp", "alt": "Mothers and children at the Shelter" }
     }
   }
 }
