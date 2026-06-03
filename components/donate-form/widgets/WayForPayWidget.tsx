@@ -57,6 +57,9 @@ export default function WayForPayWidget({ paymentParams, amount, locale, onBack 
         </div>
       </div>
 
+      {/* Network Access Notice */}
+      <p className="text-center text-sm font-medium text-ukraine-gold-700">{t('networkNotice')}</p>
+
       {/* Redirecting State - Mobile devices */}
       {isRedirecting && !error && (
         <div className="rounded-lg border-2 border-ukraine-blue-200 bg-ukraine-blue-50 p-5">

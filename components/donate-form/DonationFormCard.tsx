@@ -681,7 +681,7 @@ export default function DonationFormCard({
             updateDonorInfo={updateDonorInfo}
           />
 
-          {/* Submit Button + Network Notice */}
+          {/* Submit Button */}
           <SubmitSection
             isCreating={processingState === 'creating'}
             projectStatus={project.status}

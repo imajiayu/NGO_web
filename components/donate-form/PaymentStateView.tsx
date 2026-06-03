@@ -60,6 +60,9 @@ export default function PaymentStateView({
           </div>
         </div>
 
+        {/* Network Access Notice */}
+        <p className="text-center text-sm font-medium text-ukraine-gold-700">{t('networkNotice')}</p>
+
         {/* Processing Animation */}
         <div className="flex flex-col items-center justify-center space-y-4 py-8">
           <SpinnerIcon className="h-16 w-16 animate-spin text-ukraine-blue-500" />

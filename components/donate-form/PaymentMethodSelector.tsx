@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 
-export type PaymentMethod = 'card' | 'wechat' | 'alipay' | 'crypto'
+export type PaymentMethod = 'card' | 'wechatAlipay' | 'crypto'
 
 interface PaymentMethodSelectorProps {
   amount: number
@@ -82,20 +82,17 @@ export default function PaymentMethodSelector({
       borderColor: 'border-ukraine-blue-200 hover:border-ukraine-blue-400',
     },
     {
-      id: 'wechat',
-      icon: <WeChatIcon className="h-7 w-7" />,
-      available: false,
+      id: 'wechatAlipay',
+      icon: (
+        <div className="flex items-center gap-1.5">
+          <WeChatIcon className="h-7 w-7" />
+          <AlipayIcon className="h-7 w-7" />
+        </div>
+      ),
+      available: true,
       color: 'text-life-600',
-      bgColor: 'bg-life-50',
-      borderColor: 'border-life-200',
-    },
-    {
-      id: 'alipay',
-      icon: <AlipayIcon className="h-7 w-7" />,
-      available: false,
-      color: 'text-ukraine-blue-500',
-      bgColor: 'bg-ukraine-blue-50',
-      borderColor: 'border-ukraine-blue-200',
+      bgColor: 'bg-life-50 hover:bg-life-100',
+      borderColor: 'border-life-200 hover:border-life-400',
     },
     {
       id: 'crypto',

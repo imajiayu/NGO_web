@@ -234,6 +234,8 @@ export async function requestRefund(data: { donationPublicId: string; email: str
           updated_at: new Date().toISOString(),
         })
         .in('id', donationIds)
+        // 乐观锁：只翻转仍处于可退款状态的行，避免并发覆盖
+        .in('donation_status', REFUNDABLE_STATUSES)
 
       if (updateError) {
         logger.error('REFUND', 'Failed to update NOWPayments donation status', {

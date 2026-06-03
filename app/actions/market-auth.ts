@@ -1,9 +1,7 @@
 'use server'
 
-import { headers } from 'next/headers'
-
 import { logger } from '@/lib/logger'
-import { checkRateLimit } from '@/lib/rate-limit'
+import { checkRateLimit, getClientIP } from '@/lib/rate-limit'
 import { createServerClient } from '@/lib/supabase/server'
 
 // ============================================
@@ -15,11 +13,6 @@ import { createServerClient } from '@/lib/supabase/server'
 const SEND_LIMIT_PER_EMAIL = { max: 10, window: 60 * 60 * 1000 } // 每 email 每小时 10 次
 const SEND_LIMIT_PER_IP = { max: 30, window: 60 * 60 * 1000 } // 每 IP 每小时 30 次
 const VERIFY_LIMIT = { max: 5, window: 15 * 60 * 1000 } // 每 (email+IP) 15 分钟 5 次
-
-async function getClientIP(): Promise<string> {
-  const h = await headers()
-  return h.get('x-forwarded-for')?.split(',')[0]?.trim() || h.get('x-real-ip') || 'unknown'
-}
 
 export async function sendOTP(email: string): Promise<{ success: boolean; error?: string }> {
   const trimmed = email.trim().toLowerCase()

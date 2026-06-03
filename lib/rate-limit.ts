@@ -6,6 +6,8 @@
  * 如需跨实例限制，可替换为 Upstash Redis + @upstash/ratelimit。
  */
 
+import { headers } from 'next/headers'
+
 interface RateLimitEntry {
   count: number
   resetAt: number
@@ -43,4 +45,13 @@ export function checkRateLimit(key: string, maxAttempts: number, windowMs: numbe
   if (entry.count >= maxAttempts) return false
   entry.count++
   return true
+}
+
+/**
+ * 取客户端 IP（用于按 IP 限流）。
+ * 优先 x-forwarded-for 首段，回退 x-real-ip，再回退 'unknown'。
+ */
+export async function getClientIP(): Promise<string> {
+  const h = await headers()
+  return h.get('x-forwarded-for')?.split(',')[0]?.trim() || h.get('x-real-ip') || 'unknown'
 }

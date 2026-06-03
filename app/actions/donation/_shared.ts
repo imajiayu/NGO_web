@@ -185,7 +185,10 @@ export async function prepareDonationContext(
     }
   }
 
-  const totalAmount = projectAmount + (validated.tip_amount || 0)
+  // Round to cents: projectAmount (= unitPrice * quantity for non-aggregated) plus
+  // the tip is raw float arithmetic that can drift (e.g. 0.1 * 3 = 0.30000000000000004).
+  // Rounding keeps imprecise amounts from reaching the payment gateways and the DB.
+  const totalAmount = Math.round((projectAmount + (validated.tip_amount || 0)) * 100) / 100
 
   // =====================================================
   // CRITICAL: Check total amount limit for ALL projects
