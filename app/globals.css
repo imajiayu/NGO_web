@@ -52,6 +52,31 @@ main.min-h-screen:has(> [data-compact-page]) {
   }
 }
 
+/* ─── ScrollableRow: 滚动条滑块首次提示微动（暗示可横向拖动）─── */
+@keyframes scrollbar-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  35% {
+    transform: translateX(28%);
+  }
+  65% {
+    transform: translateX(0);
+  }
+  82% {
+    transform: translateX(16%);
+  }
+}
+.animate-scrollbar-nudge {
+  animation: scrollbar-nudge 1.7s cubic-bezier(0.4, 0, 0.2, 1) 0.9s 2 both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-scrollbar-nudge {
+    animation: none;
+  }
+}
+
 /* ─── Market item detail: staggered entrance ─── */
 @keyframes mkt-rise {
   from {

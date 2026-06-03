@@ -22,7 +22,8 @@
     "carousel": {
       "goToSlide": "Go to slide {number}",
       "scrollLeft": "Scroll left",
-      "scrollRight": "Scroll right"
+      "scrollRight": "Scroll right",
+      "dragHint": "Drag to see all"
     },
     "donationStatus": {
       "pending": "Payment Pending",
@@ -47,8 +48,6 @@
     "donate": "Donate",
     "market": "Market",
     "trackDonation": "Track Donation",
-    "about": "About",
-    "contact": "Contact",
     "language": {
       "label": "Language",
       "en": "English",
@@ -59,48 +58,31 @@
   "home": {
     "hero": {
       "mission": {
-        "label": "OUR MISSION",
         "title": "Healing the Wounds of War",
-        "subtitleLine1": "A local charity foundation in Dnipro, Ukraine, operating a medium-sized rehabilitation center.",
+        "subtitleLine1": "We are a local charity foundation in Dnipro, Ukraine,\noperating a medium-sized rehabilitation center,",
         "subtitleBefore": "Dedicated to helping ",
         "subtitleHighlight": "war victims",
         "subtitleAfter": " rebuild their lives.",
-        "displaced": "Displaced Families in Shelters",
         "women": "Widows & Orphans",
-        "civilians": "Civilians Under Attack"
+        "civilians": "Civilians Under Attack",
+        "ctaProjects": "View Donation Projects"
       },
       "approach": {
-        "label": "OUR APPROACH",
         "title": "Built on Trust & Transparency",
-        "subtitle": "Every donation creates real, traceable impact",
         "transparent": {
           "title": "Transparent",
-          "items": [
-            "Full receipts for every expense",
-            "Unique tracking ID",
-            "Real-time donation tracking"
-          ]
+          "summary": "A receipt for every expense\nEach donation gets a unique ID to follow its progress in real time"
         },
         "efficient": {
           "title": "Efficient",
-          "items": [
-            "Confirmed within 1 business day",
-            "Completed within 7 business days",
-            "Photo/video proof provided"
-          ]
+          "summary": "Confirmed within 1 business day, completed within 14\nPhoto and video reports tagged with your donation ID"
         },
         "direct": {
           "title": "Direct",
-          "items": [
-            "Track all donation outcomes",
-            "Recipient contact included",
-            "Funds go directly to recipients"
-          ]
+          "summary": "See the anonymized outcome of every donation — yours and everyone's\nDelivered straight to the chosen supplies or project"
         }
       },
       "impact": {
-        "label": "OUR IMPACT",
-        "title": "Four Years of Change",
         "subtitle": "Thank you to every donor for your support",
         "donations": {
           "value": "$100,000+",
@@ -124,11 +106,8 @@
         "label": "CHARITY MARKET"
       },
       "donationJourney": {
-        "label": "HOW IT WORKS",
         "title": "Your Donation Journey",
-        "subtitle": "From payment to impact - track every step of your contribution with full transparency",
-        "showDetails": "Show Details",
-        "hideDetails": "Hide Details"
+        "subtitle": "From payment to impact - track every step of your contribution with full transparency"
       },
       "compliance": {
         "button": "View Legal Documents",
@@ -147,7 +126,6 @@
         }
       },
       "results": {
-        "label": "PROJECT RESULTS",
         "title": "Our Impact in Action",
         "description": "See how your donations make a real difference in people's lives"
       }
@@ -160,10 +138,8 @@
     "unitPrice": "Unit Price",
     "projectType": "Project Type",
     "longTerm": "Long-term",
-    "fixedTerm": "Fixed-term Project",
     "startDate": "Start",
     "endDate": "End",
-    "about": "About This Project",
     "defaultDescription": "This project aims to make a positive impact in the community. Your donation will directly support the project goals and help those in need.",
     "fundingProgress": "Funding Progress",
     "target": "Target",
@@ -721,7 +697,7 @@
       "completed": {
         "title": "Completed",
         "description": "Your donation has been successfully delivered! You will receive an email with photos/videos showing the impact of your contribution.",
-        "timeframe": "Within 7 business days"
+        "timeframe": "Within 14 business days"
       },
       "refund_pending": {
         "title": "Refund Request Received",

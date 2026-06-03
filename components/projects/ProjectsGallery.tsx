@@ -1,8 +1,9 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import ScrollableRow from '@/components/common/ScrollableRow'
 import { isBodyScrollLocked } from '@/lib/hooks/useBodyScrollLock'
 import type { ProjectStats } from '@/types'
 
@@ -33,7 +34,7 @@ export default function ProjectsGallery({
   showHeader = false,
 }: ProjectsGalleryProps) {
   const t = useTranslations(mode === 'compact' ? 'donate' : 'home')
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const tc = useTranslations('common')
 
   // Scroll-based collapse/expand for compact mode
   // Default: all cards expanded. Scroll down: collapse. Scroll to top: expand.
@@ -95,46 +96,46 @@ export default function ProjectsGallery({
         )}
 
         {/* Horizontal Scrolling Container */}
-        <div className="relative">
-          <div ref={scrollContainerRef} className="scrollbar-hide overflow-x-auto pb-4 pt-6">
-            <div className="flex min-w-min items-start gap-6 px-2 py-2">
-              {projects.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  locale={locale}
-                  mode={mode}
-                  showProgress={true}
-                  isSelected={selectedProjectId === project.id}
-                  onSelect={onProjectSelect}
-                  forceCollapse={mode === 'compact' ? isCollapsedByScroll : false}
-                />
-              ))}
-            </div>
+        <ScrollableRow
+          className="relative"
+          scrollClassName="pb-4 pt-6"
+          scrollbarPosition="bottom"
+          hint={tc('carousel.dragHint')}
+          scrollLeftLabel={tc('carousel.scrollLeft')}
+          scrollRightLabel={tc('carousel.scrollRight')}
+        >
+          <div className="flex min-w-min items-start gap-6 px-2 py-2">
+            {projects.map((project) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                locale={locale}
+                mode={mode}
+                showProgress={true}
+                isSelected={selectedProjectId === project.id}
+                onSelect={onProjectSelect}
+                forceCollapse={mode === 'compact' ? isCollapsedByScroll : false}
+              />
+            ))}
           </div>
+        </ScrollableRow>
 
-          {/* Scroll Hint */}
-          <div className={`text-center ${mode === 'compact' ? 'mt-2' : 'mt-4'}`}>
-            <p className="flex items-center justify-center gap-2 text-sm text-gray-500">
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-              {t('scrollToViewAll')}
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </p>
-          </div>
+        {/* Scroll Hint（仅移动端） */}
+        <div className={`text-center md:hidden ${mode === 'compact' ? 'mt-2' : 'mt-4'}`}>
+          <p className="flex items-center justify-center gap-2 text-sm text-gray-500">
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            {t('scrollToViewAll')}
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </p>
         </div>
       </div>
     </section>

@@ -1,6 +1,7 @@
-import { getLocale } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 
 import { getPublicMarketItems } from '@/app/actions/market-items'
+import ScrollableRow from '@/components/common/ScrollableRow'
 import { logger } from '@/lib/logger'
 import { loadMarketItemContents } from '@/lib/market/market-content'
 
@@ -8,6 +9,7 @@ import HomeMarketCards from './HomeMarketCards'
 
 export default async function HomeMarketGrid() {
   const locale = await getLocale()
+  const tc = await getTranslations('common')
 
   let items: Awaited<ReturnType<typeof getPublicMarketItems>>['items'] = []
   try {
@@ -25,11 +27,15 @@ export default async function HomeMarketGrid() {
   )
 
   return (
-    <div className="mt-1 w-full md:mt-2">
-      {/* Horizontal Scrolling Container */}
-      <div className="scrollbar-hide overflow-x-auto pb-4 pt-2">
-        <HomeMarketCards items={items} contentMap={contentMap} />
-      </div>
-    </div>
+    <ScrollableRow
+      className="mt-1 w-full md:mt-2"
+      scrollClassName="pb-4 pt-2"
+      scrollbarPosition="top"
+      hint={tc('carousel.dragHint')}
+      scrollLeftLabel={tc('carousel.scrollLeft')}
+      scrollRightLabel={tc('carousel.scrollRight')}
+    >
+      <HomeMarketCards items={items} contentMap={contentMap} />
+    </ScrollableRow>
   )
 }

@@ -132,7 +132,7 @@ export default async function Footer() {
           alt=""
           fill
           sizes="100vw"
-          className="hidden object-cover object-right md:block"
+          className="hidden object-cover [object-position:100%_42%] md:block"
           quality={85}
           priority={false}
         />

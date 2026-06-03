@@ -9,6 +9,8 @@ const BG_SRCS = [
   '/images/projects/project-4/results/result-12.webp',
 ]
 
+const MOBILE_BG_SRC = '/images/track-donation/bg-3.webp'
+
 function preloadImages(srcs: string[]): Promise<void> {
   return Promise.all(
     srcs.map(
@@ -31,7 +33,7 @@ export default function HeroBackground() {
   useEffect(() => {
     let cancelled = false
     const isMobile = window.innerWidth < MD_BREAKPOINT
-    const srcs = isMobile ? [BG_SRCS[0]] : BG_SRCS
+    const srcs = isMobile ? [MOBILE_BG_SRC] : BG_SRCS
     preloadImages(srcs).then(() => {
       if (!cancelled) setReady(true)
     })
@@ -65,7 +67,7 @@ export default function HeroBackground() {
         className="absolute inset-0 transition-opacity duration-700 md:hidden"
         style={{ opacity: ready ? 1 : 0 }}
       >
-        <Image src={BG_SRCS[0]} alt="" fill className="object-cover" quality={85} priority />
+        <Image src={MOBILE_BG_SRC} alt="" fill className="object-cover" quality={85} priority />
       </div>
 
       {/* Dark overlay */}

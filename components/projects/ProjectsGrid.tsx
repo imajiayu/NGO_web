@@ -1,5 +1,6 @@
 import { getLocale, getTranslations } from 'next-intl/server'
 
+import ScrollableRow from '@/components/common/ScrollableRow'
 import ProjectCard from '@/components/projects/ProjectCard'
 import { logger } from '@/lib/logger'
 import { getAllProjectsWithStats } from '@/lib/supabase/queries'
@@ -7,6 +8,7 @@ import type { ProjectStats } from '@/types'
 
 export default async function ProjectsGrid() {
   const t = await getTranslations('home')
+  const tc = await getTranslations('common')
   const locale = await getLocale()
 
   // Add error handling for Supabase requests
@@ -25,21 +27,20 @@ export default async function ProjectsGrid() {
           <p className="text-gray-500">{t('noProjects')}</p>
         </div>
       ) : (
-        <div className="relative">
-          {/* Horizontal Scrolling Container */}
-          <div className="scrollbar-hide overflow-x-auto pb-4 pt-2">
-            <div className="flex min-w-min gap-6 px-6">
-              {projects.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  locale={locale}
-                  showProgress={true}
-                />
-              ))}
-            </div>
+        <ScrollableRow
+          className="relative"
+          scrollClassName="pb-4 pt-2"
+          scrollbarPosition="top"
+          hint={tc('carousel.dragHint')}
+          scrollLeftLabel={tc('carousel.scrollLeft')}
+          scrollRightLabel={tc('carousel.scrollRight')}
+        >
+          <div className="flex min-w-min gap-6 px-6">
+            {projects.map((project) => (
+              <ProjectCard key={project.id} project={project} locale={locale} showProgress={true} />
+            ))}
           </div>
-        </div>
+        </ScrollableRow>
       )}
     </div>
   )

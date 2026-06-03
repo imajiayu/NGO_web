@@ -3,6 +3,7 @@ import { type Attachment, Resend } from 'resend'
 import sanitizeHtml from 'sanitize-html'
 import { Webhook } from 'svix'
 
+import { escapeHtml } from '@/lib/email/utils'
 import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
@@ -23,15 +24,6 @@ const FORWARD_MARK_VALUE = SELF_DOMAIN
 const ATTACHMENT_DOWNLOAD_TIMEOUT_MS = 20_000
 // Resend 单封邮件 40MB 上限；附件总量保险线设 30MB，超过就丢尾部，避免 send 整封失败
 const ATTACHMENT_TOTAL_LIMIT_BYTES = 30 * 1024 * 1024
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-}
 
 function joinAddresses(value: unknown): string | null {
   if (Array.isArray(value)) {

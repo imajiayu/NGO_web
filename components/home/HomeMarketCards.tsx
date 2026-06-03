@@ -26,7 +26,7 @@ export default function HomeMarketCards({ items, contentMap }: HomeMarketCardsPr
       <GlobalLoadingSpinner isLoading={isNavigating} />
       <div className="flex min-w-min gap-5 px-6">
         {items.map((item) => (
-          <div key={item.id} className="w-[260px] flex-shrink-0 sm:w-[280px]">
+          <div key={item.id} className="w-[200px] flex-shrink-0 sm:w-[220px] lg:w-[244px]">
             <MarketItemCard
               item={item}
               content={contentMap[item.id] ?? null}

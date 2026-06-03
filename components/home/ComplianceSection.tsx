@@ -15,7 +15,7 @@ export default async function ComplianceSection() {
   ]
 
   return (
-    <section id="compliance-section" className="relative py-12 md:py-16">
+    <section id="compliance-section" className="relative pt-12 pb-4 md:pt-16 md:pb-6">
       <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8 text-center">
@@ -27,21 +27,21 @@ export default async function ComplianceSection() {
           </p>
         </div>
 
-        {/* Documents Grid - Single Row */}
-        <div className="overflow-x-auto pb-4 pt-2">
-          <div className="flex min-w-min gap-4 px-2">
+        {/* Documents Grid - Single Row（移动端横滚，桌面端 8 列占满宽度） */}
+        <div className="scrollbar-hide overflow-x-auto pb-4 pt-2 md:overflow-visible">
+          <div className="flex min-w-min gap-4 px-2 md:grid md:min-w-0 md:grid-cols-8">
             {documents.map(({ key, file }) => (
               <a
                 key={key}
                 href={`/documents/${encodeURIComponent(file)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group w-48 flex-shrink-0 transform rounded-xl border-2 border-gray-200 bg-white p-4 transition-all duration-300 hover:-translate-y-2 hover:border-ukraine-blue-500 hover:shadow-lg"
+                className="group w-32 flex-shrink-0 transform rounded-xl border-2 border-gray-200 bg-white p-3 transition-all duration-300 hover:-translate-y-2 hover:border-ukraine-blue-500 hover:shadow-lg md:w-auto"
               >
                 {/* PDF Icon */}
-                <div className="mb-3 flex justify-center">
-                  <div className="rounded-lg border border-warm-200 bg-warm-50 p-3 transition-colors group-hover:bg-warm-100">
-                    <svg className="h-8 w-8 text-warm-600" fill="currentColor" viewBox="0 0 20 20">
+                <div className="mb-2 flex justify-center">
+                  <div className="rounded-lg border border-warm-200 bg-warm-50 p-2.5 transition-colors group-hover:bg-warm-100">
+                    <svg className="h-6 w-6 text-warm-600" fill="currentColor" viewBox="0 0 20 20">
                       <path
                         fillRule="evenodd"
                         d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
@@ -52,12 +52,12 @@ export default async function ComplianceSection() {
                 </div>
 
                 {/* Document Name */}
-                <p className="line-clamp-3 text-center text-sm font-medium leading-tight text-gray-900 transition-colors group-hover:text-ukraine-blue-500">
+                <p className="line-clamp-3 text-center text-xs font-medium leading-tight text-gray-900 transition-colors group-hover:text-ukraine-blue-500">
                   {t(`documents.${key}`)}
                 </p>
 
                 {/* Download Indicator */}
-                <div className="mt-3 flex justify-center">
+                <div className="mt-2 flex justify-center">
                   <span className="text-xs text-gray-500 transition-colors group-hover:text-ukraine-blue-500">
                     PDF
                   </span>

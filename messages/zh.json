@@ -22,7 +22,8 @@
     "carousel": {
       "goToSlide": "跳转到第 {number} 页",
       "scrollLeft": "向左滚动",
-      "scrollRight": "向右滚动"
+      "scrollRight": "向右滚动",
+      "dragHint": "拖动查看全部"
     },
     "donationStatus": {
       "pending": "支付待确认",
@@ -47,8 +48,6 @@
     "donate": "捐赠",
     "market": "慈善市集",
     "trackDonation": "查询捐赠",
-    "about": "关于",
-    "contact": "联系",
     "language": {
       "label": "语言",
       "en": "English",
@@ -59,48 +58,31 @@
   "home": {
     "hero": {
       "mission": {
-        "label": "我们的使命",
         "title": "抚平战争的创伤",
-        "subtitleLine1": "我们是乌克兰第聂伯罗当地的慈善基金会，拥有一家中等规模康复中心。",
+        "subtitleLine1": "我们是乌克兰第聂伯罗当地的慈善基金会，\n拥有一家中等规模康复中心，",
         "subtitleBefore": "致力于帮助",
         "subtitleHighlight": "战争受害者",
         "subtitleAfter": "重建生活。",
-        "displaced": "庇护所流离失所者",
         "women": "寡妇与孤儿",
-        "civilians": "受到袭击的平民"
+        "civilians": "受到袭击的平民",
+        "ctaProjects": "查看捐赠项目"
       },
       "approach": {
-        "label": "我们的方式",
         "title": "建立在信任与透明之上",
-        "subtitle": "每一笔捐赠都创造真实、可追溯的影响",
         "transparent": {
           "title": "透明",
-          "items": [
-            "提供每笔支出收据",
-            "独一无二的捐赠追踪 ID",
-            "实时追踪捐赠进度"
-          ]
+          "summary": "每笔支出提供收据凭证\n每笔捐赠拥有唯一 ID，实时查看捐赠进度"
         },
         "efficient": {
           "title": "高效",
-          "items": [
-            "付款后1个工作日内确认",
-            "7个工作日内执行完毕",
-            "提供图片/视频回执"
-          ]
+          "summary": "1 个工作日内确认、14 个工作日内执行完毕\n提供包含捐赠 ID 的图片与视频回执"
         },
         "direct": {
           "title": "直接",
-          "items": [
-            "监督您和所有人的匿名捐赠结果",
-            "包含受益者联系方式",
-            "捐赠直接用于指定对象或项目"
-          ]
+          "summary": "监督您与所有人的匿名捐赠结果\n直接用于指定物资或项目"
         }
       },
       "impact": {
-        "label": "我们的影响",
-        "title": "四年的改变",
         "subtitle": "感谢每一位捐赠者的支持",
         "donations": {
           "value": "$100,000+",
@@ -124,11 +106,8 @@
         "label": "爱心义卖"
       },
       "donationJourney": {
-        "label": "工作流程",
         "title": "您的捐赠之旅",
-        "subtitle": "从支付到影响 - 全程透明追踪您的每一步贡献",
-        "showDetails": "显示详情",
-        "hideDetails": "隐藏详情"
+        "subtitle": "从支付到影响 - 全程透明追踪您的每一步贡献"
       },
       "compliance": {
         "button": "查看法律文件",
@@ -147,7 +126,6 @@
         }
       },
       "results": {
-        "label": "项目成果",
         "title": "我们的行动成果",
         "description": "看看您的捐赠如何真正改变人们的生活"
       }
@@ -160,10 +138,8 @@
     "unitPrice": "单价",
     "projectType": "项目类型",
     "longTerm": "长期项目",
-    "fixedTerm": "固定期限项目",
     "startDate": "开始",
     "endDate": "结束",
-    "about": "关于本项目",
     "defaultDescription": "本项目旨在为社区带来积极影响。您的捐赠将直接支持项目目标，帮助有需要的人。",
     "fundingProgress": "资金进度",
     "target": "目标",
@@ -721,7 +697,7 @@
       "completed": {
         "title": "已完成",
         "description": "您的捐赠已成功送达！您将收到一封包含照片/视频的邮件，展示您的贡献所产生的影响。",
-        "timeframe": "7个工作日内"
+        "timeframe": "14个工作日内"
       },
       "refund_pending": {
         "title": "收到退款申请",

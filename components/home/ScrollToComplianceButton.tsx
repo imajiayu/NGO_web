@@ -1,23 +1,13 @@
 'use client'
 
+import { scrollToElementById } from '@/lib/scroll-to-section'
+
 interface Props {
   label: string
 }
 
 export default function ScrollToComplianceButton({ label }: Props) {
-  const handleClick = () => {
-    const complianceSection = document.getElementById('compliance-section')
-    if (complianceSection) {
-      const navHeight = 80
-      const elementPosition = complianceSection.getBoundingClientRect().top
-      const offsetPosition = elementPosition + window.pageYOffset - navHeight
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth',
-      })
-    }
-  }
+  const handleClick = () => scrollToElementById('compliance-section')
 
   return (
     <button
