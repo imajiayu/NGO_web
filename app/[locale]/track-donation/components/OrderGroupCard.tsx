@@ -17,6 +17,7 @@ interface Props {
   locale: string
   onRequestRefund: (orderReference: string) => void
   onViewResult: (donationPublicId: string) => void
+  refundError?: string
 }
 
 export default function OrderGroupCard({
@@ -25,6 +26,7 @@ export default function OrderGroupCard({
   locale,
   onRequestRefund,
   onViewResult,
+  refundError,
 }: Props) {
   const t = useTranslations('trackDonation')
 
@@ -193,7 +195,14 @@ export default function OrderGroupCard({
 
         {/* Action Buttons - Order Level */}
         {refundableAmount > 0 && (
-          <div className="flex flex-wrap gap-3 border-t border-gray-100 pt-4">
+          <div className="flex flex-col gap-3 border-t border-gray-100 pt-4">
+            {refundError && (
+              <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                <span className="shrink-0">✕</span>
+                {refundError}
+              </div>
+            )}
+            <div className="flex flex-wrap gap-3">
             <button
               className="flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-100 px-4 py-2 text-sm font-medium text-orange-700 transition-colors hover:bg-orange-200 disabled:cursor-not-allowed disabled:opacity-50"
               onClick={() => onRequestRefund(orderReference)}
@@ -211,6 +220,7 @@ export default function OrderGroupCard({
                 </>
               )}
             </button>
+            </div>
           </div>
         )}
       </div>

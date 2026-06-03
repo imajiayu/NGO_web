@@ -32,6 +32,7 @@ export default function TrackDonationForm({ locale }: Props) {
   const [loading, setLoading] = useState(false)
   const [confirmRefundId, setConfirmRefundId] = useState<string | null>(null)
   const [viewResultDonationId, setViewResultDonationId] = useState<string | null>(null)
+  const [refundErrors, setRefundErrors] = useState<Record<string, string>>({})
 
   // 用于追踪上次自动查询的参数，避免重复查询
   const lastAutoQueryParams = useRef<{ email: string; id: string } | null>(null)
@@ -41,6 +42,7 @@ export default function TrackDonationForm({ locale }: Props) {
     async (queryEmail: string, queryId: string) => {
       setError('')
       setDonations(null)
+      setRefundErrors({})
       setLoading(true)
 
       try {
@@ -106,6 +108,7 @@ export default function TrackDonationForm({ locale }: Props) {
     }
 
     setDonations(null)
+    setRefundErrors({})
     setLoading(true)
 
     try {
@@ -140,9 +143,14 @@ export default function TrackDonationForm({ locale }: Props) {
       return
     }
 
-    // 立即关闭确认窗口
+    // 立即关闭确认窗口，清除此订单的旧错误
     setConfirmRefundId(null)
     setError('')
+    setRefundErrors((prev) => {
+      const next = { ...prev }
+      delete next[orderReference]
+      return next
+    })
 
     // 立即更新UI为"refunding"状态（乐观更新）- 只更新可退款的记录
     setDonations((prev) =>
@@ -162,8 +170,11 @@ export default function TrackDonationForm({ locale }: Props) {
     })
       .then((result) => {
         if (result.error) {
-          // 退款失败，显示错误并恢复原状态
-          setError(t(`errors.${result.error}`))
+          // 退款失败，在对应订单卡片处显示错误，恢复原状态
+          setRefundErrors((prev) => ({
+            ...prev,
+            [orderReference]: t(`errors.${result.error}`),
+          }))
           // 重新查询获取正确的状态
           trackDonations({ email, donationId: refundableDonation.donation_public_id }).then(
             (trackResult) => {
@@ -191,7 +202,10 @@ export default function TrackDonationForm({ locale }: Props) {
         clientLogger.error('API', 'Refund request failed', {
           error: err instanceof Error ? err.message : String(err),
         })
-        setError(t('errors.serverError'))
+        setRefundErrors((prev) => ({
+          ...prev,
+          [orderReference]: t('errors.serverError'),
+        }))
         // 重新查询获取正确的状态
         trackDonations({ email, donationId: refundableDonation.donation_public_id }).then(
           (trackResult) => {
@@ -249,6 +263,7 @@ export default function TrackDonationForm({ locale }: Props) {
                 locale={locale}
                 onRequestRefund={setConfirmRefundId}
                 onViewResult={setViewResultDonationId}
+                refundError={refundErrors[orderReference]}
               />
             ))}
           </div>
