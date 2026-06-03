@@ -78,8 +78,8 @@
 | contact_whatsapp   | VARCHAR(255)  | NULL                    | WhatsApp                                 |
 | amount             | NUMERIC(10,2) | NOT NULL, >0            | 金额 **[不可修改]**                      |
 | currency           | VARCHAR(10)   | DEFAULT 'USD'           | USD/UAH/EUR                              |
-| payment_method     | VARCHAR(50)   | NULL                    | 支付方式                                 |
-| order_reference    | VARCHAR(255)  | NULL                    | WayForPay订单号 **[不可修改]**           |
+| payment_method     | VARCHAR(50)   | NULL                    | 支付方式（`WayForPay` / `NOWPayments` / `QmmPay`） |
+| order_reference    | VARCHAR(255)  | NULL                    | 订单号（各支付网关共用）**[不可修改]**   |
 | donation_status    | VARCHAR(20)   | DEFAULT 'paid'          | 状态（14个有效值）                       |
 | locale             | VARCHAR(5)    | DEFAULT 'en'            | 语言: en/zh/ua                           |
 | donated_at         | TIMESTAMPTZ   | DEFAULT now(), NOT NULL | 捐赠时间                                 |
@@ -356,6 +356,9 @@ Supabase 客户端
 | 创建待支付捐赠                    | Anonymous     | ✅       |
 | 更新 pending → widget_load_failed | Anonymous     | ✅       |
 | WayForPay Webhook 更新状态        | Service Role  | ❌       |
+| NOWPayments Webhook 更新状态      | Service Role  | ❌       |
+| QmmPay Webhook 更新状态（GET）    | Service Role  | ❌       |
+| QmmPay 退款（同步，无 webhook）   | Service Role  | ❌       |
 | 管理员操作                        | Authenticated | ✅       |
 | 管理员批量操作                    | Service Role  | ❌       |
 
@@ -374,5 +377,6 @@ Supabase 客户端
 
 ---
 
-**文档版本**: 4.1.0
+**文档版本**: 4.2.0
 **基于**: baseline + 4 个增量迁移
+**最后更新**: 2026-06-03

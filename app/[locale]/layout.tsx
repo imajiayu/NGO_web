@@ -114,8 +114,10 @@ export default async function RootLayout(props: {
   // Get messages for the locale
   const messages = await getMessages()
 
+  // suppressHydrationWarning: 微信/部分内置浏览器会在加载后向 <html> 注入
+  // style（如 -webkit-touch-callout:none），导致 hydration 属性不匹配。
   return (
-    <html lang={localeToHtmlLang[locale] || locale}>
+    <html lang={localeToHtmlLang[locale] || locale} suppressHydrationWarning>
       <body
         className={`${fraunces.variable} ${sourceSans.variable} ${jetbrainsMono.variable} font-body antialiased`}
       >

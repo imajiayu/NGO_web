@@ -37,16 +37,31 @@ export default function BottomSheet({
   const [startY, setStartY] = useState(0)
   const [currentY, setCurrentY] = useState(0)
 
-  // Calculate snap point in pixels
-  const getSnapHeight = useCallback((snapIndex: number) => {
-    const vh = window.innerHeight
-    if (snapIndex === 1) {
-      // Full screen: height to just below the navigation bar
-      return vh - NAV_BAR_HEIGHT
-    }
-    // Minimized: fixed height for the button bar only
-    return MINIMIZED_HEIGHT
+  // Track viewport height in state so the sheet re-renders on viewport changes.
+  // 关键：移动端弹出/收起输入法会改变 window.innerHeight 并触发 resize。
+  // 若不把高度提到 state、跟随 resize 重算，收起输入法后展开态高度会卡在被
+  // 输入法压缩时算出的「半屏」值（收起时没有别的东西触发本组件重渲染）。
+  const [viewportHeight, setViewportHeight] = useState(0)
+  useEffect(() => {
+    const update = () => setViewportHeight(window.innerHeight)
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
   }, [])
+
+  // Calculate snap point in pixels
+  const getSnapHeight = useCallback(
+    (snapIndex: number) => {
+      const vh = viewportHeight || window.innerHeight
+      if (snapIndex === 1) {
+        // Full screen: height to just below the navigation bar
+        return vh - NAV_BAR_HEIGHT
+      }
+      // Minimized: fixed height for the button bar only
+      return MINIMIZED_HEIGHT
+    },
+    [viewportHeight]
+  )
 
   const isMinimized = currentSnap === 0
   const isExpanded = currentSnap === 1

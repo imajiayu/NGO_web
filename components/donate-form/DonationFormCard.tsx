@@ -3,7 +3,11 @@
 import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { createNowPaymentsDonation, createWayForPayDonation } from '@/app/actions/donation'
+import {
+  createNowPaymentsDonation,
+  createQmmPayDonation,
+  createWayForPayDonation,
+} from '@/app/actions/donation'
 import { createEmailSubscription } from '@/app/actions/subscription'
 import NowPaymentsWidget from '@/components/donate-form/widgets/NowPaymentsWidget'
 import { trackEvent } from '@/lib/analytics/track'
@@ -28,6 +32,7 @@ import TipSection from './sections/TipSection'
 import TotalSummarySection from './sections/TotalSummarySection'
 import type { FieldKey } from './sections/types'
 import { clampAmount } from './sections/utils'
+import WechatAlipaySelector from './WechatAlipaySelector'
 
 // Re-export for backward compatibility (DonatePageClient imports it from here historically)
 export type { DonorInfo }
@@ -87,6 +92,7 @@ export default function DonationFormCard({
     | 'idle'
     | 'selecting_method'
     | 'selecting_crypto'
+    | 'selecting_wallet'
     | 'creating'
     | 'ready'
     | 'crypto_ready'
@@ -319,6 +325,12 @@ export default function DonationFormCard({
       return
     }
 
+    // Handle WeChat / Alipay: show wallet selector
+    if (method === 'wechatAlipay') {
+      setProcessingState('selecting_wallet')
+      return
+    }
+
     // Handle card payment
     if (method !== 'card') return
 
@@ -524,6 +536,95 @@ export default function DonationFormCard({
     }
   }
 
+  // Handle WeChat / Alipay wallet selection
+  const handleWalletSelect = async (walletType: 'alipay' | 'wxpay') => {
+    if (!project || project.id === null || project.id === undefined) return
+
+    const requestProjectId = project.id
+    setError(null)
+    setProcessingState('creating')
+
+    try {
+      const submitQuantity = isAggregatedProject ? 1 : quantity
+      const submitAmount = isAggregatedProject ? donationAmount : undefined
+
+      const result = await createQmmPayDonation({
+        project_id: project.id,
+        quantity: submitQuantity,
+        amount: submitAmount,
+        donor_name: donorName.trim(),
+        donor_email: donorEmail.trim(),
+        donor_message: donorMessage || undefined,
+        contact_telegram: contactTelegram ? contactTelegram.trim() : undefined,
+        contact_whatsapp: contactWhatsapp ? contactWhatsapp.trim() : undefined,
+        tip_amount: tipAmount > 0 ? tipAmount : undefined,
+        locale: locale as AppLocale,
+        payType: walletType,
+      })
+
+      if (activeProjectIdRef.current !== requestProjectId) return
+
+      if (result.allProjectsStats && onProjectsUpdate) {
+        onProjectsUpdate(result.allProjectsStats)
+      }
+
+      if (!result.success) {
+        if (result.error === 'quantity_exceeded') {
+          const remainingUnits = result.remainingUnits || 0
+          setQuantity(remainingUnits)
+          setError(t('errors.quantityExceeded', { remaining: remainingUnits, unitName }))
+        } else if (result.error === 'amount_limit_exceeded') {
+          const maxQuantity = result.maxQuantity || 1
+          if (isAggregatedProject) {
+            setDonationAmount(maxQuantity)
+            setDonationAmountInput(String(maxQuantity))
+            setError(t('errors.amountLimitExceeded', { max: maxQuantity, unitName }))
+          } else {
+            setQuantity(maxQuantity)
+            setError(t('errors.amountLimitExceeded', { max: maxQuantity, unitName }))
+          }
+        } else if (result.error === 'api_error') {
+          setError(result.message || t('errors.serverError'))
+        } else if (result.error === 'project_not_found') {
+          setError(t('errors.projectNotFound'))
+        } else if (result.error === 'project_not_active') {
+          setError(t('errors.projectNotActive'))
+        } else {
+          setError(t('errors.serverError'))
+        }
+        setProcessingState('error')
+        return
+      }
+
+      // Fire the newsletter subscription before navigating away — await it so
+      // the request isn't cancelled by the redirect below.
+      if (subscribeToNewsletter && donorEmail) {
+        try {
+          await createEmailSubscription(donorEmail.trim(), locale as AppLocale)
+        } catch (subscriptionError) {
+          clientLogger.error('FORM:DONATION', 'Failed to create email subscription', {
+            error:
+              subscriptionError instanceof Error
+                ? subscriptionError.message
+                : String(subscriptionError),
+          })
+        }
+      }
+
+      // method='jump' → payInfo is a redirect URL. Navigate directly; QmmPay's
+      // cashier page handles the environment (WeChat / mobile / PC). The
+      // 'creating' panel stays visible until the browser navigates away.
+      window.location.href = result.paymentData!.payInfo
+    } catch (err) {
+      if (activeProjectIdRef.current !== requestProjectId) return
+      clientLogger.error('FORM:DONATION', 'Error creating QmmPay payment', {
+        error: err instanceof Error ? err.message : String(err),
+      })
+      setError(t('errors.serverError'))
+      setProcessingState('error')
+    }
+  }
+
   // Handler to go back to edit form
   const handleBack = () => {
     setShowWidget(false)
@@ -564,6 +665,13 @@ export default function DonationFormCard({
               isLoading={isCryptoLoading}
             />
           )}
+          {processingState === 'selecting_wallet' && (
+            <WechatAlipaySelector
+              amount={totalAmount}
+              onSelect={handleWalletSelect}
+              onBack={handleBackToMethodSelect}
+            />
+          )}
           {processingState === 'crypto_ready' && cryptoPaymentData && (
             <NowPaymentsWidget
               paymentData={cryptoPaymentData}
@@ -581,6 +689,7 @@ export default function DonationFormCard({
               amount={totalAmount}
               locale={locale}
               error={error}
+              paymentMethod={selectedPaymentMethod}
               onBack={handleBack}
             />
           )}

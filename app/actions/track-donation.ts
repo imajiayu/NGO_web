@@ -13,6 +13,7 @@ import {
 } from '@/lib/donation-status'
 import { sendRefundSuccessEmail } from '@/lib/email'
 import { logger } from '@/lib/logger'
+import { processQmmPayRefund } from '@/lib/payment/qmmpay/server'
 import { processWayForPayRefund } from '@/lib/payment/wayforpay/server'
 import { getInternalClient, getPublicClient } from '@/lib/supabase/action-clients'
 import { requestRefundSchema, trackDonationSchema } from '@/lib/validations'
@@ -219,6 +220,10 @@ export async function requestRefund(data: { donationPublicId: string; email: str
     // Calculate refundable amount (only paid/confirmed/delivering donations)
     const totalOrderAmount = refundableDonations.reduce((sum, d) => sum + Number(d.amount), 0)
 
+    // Full order amount across ALL rows (incl. already-refunded ones) — used as
+    // the denominator for proportional partial refunds (QmmPay).
+    const fullOrderAmount = orderDonations.reduce((sum, d) => sum + Number(d.amount), 0)
+
     // 5. Handle refund based on payment method
     const paymentMethod = donationData.payment_method
 
@@ -254,6 +259,112 @@ export async function requestRefund(data: { donationPublicId: string; email: str
         affectedDonations: refundableDonations.length,
         totalAmount: totalOrderAmount,
         message: 'Crypto refund request submitted for manual processing',
+      }
+    }
+
+    // For QmmPay (WeChat/Alipay): Synchronous refund — no webhook, result is immediate
+    if (paymentMethod === 'QmmPay') {
+      try {
+        // Partial refund: refund the CNY portion proportional to the refundable
+        // donations' USD share of the full order. The authoritative CNY total
+        // comes from QmmPay's order-query endpoint, not recomputed from USD.
+        const refundRatio = fullOrderAmount > 0 ? totalOrderAmount / fullOrderAmount : 1
+        const refundResult = await processQmmPayRefund({
+          orderReference: donationData.order_reference,
+          refundRatio,
+        })
+
+        const donationIds = refundableDonations.map((d) => d.id)
+
+        if (refundResult.code !== 0) {
+          logger.error('REFUND', 'QmmPay refund failed', {
+            code: refundResult.code,
+            msg: refundResult.msg,
+            orderReference: donationData.order_reference,
+          })
+          await serviceSupabase
+            .from('donations')
+            .update({ donation_status: 'refunding', updated_at: new Date().toISOString() })
+            .in('id', donationIds)
+            .in('donation_status', REFUNDABLE_STATUSES)
+
+          return { error: 'refundDeclined', message: refundResult.msg || 'Refund declined' }
+        }
+
+        // Refund accepted — update to 'refunded' immediately (synchronous API)
+        const { error: updateError } = await serviceSupabase
+          .from('donations')
+          .update({ donation_status: 'refunded', updated_at: new Date().toISOString() })
+          .in('id', donationIds)
+          .in('donation_status', REFUNDABLE_STATUSES)
+
+        if (updateError) {
+          logger.error('REFUND', 'QmmPay: failed to update donation status', {
+            error: updateError.message,
+          })
+          return { error: 'serverError' }
+        }
+
+        logger.info('REFUND', 'QmmPay refund success', {
+          count: donationIds.length,
+          orderReference: donationData.order_reference,
+          refundNo: refundResult.refund_no,
+        })
+
+        // Send refund confirmation email
+        try {
+          const firstDonation = refundableDonations[0]
+          const anonSupabase = getPublicClient()
+          const { data: project } = await anonSupabase
+            .from('projects')
+            .select('project_name_i18n')
+            .eq('id', firstDonation.project_id)
+            .single()
+
+          if (project && firstDonation.donor_email) {
+            await sendRefundSuccessEmail({
+              to: firstDonation.donor_email,
+              donorName: firstDonation.donor_name || '',
+              projectNameI18n: project.project_name_i18n as { en: string; zh: string; ua: string },
+              donationIds: refundableDonations.map((d) => d.donation_public_id),
+              refundAmount: refundResult.refundedCny,
+              currency: 'CNY',
+              locale: (firstDonation.locale as AppLocale) || 'zh',
+            })
+            logger.info('REFUND', 'QmmPay refund email sent', { to: firstDonation.donor_email })
+          }
+        } catch (emailError) {
+          logger.error('REFUND', 'QmmPay: failed to send refund email', {
+            error: emailError instanceof Error ? emailError.message : String(emailError),
+          })
+        }
+
+        return {
+          success: true,
+          status: 'refunded',
+          affectedDonations: refundableDonations.length,
+          totalAmount: totalOrderAmount,
+        }
+      } catch (qmmPayError: unknown) {
+        logger.error('REFUND', 'QmmPay refund API error', {
+          error: qmmPayError instanceof Error ? qmmPayError.message : String(qmmPayError),
+          orderReference: donationData.order_reference,
+        })
+        const donationIds = refundableDonations.map((d) => d.id)
+        try {
+          await serviceSupabase
+            .from('donations')
+            .update({ donation_status: 'refunding', updated_at: new Date().toISOString() })
+            .in('id', donationIds)
+            .in('donation_status', REFUNDABLE_STATUSES)
+        } catch {
+          // best-effort
+        }
+        return {
+          error: 'refundApiError',
+          message:
+            qmmPayError instanceof Error ? qmmPayError.message : 'Failed to process QmmPay refund',
+        }
       }
     }
 

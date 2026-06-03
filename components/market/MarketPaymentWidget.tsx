@@ -146,7 +146,7 @@ export default function MarketPaymentWidget({ paymentParams, amount, locale, onB
                   d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126Z"
                 />
               </svg>
-              <p className="text-[13px] leading-relaxed text-amber-700">
+              <p className="whitespace-pre-line text-[13px] leading-relaxed text-amber-700">
                 {tDonate('networkNotice')}
               </p>
             </div>

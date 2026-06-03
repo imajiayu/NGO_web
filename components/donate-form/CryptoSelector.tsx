@@ -180,10 +180,9 @@ export default function CryptoSelector({
     <div className="space-y-4 p-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="mb-1 font-display text-xl font-bold text-gray-900">
+        <h2 className="font-display text-xl font-bold text-gray-900">
           {t('cryptoSelector.title')}
         </h2>
-        <p className="text-sm text-gray-600">{t('cryptoSelector.subtitle')}</p>
       </div>
 
       {/* Amount Display */}

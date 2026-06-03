@@ -239,7 +239,7 @@ export async function prepareDonationContext(
 // DB writes
 // ============================================================
 
-type PaymentMethodLabel = 'WayForPay' | 'NOWPayments'
+type PaymentMethodLabel = 'WayForPay' | 'NOWPayments' | 'QmmPay'
 
 /**
  * Insert pending donation rows for the given context, mirroring the verbatim
@@ -358,9 +358,11 @@ export async function insertPendingDonations(
 
   // Log message intentionally tracks the previous per-action wording
   // (WayForPay path used "Pending records created"; NowPayments used
-  // "Pending records created (NOWPayments)") so log output stays
-  // identical to pre-refactor.
-  const logSuffix = paymentMethod === 'NOWPayments' ? ' (NOWPayments)' : ''
+  // "Pending records created (NOWPayments)"; QmmPay uses "(QmmPay)") so log
+  // output stays identical to pre-refactor for existing providers.
+  const logSuffix =
+    paymentMethod === 'NOWPayments' ? ' (NOWPayments)' :
+    paymentMethod === 'QmmPay' ? ' (QmmPay)' : ''
   logger.info('DONATION', `Pending records created${logSuffix}`, {
     count: donationRecords.length,
     orderReference,

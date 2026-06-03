@@ -463,7 +463,7 @@
       "projectNotActive": "项目未激活",
       "amountTooSmall": "加密货币支付的捐赠金额过小。由于网络手续费，最低金额为 ${min} 美元。"
     },
-    "networkNotice": "如果您身处中国大陆等地区，支付过程可能需要接入国际互联网环境以完成交易",
+    "networkNotice": "如果您身处中国大陆等地区，\n支付过程可能需要接入国际互联网环境以完成交易",
     "paymentMethod": {
       "title": "选择支付方式",
       "subtitle": "请选择您的支付方式",
@@ -565,6 +565,19 @@
       "title": "安全加密支付",
       "description": "您的支付将通过 NOWPayments 安全处理"
     }
+  },
+  "wechatAlipaySelector": {
+    "title": "选择支付方式",
+    "subtitle": "本渠道面向海外华人用户",
+    "wechat": {
+      "title": "微信支付",
+      "description": "使用微信扫码或跳转支付"
+    },
+    "alipay": {
+      "title": "支付宝",
+      "description": "使用支付宝扫码或跳转支付"
+    },
+    "back": "返回"
   },
   "donateSuccess": {
     "title": "正在处理您的捐赠",

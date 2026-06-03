@@ -5,6 +5,8 @@ import { useTranslations } from 'next-intl'
 import WayForPayWidget from '@/components/donate-form/widgets/WayForPayWidget'
 import { SpinnerIcon } from '@/components/icons'
 
+import type { PaymentMethod } from './PaymentMethodSelector'
+
 export interface PaymentStateViewProps {
   processingState:
     | 'idle'
@@ -18,15 +20,18 @@ export interface PaymentStateViewProps {
   amount: number
   locale: string
   error: string | null
+  /** Selected payment method — networkNotice shows only for WayForPay (card). */
+  paymentMethod: PaymentMethod | null
   onBack: () => void
 }
 
 /**
  * Renders the `creating` / `error` / `ready` payment widget states.
  *
- * Extracted verbatim from the file-local `PaymentWidgetContainer` previously
- * defined in `DonationFormCard.tsx`. JSX, classNames and prop order are 1:1
- * unchanged so the visual output is identical.
+ * Originally extracted from the file-local `PaymentWidgetContainer` in
+ * `DonationFormCard.tsx`. The network-access notice is now gated on
+ * `paymentMethod === 'card'` (only WayForPay needs the international-network
+ * hint), so the output is no longer identical for non-card methods.
  */
 export default function PaymentStateView({
   processingState,
@@ -34,6 +39,7 @@ export default function PaymentStateView({
   amount,
   locale,
   error,
+  paymentMethod,
   onBack,
 }: PaymentStateViewProps) {
   const t = useTranslations('donate')
@@ -60,8 +66,12 @@ export default function PaymentStateView({
           </div>
         </div>
 
-        {/* Network Access Notice */}
-        <p className="text-center text-sm font-medium text-ukraine-gold-700">{t('networkNotice')}</p>
+        {/* Network Access Notice — only WayForPay (card) needs the international-network hint */}
+        {paymentMethod === 'card' && (
+          <p className="whitespace-pre-line text-center text-sm font-medium text-ukraine-gold-700">
+            {t('networkNotice')}
+          </p>
+        )}
 
         {/* Processing Animation */}
         <div className="flex flex-col items-center justify-center space-y-4 py-8">
@@ -140,10 +150,14 @@ export default function PaymentStateView({
               <p className="text-xs text-warm-600">{t('paymentError.tryAgainMessage')}</p>
             </div>
           </div>
-          {/* Network Access Notice */}
-          <div className="border-t border-warm-300 pt-3">
-            <p className="text-sm font-medium text-ukraine-gold-700">{t('networkNotice')}</p>
-          </div>
+          {/* Network Access Notice — only WayForPay (card) needs the international-network hint */}
+          {paymentMethod === 'card' && (
+            <div className="border-t border-warm-300 pt-3">
+              <p className="whitespace-pre-line text-sm font-medium text-ukraine-gold-700">
+                {t('networkNotice')}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Back Button */}

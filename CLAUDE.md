@@ -20,14 +20,15 @@
 
 ## 项目概述
 
-**当前版本**: 2.6.0
+**当前版本**: 2.7.0
 **开发状态**: 生产就绪
 
 ### 主要特性
 
 - 多语言支持 (en/zh/ua)
-- WayForPay 支付网关集成（法币）
+- WayForPay 支付网关集成（法币，银行卡）
 - NOWPayments 加密货币支付集成
+- QmmPay 支付集成（微信支付 / 支付宝，面向海外华人用户）
 - Supabase 实时数据同步
 - Resend 多语言邮件通知
 - 捐赠追踪与订单分组
@@ -45,11 +46,11 @@
 
 ## 技术栈
 
-| 类型 | 技术                                                                     |
-| ---- | ------------------------------------------------------------------------ |
-| 前端 | Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, next-intl   |
-| 后端 | Supabase (PostgreSQL + Auth), WayForPay, NOWPayments, Resend, Cloudinary |
-| 部署 | Vercel, Supabase Cloud                                                   |
+| 类型 | 技术                                                                               |
+| ---- | ---------------------------------------------------------------------------------- |
+| 前端 | Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, next-intl             |
+| 后端 | Supabase (PostgreSQL + Auth), WayForPay, NOWPayments, QmmPay, Resend, Cloudinary   |
+| 部署 | Vercel, Supabase Cloud                                                             |
 
 ---
 
@@ -181,6 +182,7 @@ waytofutureua/
 │       ├── webhooks/wayforpay/   # WayForPay 捐赠支付回调
 │       ├── webhooks/wayforpay-market/ # WayForPay 义卖支付回调
 │       ├── webhooks/nowpayments/ # NOWPayments 加密货币回调
+│       ├── webhooks/qmmpay/      # QmmPay 微信/支付宝回调（GET 请求）
 │       ├── webhooks/resend-inbound/ # 入站邮件转发
 │       ├── donations/            # 捐赠 API
 │       ├── donate/success-redirect/ # 重定向
@@ -194,7 +196,7 @@ waytofutureua/
 │   ├── projects/                 # 项目组件
 │   │   ├── detail-pages/         # 项目详情页
 │   │   └── shared/               # 共享组件
-│   ├── donate-form/              # 捐赠表单 (DonationFormCard, 支付组件)
+│   ├── donate-form/              # 捐赠表单 (DonationFormCard, 支付组件, WechatAlipaySelector)
 │   ├── donation-display/         # 捐赠展示 (状态徽章、流程图、结果查看器)
 │   ├── analytics/                # 分析组件 (PageViewTracker — 渲染 null 的 view 上报组件)
 │   └── admin/                    # 管理员组件
@@ -202,6 +204,7 @@ waytofutureua/
 │   ├── supabase/                 # 数据库集成
 │   ├── wayforpay/                # WayForPay 支付集成（捐赠）
 │   ├── payment/nowpayments/      # NOWPayments 加密货币集成
+│   ├── payment/qmmpay/           # QmmPay 微信/支付宝集成（server.ts / crypto.ts / types.ts）
 │   ├── market/                   # 义卖工具 (状态、验证、WayForPay、工具函数)
 │   ├── analytics/                # 客户端分析上报 (track.ts — sessionStorage sid + 30s 去重 + sendBeacon)
 │   ├── projects/                 # 项目元数据（supported IDs、内容 JSON loader）
@@ -385,7 +388,7 @@ needsFileUpload(from, to) // 转换是否需要上传文件
 
 ## 业务流程
 
-### 捐赠流程
+### 捐赠流程（WayForPay 银行卡）
 
 ```
 1. 选择项目 → 2. 填写表单 → 3. createWayForPayDonation()
@@ -393,6 +396,19 @@ needsFileUpload(from, to) // 转换是否需要上传文件
 → 6. 用户支付 → 7. Webhook 更新状态 → 8. 发送邮件
 → 9. 重定向成功页 → 10. 展示捐赠详情
 ```
+
+### 捐赠流程（QmmPay 微信/支付宝）
+
+```
+1. 选择项目 → 2. 填写表单 → 3. 选择微信支付或支付宝
+→ 4. createQmmPayDonation()（创建 pending 记录 + 获取支付 URL）
+→ 5. 浏览器跳转 QmmPay 收银台（method='jump'，适配微信内/H5/PC）
+→ 6. 用户完成支付 → 7. GET Webhook 更新状态（仅 TRADE_SUCCESS）→ 8. 发送邮件
+→ 9. QmmPay 跳转 return_url（/donate/success）→ 10. 展示捐赠详情
+```
+
+**QmmPay 退款特性**：退款为同步 API，无 webhook。退款成功直接写 `refunded`；
+若 API 拒绝或网络失败，写 `refunding` 作为人工介入标记，由管理员手动处理。
 
 ### 捐赠管理员流程
 
@@ -447,6 +463,12 @@ RESEND_FROM_EMAIL=
 # NOWPayments (加密货币)
 NOWPAYMENTS_API_KEY=
 NOWPAYMENTS_IPN_SECRET=
+
+# QmmPay (微信支付 / 支付宝)
+QMMPAY_PID=
+QMMPAY_MERCHANT_PRIVATE_KEY=
+QMMPAY_PLATFORM_PUBLIC_KEY=
+NEXT_PUBLIC_QMMPAY_USD_CNY_RATE=
 
 # Cloudinary (可选)
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
@@ -554,6 +576,7 @@ getTranslatedText(project.project_name_i18n, locale, fallback)
 - WayForPay 捐赠 Webhook: `https://domain.com/api/webhooks/wayforpay`
 - WayForPay 义卖 Webhook: `https://domain.com/api/webhooks/wayforpay-market`
 - NOWPayments IPN: `https://domain.com/api/webhooks/nowpayments`
+- QmmPay 回调（GET）: `https://domain.com/api/webhooks/qmmpay`（在 QmmPay 商户后台配置 notify_url）
 - Resend 域名验证 (SPF, DKIM, DMARC)
 - Resend Inbound Webhook: `https://domain.com/api/webhooks/resend-inbound`
 - Cloudinary 配置 (可选)
@@ -572,5 +595,5 @@ getTranslatedText(project.project_name_i18n, locale, fallback)
 
 ---
 
-**文档版本**: 2.6.0
-**最后更新**: 2026-04-21
+**文档版本**: 2.7.0
+**最后更新**: 2026-06-03

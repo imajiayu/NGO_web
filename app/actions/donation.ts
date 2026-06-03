@@ -9,7 +9,10 @@ import {
   type FullCurrencyInfo,
   getMinimumPaymentAmountInUsd,
 } from '@/lib/payment/nowpayments/server'
+import { createQmmPayPayment } from '@/lib/payment/qmmpay/server'
+import type { QmmPayPaymentData } from '@/lib/payment/qmmpay/types'
 import { createWayForPayPayment, type WayForPayPaymentParams } from '@/lib/payment/wayforpay/server'
+import { getClientIP } from '@/lib/rate-limit'
 import { getPublicClient } from '@/lib/supabase/action-clients'
 import type { ProjectStats } from '@/types'
 
@@ -278,6 +281,68 @@ export async function createNowPaymentsDonation(
       success: false,
       error: 'server_error',
     }
+  }
+}
+
+type QmmPayDonationResult =
+  | {
+      success: true
+      paymentData: QmmPayPaymentData
+      amount: number
+      orderReference: string
+      allProjectsStats: ProjectStats[]
+    }
+  | DonationFailure
+  | { success: false; error: 'api_error'; message: string; allProjectsStats: ProjectStats[] }
+
+/**
+ * Create QmmPay (WeChat Pay / Alipay) donation
+ */
+export async function createQmmPayDonation(
+  data: DonationCreationInput & { payType: 'alipay' | 'wxpay' }
+): Promise<QmmPayDonationResult> {
+  try {
+    const prep = await prepareDonationContext(data)
+    if (!prep.ok) return asActionError<QmmPayDonationResult>(prep.err)
+
+    const { validated, totalAmount, projectName, orderReference, allProjectsStats } = prep.ctx
+
+    const clientIp = await getClientIP()
+
+    let paymentData: QmmPayPaymentData
+    try {
+      paymentData = await createQmmPayPayment({
+        orderReference,
+        totalAmountUsd: totalAmount,
+        name: '乌克兰未来之路',
+        clientIp,
+        locale: validated.locale,
+        payType: data.payType,
+      })
+    } catch (error) {
+      logger.error('DONATION', 'QmmPay API error', {
+        error: error instanceof Error ? error.message : String(error),
+      })
+      return {
+        success: false,
+        error: 'api_error',
+        message: error instanceof Error ? error.message.replace('QmmPay error: ', '') : 'Unknown error',
+        allProjectsStats,
+      }
+    }
+
+    await insertPendingDonations(prep.ctx, 'QmmPay')
+
+    return {
+      success: true,
+      paymentData,
+      amount: totalAmount,
+      orderReference,
+      allProjectsStats,
+    }
+  } catch (error) {
+    logger.errorWithStack('DONATION', 'Failed to create QmmPay donation', error)
+    return { success: false, error: 'server_error' }
   }
 }
 

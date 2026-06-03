@@ -17,10 +17,12 @@ export type LogCategory =
   | 'WEBHOOK:WAYFORPAY'
   | 'WEBHOOK:NOWPAYMENTS'
   | 'WEBHOOK:RESEND'
+  | 'WEBHOOK:QMMPAY'
   // Payments
   | 'PAYMENT'
   | 'PAYMENT:WAYFORPAY'
   | 'PAYMENT:NOWPAYMENTS'
+  | 'PAYMENT:QMMPAY'
   // Core operations
   | 'DONATION'
   | 'ADMIN'

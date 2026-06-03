@@ -15,14 +15,15 @@
 4. [状态流程图](#4-状态流程图)
 5. [状态转换规则](#5-状态转换规则)
 6. [WayForPay 状态映射](#6-wayforpay-状态映射)
-7. [数据库实现](#7-数据库实现)
-8. [状态历史审计](#8-状态历史审计)
-9. [应用层实现](#9-应用层实现)
-10. [UI 组件](#10-ui-组件)
-11. [国际化](#11-国际化)
-12. [约束分析与一致性检查](#12-约束分析与一致性检查)
-13. [相关文件索引](#13-相关文件索引)
-14. [附录](#14-附录)
+7. [QmmPay 状态映射](#7-qmmpay-状态映射)
+8. [数据库实现](#8-数据库实现)
+9. [状态历史审计](#9-状态历史审计)
+10. [应用层实现](#10-应用层实现)
+11. [UI 组件](#11-ui-组件)
+12. [国际化](#12-国际化)
+13. [约束分析与一致性检查](#13-约束分析与一致性检查)
+14. [相关文件索引](#14-相关文件索引)
+15. [附录](#15-附录)
 
 ---
 
@@ -253,13 +254,14 @@ export const REFUND_STATUSES = ['refunding', 'refund_processing', 'refunded'] as
 
 ### 5.5 状态变化来源汇总
 
-| 变化来源              | 说明                                      | 约束层级         |
-| --------------------- | ----------------------------------------- | ---------------- |
-| **用户创建**          | 只能创建 `pending`                        | RLS INSERT 策略  |
-| **客户端**            | `pending` → `widget_load_failed`          | RLS UPDATE 策略  |
-| **WayForPay Webhook** | 支付/退款状态                             | 应用层软过滤     |
-| **用户退款请求**      | `paid/confirmed/delivering` → `refunding` | 应用层验证       |
-| **管理员**            | `paid→confirmed→delivering→completed`     | 数据库触发器强制 |
+| 变化来源              | 说明                                                                              | 约束层级         |
+| --------------------- | --------------------------------------------------------------------------------- | ---------------- |
+| **用户创建**          | 只能创建 `pending`                                                                | RLS INSERT 策略  |
+| **客户端**            | `pending` → `widget_load_failed`                                                  | RLS UPDATE 策略  |
+| **WayForPay Webhook** | 支付/退款状态                                                                     | 应用层软过滤     |
+| **QmmPay Webhook**    | 仅支付成功（`TRADE_SUCCESS` → `paid`）；退款无 webhook，同步返回结果              | 应用层软过滤     |
+| **用户退款请求**      | `paid/confirmed/delivering` → `refunding`（或 QmmPay 同步成功直接 → `refunded`） | 应用层验证       |
+| **管理员**            | `paid→confirmed→delivering→completed`                                             | 数据库触发器强制 |
 
 ---
 
@@ -299,9 +301,49 @@ export const WAYFORPAY_STATUS = {
 
 ---
 
-## 7. 数据库实现
+## 7. QmmPay 状态映射
 
-### 7.1 CHECK 约束
+QmmPay 用于微信支付（wxpay）和支付宝（alipay），面向海外华人用户，以人民币（CNY）结算。
+
+### 7.1 支付 Webhook 映射
+
+QmmPay 支付回调通过 **GET 请求**发送（与 WayForPay/NOWPayments 的 POST 不同）。
+
+| QmmPay trade_status | 系统状态 | 说明                           |
+| ------------------- | -------- | ------------------------------ |
+| `TRADE_SUCCESS`     | `paid`   | 支付成功（唯一触发更新的状态） |
+| 其他 / 缺失         | 不更新   | 忽略，仅记录日志               |
+
+**Webhook 安全**: 使用 RSA SHA256WithRSA 签名验证（平台公钥）。签名无效时仍返回 `"success"` 文本（防止无限重试），但不更新数据库。
+
+### 7.2 退款状态流转
+
+QmmPay 退款为**同步 API**，无退款 webhook。退款结果在 HTTP 响应中直接返回。
+
+| 退款结果              | 系统状态                          | 说明                                           |
+| --------------------- | --------------------------------- | ---------------------------------------------- |
+| API 成功（`code=0`）  | `refunded`                        | 直接写 refunded，同时发送退款确认邮件          |
+| API 拒绝（`code≠0`）  | `refunding`（人工介入标记）       | API 明确拒绝，写 refunding 供管理员识别并处理  |
+| 网络错误 / 异常       | `refunding`（人工介入标记）       | 结果未知，写 refunding 供管理员识别并处理      |
+
+> **`refunding` 作为人工介入标记**：对于 QmmPay，`refunding` 状态并不意味着"等待 webhook 确认"（QmmPay 无退款 webhook），而是一个**人工处理标记**——管理员看到此状态后应登录 QmmPay 商户后台确认实际退款结果，并手动推进或联系用户。
+
+### 7.3 部分退款计算
+
+当订单中只有部分 donation 行需要退款时（如已配送部分不可退），退款金额按比例计算：
+
+```
+refundRatio = refundableDonationsUSD / fullOrderUSD
+refundCNY   = originalPaidCNY × refundRatio   （从 QmmPay 订单查询接口获取）
+```
+
+CNY 金额来源于 QmmPay 订单查询接口（非重新换算），避免汇率漂移导致的差额。
+
+---
+
+## 8. 数据库实现
+
+### 8.1 CHECK 约束
 
 ```sql
 ALTER TABLE public.donations
@@ -316,7 +358,7 @@ ADD CONSTRAINT donations_status_check CHECK (
 );
 ```
 
-### 7.2 状态索引
+### 8.2 状态索引
 
 ```sql
 -- 基础状态索引
@@ -333,7 +375,7 @@ CREATE INDEX idx_donations_refund_status
     WHERE donation_status IN ('refunding', 'refunded');
 ```
 
-### 7.3 数据库视图
+### 8.3 数据库视图
 
 #### order_donations_secure
 
@@ -367,7 +409,7 @@ WHERE d.order_reference IS NOT NULL AND d.order_reference != '';
 
 **状态过滤**: 只显示 `paid`, `confirmed`, `delivering`, `completed` 状态
 
-### 7.4 数据库函数
+### 8.4 数据库函数
 
 #### get_donations_by_email_verified()
 
@@ -387,7 +429,7 @@ WHERE d.order_reference IS NOT NULL AND d.order_reference != '';
 
 > **安全说明**: 义卖市场引入 Email OTP 认证后，`is_admin()` 从 `auth.uid() IS NOT NULL` 改为邮箱白名单，防止普通买家被当作管理员。
 
-### 7.5 触发器
+### 8.5 触发器
 
 | 触发器名称                                  | 绑定表      | 功能                          |
 | ------------------------------------------- | ----------- | ----------------------------- |
@@ -410,7 +452,7 @@ WHERE d.order_reference IS NOT NULL AND d.order_reference != '';
 - Service Role 可以修改任何字段（用于 Webhooks）
 - 管理员只能执行 `paid→confirmed→delivering→completed` 转换
 
-### 7.6 RLS 策略
+### 8.6 RLS 策略
 
 ```sql
 -- 管理员可以更新捐赠（状态转换由触发器验证）
@@ -432,9 +474,9 @@ USING (is_admin());
 
 ---
 
-## 8. 状态历史审计
+## 9. 状态历史审计
 
-### 8.1 表结构
+### 9.1 表结构
 
 **表名**: `donation_status_history`
 
@@ -448,7 +490,7 @@ CREATE TABLE donation_status_history (
 );
 ```
 
-### 8.2 索引
+### 9.2 索引
 
 ```sql
 CREATE INDEX idx_donation_status_history_donation_id ON donation_status_history(donation_id);
@@ -456,7 +498,7 @@ CREATE INDEX idx_donation_status_history_changed_at ON donation_status_history(c
 CREATE INDEX idx_donation_status_history_to_status ON donation_status_history(to_status);
 ```
 
-### 8.3 查询示例
+### 9.3 查询示例
 
 ```sql
 -- 查询某笔捐赠的状态历史
@@ -475,9 +517,9 @@ WHERE h.to_status IN ('refunding', 'refund_processing', 'refunded')
 
 ---
 
-## 9. 应用层实现
+## 10. 应用层实现
 
-### 9.1 状态工具库
+### 10.1 状态工具库
 
 **文件**: `lib/donation-status.ts`
 
@@ -500,18 +542,20 @@ export const STATUS_COLORS: Record<DonationStatus, { bg: string; text: string }>
 export const MAIN_FLOW_STATUSES: readonly DonationStatus[]
 ```
 
-### 9.2 Server Actions
+### 10.2 Server Actions
 
-| Action                      | 文件                            | 状态操作                |
-| --------------------------- | ------------------------------- | ----------------------- |
-| `createWayForPayDonation()` | `app/actions/donation.ts`       | 创建 `pending` 状态记录 |
-| `requestRefund()`           | `app/actions/track-donation.ts` | 更新为 `refunding`      |
-| `updateDonationStatus()`    | `app/actions/admin.ts`          | 管理员状态转换          |
-| `getAdminDonations()`       | `app/actions/admin.ts`          | 获取捐赠及状态历史      |
+| Action                       | 文件                            | 状态操作                                            |
+| ---------------------------- | ------------------------------- | --------------------------------------------------- |
+| `createWayForPayDonation()`  | `app/actions/donation.ts`       | 创建 `pending` 状态记录                             |
+| `createNowPaymentsDonation()`| `app/actions/donation.ts`       | 创建 `pending` 状态记录                             |
+| `createQmmPayDonation()`     | `app/actions/donation.ts`       | 创建 `pending` 状态记录，返回支付跳转 URL           |
+| `requestRefund()`            | `app/actions/track-donation.ts` | 更新为 `refunding` 或（QmmPay 成功时）`refunded`    |
+| `updateDonationStatus()`     | `app/actions/admin.ts`          | 管理员状态转换                                      |
+| `getAdminDonations()`        | `app/actions/admin.ts`          | 获取捐赠及状态历史                                  |
 
-### 9.3 Webhook 处理
+### 10.3 Webhook 处理
 
-**文件**: `app/api/webhooks/wayforpay/route.ts`
+**WayForPay** (`app/api/webhooks/wayforpay/route.ts`，POST):
 
 ```typescript
 // 支付 Webhook 可更新的状态
@@ -519,31 +563,22 @@ const PAYMENT_WEBHOOK_ALLOWED_FROM = ['pending', 'processing', 'fraud_check', 'w
 
 // 退款 Webhook 可更新的状态
 const REFUND_WEBHOOK_ALLOWED_FROM = [
-  'paid',
-  'confirmed',
-  'delivering',
-  'refunding',
-  'refund_processing',
+  'paid', 'confirmed', 'delivering', 'refunding', 'refund_processing',
 ]
-
-// 状态映射
-function mapWayForPayStatus(transactionStatus: string): DonationStatus {
-  switch (transactionStatus) {
-    case 'Approved':
-    case 'WaitingAuthComplete':
-      return 'paid'
-    case 'inProcessing':
-      return 'processing'
-    // ...
-  }
-}
 ```
+
+**QmmPay** (`app/api/webhooks/qmmpay/route.ts`，**GET**):
+
+- 仅处理 `trade_status === 'TRADE_SUCCESS'`，写 `paid`
+- 使用 RSA SHA256WithRSA 验签（平台公钥）
+- 签名无效时仍返回纯文本 `"success"` 防止平台无限重试，但不更新 DB
+- 无退款 webhook（退款结果由 `requestRefund()` 同步处理）
 
 ---
 
-## 10. UI 组件
+## 11. UI 组件
 
-### 10.1 状态徽章
+### 11.1 状态徽章
 
 **文件**: `components/donation-display/DonationStatusBadge.tsx`
 
@@ -558,7 +593,7 @@ function mapWayForPayStatus(transactionStatus: string): DonationStatus {
 | `refunding`, `refund_processing` | `bg-orange-100` | `text-orange-800` |
 | `refunded`, `expired`            | `bg-gray-100`   | `text-gray-700`   |
 
-### 10.2 状态流程图组件
+### 11.2 状态流程图组件
 
 **文件**: `components/donation-display/DonationStatusFlow.tsx`
 
@@ -567,11 +602,11 @@ function mapWayForPayStatus(transactionStatus: string): DonationStatus {
 - **主流程**: `paid → confirmed → delivering → completed`
 - **退款流程**: `refunding → refunded`
 
-### 10.3 管理员状态进度组件
+### 11.3 管理员状态进度组件
 
 **文件**: `components/admin/DonationStatusProgress.tsx`
 
-### 10.4 UI 功能状态依赖
+### 11.4 UI 功能状态依赖
 
 | 功能           | 条件                                        | 组件                                   |
 | -------------- | ------------------------------------------- | -------------------------------------- |
@@ -582,9 +617,9 @@ function mapWayForPayStatus(transactionStatus: string): DonationStatus {
 
 ---
 
-## 11. 国际化
+## 12. 国际化
 
-### 11.1 翻译键
+### 12.1 翻译键
 
 **路径**: `trackDonation.status.*`
 
@@ -602,9 +637,9 @@ function mapWayForPayStatus(transactionStatus: string): DonationStatus {
 
 ---
 
-## 12. 约束分析与一致性检查
+## 13. 约束分析与一致性检查
 
-### 12.1 约束强度分析
+### 13.1 约束强度分析
 
 | 约束类型        | 数据库强制 | 应用层验证           | 绕过风险 |
 | --------------- | ---------- | -------------------- | -------- |
@@ -613,7 +648,7 @@ function mapWayForPayStatus(transactionStatus: string): DonationStatus {
 | 用户创建pending | ✅ RLS     | ✅ donation.ts       | 低       |
 | 用户退款请求    | ❌ 无约束  | ✅ track-donation.ts | 中       |
 
-### 12.2 一致性确认
+### 13.2 一致性确认
 
 | 检查项                 | 状态                   |
 | ---------------------- | ---------------------- |
@@ -624,7 +659,7 @@ function mapWayForPayStatus(transactionStatus: string): DonationStatus {
 | 项目计数逻辑           | ✅ 正确 (4种计入)      |
 | 公开可见性             | ✅ 正确 (4种公开)      |
 
-### 12.3 设计注意事项
+### 13.3 设计注意事项
 
 1. **Service Role 无状态转换约束**
    - 设计: 数据库触发器只对管理员强制状态转换规则
@@ -638,23 +673,32 @@ function mapWayForPayStatus(transactionStatus: string): DonationStatus {
 3. **批量编辑 delivering 状态的限制**
    - 设计: `delivering→completed` 需要上传文件，不支持批量
 
+4. **QmmPay 的 `refunding` 含义与其他支付方式不同**
+   - WayForPay：`refunding` = 退款已发起，等待 webhook 确认（异步）
+   - QmmPay：`refunding` = 退款 API 拒绝或网络异常，需**人工介入**（无 webhook）
+   - 管理员看到 QmmPay 订单的 `refunding` 状态，应登录 QmmPay 商户后台确认实际退款结果，必要时手动退款或联系用户
+
 ---
 
-## 13. 相关文件索引
+## 14. 相关文件索引
 
-### 13.1 核心文件
+### 14.1 核心文件
 
-| 文件路径                              | 作用                               |
-| ------------------------------------- | ---------------------------------- |
-| `lib/donation-status.ts`              | 状态工具库（常量、分组、辅助函数） |
-| `types/index.ts`                      | 重新导出类型定义                   |
-| `lib/payment/wayforpay/server.ts`     | WayForPay 状态常量                 |
-| `app/api/webhooks/wayforpay/route.ts` | Webhook 处理和状态映射             |
-| `app/actions/donation.ts`             | 创建捐赠（pending 状态）           |
-| `app/actions/track-donation.ts`       | 追踪捐赠和退款请求                 |
-| `app/actions/admin.ts`                | 管理员状态更新                     |
+| 文件路径                              | 作用                                               |
+| ------------------------------------- | -------------------------------------------------- |
+| `lib/donation-status.ts`              | 状态工具库（常量、分组、辅助函数）                 |
+| `types/index.ts`                      | 重新导出类型定义                                   |
+| `lib/payment/wayforpay/server.ts`     | WayForPay 状态常量                                 |
+| `lib/payment/qmmpay/server.ts`        | QmmPay 支付创建 / 订单查询 / 退款处理              |
+| `lib/payment/qmmpay/crypto.ts`        | QmmPay RSA 签名与验签                              |
+| `lib/payment/qmmpay/types.ts`         | QmmPay API 类型定义                                |
+| `app/api/webhooks/wayforpay/route.ts` | WayForPay Webhook 处理和状态映射                   |
+| `app/api/webhooks/qmmpay/route.ts`    | QmmPay Webhook 处理（GET 请求，仅支付成功）        |
+| `app/actions/donation.ts`             | 创建捐赠（pending 状态，含 QmmPay）                |
+| `app/actions/track-donation.ts`       | 追踪捐赠和退款请求（含 QmmPay 同步退款流程）       |
+| `app/actions/admin.ts`                | 管理员状态更新                                     |
 
-### 13.2 UI 组件
+### 14.2 UI 组件
 
 | 文件路径                                              | 作用                   |
 | ----------------------------------------------------- | ---------------------- |
@@ -665,7 +709,7 @@ function mapWayForPayStatus(transactionStatus: string): DonationStatus {
 | `components/admin/DonationEditModal.tsx`              | 捐赠编辑弹窗           |
 | `components/admin/BatchDonationEditModal.tsx`         | 批量编辑弹窗           |
 
-### 13.3 数据库相关
+### 14.3 数据库相关
 
 | 内容        | 位置                                                         |
 | ----------- | ------------------------------------------------------------ |
@@ -674,15 +718,15 @@ function mapWayForPayStatus(transactionStatus: string): DonationStatus {
 
 ---
 
-## 14. 附录
+## 15. 附录
 
-### 14.1 已移除的状态
+### 15.1 已移除的状态
 
 | 状态             | 移除日期   | 原因                                       |
 | ---------------- | ---------- | ------------------------------------------ |
 | `user_cancelled` | 2025-12-24 | 客户端检测不可靠，无法准确判断用户主动取消 |
 
-### 14.2 常见问题
+### 15.2 常见问题
 
 **Q: 为什么 `refunding` 和 `refund_processing` 显示相同的翻译？**
 
@@ -696,7 +740,15 @@ A: 不能。管理员只能按照 `paid → confirmed → delivering → complet
 
 A: Service Role（用于 Webhooks）可以执行任意状态转换，不受管理员转换限制。这是因为支付网关回调需要根据实际支付结果设置状态。
 
-### 14.3 历史重构记录
+**Q: QmmPay 订单的 `refunding` 状态是否和其他支付方式一样？**
+
+A: 不一样。对于 WayForPay，`refunding` 表示退款已发起、等待 webhook 自动推进。对于 QmmPay，由于退款 API 是同步的（无 webhook），`refunding` 表示退款 API **拒绝或网络失败**，需要管理员登录 QmmPay 商户后台手动确认并处理。
+
+**Q: QmmPay 退款成功的流程是什么？**
+
+A: `requestRefund()` 直接调用 QmmPay 退款 API，若 `code === 0` 则立即将 donation 更新为 `refunded` 并发送退款确认邮件，整个过程无需 webhook。
+
+### 15.3 历史重构记录
 
 **2026-01-09: 状态逻辑集中化重构**
 
@@ -709,6 +761,6 @@ A: Service Role（用于 Webhooks）可以执行任意状态转换，不受管�
 
 ---
 
-**文档版本**: 3.0.0
+**文档版本**: 3.1.0
 **维护者**: Way to Future UA Team
-**最后更新**: 2026-03-28
+**最后更新**: 2026-06-03
