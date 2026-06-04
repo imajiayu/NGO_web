@@ -73,7 +73,7 @@ export default function ApproachCarousel({
               alt={title}
               fill
               className={`object-cover ${objectPosition}`}
-              sizes="(max-width: 640px) 85vw, 33vw"
+              sizes="(max-width: 639px) 85vw, (max-width: 1023px) 32vw, 33vw"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/15" />
 

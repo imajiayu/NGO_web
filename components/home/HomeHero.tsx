@@ -98,6 +98,7 @@ export default async function HomeHero() {
             className="object-cover object-[77%_50%] translate-y-[5%] lg:translate-y-0 lg:object-[58%_45%] lg:translate-x-[10%]"
             priority
             quality={75}
+            sizes="100vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/55 to-black/45 lg:via-black/45 lg:to-black/15" />
         </div>
@@ -119,7 +120,7 @@ export default async function HomeHero() {
               alt={alt}
               width={w}
               height={h}
-              sizes="50vw"
+              sizes={i === 0 ? '(min-width: 1024px) 0px, 50vw' : '(min-width: 1024px) 0px, 25vw'}
               className={`h-full w-full object-cover ${i === 0 ? 'col-span-2' : ''}`}
             />
           ))}
@@ -140,6 +141,7 @@ export default async function HomeHero() {
                   alt={alt}
                   width={w}
                   height={h}
+                  sizes="(max-width: 1023px) 0px, 25vw"
                   className={cn(
                     'h-[10vh] w-auto lg:h-full',
                     j === row.length - 1 &&
