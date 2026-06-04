@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { getLocale, getTranslations } from 'next-intl/server'
 
 import { locales } from '@/i18n/config'
@@ -9,7 +10,7 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
 }
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('donateSuccess')
 
   return {

@@ -1,9 +1,10 @@
+import type { Metadata } from 'next'
 import { useTranslations } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 
 import { getAlternates } from '@/lib/constants'
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'publicAgreement' })
   return {

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { getLocale, getTranslations } from 'next-intl/server'
 
 import { BASE_URL, getAlternates } from '@/lib/constants'
@@ -5,7 +6,7 @@ import { BASE_URL, getAlternates } from '@/lib/constants'
 import HeroBackground from './hero-background'
 import TrackDonationForm from './track-donation-form'
 
-export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata(props: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const params = await props.params
 
   const { locale } = params

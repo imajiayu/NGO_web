@@ -81,11 +81,12 @@ export default function Navigation() {
     router.push('/track-donation')
   }
 
-  const handleMarketClick = () => {
-    if (pathname === '/market') return
-    setIsNavigating(true)
-    router.push('/market')
-  }
+  // TODO: 义卖市场暂时隐藏，恢复时取消注释
+  // const handleMarketClick = () => {
+  //   if (pathname === '/market') return
+  //   setIsNavigating(true)
+  //   router.push('/market')
+  // }
 
   const handleLogoClick = () => {
     // 如果当前已经在首页，不执行任何操作
@@ -126,6 +127,7 @@ export default function Navigation() {
             <div className="flex items-center space-x-3">
               {/* Action Buttons (Desktop) */}
               <div className="hidden items-center space-x-3 md:flex">
+                {/* TODO: 义卖市场暂时隐藏，恢复时取消注释
                 <button
                   onClick={handleMarketClick}
                   onMouseEnter={() => router.prefetch('/market')}
@@ -134,6 +136,7 @@ export default function Navigation() {
                   <div className="absolute inset-0 -translate-x-full skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full"></div>
                   <span className="relative z-10">{t('market')}</span>
                 </button>
+                */}
                 <button
                   onClick={handleTrackDonation}
                   onMouseEnter={() => router.prefetch('/track-donation')}
@@ -242,6 +245,7 @@ export default function Navigation() {
 
           {/* Mobile: Action Buttons Row */}
           <div className="flex items-center justify-center space-x-2 px-3 pb-3 pt-1 md:hidden">
+            {/* TODO: 义卖市场暂时隐藏，恢复时取消注释
             <button
               onClick={handleMarketClick}
               onMouseEnter={() => router.prefetch('/market')}
@@ -250,6 +254,7 @@ export default function Navigation() {
               <div className="absolute inset-0 -translate-x-full skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full"></div>
               <span className="relative z-10">{t('market')}</span>
             </button>
+            */}
             <button
               onClick={handleTrackDonation}
               onMouseEnter={() => router.prefetch('/track-donation')}

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 
@@ -13,7 +14,7 @@ type Props = {
   params: Promise<{ locale: string; itemId: string }>
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, itemId } = await params
   const id = Number(itemId)
   const [{ item }, content] = await Promise.all([

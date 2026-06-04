@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 
@@ -24,7 +25,7 @@ export function generateStaticParams() {
   )
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, id } = await params
   const projectId = Number(id)
   if (!Number.isInteger(projectId)) return {}

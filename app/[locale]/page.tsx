@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import { getTranslations } from 'next-intl/server'
 import { Suspense } from 'react'
@@ -5,7 +6,8 @@ import { Suspense } from 'react'
 import PageViewTracker from '@/components/analytics/PageViewTracker'
 import ComplianceSection from '@/components/home/ComplianceSection'
 import HomeHero from '@/components/home/HomeHero'
-import HomeMarketGrid from '@/components/home/HomeMarketGrid'
+// TODO: 义卖市场暂时隐藏，恢复时取消注释
+// import HomeMarketGrid from '@/components/home/HomeMarketGrid'
 import ProjectsGrid from '@/components/projects/ProjectsGrid'
 import { locales } from '@/i18n/config'
 import { BASE_URL, getAlternates } from '@/lib/constants'
@@ -24,7 +26,7 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
 }
 
-export async function generateMetadata(props: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata(props: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const params = await props.params
 
   const { locale } = params
@@ -75,9 +77,11 @@ export default async function Home(props: { params: Promise<{ locale: string }> 
                 <span className="inline-block rounded-full bg-ukraine-gold-500 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-ukraine-blue-900">
                   {t('projects.label')}
                 </span>
+                {/* TODO: 义卖市场暂时隐藏，恢复时取消注释
                 <span className="inline-block rounded-full bg-ukraine-blue-600 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-white">
                   {t('market.label')}
                 </span>
+                */}
               </div>
             </div>
 
@@ -116,7 +120,7 @@ export default async function Home(props: { params: Promise<{ locale: string }> 
               <ProjectsGrid />
             </Suspense>
 
-            {/* Market Items */}
+            {/* TODO: 义卖市场暂时隐藏，恢复时取消注释
             <Suspense
               fallback={
                 <div className="mt-1 w-full md:mt-2">
@@ -135,6 +139,7 @@ export default async function Home(props: { params: Promise<{ locale: string }> 
             >
               <HomeMarketGrid />
             </Suspense>
+            */}
           </div>
         </section>
 

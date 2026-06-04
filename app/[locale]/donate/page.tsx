@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 
 import { locales } from '@/i18n/config'
@@ -16,7 +17,7 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
 }
 
-export async function generateMetadata(props: Props) {
+export async function generateMetadata(props: Props): Promise<Metadata> {
   const { locale } = await props.params
 
   const t = await getTranslations({ locale, namespace: 'donate' })

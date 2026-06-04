@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 
 import { getPublicMarketItems } from '@/app/actions/market-items'
@@ -16,7 +17,7 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'market' })
   const tCommon = await getTranslations({ locale, namespace: 'common' })
