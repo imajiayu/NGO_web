@@ -156,12 +156,12 @@ export default async function HomeHero() {
             {/* 文案 + CTA：移动全宽，桌面右半沉底 */}
             <div className="flex flex-col justify-end text-white lg:min-h-[56vh] lg:w-1/2">
               <h1
-                className={`whitespace-pre-line font-display text-4xl font-bold leading-[1.1] drop-shadow-md sm:text-5xl ${titleSizeClass}`}
+                className={`whitespace-pre-line font-display text-4xl font-bold leading-[1.1] drop-shadow-md sm:text-5xl lg:text-right ${titleSizeClass}`}
               >
                 {t('mission.title')}
               </h1>
 
-              <div className="relative mt-5 max-w-xl lg:mt-6">
+              <div className="relative mt-5 max-w-xl lg:ml-auto lg:mt-6 lg:text-right">
                 {/* 副标题可读性蒙版：柔和暗色光晕（羽化、无硬框），避免浅色文字与亮部背景融为一体 */}
                 <div
                   aria-hidden
@@ -180,14 +180,14 @@ export default async function HomeHero() {
                 </p>
               </div>
 
-              <div className="mt-5 flex flex-col items-start gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4 lg:mt-9">
+              <div className="mt-5 flex flex-col items-start gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4 lg:mt-9 lg:justify-end">
                 <ScrollToProjectsButton label={t('mission.ctaProjects')} />
                 <ScrollToComplianceButton label={t('compliance.button')} />
               </div>
             </div>
           </div>
 
-          {/* 底部影响数据条：留在文案列外保持原垂直位置，用同样的 justify-end + w-[58%] 实现左对齐、右缘到容器右边 */}
+          {/* 底部影响数据条：留在文案列外保持原垂直位置，用 justify-end + w-1/2 占右半、右缘贴容器右边（与文案右对齐基线一致） */}
           <div className="mt-6 lg:mt-12 lg:flex lg:justify-end">
             <div className="flex w-fit divide-x divide-white/15 rounded-2xl bg-white/10 px-2 py-5 ring-1 ring-white/15 backdrop-blur-md sm:grid sm:w-auto sm:grid-cols-3 sm:px-6 sm:py-6 lg:w-1/2 lg:px-3 lg:py-4">
               {stats.map(({ value, label }) => (
