@@ -3,6 +3,7 @@
 import { unstable_cache } from 'next/cache'
 
 import { logger } from '@/lib/logger'
+import { MARKET_ITEMS_CACHE_TAG } from '@/lib/market/market-utils'
 import { createAnonClient } from '@/lib/supabase/server'
 import type {
   MarketItem,
@@ -14,8 +15,6 @@ import type {
 // ============================================
 // 公开数据获取（无需认证）
 // ============================================
-
-export const MARKET_ITEMS_CACHE_TAG = 'market-items-public'
 
 /**
  * 内部 fetcher：出错时直接 throw，确保 unstable_cache 不缓存错误结果。

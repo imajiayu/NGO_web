@@ -11,3 +11,5 @@ export function formatMarketPrice(amount: number, currency: string = 'USD'): str
     maximumFractionDigits: 2,
   }).format(amount)
 }
+
+export const MARKET_ITEMS_CACHE_TAG = 'market-items-public'

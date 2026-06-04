@@ -3,7 +3,7 @@
 import { revalidateTag } from 'next/cache'
 
 import { getMarketOrderFiles } from '@/app/actions/market-order-files'
-import { MARKET_ITEMS_CACHE_TAG } from '@/app/actions/market-items'
+import { MARKET_ITEMS_CACHE_TAG } from '@/lib/market/market-utils'
 import { logger } from '@/lib/logger'
 import {
   getFileCategory,
