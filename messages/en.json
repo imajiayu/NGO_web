@@ -58,7 +58,7 @@
   "home": {
     "hero": {
       "mission": {
-        "title": "Healing the Wounds of War",
+        "title": "Healing\nthe Wounds of War",
         "subtitleLine1": "We are a local charity foundation in Dnipro, Ukraine,\noperating a medium-sized rehabilitation center,",
         "subtitleBefore": "Dedicated to helping ",
         "subtitleHighlight": "war victims",
@@ -71,30 +71,30 @@
         "title": "Built on Trust & Transparency",
         "transparent": {
           "title": "Transparent",
-          "summary": "A receipt for every expense\nEach donation gets a unique ID to follow its progress in real time"
+          "summary": "Every expense is backed by a verifiable receipt\n\nEach donation gets a unique ID to follow its progress in real time"
         },
         "efficient": {
           "title": "Efficient",
-          "summary": "Confirmed within 1 business day, completed within 14\nPhoto and video reports tagged with your donation ID"
+          "summary": "Confirmed within 1 business day, completed within 14\n\nPhoto and video reports tagged with your donation ID"
         },
         "direct": {
           "title": "Direct",
-          "summary": "See the anonymized outcome of every donation — yours and everyone's\nDelivered straight to the chosen supplies or project"
+          "summary": "See the anonymized outcome of every donation — yours and everyone's\n\nDelivered straight to the chosen supplies or project"
         }
       },
       "impact": {
         "subtitle": "Thank you to every donor for your support",
         "donations": {
           "value": "$100,000+",
-          "label": "Total Donations"
+          "label": "Total Raised"
         },
         "people": {
           "value": "1,600+",
-          "label": "People Rehabilitated"
+          "label": "Rehabilitated"
         },
         "shelters": {
           "value": "50+",
-          "label": "Shelters & Families Supported"
+          "label": "Shelters & Families"
         }
       },
       "projects": {

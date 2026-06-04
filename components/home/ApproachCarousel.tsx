@@ -88,9 +88,18 @@ export default function ApproachCarousel({
                   {title}
                 </h3>
               </div>
-              <p className="mt-3.5 max-w-sm whitespace-pre-line text-base font-normal leading-relaxed text-gray-100 [text-shadow:0_1px_8px_rgba(0,0,0,0.9)] lg:mt-4 lg:text-xl">
-                {summary}
-              </p>
+              {/* summary 以空行（\n\n）分句、单换行（\n）拆句内行：
+                  句间用 space-y 留出更大行距，句内由 whitespace-pre-line 保持紧凑 */}
+              <div className="mt-3.5 max-w-sm space-y-2 lg:mt-4 lg:space-y-2.5">
+                {summary.split('\n\n').map((para, i) => (
+                  <p
+                    key={i}
+                    className="whitespace-pre-line text-base font-normal leading-relaxed text-gray-100 [text-shadow:0_1px_8px_rgba(0,0,0,0.9)] lg:text-xl"
+                  >
+                    {para}
+                  </p>
+                ))}
+              </div>
             </div>
           </div>
         ))}

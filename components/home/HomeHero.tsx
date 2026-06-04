@@ -95,7 +95,7 @@ export default async function HomeHero() {
             src="/images/home/bg-hero.webp"
             alt=""
             fill
-            className="object-cover object-[77%_50%] translate-y-[10%] lg:translate-y-0 lg:object-[58%_45%] lg:translate-x-[10%]"
+            className="object-cover object-[77%_50%] translate-y-[5%] lg:translate-y-0 lg:object-[58%_45%] lg:translate-x-[10%]"
             priority
             quality={75}
           />
@@ -156,7 +156,7 @@ export default async function HomeHero() {
             {/* 文案 + CTA：移动全宽，桌面右半沉底 */}
             <div className="flex flex-col justify-end text-white lg:min-h-[56vh] lg:w-1/2">
               <h1
-                className={`font-display text-4xl font-bold leading-[1.1] drop-shadow-md sm:text-5xl ${titleSizeClass}`}
+                className={`whitespace-pre-line font-display text-4xl font-bold leading-[1.1] drop-shadow-md sm:text-5xl ${titleSizeClass}`}
               >
                 {t('mission.title')}
               </h1>
@@ -180,7 +180,7 @@ export default async function HomeHero() {
                 </p>
               </div>
 
-              <div className="mt-7 flex flex-wrap items-center gap-3 sm:gap-4 lg:mt-9">
+              <div className="mt-5 flex flex-col items-start gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4 lg:mt-9">
                 <ScrollToProjectsButton label={t('mission.ctaProjects')} />
                 <ScrollToComplianceButton label={t('compliance.button')} />
               </div>
@@ -188,8 +188,8 @@ export default async function HomeHero() {
           </div>
 
           {/* 底部影响数据条：留在文案列外保持原垂直位置，用同样的 justify-end + w-[58%] 实现左对齐、右缘到容器右边 */}
-          <div className="mt-10 lg:mt-12 lg:flex lg:justify-end">
-            <div className="grid grid-cols-3 divide-x divide-white/15 rounded-2xl bg-white/10 px-2 py-5 ring-1 ring-white/15 backdrop-blur-md sm:px-6 sm:py-6 lg:w-1/2 lg:px-3 lg:py-4">
+          <div className="mt-6 lg:mt-12 lg:flex lg:justify-end">
+            <div className="flex w-fit divide-x divide-white/15 rounded-2xl bg-white/10 px-2 py-5 ring-1 ring-white/15 backdrop-blur-md sm:grid sm:w-auto sm:grid-cols-3 sm:px-6 sm:py-6 lg:w-1/2 lg:px-3 lg:py-4">
               {stats.map(({ value, label }) => (
                 <div key={label} className="flex flex-col items-center px-2 text-center sm:px-4 lg:px-3">
                   <span className="font-data text-xl font-bold tracking-tight text-ukraine-gold-300 sm:text-3xl lg:text-3xl">
