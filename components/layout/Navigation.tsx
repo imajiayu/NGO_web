@@ -39,6 +39,11 @@ export default function Navigation() {
     }
   }, [isPending])
 
+  // Prefetch high-frequency routes on mount
+  useEffect(() => {
+    router.prefetch('/donate')
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleLocaleChange = (newLocale: string) => {
     setTargetLocale(newLocale)
     startTransition(() => {
@@ -123,6 +128,7 @@ export default function Navigation() {
               <div className="hidden items-center space-x-3 md:flex">
                 <button
                   onClick={handleMarketClick}
+                  onMouseEnter={() => router.prefetch('/market')}
                   className="group relative overflow-hidden rounded-lg bg-ukraine-blue-500 px-5 py-2 text-sm font-semibold tracking-wide text-white shadow-md transition-all duration-200 hover:bg-ukraine-blue-600 hover:shadow-lg"
                 >
                   <div className="absolute inset-0 -translate-x-full skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full"></div>
@@ -130,12 +136,14 @@ export default function Navigation() {
                 </button>
                 <button
                   onClick={handleTrackDonation}
+                  onMouseEnter={() => router.prefetch('/track-donation')}
                   className="rounded-lg border-2 border-gray-300 bg-white px-5 py-2 text-sm font-semibold tracking-wide text-gray-700 transition-all duration-200 hover:border-ukraine-blue-300 hover:bg-ukraine-blue-50 hover:text-ukraine-blue-700"
                 >
                   {t('trackDonation')}
                 </button>
                 <button
                   onClick={handleDonateClick}
+                  onMouseEnter={() => router.prefetch('/donate')}
                   className="group relative overflow-hidden rounded-lg bg-ukraine-gold-500 px-5 py-2 text-sm font-semibold tracking-wide text-ukraine-blue-900 shadow-md transition-all duration-200 hover:bg-ukraine-gold-600 hover:shadow-lg"
                 >
                   <div className="absolute inset-0 -translate-x-full skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 group-hover:translate-x-full"></div>
@@ -236,6 +244,7 @@ export default function Navigation() {
           <div className="flex items-center justify-center space-x-2 px-3 pb-3 pt-1 md:hidden">
             <button
               onClick={handleMarketClick}
+              onMouseEnter={() => router.prefetch('/market')}
               className="group relative flex-1 overflow-hidden whitespace-nowrap rounded-lg bg-ukraine-blue-500 px-3 py-2 text-xs font-semibold tracking-wide text-white shadow-md transition-all duration-200 active:bg-ukraine-blue-600"
             >
               <div className="absolute inset-0 -translate-x-full skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 group-hover:translate-x-full"></div>
@@ -243,12 +252,14 @@ export default function Navigation() {
             </button>
             <button
               onClick={handleTrackDonation}
+              onMouseEnter={() => router.prefetch('/track-donation')}
               className="flex-1 whitespace-nowrap rounded-lg border-2 border-gray-300 bg-white px-3 py-2 text-xs font-semibold tracking-wide text-gray-700 transition-all duration-200 active:border-ukraine-blue-300 active:bg-ukraine-blue-50 active:text-ukraine-blue-700"
             >
               {t('trackDonation')}
             </button>
             <button
               onClick={handleDonateClick}
+              onMouseEnter={() => router.prefetch('/donate')}
               className="group relative flex-1 overflow-hidden whitespace-nowrap rounded-lg bg-ukraine-gold-500 px-3 py-2 text-xs font-semibold tracking-wide text-ukraine-blue-900 shadow-md transition-all duration-200 active:bg-ukraine-gold-600"
             >
               <div className="absolute inset-0 -translate-x-full skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 group-hover:translate-x-full"></div>
