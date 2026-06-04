@@ -6,7 +6,6 @@ import { logger } from '@/lib/logger'
 import { MARKET_ITEMS_CACHE_TAG } from '@/lib/market/market-utils'
 import { createAnonClient } from '@/lib/supabase/server'
 import type {
-  MarketItem,
   MarketItemFilters,
   PublicMarketItem,
   PublicMarketOrderRecord,
