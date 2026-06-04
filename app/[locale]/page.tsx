@@ -18,7 +18,7 @@ const DonationJourneySection = dynamic(() => import('@/components/home/DonationJ
   loading: () => <div className="h-96 animate-pulse bg-white" />,
 })
 
-export const revalidate = 60
+export const revalidate = 120
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))

@@ -12,7 +12,7 @@ import type { AppLocale, ProjectStats } from '@/types'
 
 import DonatePageClient from '../DonatePageClient'
 
-export const revalidate = 60
+export const revalidate = 120
 
 type Props = {
   params: Promise<{ locale: string; id: string }>

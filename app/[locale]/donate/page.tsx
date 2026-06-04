@@ -6,7 +6,7 @@ import { getAllProjectsWithStats } from '@/lib/supabase/queries'
 
 import DonatePageClient from './DonatePageClient'
 
-export const revalidate = 60
+export const revalidate = 120
 
 type Props = {
   params: Promise<{ locale: string }>
