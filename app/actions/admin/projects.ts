@@ -1,9 +1,10 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { z } from 'zod'
 
 import { getAdminClient } from '@/lib/supabase/action-clients'
+import { PROJECTS_CACHE_TAG } from '@/lib/supabase/queries'
 import { createProjectSchema, updateProjectSchema } from '@/lib/validations'
 import type { Database } from '@/types/database'
 
@@ -49,6 +50,7 @@ export async function createProject(project: ProjectInsert) {
 
   revalidatePath('/admin/projects')
   revalidatePath('/[locale]', 'page')
+  revalidateTag(PROJECTS_CACHE_TAG)
   return data as Project
 }
 
@@ -83,5 +85,6 @@ export async function updateProject(id: number, updates: ProjectUpdate) {
 
   revalidatePath('/admin/projects')
   revalidatePath('/[locale]', 'page')
+  revalidateTag(PROJECTS_CACHE_TAG)
   return data as Project
 }
