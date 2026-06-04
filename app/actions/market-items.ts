@@ -1,5 +1,7 @@
 'use server'
 
+import { unstable_cache } from 'next/cache'
+
 import { logger } from '@/lib/logger'
 import { createAnonClient } from '@/lib/supabase/server'
 import type {
@@ -13,11 +15,14 @@ import type {
 // 公开数据获取（无需认证）
 // ============================================
 
-/** 获取公开商品列表（排除 draft） */
-export async function getPublicMarketItems(
-  filters?: MarketItemFilters
-): Promise<{ items: PublicMarketItem[]; error?: string }> {
-  try {
+export const MARKET_ITEMS_CACHE_TAG = 'market-items-public'
+
+/**
+ * 内部 fetcher：出错时直接 throw，确保 unstable_cache 不缓存错误结果。
+ * 外层 getPublicMarketItems 负责吞错并返回 { items: [], error }。
+ */
+const _fetchPublicMarketItems = unstable_cache(
+  async (filters?: MarketItemFilters): Promise<PublicMarketItem[]> => {
     const supabase = createAnonClient()
 
     let query = supabase
@@ -33,8 +38,7 @@ export async function getPublicMarketItems(
     const { data, error } = await query
 
     if (error) {
-      logger.error('MARKET:ITEMS', 'Failed to fetch items', { error: error.message })
-      return { items: [], error: error.message }
+      throw new Error(error.message)
     }
 
     // 排序：on_sale 有货 → on_sale 售罄 → off_shelf，同组按创建时间倒序
@@ -51,9 +55,21 @@ export async function getPublicMarketItems(
       )
     })
 
-    return { items: sorted }
+    return sorted
+  },
+  ['public-market-items'],
+  { revalidate: 120, tags: [MARKET_ITEMS_CACHE_TAG] },
+)
+
+/** 获取公开商品列表（排除 draft） */
+export async function getPublicMarketItems(
+  filters?: MarketItemFilters
+): Promise<{ items: PublicMarketItem[]; error?: string }> {
+  try {
+    const items = await _fetchPublicMarketItems(filters)
+    return { items }
   } catch (err) {
-    logger.error('MARKET:ITEMS', 'Unexpected error', {
+    logger.error('MARKET:ITEMS', 'Failed to fetch items', {
       error: err instanceof Error ? err.message : String(err),
     })
     return { items: [], error: 'Failed to load items' }

@@ -1,6 +1,9 @@
 'use server'
 
+import { revalidateTag } from 'next/cache'
+
 import { getMarketOrderFiles } from '@/app/actions/market-order-files'
+import { MARKET_ITEMS_CACHE_TAG } from '@/app/actions/market-items'
 import { logger } from '@/lib/logger'
 import {
   getFileCategory,
@@ -63,6 +66,7 @@ export async function createMarketItem(
     if (error) return { error: error.message }
 
     logger.info('MARKET:ADMIN', 'Item created', { id: data.id })
+    revalidateTag(MARKET_ITEMS_CACHE_TAG)
     return { item: data as MarketItem }
   } catch (err) {
     return { error: err instanceof Error ? err.message : 'Failed' }
@@ -129,6 +133,7 @@ export async function updateMarketItem(
     }
 
     logger.info('MARKET:ADMIN', 'Item updated', { id })
+    revalidateTag(MARKET_ITEMS_CACHE_TAG)
     return { success: true }
   } catch (err) {
     return { success: false, error: err instanceof Error ? err.message : 'Failed' }
@@ -153,6 +158,7 @@ export async function deleteMarketItem(id: number): Promise<{ success: boolean; 
     }
 
     logger.info('MARKET:ADMIN', 'Item deleted', { id })
+    revalidateTag(MARKET_ITEMS_CACHE_TAG)
     return { success: true }
   } catch (err) {
     return { success: false, error: err instanceof Error ? err.message : 'Failed' }
