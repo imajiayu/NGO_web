@@ -36,7 +36,7 @@ export default async function ComplianceSection() {
                 href={`/documents/${encodeURIComponent(file)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group w-32 flex-shrink-0 transform rounded-xl border-2 border-gray-200 bg-white p-3 transition-all duration-300 hover:-translate-y-2 hover:border-ukraine-blue-500 hover:shadow-lg md:w-auto"
+                className="group flex w-32 flex-shrink-0 transform flex-col rounded-xl border-2 border-gray-200 bg-white p-3 transition-all duration-300 hover:-translate-y-2 hover:border-ukraine-blue-500 hover:shadow-lg md:w-auto"
               >
                 {/* PDF Icon */}
                 <div className="mb-2 flex justify-center">
@@ -57,7 +57,7 @@ export default async function ComplianceSection() {
                 </p>
 
                 {/* Download Indicator */}
-                <div className="mt-2 flex justify-center">
+                <div className="mt-auto flex justify-center pt-2">
                   <span className="text-xs text-gray-500 transition-colors group-hover:text-ukraine-blue-500">
                     PDF
                   </span>

@@ -1,11 +1,11 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { requestRefund, trackDonations } from '@/app/actions/track-donation'
-import DonationResultViewer from '@/components/donation-display/DonationResultViewer'
 import { SearchIcon } from '@/components/icons'
 import { canRequestRefund, type DonationStatus } from '@/lib/donation-status'
 import { useBodyScrollLock } from '@/lib/hooks/useBodyScrollLock'
@@ -15,6 +15,12 @@ import OrderGroupCard from './components/OrderGroupCard'
 import RefundConfirmationDialog from './components/RefundConfirmationDialog'
 import SearchForm from './components/SearchForm'
 import type { TrackDonation } from './components/types'
+
+// 结果查看器懒加载：仅在用户点击「查看结果」(viewResultDonationId) 后渲染，非首屏。
+const DonationResultViewer = dynamic(
+  () => import('@/components/donation-display/DonationResultViewer'),
+  { ssr: false, loading: () => null }
+)
 
 type Props = {
   locale: string

@@ -1,5 +1,6 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -11,9 +12,26 @@ import { canPurchase, getItemDisplayInfo } from '@/lib/market/market-status'
 import { formatMarketPrice } from '@/lib/market/market-utils'
 import type { PublicMarketItem, ShippingAddress } from '@/types/market'
 
-import EmailOTPForm from './EmailOTPForm'
-import MarketPaymentWidget from './MarketPaymentWidget'
-import ShippingAddressForm from './ShippingAddressForm'
+// 结账步骤组件懒加载：首屏 browse 状态全不渲染，用户点"立即购买"后才按 step 加载。
+// ShippingAddressForm 带 i18n-iso-countries(780KB) + react-international-phone(252KB)，
+// 移出商品详情页首屏 bundle。
+const checkoutLoading = () => (
+  <div className="flex items-center justify-center p-8">
+    <SpinnerIcon className="h-8 w-8 animate-spin text-ukraine-blue-500" />
+  </div>
+)
+const EmailOTPForm = dynamic(() => import('./EmailOTPForm'), {
+  ssr: true,
+  loading: checkoutLoading,
+})
+const ShippingAddressForm = dynamic(() => import('./ShippingAddressForm'), {
+  ssr: true,
+  loading: checkoutLoading,
+})
+const MarketPaymentWidget = dynamic(() => import('./MarketPaymentWidget'), {
+  ssr: true,
+  loading: checkoutLoading,
+})
 
 interface SaleCheckoutPanelProps {
   item: PublicMarketItem

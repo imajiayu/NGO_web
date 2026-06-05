@@ -108,9 +108,6 @@ const sentryWebpackPluginOptions = {
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
 
-  // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-  tunnelRoute: '/monitoring',
-
   // Hides source maps from generated client bundles
   hideSourceMaps: true,
 

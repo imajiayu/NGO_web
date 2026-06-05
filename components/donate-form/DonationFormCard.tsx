@@ -1,5 +1,6 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -9,7 +10,7 @@ import {
   createWayForPayDonation,
 } from '@/app/actions/donation'
 import { createEmailSubscription } from '@/app/actions/subscription'
-import NowPaymentsWidget from '@/components/donate-form/widgets/NowPaymentsWidget'
+import { SpinnerIcon } from '@/components/icons'
 import { trackEvent } from '@/lib/analytics/track'
 import { getTranslatedText } from '@/lib/i18n-utils'
 import { clientLogger } from '@/lib/logger-client'
@@ -17,9 +18,7 @@ import type { CreatePaymentResponse } from '@/lib/payment/nowpayments/types'
 import type { AppLocale, ProjectStats } from '@/types'
 import type { DonorInfo } from '@/types/dtos'
 
-import CryptoSelector from './CryptoSelector'
-import PaymentMethodSelector, { type PaymentMethod } from './PaymentMethodSelector'
-import PaymentStateView from './PaymentStateView'
+import type { PaymentMethod } from './PaymentMethodSelector'
 import AmountQuantitySection from './sections/AmountQuantitySection'
 import ContactMethodsSection from './sections/ContactMethodsSection'
 import DonorInfoSection from './sections/DonorInfoSection'
@@ -32,7 +31,33 @@ import TipSection from './sections/TipSection'
 import TotalSummarySection from './sections/TotalSummarySection'
 import type { FieldKey } from './sections/types'
 import { clampAmount } from './sections/utils'
-import WechatAlipaySelector from './WechatAlipaySelector'
+// 支付组件懒加载：首屏 idle 状态全不渲染，用户填表 → 点击后才按 processingState 逐步加载。
+// 三套支付集成（WayForPay/NOWPayments/QmmPay）+ selector 移出首屏 bundle，改善 donate 页 FCP。
+const paymentLoading = () => (
+  <div className="flex items-center justify-center p-8">
+    <SpinnerIcon className="h-8 w-8 animate-spin text-ukraine-blue-500" />
+  </div>
+)
+const PaymentMethodSelector = dynamic(() => import('./PaymentMethodSelector'), {
+  ssr: true,
+  loading: paymentLoading,
+})
+const CryptoSelector = dynamic(() => import('./CryptoSelector'), {
+  ssr: true,
+  loading: paymentLoading,
+})
+const WechatAlipaySelector = dynamic(() => import('./WechatAlipaySelector'), {
+  ssr: true,
+  loading: paymentLoading,
+})
+const PaymentStateView = dynamic(() => import('./PaymentStateView'), {
+  ssr: true,
+  loading: paymentLoading,
+})
+const NowPaymentsWidget = dynamic(
+  () => import('@/components/donate-form/widgets/NowPaymentsWidget'),
+  { ssr: true, loading: paymentLoading }
+)
 
 // Re-export for backward compatibility (DonatePageClient imports it from here historically)
 export type { DonorInfo }

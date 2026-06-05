@@ -1,23 +1,22 @@
 'use client'
 
-import * as Sentry from '@sentry/nextjs'
 import { useEffect } from 'react'
 
 // Minimal error messages for global error boundary
 const errorMessages = {
   en: {
     title: 'Something went wrong',
-    description: "We're sorry, but something unexpected happened. Our team has been notified.",
+    description: "We're sorry, but something unexpected happened. Please try again, or contact us if the problem persists.",
     button: 'Try again',
   },
   zh: {
     title: '发生了错误',
-    description: '很抱歉，发生了意外错误。我们的团队已收到通知。',
+    description: '很抱歉，发生了意外错误。请重试，如果问题持续存在请联系我们。',
     button: '重试',
   },
   ua: {
     title: 'Щось пішло не так',
-    description: 'Вибачте, але сталася неочікувана помилка. Нашу команду повідомлено.',
+    description: 'Вибачте, але сталася неочікувана помилка. Спробуйте ще раз або зв’яжіться з нами, якщо проблема не зникає.',
     button: 'Спробувати знову',
   },
 }
@@ -30,8 +29,9 @@ export default function GlobalError({
   reset: () => void
 }) {
   useEffect(() => {
-    // Log the error to Sentry
-    Sentry.captureException(error)
+    // Sentry 已从 client bundle 移除（性能优化，-122KB gzip）。纯 client 端根崩溃
+    // 仅在控制台记录；服务端错误仍由 instrumentation.ts 的 server 端 Sentry 捕获。
+    console.error('Global error:', error)
   }, [error])
 
   // Try to detect locale from browser, fallback to 'en'

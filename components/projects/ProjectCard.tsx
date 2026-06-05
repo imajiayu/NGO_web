@@ -21,6 +21,9 @@ interface ProjectCardProps {
 
   // Force collapse details (used for scroll-based collapse on mobile)
   forceCollapse?: boolean
+
+  // Eager-load the background image (compact mode LCP candidate only)
+  priority?: boolean
 }
 
 export default function ProjectCard({
@@ -31,6 +34,7 @@ export default function ProjectCard({
   isSelected = false,
   onSelect,
   forceCollapse = false,
+  priority = false,
 }: ProjectCardProps) {
   if (mode === 'compact') {
     return (
@@ -40,6 +44,7 @@ export default function ProjectCard({
         isSelected={isSelected}
         onSelect={onSelect}
         forceCollapse={forceCollapse}
+        priority={priority}
       />
     )
   }

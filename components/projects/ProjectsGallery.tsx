@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import ScrollableRow from '@/components/common/ScrollableRow'
 import { isBodyScrollLocked } from '@/lib/hooks/useBodyScrollLock'
@@ -74,6 +74,21 @@ export default function ProjectsGallery({
     return () => window.removeEventListener('scroll', handleScroll)
   }, [mode])
 
+  // 新打开页面时，若已有选中项目（如直链 /donate/[id]），把该卡横向滚动到可见位置。
+  // 仅 compact 模式、仅首次：block:'nearest' 保证只动横向滚动容器、不滚动整页。
+  const selectedCardRef = useRef<HTMLDivElement>(null)
+  const didInitialScrollRef = useRef(false)
+
+  useEffect(() => {
+    if (mode !== 'compact' || didInitialScrollRef.current) return
+    // 首次挂载即锁定，无论有无选中——避免后续用户点选卡片时触发非预期的横向跳动
+    didInitialScrollRef.current = true
+    if (selectedProjectId == null) return
+    const el = selectedCardRef.current
+    if (!el) return
+    el.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' })
+  }, [mode, selectedProjectId])
+
   if (projects.length === 0) {
     return (
       <div className="py-12 text-center">
@@ -105,17 +120,29 @@ export default function ProjectsGallery({
           scrollRightLabel={tc('carousel.scrollRight')}
         >
           <div className="flex min-w-min items-start gap-6 px-2 py-2">
-            {projects.map((project) => (
-              <ProjectCard
+            {projects.map((project, index) => (
+              <div
                 key={project.id}
-                project={project}
-                locale={locale}
-                mode={mode}
-                showProgress={true}
-                isSelected={selectedProjectId === project.id}
-                onSelect={onProjectSelect}
-                forceCollapse={mode === 'compact' ? isCollapsedByScroll : false}
-              />
+                ref={selectedProjectId === project.id ? selectedCardRef : undefined}
+                className="flex-shrink-0"
+              >
+                <ProjectCard
+                  project={project}
+                  locale={locale}
+                  mode={mode}
+                  showProgress={true}
+                  isSelected={selectedProjectId === project.id}
+                  onSelect={onProjectSelect}
+                  forceCollapse={mode === 'compact' ? isCollapsedByScroll : false}
+                  // LCP 候选：有选中卡时为放大的那张，否则退回最左第一张（仅 compact 首屏需要）
+                  priority={
+                    mode === 'compact' &&
+                    (selectedProjectId != null
+                      ? selectedProjectId === project.id
+                      : index === 0)
+                  }
+                />
+              </div>
             ))}
           </div>
         </ScrollableRow>

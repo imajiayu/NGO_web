@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { useCallback } from 'react'
 
@@ -18,6 +19,8 @@ interface Props {
   onSelect?: (id: number) => void
   /** Force collapse details (used for scroll-based collapse on mobile). */
   forceCollapse?: boolean
+  /** Eager-load the background image (set on the LCP candidate card only). */
+  priority?: boolean
 }
 
 export default function ProjectCardCompact({
@@ -26,6 +29,7 @@ export default function ProjectCardCompact({
   isSelected = false,
   onSelect,
   forceCollapse = false,
+  priority = false,
 }: Props) {
   // In compact mode on donate page: default expanded, collapse on scroll
   const shouldExpandDetails = !forceCollapse
@@ -54,13 +58,15 @@ export default function ProjectCardCompact({
           : 'border-ukraine-blue-400/30 active:border-ukraine-gold-400/60 [@media(hover:hover)]:hover:border-ukraine-gold-400/60'
       } `}
     >
-      {/* Background image container - inside border */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url(/images/projects/project-${project.id}/card/bg.webp)`,
-          backgroundColor: '#1a1a1a',
-        }}
+      {/* Background image - optimized via next/image (was CSS background-image:
+          裸原图 273KB → next/image 优化为 256px avif，消除 donate 页 LCP 瓶颈) */}
+      <Image
+        src={`/images/projects/project-${project.id}/card/bg.webp`}
+        alt=""
+        fill
+        sizes="256px"
+        priority={priority}
+        className="object-cover object-center"
       />
       {/* Gradient overlay for text contrast */}
       <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/70 via-black/40 to-black/10" />
