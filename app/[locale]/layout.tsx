@@ -23,17 +23,23 @@ const fraunces = Fraunces({
 })
 
 // 正文字体 - Source Sans 3 (温暖友好的无衬线)
+// preload: false —— 4 个 subset 里 cyrillic/cyrillic-ext 仅 ua 页面需要，
+// 无条件 preload 会让 en/zh 首屏白白抢占带宽。改为靠 display:swap + unicode-range
+// 按需加载（当前语言只下对应 subset），把首屏 High 优先级带宽让给 hero LCP 图。
 const sourceSans = Source_Sans_3({
   subsets: ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext'],
   display: 'swap',
+  preload: false,
   variable: '--font-source-sans',
   weight: ['300', '400', '500', '600', '700'],
 })
 
 // 数据字体 - JetBrains Mono (清晰醒目的等宽字体)
+// preload: false —— 数据/数字字体首屏几乎不出现，无需抢占首屏带宽。
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin', 'latin-ext', 'cyrillic'],
   display: 'swap',
+  preload: false,
   variable: '--font-jetbrains-mono',
   weight: ['400', '500', '600', '700'],
 })
