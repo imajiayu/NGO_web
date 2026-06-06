@@ -21,6 +21,7 @@
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.39.0",
     "@vercel/analytics": "^1.6.1",
+    "@vercel/speed-insights": "^2.0.0",
     "cloudinary": "^2.8.0",
     "clsx": "^2.1.0",
     "i18n-iso-countries": "^7.14.0",
