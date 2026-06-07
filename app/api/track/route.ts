@@ -16,7 +16,7 @@ import { getPublicClient } from '@/lib/supabase/action-clients'
 const trackEventSchema = z.object({
   event_type: z.enum(['view', 'cta_click']),
   page_type: z.enum(['home', 'project', 'market_item', 'market_list', 'other']),
-  entity_id: z.number().int().positive().optional().nullable(),
+  entity_id: z.number().int().nonnegative().optional().nullable(),
   path: z.string().min(1).max(200),
   locale: z.enum(['en', 'zh', 'ua']),
   session_id: z.string().min(8).max(64),
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => null)
     if (!body) {
-      return NextResponse.json({ ok: false }, { status: 204 })
+      return new NextResponse(null, { status: 204 })
     }
 
     const parsed = trackEventSchema.safeParse(body)
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       logger.warn('API', 'Invalid track event payload', {
         issues: parsed.error.issues.slice(0, 3),
       })
-      return NextResponse.json({ ok: false }, { status: 204 })
+      return new NextResponse(null, { status: 204 })
     }
 
     const data = parsed.data
@@ -58,12 +58,12 @@ export async function POST(req: NextRequest) {
         code: error.code,
         message: error.message,
       })
-      return NextResponse.json({ ok: false }, { status: 204 })
+      return new NextResponse(null, { status: 204 })
     }
 
     return NextResponse.json({ ok: true }, { status: 202 })
   } catch (error) {
     logger.errorWithStack('API', 'track route unexpected error', error)
-    return NextResponse.json({ ok: false }, { status: 204 })
+    return new NextResponse(null, { status: 204 })
   }
 }
