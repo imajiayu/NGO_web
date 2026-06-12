@@ -8,6 +8,10 @@ export function useActiveSection(sectionIds: string[]): string | null {
   const [activeId, setActiveId] = useState<string | null>(null)
   const visibleMap = useRef<Map<string, IntersectionObserverEntry>>(new Map())
 
+  // Stable key: re-init the observer only when the actual id list changes.
+  // Section ids never contain '|' (convention: `pN-section-name`).
+  const sectionIdsKey = sectionIds.join('|')
+
   useEffect(() => {
     if (sectionIds.length === 0) return
 
@@ -70,7 +74,7 @@ export function useActiveSection(sectionIds: string[]): string | null {
       observer.disconnect()
       map.clear()
     }
-  }, [JSON.stringify(sectionIds)]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [sectionIdsKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return activeId
 }
