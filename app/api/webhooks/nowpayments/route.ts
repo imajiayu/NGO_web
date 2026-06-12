@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { after, NextResponse } from 'next/server'
 
 import {
   type DonationStatus,
@@ -195,34 +195,36 @@ export async function POST(req: Request) {
         toStatus: newStatus,
       })
 
-      // Send confirmation email for successful payments / refund notifications
+      // Send confirmation email for successful payments / refund notifications (non-blocking)
       if (shouldSendEmail && updatedDonations && updatedDonations.length > 0) {
-        try {
-          if (newStatus === 'paid') {
-            const payload = await buildPaymentSuccessPayload(supabase, updatedDonations, 'USD')
-            if (payload) {
-              await sendPaymentSuccessEmail(payload)
-              logger.info('WEBHOOK:NOWPAYMENTS', 'Confirmation email sent', {
-                orderId,
-                to: payload.to,
-              })
+        after(async () => {
+          try {
+            if (newStatus === 'paid') {
+              const payload = await buildPaymentSuccessPayload(supabase, updatedDonations, 'USD')
+              if (payload) {
+                await sendPaymentSuccessEmail(payload)
+                logger.info('WEBHOOK:NOWPAYMENTS', 'Confirmation email sent', {
+                  orderId,
+                  to: payload.to,
+                })
+              }
+            } else if (newStatus === 'refunded') {
+              const payload = await buildRefundSuccessPayload(supabase, updatedDonations, 'USD')
+              if (payload) {
+                await sendRefundSuccessEmail(payload)
+                logger.info('WEBHOOK:NOWPAYMENTS', 'Refund email sent', {
+                  orderId,
+                  to: payload.to,
+                })
+              }
             }
-          } else if (newStatus === 'refunded') {
-            const payload = await buildRefundSuccessPayload(supabase, updatedDonations, 'USD')
-            if (payload) {
-              await sendRefundSuccessEmail(payload)
-              logger.info('WEBHOOK:NOWPAYMENTS', 'Refund email sent', {
-                orderId,
-                to: payload.to,
-              })
-            }
+          } catch (emailError) {
+            logger.error('WEBHOOK:NOWPAYMENTS', 'Email send failed', {
+              orderId,
+              error: emailError instanceof Error ? emailError.message : String(emailError),
+            })
           }
-        } catch (emailError) {
-          logger.error('WEBHOOK:NOWPAYMENTS', 'Email send failed', {
-            orderId,
-            error: emailError instanceof Error ? emailError.message : String(emailError),
-          })
-        }
+        })
       }
     }
 

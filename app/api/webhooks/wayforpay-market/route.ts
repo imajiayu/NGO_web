@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { after, NextResponse } from 'next/server'
 
 import { logger } from '@/lib/logger'
 import { verifyWayForPaySignature } from '@/lib/market/wayforpay'
@@ -292,50 +292,52 @@ export async function POST(req: Request) {
         }
       }
 
-      // ── 支付成功邮件 ─────────────────────────────────
+      // ── 支付成功邮件（非阻塞，响应送出后发送）─────────────
       if (newStatus === 'paid') {
-        try {
-          const { data: fullOrder } = await service
-            .from('market_orders')
-            .select(
-              'order_reference, buyer_email, shipping_name, shipping_city, shipping_country, quantity, unit_price, total_amount, currency, locale, market_items(title_i18n)'
-            )
-            .eq('order_reference', orderReference)
-            .single()
+        after(async () => {
+          try {
+            const { data: fullOrder } = await service
+              .from('market_orders')
+              .select(
+                'order_reference, buyer_email, shipping_name, shipping_city, shipping_country, quantity, unit_price, total_amount, currency, locale, market_items(title_i18n)'
+              )
+              .eq('order_reference', orderReference)
+              .single()
 
-          if (fullOrder && fullOrder.buyer_email) {
-            const { sendMarketOrderPaidEmail } = await import('@/lib/email')
-            await sendMarketOrderPaidEmail({
-              to: fullOrder.buyer_email,
-              locale: (fullOrder.locale || 'en') as AppLocale,
-              shippingName: fullOrder.shipping_name,
-              orderReference: fullOrder.order_reference,
-              itemTitleI18n: (fullOrder.market_items as any)?.title_i18n || {
-                en: '',
-                zh: '',
-                ua: '',
-              },
-              quantity: fullOrder.quantity,
-              unitPrice: Number(fullOrder.unit_price),
-              totalAmount: Number(fullOrder.total_amount),
-              currency: fullOrder.currency,
-              shippingCity: fullOrder.shipping_city,
-              shippingCountry: fullOrder.shipping_country,
-            })
-            logger.info('WEBHOOK:WAYFORPAY-MARKET', 'Payment confirmed email sent', {
-              orderReference,
-            })
-          }
-        } catch (emailError) {
-          logger.error(
-            'WEBHOOK:WAYFORPAY-MARKET',
-            'Failed to send payment confirmed email (non-blocking)',
-            {
-              orderReference,
-              error: emailError instanceof Error ? emailError.message : String(emailError),
+            if (fullOrder && fullOrder.buyer_email) {
+              const { sendMarketOrderPaidEmail } = await import('@/lib/email')
+              await sendMarketOrderPaidEmail({
+                to: fullOrder.buyer_email,
+                locale: (fullOrder.locale || 'en') as AppLocale,
+                shippingName: fullOrder.shipping_name,
+                orderReference: fullOrder.order_reference,
+                itemTitleI18n: (fullOrder.market_items as any)?.title_i18n || {
+                  en: '',
+                  zh: '',
+                  ua: '',
+                },
+                quantity: fullOrder.quantity,
+                unitPrice: Number(fullOrder.unit_price),
+                totalAmount: Number(fullOrder.total_amount),
+                currency: fullOrder.currency,
+                shippingCity: fullOrder.shipping_city,
+                shippingCountry: fullOrder.shipping_country,
+              })
+              logger.info('WEBHOOK:WAYFORPAY-MARKET', 'Payment confirmed email sent', {
+                orderReference,
+              })
             }
-          )
-        }
+          } catch (emailError) {
+            logger.error(
+              'WEBHOOK:WAYFORPAY-MARKET',
+              'Failed to send payment confirmed email (non-blocking)',
+              {
+                orderReference,
+                error: emailError instanceof Error ? emailError.message : String(emailError),
+              }
+            )
+          }
+        })
       }
     }
 

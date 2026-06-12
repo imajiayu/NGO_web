@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { after, NextRequest, NextResponse } from 'next/server'
 
 import {
   type DonationStatus,
@@ -155,24 +155,26 @@ export async function GET(request: NextRequest) {
     count: updatedDonations?.length ?? 0,
   })
 
-  // Send payment confirmation email
+  // Send payment confirmation email (non-blocking, after response)
   if (updatedDonations && updatedDonations.length > 0) {
-    try {
-      // Use 'CNY' as currency since qmmpay processes in RMB
-      const payload = await buildPaymentSuccessPayload(supabase, updatedDonations, 'CNY')
-      if (payload) {
-        await sendPaymentSuccessEmail(payload)
-        logger.info('WEBHOOK:QMMPAY', 'Confirmation email sent', {
+    after(async () => {
+      try {
+        // Use 'CNY' as currency since qmmpay processes in RMB
+        const payload = await buildPaymentSuccessPayload(supabase, updatedDonations, 'CNY')
+        if (payload) {
+          await sendPaymentSuccessEmail(payload)
+          logger.info('WEBHOOK:QMMPAY', 'Confirmation email sent', {
+            orderReference,
+            to: payload.to,
+          })
+        }
+      } catch (emailError) {
+        logger.error('WEBHOOK:QMMPAY', 'Email send failed', {
           orderReference,
-          to: payload.to,
+          error: emailError instanceof Error ? emailError.message : String(emailError),
         })
       }
-    } catch (emailError) {
-      logger.error('WEBHOOK:QMMPAY', 'Email send failed', {
-        orderReference,
-        error: emailError instanceof Error ? emailError.message : String(emailError),
-      })
-    }
+    })
   }
 
   // Must return plain text "success" — not JSON

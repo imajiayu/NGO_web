@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { after, NextResponse } from 'next/server'
 
 import {
   type DonationStatus,
@@ -178,51 +178,55 @@ export async function POST(req: Request) {
         toStatus: newStatus,
       })
 
-      // Send confirmation email for successful payments
+      // Send confirmation email for successful payments (non-blocking, after response)
       if (shouldSendEmail && updatedDonations && updatedDonations.length > 0) {
-        try {
-          const payload = await buildPaymentSuccessPayload(
-            supabase,
-            updatedDonations,
-            body.currency
-          )
-          if (payload) {
-            await sendPaymentSuccessEmail(payload)
-            logger.info('WEBHOOK:WAYFORPAY', 'Confirmation email sent', {
+        after(async () => {
+          try {
+            const payload = await buildPaymentSuccessPayload(
+              supabase,
+              updatedDonations,
+              body.currency
+            )
+            if (payload) {
+              await sendPaymentSuccessEmail(payload)
+              logger.info('WEBHOOK:WAYFORPAY', 'Confirmation email sent', {
+                orderReference,
+                to: payload.to,
+              })
+            }
+          } catch (emailError) {
+            logger.error('WEBHOOK:WAYFORPAY', 'Email send failed', {
               orderReference,
-              to: payload.to,
+              error: emailError instanceof Error ? emailError.message : String(emailError),
             })
           }
-        } catch (emailError) {
-          logger.error('WEBHOOK:WAYFORPAY', 'Email send failed', {
-            orderReference,
-            error: emailError instanceof Error ? emailError.message : String(emailError),
-          })
-        }
+        })
       }
 
-      // Send refund success email when status becomes refunded
+      // Send refund success email when status becomes refunded (non-blocking)
       if (newStatus === 'refunded' && updatedDonations && updatedDonations.length > 0) {
-        try {
-          const payload = await buildRefundSuccessPayload(
-            supabase,
-            updatedDonations,
-            body.currency || 'USD',
-            body.reason || undefined
-          )
-          if (payload) {
-            await sendRefundSuccessEmail(payload)
-            logger.info('WEBHOOK:WAYFORPAY', 'Refund email sent', {
+        after(async () => {
+          try {
+            const payload = await buildRefundSuccessPayload(
+              supabase,
+              updatedDonations,
+              body.currency || 'USD',
+              body.reason || undefined
+            )
+            if (payload) {
+              await sendRefundSuccessEmail(payload)
+              logger.info('WEBHOOK:WAYFORPAY', 'Refund email sent', {
+                orderReference,
+                to: payload.to,
+              })
+            }
+          } catch (emailError) {
+            logger.error('WEBHOOK:WAYFORPAY', 'Refund email send failed', {
               orderReference,
-              to: payload.to,
+              error: emailError instanceof Error ? emailError.message : String(emailError),
             })
           }
-        } catch (emailError) {
-          logger.error('WEBHOOK:WAYFORPAY', 'Refund email send failed', {
-            orderReference,
-            error: emailError instanceof Error ? emailError.message : String(emailError),
-          })
-        }
+        })
       }
     }
 
