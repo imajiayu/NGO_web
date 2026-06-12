@@ -217,11 +217,15 @@
 
 | 属性             | 值                                                           |
 | ---------------- | ------------------------------------------------------------ |
-| 访问权限         | Public（公开读取）                                           |
+| 访问权限         | Public（公开读取，仅对象 URL，不开放 list）                  |
 | 文件大小限制     | 50MB                                                         |
 | 允许的 MIME 类型 | `image/*`, `video/*`                                         |
 | 文件组织结构     | `{order_reference}/{shipping\|completion}/{timestamp}.{ext}` |
 | 用途             | 发货凭证（shipping）和资金用途凭证（completion）             |
+
+> **公开读取说明**：本桶为 public bucket，访客通过公开对象 URL 直接读取凭证图片，**不经 RLS**。原「Public access to market-order-results」（public 角色 SELECT）仅用于 `.list()` 列举，允许枚举全桶文件，已移除以收窄暴露面（迁移 `20260612130000`）。
+>
+> ⚠️ **联动改动**：公开凭证展示 `getPublicOrderProofFiles()`（`app/actions/market-order-files.ts`）的 `.list()` 调用须从 `createServerClient()`（anon）改为 `getInternalClient()`（service_role，与捐赠模块对齐），方可在移除上述 public list 策略后继续工作。迁移与该 TS 改动**必须同批部署**。
 
 ---
 
@@ -272,6 +276,20 @@ Supabase 客户端
 | WayForPay Webhook 更新状态        | Service Role          | ❌               |
 | 扣减/恢复库存                     | Service Role          | ❌               |
 | 管理员管理商品/订单               | Authenticated (admin) | ✅               |
+
+### 函数安全硬化
+
+> 迁移 `20260612130000`（行为不变的纯收紧）：
+>
+> - `restore_stock`、`log_market_order_status_change` 等 `SECURITY DEFINER` 函数固定 `SET search_path = public`，消除 search_path 注入提权面。
+> - `log_market_order_status_change` 为触发器函数，已撤销 `anon/authenticated/public` 的 `EXECUTE` 授权（不应经 `/rpc` 暴露，触发器触发不受影响）。
+
+> **已知历史偏差（有意保留，本文档以线上实际状态为准）**：迁移 `20260331400000` 曾记录为已应用，但实际从第二条语句起半失败中止——P2-12 的 `CREATE OR REPLACE FUNCTION restore_stock(...) RETURNS BOOLEAN` 因「不能改变已有函数返回类型」报错，使其后语句未执行。因此线上至今：
+>
+> - `restore_stock` 返回类型仍为 **`VOID`**（非该迁移文件声明的 `BOOLEAN`）——调用方只判 `error`、不读返回值，无功能影响；
+> - `market_orders.buyer_id` 外键仍为 **`NO ACTION`**（非该迁移文件声明的 `ON DELETE RESTRICT`）——两者对「删除有订单的用户」的阻止行为等价。
+>
+> 二者经评估无实际影响，**有意不修复**（避免对支付回滚关键函数 DROP+CREATE 的回归风险）。仅 search_path 一项由 `20260612130000` 用 `ALTER FUNCTION` 补齐。
 
 ### 与捐赠模块的关键差异
 

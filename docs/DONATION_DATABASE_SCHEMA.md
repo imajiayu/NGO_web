@@ -26,7 +26,7 @@
 | 函数 (Functions)  | 12   | 5个业务函数 + 7个触发器函数                                       |
 | 触发器 (Triggers) | 8    | 详见触发器章节                                                    |
 | RLS 策略          | 10   | 4个公开 + 6个管理员                                               |
-| 存储桶            | 1    | donation-results（含 5 条 storage 策略）                          |
+| 存储桶            | 1    | donation-results（含 4 条 storage 策略）                          |
 | 定时任务 (Cron)   | 1    | expire-pending-donations                                          |
 | 索引              | 18   | 详见索引章节                                                      |
 
@@ -266,14 +266,14 @@ RETURN coalesce(
 
 ### `donation-results`
 
-| 属性             | 值                   |
-| ---------------- | -------------------- |
-| 访问权限         | Public（公开读取）   |
-| 文件大小限制     | 50MB                 |
-| 允许的 MIME 类型 | `image/*`, `video/*` |
-| 用途             | 配送完成照片/视频    |
+| 属性             | 值                                     |
+| ---------------- | -------------------------------------- |
+| 访问权限         | Public（公开读取，仅对象 URL，不开放 list） |
+| 文件大小限制     | 50MB                                   |
+| 允许的 MIME 类型 | `image/*`, `video/*`                   |
+| 用途             | 配送完成照片/视频                      |
 
-#### Storage 策略（5条）
+#### Storage 策略（4条）
 
 | 策略                                        | 操作   | 角色          | 条件                                          |
 | ------------------------------------------- | ------ | ------------- | --------------------------------------------- |
@@ -281,7 +281,8 @@ RETURN coalesce(
 | Admins can delete from donation-results     | DELETE | authenticated | bucket_id = 'donation-results' AND is_admin() |
 | Admins can view donation-results            | SELECT | authenticated | bucket_id = 'donation-results' AND is_admin() |
 | Admins can update donation-results metadata | UPDATE | authenticated | bucket_id = 'donation-results' AND is_admin() |
-| Public Access - View result images          | SELECT | public        | bucket_id = 'donation-results'                |
+
+> **公开读取说明**：本桶为 public bucket，访客通过公开对象 URL（`/object/public/donation-results/...`）直接读取图片/视频，**不经 RLS、无需 public SELECT 策略**。原「Public Access - View result images」（public 角色 SELECT）仅用于 `.list()` 列举，会允许枚举全桶文件；唯一的 `.list()` 调用方是 service_role（`app/actions/donation-result.ts`，绕过 RLS），不依赖该策略，故已移除以收窄暴露面（迁移 `20260612130000`）。
 
 ---
 
@@ -362,6 +363,13 @@ Supabase 客户端
 | 管理员操作                        | Authenticated | ✅       |
 | 管理员批量操作                    | Service Role  | ❌       |
 
+### 函数安全硬化
+
+> 迁移 `20260612130000`（行为不变的纯收紧）：
+>
+> - 所有 `SECURITY DEFINER` 函数均固定 `SET search_path = public`（消除 search_path 注入提权面）；INVOKER 触发器/工具函数一并补齐，清除 `function_search_path_mutable` 告警。
+> - `log_donation_status_change` 为触发器函数，已撤销其 `anon/authenticated/public` 的 `EXECUTE` 授权（不应经 `/rpc` 暴露，触发器触发不受影响）。
+
 ---
 
 ## 扩展 (Extensions)
@@ -369,11 +377,12 @@ Supabase 客户端
 | 扩展               | Schema     | 用途         |
 | ------------------ | ---------- | ------------ |
 | pg_cron            | pg_catalog | 定时任务     |
-| pg_graphql         | graphql    | GraphQL 支持 |
 | pg_stat_statements | extensions | 查询统计     |
 | pgcrypto           | extensions | 加密函数     |
 | supabase_vault     | vault      | 密钥管理     |
 | uuid-ossp          | extensions | UUID 生成    |
+
+> 注：baseline 迁移声明了 `CREATE EXTENSION pg_graphql`，但线上实际**未安装**该扩展（仅残留空的 `graphql` schema），故此处不列。以线上 `pg_extension` 实际状态为准。
 
 ---
 

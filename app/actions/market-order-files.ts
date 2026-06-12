@@ -344,12 +344,15 @@ export async function getPublicOrderProofFiles(
     return { files: [] }
   }
 
+  // 用 service client 读取 storage（storage 不走 RLS，状态已在上方用公开视图校验）。
+  // market-order-results 桶已移除 public list 策略，anon 无法 .list()，故此处必须用 service_role。
+  const storageClient = getInternalClient()
   const allFiles: MarketOrderFile[] = []
 
   for (const cat of categoriesToShow) {
     const folderPath = `${orderReference}/${cat}`
 
-    const { data: files } = await supabase.storage.from(BUCKET).list(folderPath, {
+    const { data: files } = await storageClient.storage.from(BUCKET).list(folderPath, {
       sortBy: { column: 'created_at', order: 'desc' },
     })
 
@@ -359,7 +362,7 @@ export async function getPublicOrderProofFiles(
       const path = `${folderPath}/${file.name}`
       const {
         data: { publicUrl },
-      } = supabase.storage.from(BUCKET).getPublicUrl(path)
+      } = storageClient.storage.from(BUCKET).getPublicUrl(path)
 
       allFiles.push({
         name: file.name,
