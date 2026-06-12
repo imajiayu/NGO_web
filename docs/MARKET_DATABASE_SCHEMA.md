@@ -225,7 +225,7 @@
 
 ---
 
-## 索引（7个）
+## 索引（8个）
 
 ### market_items 表（2个）
 
@@ -239,6 +239,10 @@
 - `idx_market_orders_reference` - 订单号查询
 - `idx_market_orders_status` - 状态查询
 - `idx_market_orders_buyer_status` - 买家+状态复合索引
+
+### market_order_status_history 表（1个）
+
+- `idx_market_order_history_order` - 订单关联查询（迁移 20260331300001）
 
 ---
 

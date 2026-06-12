@@ -70,7 +70,7 @@
 | `market_items`                | 义卖商品（标题、价格、库存、状态）           |
 | `market_orders`               | 义卖订单（买家、商品、金额、收货地址、物流） |
 | `market_order_status_history` | 义卖订单状态历史                             |
-| `page_views`                  | 页面浏览 + CTA 点击事件（append-only 分析表） |
+| `page_views`                  | 页面浏览 + CTA 点击事件（append-only，无自动清理，保留策略待决策） |
 
 ### 捐赠状态 (14个)
 
