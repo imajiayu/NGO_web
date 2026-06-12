@@ -35,11 +35,16 @@ export async function getAllDonationResultFiles(donationPublicId: string) {
       return { error: 'notCompleted', files: [] }
     }
 
-    const { data: files, error: storageError } = await supabase.storage
-      .from(STORAGE_BUCKETS.donationResults)
-      .list(donationPublicId, {
+    const [{ data: files, error: storageError }, { data: thumbnailFiles }] = await Promise.all([
+      supabase.storage.from(STORAGE_BUCKETS.donationResults).list(donationPublicId, {
         sortBy: { column: 'name', order: 'asc' },
-      })
+      }),
+      supabase.storage
+        .from(STORAGE_BUCKETS.donationResults)
+        .list(`${donationPublicId}/.thumbnails`, {
+          sortBy: { column: 'name', order: 'asc' },
+        }),
+    ])
 
     if (storageError) {
       logger.error('STORAGE', 'Failed to list all donation result files', {
@@ -55,12 +60,6 @@ export async function getAllDonationResultFiles(donationPublicId: string) {
 
     // 过滤掉 .thumbnails 文件夹和其他隐藏文件（如 .emptyFolderPlaceholder）
     const originalFiles = files.filter((file) => file.name && !file.name.startsWith('.'))
-
-    const { data: thumbnailFiles } = await supabase.storage
-      .from(STORAGE_BUCKETS.donationResults)
-      .list(`${donationPublicId}/.thumbnails`, {
-        sortBy: { column: 'name', order: 'asc' },
-      })
 
     const fileObjects = originalFiles.map((file, index) => {
       const filePath = `${donationPublicId}/${file.name}`
