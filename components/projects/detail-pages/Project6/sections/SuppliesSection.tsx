@@ -8,6 +8,7 @@ import type { BundleContent, BundleItem, BundleItemType } from '../types'
 
 interface SuppliesSectionProps {
   bundle: BundleContent
+  onReceiptClick?: (index: number) => void
 }
 
 const iconBase: React.SVGProps<SVGSVGElement> = {
@@ -140,7 +141,7 @@ function ProjectGoalCallout({
   )
 }
 
-export default function SuppliesSection({ bundle }: SuppliesSectionProps) {
+export default function SuppliesSection({ bundle, onReceiptClick }: SuppliesSectionProps) {
   const t = useTranslations('projects')
 
   const totalItemCount = bundle.items.reduce(
@@ -156,7 +157,8 @@ export default function SuppliesSection({ bundle }: SuppliesSectionProps) {
       total={{ items: totalItemCount, totalCost: bundle.totals.perPackage }}
       exchangeRateNote={bundle.labels.exchangeRateNote}
       receiptsTitle={bundle.labels.receiptsTitle}
-      receipts={{ description: bundle.labels.receiptsPlaceholder }}
+      receipts={{ images: bundle.receipts, description: bundle.labels.receiptsPlaceholder }}
+      onReceiptClick={onReceiptClick}
       afterContent={<ProjectGoalCallout totals={bundle.totals} labels={bundle.labels} />}
     >
       {bundle.items.map((cat, idx) => (

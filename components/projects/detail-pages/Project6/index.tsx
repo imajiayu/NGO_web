@@ -3,11 +3,14 @@
 import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 
+import type { LightboxImage } from '@/components/common/ImageLightbox'
 import ImageLightbox from '@/components/common/LazyImageLightbox'
-import { FadeInSection, SectionNav } from '@/components/projects/shared'
+import { SparklesIcon } from '@/components/icons'
+import type { ResultImage } from '@/components/projects/shared'
+import { FadeInSection, SectionNav, UnifiedResultsSection } from '@/components/projects/shared'
 import ProjectProgressSection from '@/components/projects/shared/ProjectProgressSection'
 import { useActiveSection } from '@/lib/hooks/useActiveSection'
-import { useLightboxFromUrls } from '@/lib/hooks/useLightbox'
+import { useLightbox, useLightboxFromUrls } from '@/lib/hooks/useLightbox'
 import { useProjectContent } from '@/lib/hooks/useProjectContent'
 
 import { HeroSection, IntroductionSection, SuppliesSection } from './sections'
@@ -37,12 +40,23 @@ export default function Project6DetailContent({ project, locale }: Project6Detai
 
   const { lightbox, images: lightboxImages } = useLightboxFromUrls(lightboxImageUrls)
 
+  const receiptLightbox = useLightbox()
+  const receiptLightboxImages = useMemo<LightboxImage[]>(
+    () =>
+      (content?.introduction?.bundle?.receipts ?? []).map((url, idx) => ({
+        url,
+        caption: t('receiptImageAlt', { index: idx + 1 }),
+      })),
+    [content?.introduction?.bundle?.receipts, t]
+  )
+
   const sections = useMemo(() => {
     if (!content) return []
     return [
       { id: 'p6-introduction', label: t('sectionNav.introduction') },
       { id: 'p6-supplies', label: t('sectionNav.supplies') },
       { id: 'p6-project-progress', label: t('sectionNav.projectProgress') },
+      ...(content.results?.length ? [{ id: 'p6-results', label: t('sectionNav.results') }] : []),
     ]
   }, [content, t])
 
@@ -82,12 +96,38 @@ export default function Project6DetailContent({ project, locale }: Project6Detai
       </FadeInSection>
 
       <FadeInSection id="p6-supplies" delay={50}>
-        <SuppliesSection bundle={content.introduction.bundle} />
+        <SuppliesSection
+          bundle={content.introduction.bundle}
+          onReceiptClick={receiptLightbox.open}
+        />
       </FadeInSection>
 
       <FadeInSection id="p6-project-progress" delay={100}>
         <ProjectProgressSection project={project} locale={locale} />
       </FadeInSection>
+
+      {content.results && content.results.length > 0 && (
+        <FadeInSection id="p6-results" delay={150}>
+          <UnifiedResultsSection
+            title={t('project6.resultsTitle')}
+            icon={
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
+                <SparklesIcon className="h-5 w-5 text-white" />
+              </div>
+            }
+            gradient="from-rose-500 via-rose-600 to-amber-500"
+            images={content.results.map(
+              (r): ResultImage => ({
+                imageUrl: r.imageUrl,
+                caption: r.caption,
+                priority: r.priority,
+              })
+            )}
+            getAltText={(i) => t('project6.resultAlt', { index: i + 1 })}
+            layoutThreshold={0}
+          />
+        </FadeInSection>
+      )}
 
       {lightbox.isOpen && (
         <ImageLightbox
@@ -95,6 +135,15 @@ export default function Project6DetailContent({ project, locale }: Project6Detai
           initialIndex={lightbox.currentIndex}
           isOpen={lightbox.isOpen}
           onClose={lightbox.close}
+        />
+      )}
+
+      {receiptLightbox.isOpen && (
+        <ImageLightbox
+          images={receiptLightboxImages}
+          initialIndex={receiptLightbox.currentIndex}
+          isOpen={receiptLightbox.isOpen}
+          onClose={receiptLightbox.close}
         />
       )}
     </div>

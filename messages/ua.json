@@ -278,7 +278,9 @@
       "defaultTitle": "Літні пакунки необхідного — притулок для матерів та дітей",
       "badge": "Матері та діти",
       "heroImageAlt": "Матері та діти у Домі «Мир»",
-      "perPackageTableTitle": "Склад одного пакунку"
+      "perPackageTableTitle": "Склад одного пакунку",
+      "resultsTitle": "Доставлена допомога",
+      "resultAlt": "Фото доставленої допомоги {index}"
     }
   },
   "donate": {

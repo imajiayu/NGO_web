@@ -71,6 +71,14 @@ export interface BundleContent {
   items: BundleItem[]
   totals: BundleTotals
   labels: BundleLabels
+  /** 支出收据图片 URL 列表；为空则展示 labels.receiptsPlaceholder 占位文案 */
+  receipts?: string[]
+}
+
+export interface ProjectResultImage {
+  imageUrl: string
+  caption?: string
+  priority?: number
 }
 
 export interface IntroductionContent {
@@ -86,6 +94,8 @@ export interface Project6Content {
   subtitle: string
   location: string
   introduction: IntroductionContent
+  /** 项目成果画廊（配送成果照片） */
+  results?: ProjectResultImage[]
 }
 
 export interface Project6DetailContentProps {

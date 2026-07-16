@@ -278,7 +278,9 @@
       "defaultTitle": "Summer Care Packages — Shelter for Mothers and Children",
       "badge": "Mothers & Children",
       "heroImageAlt": "Mothers and children at House of Peace",
-      "perPackageTableTitle": "Per-package contents"
+      "perPackageTableTitle": "Per-package contents",
+      "resultsTitle": "Aid Delivered",
+      "resultAlt": "Aid delivery photo {index}"
     }
   },
   "donate": {

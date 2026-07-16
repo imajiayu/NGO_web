@@ -90,7 +90,8 @@
         "itemHeader": "Item",
         "receiptsTitle": "Expense receipts",
         "receiptsPlaceholder": "Receipts will be published here once procurement is complete."
-      }
+      },
+      "receipts": ["/images/projects/project-6/receipts/receipt-1.webp"]
     },
     "closingCaption": "Ongoing aid records · 2025-2026",
     "images": {
@@ -119,5 +120,13 @@
       ],
       "groupPhoto": { "src": "/images/projects/project-6/details/group-photo.webp", "alt": "Mothers and children at the Shelter" }
     }
-  }
+  },
+  "results": [
+    { "imageUrl": "/images/projects/project-6/results/result-1.webp", "caption": "6-965EAF · 2026-07-02", "priority": 8 },
+    { "imageUrl": "/images/projects/project-6/results/result-2.webp", "caption": "6-2D66F0 · 2026-07-02", "priority": 8 },
+    { "imageUrl": "/images/projects/project-6/results/result-3.webp", "caption": "6-7C1173 · 2026-07-02", "priority": 8 },
+    { "imageUrl": "/images/projects/project-6/results/result-4.webp", "caption": "6-BC4B02 · 2026-07-02", "priority": 8 },
+    { "imageUrl": "/images/projects/project-6/results/result-5.webp", "caption": "6-1F9D9D · 2026-07-02", "priority": 8 },
+    { "imageUrl": "/images/projects/project-6/results/result-6.webp", "caption": "6-2D4362 · 2026-07-02", "priority": 8 }
+  ]
 }
