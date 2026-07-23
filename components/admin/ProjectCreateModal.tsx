@@ -36,7 +36,14 @@ export default function ProjectCreateModal({ onClose, onCreated }: Props) {
     onSubmit: handleSubmit,
   } = useAsyncForm(
     async () => {
-      const newProject = await createProject(formData as ProjectInsert)
+      // Long-term projects store NULL for both the target cap and the end date.
+      // Normalize at submit time (not while toggling the checkbox) so that
+      // ticking and un-ticking "Long-term project" never discards typed input.
+      const newProject = await createProject({
+        ...(formData as ProjectInsert),
+        target_units: formData.is_long_term ? null : (formData.target_units ?? 0),
+        end_date: formData.is_long_term ? null : (formData.end_date ?? null),
+      })
       onCreated(newProject)
     },
     { fallbackError: 'Failed to create project' }
@@ -114,7 +121,14 @@ export default function ProjectCreateModal({ onClose, onCreated }: Props) {
               label="Target Units"
               type="number"
               min={0}
-              value={formData.target_units || 0}
+              disabled={!!formData.is_long_term}
+              placeholder={formData.is_long_term ? 'No target' : undefined}
+              hint={
+                formData.is_long_term
+                  ? 'Long-term projects have no target cap.'
+                  : 'Aggregated projects: target amount in USD. Otherwise: number of units.'
+              }
+              value={formData.is_long_term ? '' : (formData.target_units ?? 0)}
               onChange={(v) => updateField('target_units', Number(v))}
             />
           </div>
@@ -134,7 +148,9 @@ export default function ProjectCreateModal({ onClose, onCreated }: Props) {
             <TextField
               label="End Date"
               type="date"
-              value={formData.end_date || ''}
+              disabled={!!formData.is_long_term}
+              hint={formData.is_long_term ? 'Long-term projects have no end date.' : undefined}
+              value={formData.is_long_term ? '' : formData.end_date || ''}
               onChange={(v) => updateField('end_date', v || null)}
             />
 

@@ -47,11 +47,13 @@ export const createProjectSchema = z
       .refine((date) => !date || !isNaN(Date.parse(date)), { message: 'Invalid date format' }),
     is_long_term: z.boolean().optional().default(false),
     aggregate_donations: z.boolean().optional().default(false),
-    target_units: z.number().int().min(0),
+    // NULL means "no target cap". The create form always submits NULL for
+    // long-term projects; the refine below only enforces the fixed-term side.
+    target_units: z.number().int().min(0).nullable(),
     status: z.enum(['planned', 'active']).optional().default('planned'),
   })
   .passthrough()
-  .refine((data) => data.is_long_term || data.target_units >= 1, {
+  .refine((data) => data.is_long_term || (data.target_units !== null && data.target_units >= 1), {
     message: 'Fixed-term projects require target_units >= 1',
     path: ['target_units'],
   })
@@ -83,7 +85,9 @@ export const updateProjectSchema = z
       .refine((date) => !date || !isNaN(Date.parse(date)), { message: 'Invalid date format' })
       .optional(),
     is_long_term: z.boolean().optional(),
-    target_units: z.number().int().min(0).optional(),
+    // NULL is a valid value in the DB: long-term projects have no target cap.
+    // The edit form submits the whole row back, so null must round-trip.
+    target_units: z.number().int().min(0).nullable().optional(),
     current_units: z.number().int().min(0).optional(),
     status: z.enum(['planned', 'active', 'completed', 'paused']).optional(),
   })

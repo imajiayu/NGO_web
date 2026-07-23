@@ -42,6 +42,7 @@ interface TextFieldProps {
   step?: number | string
   placeholder?: string
   className?: string
+  disabled?: boolean
 }
 
 export function TextField({
@@ -56,6 +57,7 @@ export function TextField({
   step,
   placeholder,
   className,
+  disabled,
 }: TextFieldProps) {
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)
   return (
@@ -64,11 +66,16 @@ export function TextField({
         type={type}
         value={value}
         onChange={onChangeHandler}
-        required={required}
+        required={required && !disabled}
         min={min}
         step={step}
         placeholder={placeholder}
-        className={cn(ADMIN_INPUT_CLASS, className)}
+        disabled={disabled}
+        className={cn(
+          ADMIN_INPUT_CLASS,
+          disabled && 'cursor-not-allowed bg-gray-100 text-gray-500',
+          className
+        )}
       />
     </FormField>
   )
