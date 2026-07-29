@@ -328,6 +328,16 @@
         "aspectRatio": 1.35
       },
       {
+        "image": "/images/projects/project-0/result/result19.webp",
+        "orientation": "portrait",
+        "aspectRatio": 0.75
+      },
+      {
+        "image": "/images/projects/project-0/result/result20.webp",
+        "orientation": "portrait",
+        "aspectRatio": 0.75
+      },
+      {
         "image": "/images/projects/project-0/result/result18.webp",
         "orientation": "landscape",
         "aspectRatio": 1.5

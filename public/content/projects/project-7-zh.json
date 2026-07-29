@@ -1,0 +1,193 @@
+{
+  "title": "为 Oleksandr 募集康复治疗\n让一位父亲重新使用自己的手",
+  "subtitle": "一名乌克兰退伍英雄，正在重新学习如何握住叉子、扣上纽扣，重新过上普通人的生活",
+  "location": "健康之路康复中心 · 乌克兰第聂伯罗",
+  "intro": {
+    "quote": "并非所有的战斗都随着枪声停止而结束。有些战斗，要等到炮火沉寂之后才真正开始。",
+    "paragraphs": [
+      "他叫 Oleksandr。自 2022年起，他在步兵部队服役，守卫着乌克兰最危险的几段前线。而今天，他面对的最艰难的敌人已经不在战场上。"
+    ]
+  },
+  "storyTitle": "Oleksandr 的故事",
+  "timeline": [
+    {
+      "id": "before",
+      "marker": "战争之前",
+      "heading": "平静的生活，和他所珍视的一切",
+      "paragraphs": [
+        "战争之前，Oleksandr 在乌克兰的一个小村庄里过着简单而平静的日子。他没有追逐过什么成功或冒险。",
+        "他最大的幸福在家里等着他——妻子，和两个孩子。那些我们大多数人几乎不会留意的寻常时刻，对他而言就是全部：待在一起的时间，一家人的晚饭，看着孩子慢慢长大。"
+      ],
+      "images": [
+        {
+          "src": "/images/projects/project-7/story/family.webp",
+          "alt": "Oleksandr 与妻子和两个孩子",
+          "width": 1280,
+          "height": 963
+        }
+      ]
+    },
+    {
+      "id": "service",
+      "marker": "2022年",
+      "heading": "一个无法两全的选择",
+      "paragraphs": [
+        "和许许多多乌克兰的父亲一样，Oleksandr 做出了一个无法两全的选择。他穿上军装——不是因为他想离开家人，而是因为他想护住他们本应拥有的未来。",
+        "自 2022年起，他在步兵部队服役，守卫着乌克兰最危险的几段前线。"
+      ],
+      "images": [
+        {
+          "src": "/images/projects/project-7/story/service.webp",
+          "alt": "服役期间身着军装的 Oleksandr",
+          "width": 960,
+          "height": 1280
+        }
+      ]
+    },
+    {
+      "id": "strike",
+      "marker": "2026年5月25日",
+      "heading": "一瞬之间，一切都变了",
+      "paragraphs": [
+        "在 Chasiv Yar 与 Stupochky 之间执行战斗任务时，一枚由无人机投放的温压弹在他附近爆炸，给他留下了毁灭性的创伤。",
+        "而其中改变他生活最深的，是左臂的伤。"
+      ],
+      "listTitle": "所受的伤",
+      "listTone": "clinical",
+      "list": [
+        "听力严重受损",
+        "面部和眼部被弹片击中",
+        "全身布满伤口",
+        "左臂：多处骨折、神经损伤、骨质缺损",
+        "弹片撕裂肌肉与关节"
+      ],
+      "images": [
+        {
+          "src": "/images/projects/project-7/story/frontline.webp",
+          "alt": "顿涅茨克州——Oleksandr 曾服役的地方",
+          "width": 1280,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "id": "today",
+      "marker": "今天",
+      "heading": "最艰难的敌人已经不在战场上",
+      "paragraphs": [
+        "在健康之路康复中心开始康复治疗之前，我们请 Oleksandr 在康复厨房里完成一件非常简单的事：切开食物，握住刀，用叉子。这是千百万人每天都在做、根本不需要多想一秒的动作。",
+        "而对 Oleksandr 来说，这成了他试过的最难的事情之一。每一个动作都需要极大的专注。疼痛。耐心。还有决心。但他从未放弃。"
+      ],
+      "list": [
+        "握住一把叉子",
+        "用刀切开食物",
+        "扣上一颗纽扣",
+        "端起一只杯子",
+        "重新用上自己的手"
+      ],
+      "images": [
+        {
+          "src": "/images/projects/project-7/story/kitchen.webp",
+          "alt": "Oleksandr 在康复厨房里尝试切开食物",
+          "width": 592,
+          "height": 1053
+        },
+        {
+          "src": "/images/projects/project-7/story/kitchen-detail.webp",
+          "alt": "Oleksandr 完成切割动作时的手部特写",
+          "width": 592,
+          "height": 1053
+        }
+      ]
+    }
+  ],
+  "rehab": {
+    "title": "康复治疗如何进行",
+    "description": "在健康之路康复中心，一支多学科团队正陪着 Oleksandr 走这段路。他们一步一步地帮助他恢复力量、恢复活动能力、重建信心，目标是让他重新用上自己的左臂，回到日常生活中去。",
+    "period": {
+      "label": "康复周期",
+      "value": "2026年7月14日 – 9月14日",
+      "duration": "9周"
+    },
+    "goals": {
+      "title": "康复目标",
+      "shortTermLabel": "短期",
+      "shortTerm": "增加左上肢各关节的活动范围。",
+      "longTermLabel": "长期",
+      "longTerm": "恢复左上肢的功能性使用，重新获得日常生活的自理能力。"
+    },
+    "gallery": [
+      {
+        "src": "/images/projects/project-7/rehab/session.webp",
+        "alt": "健康之路康复中心的一次物理治疗",
+        "width": 592,
+        "height": 1053
+      },
+      {
+        "src": "/images/projects/project-7/rehab/manual-therapy.webp",
+        "alt": "治疗师正在为 Oleksandr 处理前臂",
+        "width": 592,
+        "height": 1053
+      },
+      {
+        "src": "/images/projects/project-7/rehab/center.webp",
+        "alt": "Oleksandr 在健康之路康复中心",
+        "width": 960,
+        "height": 1280
+      },
+      {
+        "src": "/images/projects/project-7/rehab/fine-motor.webp",
+        "alt": "治疗台上的精细动作训练",
+        "width": 592,
+        "height": 1053
+      }
+    ],
+    "therapies": [
+      {
+        "name": "物理治疗",
+        "sessions": 14,
+        "cost": 332
+      },
+      {
+        "name": "手法治疗",
+        "sessions": 15,
+        "cost": 284
+      },
+      {
+        "name": "神经肌肉电刺激",
+        "sessions": 15,
+        "cost": 142
+      },
+      {
+        "name": "个体心理治疗",
+        "sessions": 15,
+        "cost": 426
+      },
+      {
+        "name": "游戏治疗",
+        "sessions": 15,
+        "cost": 284
+      }
+    ],
+    "costs": {
+      "title": "费用明细",
+      "description": "9周康复疗程的完整费用构成",
+      "itemHeader": "项目",
+      "sessionsHeader": "次数",
+      "costHeader": "费用",
+      "sessionsUnit": "次",
+      "totalLabel": "合计",
+      "total": 1468,
+      "currency": "$",
+      "note": "依据健康之路康复中心 2026年7月14日出具的康复费用估算（医疗服务协议 No. 24/03-2026 附件）。合同原始金额为 €1,292，按 1 USD = 0.88 EUR 换算。"
+    }
+  },
+  "attribution": {
+    "quote": "我谨代表 Oleksandr、他的家人，以及健康之路康复中心的所有人，向你道谢。你的善意，正在帮助一位父亲离「重新拥抱孩子」更近一步。",
+    "name": "Oleksii Dubovyk",
+    "role": "联合创始人",
+    "organization": "健康之路康复中心",
+    "linkLabel": "了解健康之路康复中心",
+    "projectId": 0
+  }
+}

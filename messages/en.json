@@ -161,7 +161,10 @@
       "results": "Results",
       "aidList": "Aid List",
       "background": "Background",
-      "events": "Events"
+      "events": "Events",
+      "story": "His Story",
+      "rehabilitation": "Rehabilitation",
+      "expenses": "Costs"
     },
     "receiptImageAlt": "Receipt {index}",
     "eventImageAlt": "Event photo {index}",
@@ -281,6 +284,11 @@
       "perPackageTableTitle": "Per-package contents",
       "resultsTitle": "Aid Delivered",
       "resultAlt": "Aid delivery photo {index}"
+    },
+    "project7": {
+      "defaultTitle": "Rehabilitation for Oleksandr",
+      "badge": "Veteran Rehabilitation",
+      "heroImageAlt": "Oleksandr at the Way to Health rehabilitation centre"
     }
   },
   "donate": {

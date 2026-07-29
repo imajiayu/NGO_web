@@ -161,7 +161,10 @@
       "results": "Результати",
       "aidList": "Список допомоги",
       "background": "Передісторія",
-      "events": "Заходи"
+      "events": "Заходи",
+      "story": "Його історія",
+      "rehabilitation": "Реабілітація",
+      "expenses": "Кошторис"
     },
     "receiptImageAlt": "Квитанція {index}",
     "eventImageAlt": "Фото заходу {index}",
@@ -281,6 +284,11 @@
       "perPackageTableTitle": "Склад одного пакунку",
       "resultsTitle": "Доставлена допомога",
       "resultAlt": "Фото доставленої допомоги {index}"
+    },
+    "project7": {
+      "defaultTitle": "Реабілітація для Олександра",
+      "badge": "Реабілітація ветерана",
+      "heroImageAlt": "Олександр у реабілітаційному центрі «Шлях до здоров'я»"
     }
   },
   "donate": {

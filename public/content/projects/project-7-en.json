@@ -1,0 +1,193 @@
+{
+  "title": "Rehabilitation for Oleksandr\nHelping a Father Use His Hand Again",
+  "subtitle": "A Ukrainian veteran relearning how to hold a fork, button a shirt, and rebuild an ordinary life",
+  "location": "Way to Health Rehabilitation Centre, Dnipro, Ukraine",
+  "intro": {
+    "quote": "Not every battle ends when the fighting stops. Some begin only after the explosions fall silent.",
+    "paragraphs": [
+      "This is Oleksandr. Since 2022 he has served in the infantry, defending Ukraine on some of the most dangerous front lines. Today, the hardest enemy he faces is no longer on the battlefield."
+    ]
+  },
+  "storyTitle": "Oleksandr's Story",
+  "timeline": [
+    {
+      "id": "before",
+      "marker": "Before the war",
+      "heading": "A quiet life, and everything that mattered",
+      "paragraphs": [
+        "Before the war, Oleksandr lived a simple, peaceful life in a small Ukrainian village. He wasn't chasing success or adventure.",
+        "His greatest happiness was waiting for him at home — his wife and their two children. The ordinary moments most of us barely notice were everything to him: time spent together, family dinners, watching his children grow up."
+      ],
+      "images": [
+        {
+          "src": "/images/projects/project-7/story/family.webp",
+          "alt": "Oleksandr with his wife and their two children",
+          "width": 1280,
+          "height": 963
+        }
+      ]
+    },
+    {
+      "id": "service",
+      "marker": "2022",
+      "heading": "An impossible choice",
+      "paragraphs": [
+        "Like so many Ukrainian fathers, Oleksandr made an impossible choice. He put on a military uniform — not because he wanted to leave his family, but because he wanted to protect the future they deserved.",
+        "Since 2022 he has served in the infantry, defending Ukraine on some of the most dangerous front lines."
+      ],
+      "images": [
+        {
+          "src": "/images/projects/project-7/story/service.webp",
+          "alt": "Oleksandr in military uniform during his service",
+          "width": 960,
+          "height": 1280
+        }
+      ]
+    },
+    {
+      "id": "strike",
+      "marker": "25 May 2026",
+      "heading": "In a single moment, everything changed",
+      "paragraphs": [
+        "During a combat mission between Chasiv Yar and Stupochky, a thermobaric drone munition exploded nearby. The blast left him with devastating injuries.",
+        "But the injury that changed his life most was to his left arm."
+      ],
+      "listTitle": "Injuries sustained",
+      "listTone": "clinical",
+      "list": [
+        "Severe damage to his hearing",
+        "Shrapnel wounds to his face and eyes",
+        "His body covered with wounds",
+        "Left arm: multiple fractures, nerve damage and bone loss",
+        "Shrapnel tearing through muscles and joints"
+      ],
+      "images": [
+        {
+          "src": "/images/projects/project-7/story/frontline.webp",
+          "alt": "Donetsk region — where Oleksandr served",
+          "width": 1280,
+          "height": 960
+        }
+      ]
+    },
+    {
+      "id": "today",
+      "marker": "Today",
+      "heading": "The hardest enemy is no longer on the battlefield",
+      "paragraphs": [
+        "Before starting rehabilitation at Way to Health, Oleksandr was asked to perform one very simple task in the rehabilitation kitchen: to cut food, to hold a knife, to use a fork. Something millions of people do every day without giving it a second thought.",
+        "For Oleksandr, it became one of the hardest things he had ever tried to do. Every movement required incredible concentration. Pain. Patience. And determination. Yet he never gave up."
+      ],
+      "list": [
+        "Holding a fork",
+        "Cutting food with a knife",
+        "Buttoning a shirt",
+        "Lifting a cup",
+        "Using his own hand"
+      ],
+      "images": [
+        {
+          "src": "/images/projects/project-7/story/kitchen.webp",
+          "alt": "Oleksandr attempting to cut food in the rehabilitation kitchen",
+          "width": 592,
+          "height": 1053
+        },
+        {
+          "src": "/images/projects/project-7/story/kitchen-detail.webp",
+          "alt": "Close-up of Oleksandr's hands during the cutting task",
+          "width": 592,
+          "height": 1053
+        }
+      ]
+    }
+  ],
+  "rehab": {
+    "title": "How the Rehabilitation Works",
+    "description": "At Way to Health, a multidisciplinary team is walking this journey beside Oleksandr. Step by step, they are helping him regain strength, movement and confidence as he works towards using his left arm again and returning to everyday life.",
+    "period": {
+      "label": "Rehabilitation period",
+      "value": "14 July – 14 September 2026",
+      "duration": "9 weeks"
+    },
+    "goals": {
+      "title": "Rehabilitation Goals",
+      "shortTermLabel": "Short-term",
+      "shortTerm": "Increase the range of motion of the joints of the left upper limb.",
+      "longTermLabel": "Long-term",
+      "longTerm": "Restore functional use of the left upper limb and regain independence in daily activities."
+    },
+    "gallery": [
+      {
+        "src": "/images/projects/project-7/rehab/session.webp",
+        "alt": "A physiotherapy session at Way to Health",
+        "width": 592,
+        "height": 1053
+      },
+      {
+        "src": "/images/projects/project-7/rehab/manual-therapy.webp",
+        "alt": "A therapist working on Oleksandr's forearm",
+        "width": 592,
+        "height": 1053
+      },
+      {
+        "src": "/images/projects/project-7/rehab/center.webp",
+        "alt": "Oleksandr at the Way to Health rehabilitation centre",
+        "width": 960,
+        "height": 1280
+      },
+      {
+        "src": "/images/projects/project-7/rehab/fine-motor.webp",
+        "alt": "Fine motor training at the therapy table",
+        "width": 592,
+        "height": 1053
+      }
+    ],
+    "therapies": [
+      {
+        "name": "Physical Therapy",
+        "sessions": 14,
+        "cost": 332
+      },
+      {
+        "name": "Manual Therapy",
+        "sessions": 15,
+        "cost": 284
+      },
+      {
+        "name": "Electrical Muscle Stimulation",
+        "sessions": 15,
+        "cost": 142
+      },
+      {
+        "name": "Individual Psychological Session",
+        "sessions": 15,
+        "cost": 426
+      },
+      {
+        "name": "Gaming Therapy",
+        "sessions": 15,
+        "cost": 284
+      }
+    ],
+    "costs": {
+      "title": "Cost Breakdown",
+      "description": "Full breakdown of the 9-week rehabilitation programme",
+      "itemHeader": "Service",
+      "sessionsHeader": "Sessions",
+      "costHeader": "Cost",
+      "sessionsUnit": "",
+      "totalLabel": "Total",
+      "total": 1468,
+      "currency": "$",
+      "note": "Based on the rehabilitation cost estimate issued by the Way to Health Medical Rehabilitation Centre on 14 July 2026 (Annex to Medical Services Agreement No. 24/03-2026). Original contract amount €1,292, converted at 1 USD = 0.88 EUR."
+    }
+  },
+  "attribution": {
+    "quote": "On behalf of Oleksandr, his family, and all of us at Way to Health — thank you. Your kindness is helping a father move one step closer to holding his children again.",
+    "name": "Oleksii Dubovyk",
+    "role": "Co-founder",
+    "organization": "Way to Health Rehabilitation Centre",
+    "linkLabel": "About Way to Health",
+    "projectId": 0
+  }
+}

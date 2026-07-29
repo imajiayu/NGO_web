@@ -161,7 +161,10 @@
       "results": "成果展示",
       "aidList": "援助清单",
       "background": "背景介绍",
-      "events": "活动记录"
+      "events": "活动记录",
+      "story": "他的故事",
+      "rehabilitation": "康复治疗",
+      "expenses": "费用明细"
     },
     "receiptImageAlt": "收据 {index}",
     "eventImageAlt": "活动照片 {index}",
@@ -281,6 +284,11 @@
       "perPackageTableTitle": "单份包裹明细",
       "resultsTitle": "配送成果",
       "resultAlt": "配送成果照片 {index}"
+    },
+    "project7": {
+      "defaultTitle": "为 Oleksandr 募集康复治疗",
+      "badge": "老兵康复",
+      "heroImageAlt": "Oleksandr 在健康之路康复中心"
     }
   },
   "donate": {

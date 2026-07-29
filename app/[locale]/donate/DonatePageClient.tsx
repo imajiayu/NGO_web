@@ -32,6 +32,10 @@ const Project6DetailContent = dynamic(() => import('@/components/projects/detail
   ssr: true,
   loading: detailLoading,
 })
+const Project7DetailContent = dynamic(() => import('@/components/projects/detail-pages/Project7'), {
+  ssr: true,
+  loading: detailLoading,
+})
 // P2 优化: 动态加载折叠区域组件（默认折叠，用户点击后才显示）
 const DonationStatusFlow = dynamic(
   () => import('@/components/donation-display/DonationStatusFlow'),
@@ -83,6 +87,8 @@ function renderProjectDetail(
       return <Project5DetailContent key={key} project={project} locale={locale} />
     case 6:
       return <Project6DetailContent key={key} project={project} locale={locale} />
+    case 7:
+      return <Project7DetailContent key={key} project={project} locale={locale} />
     default:
       // Fallback for projects without dedicated detail pages
       return (
