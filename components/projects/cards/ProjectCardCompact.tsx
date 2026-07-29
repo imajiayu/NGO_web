@@ -58,13 +58,16 @@ export default function ProjectCardCompact({
           : 'border-ukraine-blue-400/30 active:border-ukraine-gold-400/60 [@media(hover:hover)]:hover:border-ukraine-gold-400/60'
       } `}
     >
-      {/* Background image - optimized via next/image (was CSS background-image:
-          裸原图 273KB → next/image 优化为 256px avif，消除 donate 页 LCP 瓶颈) */}
+      {/* Background image - optimized via next/image。
+          sizes 要按 object-cover 在竖向容器里的实际渲染宽度算（横图按高度撑满后约 520px），
+          而不是容器宽度 w-64，否则 2x 屏只拿到 640 宽会糊；取 540 是让 2x 正好命中
+          deviceSizes 的 1080 档，不跳到 1920。 */}
       <Image
         src={`/images/projects/project-${project.id}/card/bg.webp`}
         alt=""
         fill
-        sizes="256px"
+        sizes="540px"
+        quality={85}
         priority={priority}
         className="object-cover object-center"
       />

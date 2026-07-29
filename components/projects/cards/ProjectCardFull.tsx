@@ -46,12 +46,15 @@ export default function ProjectCardFull({ project, locale, showProgress = true }
     <>
       <GlobalLoadingSpinner isLoading={isNavigating} />
       <div className="group relative flex w-80 flex-shrink-0 transform flex-col overflow-hidden rounded-2xl border-2 border-ukraine-blue-400/30 bg-[#1a1a1a] shadow-lg transition-all duration-300 hover:-translate-y-2 hover:border-ukraine-gold-400/60">
-        {/* Background image - optimized via next/image */}
+        {/* Background image - optimized via next/image。
+            sizes 同 Compact：按 object-cover 实际渲染宽度（约 675px）而非容器宽度 w-80，
+            取 600 是让 2x 正好命中 deviceSizes 的 1200 档。 */}
         <Image
           src={`/images/projects/project-${project.id}/card/bg.webp`}
           alt=""
           fill
-          sizes="320px"
+          sizes="600px"
+          quality={85}
           className="object-cover object-center"
         />
         {/* Gradient overlay for text contrast */}
