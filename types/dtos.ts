@@ -24,6 +24,7 @@ export interface DonationByContactRow {
   amount: number
   currency: string
   donation_status: DonationStatus
+  payment_method: string | null
   donated_at: string
   updated_at: string
   project_name_i18n: I18nText | null

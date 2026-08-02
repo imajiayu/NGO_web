@@ -9,6 +9,7 @@ export type TrackDonation = {
   amount: number
   currency: string
   donation_status: DonationStatus
+  payment_method: string | null
   donated_at: string
   updated_at: string
   projects: {

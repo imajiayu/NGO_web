@@ -126,6 +126,34 @@ export const donationFormSchema = z.object({
   locale: z.enum(['en', 'zh', 'ua']),
 })
 
+// Admin-entered off-platform donation (bank transfer, cash, in-person handover).
+//
+// Deliberately looser than donationFormSchema on amount: no $10,000 cap, since
+// that is a payment-gateway risk limit and offline donations don't go through
+// one. The per-project target check lives in the Server Action, which has the
+// project row; here we only enforce shape and sanity bounds.
+export const offlineDonationSchema = z.object({
+  project_id: z.number().int().min(0),
+  // Non-aggregated projects only; ignored for aggregated ones. Higher than the
+  // online flow's 10 (backfilling a batch of offline units is normal) but still
+  // bounded: each unit costs one `generate_donation_public_id` round trip.
+  quantity: z.number().int().min(1).max(100),
+  // Aggregated projects only; ignored for non-aggregated ones.
+  amount: z.number().positive().max(1_000_000).optional(),
+  donor_name: z.string().min(2, 'Name must be at least 2 characters').max(255),
+  donor_email: z.string().email('Invalid email address').max(255),
+  donor_message: z.string().max(1000).optional(),
+  contact_telegram: z.string().max(255).optional(),
+  contact_whatsapp: z.string().max(255).optional(),
+  // Offline donations are often backfilled, so the date is admin-supplied.
+  donated_at: z.string().refine((date) => !isNaN(Date.parse(date)), {
+    message: 'Invalid date format',
+  }),
+  locale: localeSchema,
+})
+
+export type OfflineDonationInput = z.input<typeof offlineDonationSchema>
+
 // ============================================
 // Subscription Schemas
 // ============================================

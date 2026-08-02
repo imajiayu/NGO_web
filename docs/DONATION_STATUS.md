@@ -199,6 +199,14 @@ export const REFUND_STATUSES = ['refunding', 'refund_processing', 'refunded'] as
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
+> **例外：线下捐赠（`payment_method = 'Offline'`）不进入退款流程。**
+> 由 admin 手动录入的平台外捐款没有支付网关订单，`requestRefund`
+> （`app/actions/track-donation.ts`）在状态校验之后立即返回 `offlineNotRefundable`，
+> 追踪页也不渲染退款按钮。若没有这道拦截，未知的 `payment_method` 会落到
+> WayForPay 兜底分支，用不存在的 `order_reference` 调真实退款 API，失败后把整单刷成
+> `refunding` —— 记录掉出 `SUCCESS_STATUSES`，`total_raised` 和 `current_units` 双双回退。
+> 线下捐赠如需退款，走线下渠道并由管理员在数据库侧处理。
+
 ---
 
 ## 5. 状态转换规则
@@ -761,6 +769,6 @@ A: `requestRefund()` 直接调用 QmmPay 退款 API，若 `code === 0` 则立即
 
 ---
 
-**文档版本**: 3.1.0
+**文档版本**: 3.2.0
 **维护者**: Way to Future UA Team
-**最后更新**: 2026-06-03
+**最后更新**: 2026-08-02

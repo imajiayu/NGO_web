@@ -15,6 +15,7 @@ import { sendRefundSuccessEmail } from '@/lib/email'
 import { logger } from '@/lib/logger'
 import { processQmmPayRefund } from '@/lib/payment/qmmpay/server'
 import { processWayForPayRefund } from '@/lib/payment/wayforpay/server'
+import { isOfflineDonation } from '@/lib/payment-method'
 import { getInternalClient, getPublicClient } from '@/lib/supabase/action-clients'
 import { requestRefundSchema, trackDonationSchema } from '@/lib/validations'
 import type { AppLocale } from '@/types'
@@ -149,9 +150,18 @@ export async function requestRefund(data: { donationPublicId: string; email: str
       return { error: 'invalidStatus' }
     }
 
+    // Offline donations (admin-entered, no gateway order) must stop here.
+    // Without this guard they fall through to the WayForPay branch below, which
+    // would call the real refund API with a non-existent order reference and,
+    // on failure, flip the whole order to 'refunding' — dropping it out of
+    // SUCCESS_STATUSES and rolling back total_raised / current_units.
+    if (isOfflineDonation(donation.payment_method)) {
+      return { error: 'offlineNotRefundable' }
+    }
+
     // 4. Get order reference and all donations in this order
-    // 使用已验证的 donation 数据（order_reference, currency 来自 RPC 返回）
-    // payment_method 需要额外查询（RPC 未返回），用 service client（donations 表 anon SELECT 已关闭）
+    // order_reference / currency / payment_method 全部来自已验证的 RPC 返回，
+    // 无需回查 donations 表（payment_method 由迁移 20260802000000 加进 RPC）。
     const serviceSupabase = getInternalClient()
     const orderReference = donation.order_reference as string
     if (!orderReference) {
@@ -161,24 +171,10 @@ export async function requestRefund(data: { donationPublicId: string; email: str
       return { error: 'serverError' }
     }
 
-    const { data: paymentInfo, error: paymentError } = await serviceSupabase
-      .from('donations')
-      .select('payment_method')
-      .eq('donation_public_id', validated.donationPublicId)
-      .single()
-
-    if (paymentError || !paymentInfo) {
-      logger.error('REFUND', 'Failed to fetch payment method', {
-        donationPublicId: validated.donationPublicId,
-        error: paymentError?.message,
-      })
-      return { error: 'serverError' }
-    }
-
     const donationData = {
       order_reference: orderReference,
       currency: donation.currency as string,
-      payment_method: paymentInfo.payment_method as string,
+      payment_method: donation.payment_method as string,
     }
 
     // Get ALL donations in this order (an order may contain multiple units/donations)

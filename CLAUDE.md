@@ -20,7 +20,7 @@
 
 ## 项目概述
 
-**当前版本**: 2.7.0
+**当前版本**: 2.8.0
 **开发状态**: 生产就绪
 
 ### 主要特性
@@ -39,6 +39,7 @@
 - 邮件订阅系统
 - 邮件转发功能（入站邮件自动转发）
 - 捐赠状态审计追踪
+- 线下捐赠录入（admin 手动把平台外收到的捐款记为 `paid`，`payment_method = 'Offline'`，不可在线退款）
 - 义卖市场（Email OTP 认证、固定价格商品、WayForPay 支付、订单管理、凭证上传）
 - 转化漏斗分析（页面浏览 + CTA 点击事件，admin 后台「曝光 → 意图 → 成功」漏斗）
 
@@ -165,7 +166,7 @@ waytofutureua/
 │   │   └── analytics/            # 转化漏斗分析
 │   ├── actions/                  # Server Actions
 │   │   ├── admin.ts              # 管理员操作 barrel（re-export 自 admin/）
-│   │   ├── admin/                # 拆分：auth / projects / donations / donation-files / analytics
+│   │   ├── admin/                # 拆分：auth / projects / donations / offline-donations / donation-files / analytics
 │   │   ├── donation.ts           # 捐赠创建
 │   │   ├── donation-result.ts    # 结果查询
 │   │   ├── track-donation.ts     # 追踪和退款
@@ -323,6 +324,7 @@ Section 指顶层大区块（如"项目介绍"=整个 article 卡片、"项目�
 | `utils.ts`                       | `cn()`, `formatCurrency()`                                                                  | 类名合并 (clsx+twMerge)、货币格式化 |
 | `i18n-utils.ts`                  | `getTranslatedText()`, `formatDate()`                                                       | 数据库 i18n 字段解析、日期格式化    |
 | `donation-status.ts`             | 状态常量、状态判断函数                                                                      | 捐赠状态相关的所有逻辑              |
+| `payment-method.ts`              | `OFFLINE_PAYMENT_METHOD`, `isOfflineDonation()`, `OnlinePaymentMethod`                      | `donations.payment_method` 取值单一数据源 |
 | `market/market-status.ts`        | 商品/订单状态转换规则、判断函数                                                             | 义卖状态逻辑的单一数据源            |
 | `market/market-validations.ts`   | Zod schemas                                                                                 | 义卖表单验证                        |
 | `market/market-utils.ts`         | `formatMarketPrice()`                                                                       | 义卖金额格式化                      |
@@ -418,6 +420,24 @@ paid → confirmed (确认收款)
 → delivering (开始配送)
 → completed (上传照片完成)
 ```
+
+### 线下捐赠录入流程（平台外收款）
+
+```
+admin → Donations → Record Offline Donation
+→ createOfflineDonation()（校验剩余目标 → 逐行生成 public_id → 批量插入 paid 记录）
+→ 之后走与线上完全相同的 paid → confirmed → delivering → completed
+```
+
+**关键约束**：
+
+- `payment_method` 固定 `'Offline'`，`currency` 固定 `'USD'`（`total_raised` 是不区分币种的 `SUM(amount)`，
+  其它币种需管理员自行换算），由 RLS 策略 `Admins can insert offline donations` 强制
+- **行数由项目类型决定**：聚合项目 1 行（amount = 捐赠金额）；非聚合项目 N 行（每行 amount = `unit_price`）。
+  `current_units` 是逐行 +1 的计数器，非聚合项目不拆行会导致进度条算错
+- 录入时**不发邮件**；`completed` 时由现有 `updateDonationStatus` 发送完成邮件
+- 线下捐赠**不可在线退款**：`requestRefund` 提前返回 `offlineNotRefundable`，追踪页隐藏退款按钮
+- 录错只能在数据库侧删除重录——`prevent_donation_immutable_fields` 禁止修改 `amount` / `project_id` / `donor_*` / `order_reference`
 
 ### 义卖购买流程
 
@@ -596,5 +616,5 @@ getTranslatedText(project.project_name_i18n, locale, fallback)
 
 ---
 
-**文档版本**: 2.7.0
-**最后更新**: 2026-06-03
+**文档版本**: 2.8.0
+**最后更新**: 2026-08-02

@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { canBatchEdit, type DonationStatus } from '@/lib/donation-status'
 import { useTableFilters } from '@/lib/hooks/useTableFilters'
 import { getTranslatedText } from '@/lib/i18n-utils'
+import type { ProjectStats } from '@/types'
 import type { Database } from '@/types/database'
 
 import BatchDonationEditModal from './BatchDonationEditModal'
@@ -17,14 +18,16 @@ import type {
   DonationTableFilters,
   StatusHistory,
 } from './donations-table/types'
+import OfflineDonationCreateModal from './OfflineDonationCreateModal'
 import PrintLabelsModal from './PrintLabelsModal'
 
 interface Props {
   initialDonations: Donation[]
   statusHistory: StatusHistory[]
+  projects: ProjectStats[]
 }
 
-export default function DonationsTable({ initialDonations, statusHistory }: Props) {
+export default function DonationsTable({ initialDonations, statusHistory, projects }: Props) {
   const [donations, setDonations] = useState(initialDonations)
   const [editingDonation, setEditingDonation] = useState<Donation | null>(null)
 
@@ -32,9 +35,15 @@ export default function DonationsTable({ initialDonations, statusHistory }: Prop
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
   const [showBatchEdit, setShowBatchEdit] = useState(false)
   const [showPrintLabels, setShowPrintLabels] = useState(false)
+  const [isCreatingOffline, setIsCreatingOffline] = useState(false)
 
   const handleEdit = (donation: Donation) => {
     setEditingDonation(donation)
+  }
+
+  const handleOfflineCreated = (created: Donation[]) => {
+    setDonations([...created, ...donations])
+    setIsCreatingOffline(false)
   }
 
   const handleSaved = (updated: Database['public']['Tables']['donations']['Row']) => {
@@ -165,6 +174,15 @@ export default function DonationsTable({ initialDonations, statusHistory }: Prop
   return (
     <div className="rounded-lg bg-white shadow">
       <div className="px-4 py-5 sm:p-6">
+        <div className="mb-4">
+          <button
+            onClick={() => setIsCreatingOffline(true)}
+            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          >
+            Record Offline Donation
+          </button>
+        </div>
+
         <DonationsFiltersBar
           filters={filters}
           setFilters={setFilters}
@@ -215,6 +233,14 @@ export default function DonationsTable({ initialDonations, statusHistory }: Prop
 
       {showPrintLabels && (
         <PrintLabelsModal donations={selectedDonations} onClose={() => setShowPrintLabels(false)} />
+      )}
+
+      {isCreatingOffline && (
+        <OfflineDonationCreateModal
+          projects={projects}
+          onClose={() => setIsCreatingOffline(false)}
+          onCreated={handleOfflineCreated}
+        />
       )}
     </div>
   )

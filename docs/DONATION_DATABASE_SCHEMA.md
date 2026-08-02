@@ -12,6 +12,7 @@
 - `supabase/migrations/20260121100000_fix_aggregate_progress_calculation.sql`
 - `supabase/migrations/20260328100000_drop_progress_percentage.sql`
 - `supabase/migrations/20260329100000_fix_is_admin_check.sql`
+- `supabase/migrations/20260802000000_admin_offline_donations.sql`
 
 > **注意**: 如需了解完整的 SQL 定义，请直接查看迁移文件。
 
@@ -25,7 +26,7 @@
 | 视图 (Views)      | 3    | project_stats, public_project_donations, order_donations_secure   |
 | 函数 (Functions)  | 12   | 5个业务函数 + 7个触发器函数                                       |
 | 触发器 (Triggers) | 8    | 详见触发器章节                                                    |
-| RLS 策略          | 10   | 4个公开 + 6个管理员                                               |
+| RLS 策略          | 10   | 3个公开 + 7个管理员                                               |
 | 存储桶            | 1    | donation-results（含 4 条 storage 策略）                          |
 | 定时任务 (Cron)   | 1    | expire-pending-donations                                          |
 | 索引              | 18   | 详见索引章节                                                      |
@@ -78,7 +79,7 @@
 | contact_whatsapp   | VARCHAR(255)  | NULL                    | WhatsApp                                 |
 | amount             | NUMERIC(10,2) | NOT NULL, >0            | 金额 **[不可修改]**                      |
 | currency           | VARCHAR(10)   | DEFAULT 'USD'           | USD/UAH/EUR                              |
-| payment_method     | VARCHAR(50)   | NULL                    | 支付方式（`WayForPay` / `NOWPayments` / `QmmPay`） |
+| payment_method     | VARCHAR(50)   | NULL                    | 支付方式（`WayForPay` / `NOWPayments` / `QmmPay` / `Offline`） |
 | order_reference    | VARCHAR(255)  | NULL                    | 订单号（各支付网关共用）**[不可修改]**   |
 | donation_status    | VARCHAR(20)   | DEFAULT 'paid'          | 状态（14个有效值）                       |
 | locale             | VARCHAR(5)    | DEFAULT 'en'            | 语言: en/zh/ua                           |
@@ -236,7 +237,7 @@ RETURN coalesce(
 
 ---
 
-## RLS 策略（9个）
+## RLS 策略（10个）
 
 ### 公开策略（3个）
 
@@ -249,16 +250,25 @@ RETURN coalesce(
 > **注意**: donations 表的 anon SELECT 策略已删除（修复 PII 泄露漏洞）。
 > 公开数据访问通过 `security_invoker=false` 的脱敏视图（order_donations_secure、project_stats、public_project_donations）提供。
 
-### 管理员策略（6个）
+### 管理员策略（7个）
 
-| 策略                               | 表                      | 操作   | 条件       |
-| ---------------------------------- | ----------------------- | ------ | ---------- |
-| Admins can insert projects         | projects                | INSERT | is_admin() |
-| Admins can update projects         | projects                | UPDATE | is_admin() |
-| Admins can view all donations      | donations               | SELECT | is_admin() |
-| Admins can update donation status  | donations               | UPDATE | is_admin() |
-| Admins can view all subscriptions  | email_subscriptions     | SELECT | is_admin() |
-| Admins can view all status history | donation_status_history | SELECT | is_admin() |
+| 策略                                | 表                      | 操作   | 条件                                    |
+| ----------------------------------- | ----------------------- | ------ | --------------------------------------- |
+| Admins can insert projects          | projects                | INSERT | is_admin()                              |
+| Admins can update projects          | projects                | UPDATE | is_admin()                              |
+| Admins can view all donations       | donations               | SELECT | is_admin()                              |
+| Admins can update donation status   | donations               | UPDATE | is_admin()                              |
+| Admins can insert offline donations | donations               | INSERT | (SELECT is_admin()) + 线下捐赠字段约束  |
+| Admins can view all subscriptions   | email_subscriptions     | SELECT | is_admin()                              |
+| Admins can view all status history  | donation_status_history | SELECT | is_admin()                              |
+
+> **`Admins can insert offline donations`（迁移 `20260802000000`）**：允许管理员把平台外收到的捐款
+> 直接录成 `paid` 记录。`WITH CHECK` 强制 `donation_status = 'paid'`、`payment_method = 'Offline'`、
+> `currency = 'USD'`，以及 order_reference / donation_public_id / donor_name / donor_email 非空、
+> locale 合法。固定 `payment_method` 意味着该策略无法被用来伪造看起来像网关支付的记录。
+>
+> 刻意**不**复制 anon 策略的 `amount <= 10000` 上限——那是支付网关风控，线下捐款不适用。
+> `is_admin()` 包在子查询里（initplan 化），因为该路径按单位数逐行插入，裸调用会逐行求值。
 
 ---
 
@@ -386,6 +396,6 @@ Supabase 客户端
 
 ---
 
-**文档版本**: 4.2.0
-**基于**: baseline + 4 个增量迁移
-**最后更新**: 2026-06-03
+**文档版本**: 4.3.0
+**基于**: baseline + 5 个增量迁移
+**最后更新**: 2026-08-02

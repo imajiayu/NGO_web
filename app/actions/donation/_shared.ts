@@ -1,5 +1,6 @@
 import { getTranslatedText } from '@/lib/i18n-utils'
 import { logger } from '@/lib/logger'
+import type { OnlinePaymentMethod } from '@/lib/payment-method'
 import { getPublicClient } from '@/lib/supabase/action-clients'
 import { getProjectStats } from '@/lib/supabase/queries'
 import { donationFormSchema } from '@/lib/validations'
@@ -239,7 +240,10 @@ export async function prepareDonationContext(
 // DB writes
 // ============================================================
 
-type PaymentMethodLabel = 'WayForPay' | 'NOWPayments' | 'QmmPay'
+// Values live in lib/payment-method.ts alongside the offline label so the set of
+// donations.payment_method values has one home. Deliberately the *online* union:
+// this path must never write the offline marker.
+type PaymentMethodLabel = OnlinePaymentMethod
 
 /**
  * Insert pending donation rows for the given context, mirroring the verbatim

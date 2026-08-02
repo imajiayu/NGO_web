@@ -39,6 +39,7 @@ interface TextFieldProps {
   hint?: string
   error?: string
   min?: number | string
+  max?: number | string
   step?: number | string
   placeholder?: string
   className?: string
@@ -54,6 +55,7 @@ export function TextField({
   hint,
   error,
   min,
+  max,
   step,
   placeholder,
   className,
@@ -68,6 +70,7 @@ export function TextField({
         onChange={onChangeHandler}
         required={required && !disabled}
         min={min}
+        max={max}
         step={step}
         placeholder={placeholder}
         disabled={disabled}

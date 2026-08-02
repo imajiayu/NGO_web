@@ -627,6 +627,7 @@ export type Database = {
           id: number
           location_i18n: Json
           order_reference: string
+          payment_method: string
           project_id: number
           project_name_i18n: Json
           unit_name_i18n: Json
